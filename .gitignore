@@ -259,3 +259,29 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Assets/Free_Rocks/Standard Assets/Effects
+/Assets/Free_Rocks/Standard Assets/Skyboxes/Textures/Sunny2
+/Assets/Free_Rocks
+/Assets/Grass And Flowers Pack 1
+/Assets/Ground textures pack
+/Assets/Materials
+/Library
+/ProjectSettings
+/Temp
+/UnityPlayerStub
+/UnityCommon.props
+/ProjectTD.sln
+/NavMeshComponentsEditor.csproj
+/NavMeshComponents.csproj
+/Assembly-CSharp.csproj
+/Assembly-CSharp-firstpass.csproj
+/Assembly-CSharp-Editor.csproj
+/Assembly-CSharp-Editor-firstpass.csproj
+/ProjectTD
+/Assets/NavMeshComponents
+/Assets/PostProcessing
+/Assets/Prefabs/Entities
+/Assets/Prefabs/Managers
+/Assets/Scenes
+/Assets/Textures
+/Assets/Terrain.asset
