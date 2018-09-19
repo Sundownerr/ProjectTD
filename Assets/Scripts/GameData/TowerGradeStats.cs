@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TowerStats : ScriptableObject
+public class TowerGradeStats : ScriptableObject
 {
     float damage, range, attackSpeed, triggerChance, critChance, critMultiplier, multicritCount;
     float spellDamage, spellCritChance, spellCritMultiplier;
     float mana, manaRegen;
     float goldRatio, expRatio, itemDropRatio, itemQuialityRatio;
     float buffDuration, debuffDuration;
-    
-    List<TowerGradeStats> towerGradeStats;
-    List<float> gradeCosts;
-    List<float> damageToArmor;
+
 }
