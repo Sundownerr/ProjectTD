@@ -16,17 +16,25 @@ public class RangeCollider : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         CreepInRangeList.Add(other.gameObject);
+        IsCreepInRange = true;
     }
 
     private void OnTriggerStay(Collider other)
     {
-        IsCreepInRange = true;
+        
     }
 
     private void OnTriggerExit(Collider other)
     {
-        CreepInRangeList.RemoveAt(0);
-        Debug.Log(CreepInRangeList.Count);
+        if (CreepInRangeList.Count > 0)
+        {
+            CreepInRangeList.RemoveAt(0);
+        }
+       
+        if(CreepInRangeList.Count == 0)
+        {
+            IsCreepInRange = false;
+        }
     }
 
 }

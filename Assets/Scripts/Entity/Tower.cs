@@ -10,7 +10,8 @@ public class Tower : MonoBehaviour
     private List<Renderer> towerRenderers;
     private TowerPlacer towerData;
     private UI ui;
-    private Transform towerRange;
+    private Transform towerRange, towerTransform;
+    private RangeCollider range;
 
 	void Start ()
     {
@@ -18,15 +19,17 @@ public class Tower : MonoBehaviour
         UIManager = GameObject.Find("UIManager");
         ui = UIManager.GetComponent<UI>();       
         towerData = TowerPlacer.GetComponent<TowerPlacer>();
-
+        towerTransform = transform;
         towerRenderers = new List<Renderer>();
 
         for (int i = 0; i < GetComponentsInChildren<Renderer>().Length; i++)
         {
             towerRenderers.Add(GetComponentsInChildren<Renderer>()[i]);
-        }
+        }      
 
         towerRange = transform.GetChild(1);
+
+        range = towerRange.gameObject.GetComponent<RangeCollider>();
 
         var randomNumber = Random.Range(5, 30);
 
@@ -56,7 +59,21 @@ public class Tower : MonoBehaviour
 
             towerRange.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
         }
-    }
 
-    
+        if (builded)
+        {
+            if (range.IsCreepInRange)
+            {
+                Vector3 offset = range.CreepInRangeList[0].transform.position - towerTransform.position;
+                offset.y = 0;
+
+                Quaternion towerRotation = Quaternion.LookRotation(offset);
+                towerTransform.rotation = towerRotation;
+            }
+            else
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 0.8f);
+            }           
+        }
+    }    
 }
