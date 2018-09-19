@@ -285,3 +285,4 @@ __pycache__/
 /Assets/Scenes
 /Assets/Textures
 /Assets/Terrain.asset
+/Assets/Scripts/GameData/TowerStats/BaseTower.asset
