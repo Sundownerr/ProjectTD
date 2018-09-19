@@ -6,67 +6,66 @@ using UnityEngine;
 public class TowerPlacer : MonoBehaviour
 {
     public GameObject Tower, UIManager, GridManager;
-    public Vector3 TowerPosition;
-    public Color TowerColor;
+    public Vector3 GhostedTowerPosition;
+    public Color GhostedTowerColor;
 
-    private List<GameObject> buildingCubes;
-    private List<BuildingCube> cubeStates;
-
-    private bool canBuild, towerCreated;
+    private List<GameObject> buildingCubeList, towerList;
+    private List<BuildingCube> cubeStateList;
+    private bool canBuild, isTowerCreated;
     private CreateGrid grid;
     private UI ui;
     private RaycastHit hit;
-    private List<GameObject> towerList;
+    
 
     private IEnumerator GetBuildingCubesData()
     {
-        while (!grid.isGridBuilded)
+        while (!grid.IsGridBuilded)
         {
             yield return new WaitForSeconds(0.05f);
         }
 
-        buildingCubes = new List<GameObject>(GameObject.FindGameObjectsWithTag("BuildingCube"));
-        cubeStates = new List<BuildingCube>();
+        buildingCubeList = new List<GameObject>(GameObject.FindGameObjectsWithTag("BuildingCube"));
+        cubeStateList = new List<BuildingCube>();
 
-        for (int i = 0; i < buildingCubes.Count; i++)
+        for (int i = 0; i < buildingCubeList.Count; i++)
         {
-            cubeStates.Add(buildingCubes[i].GetComponent<BuildingCube>());
+            cubeStateList.Add(buildingCubeList[i].GetComponent<BuildingCube>());
         }
 
         canBuild = true;
     }
 
-    private void CreateTower()
+    private void CreateGhostedTower()
     {
         towerList.Add(Instantiate(Tower, new Vector3(0, 0, 0), Quaternion.Euler(0f, 0f, 0f)));
     }
 
-    private void PlaceTower()
+    private void PlaceGhostedTower()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit))
         {
-            TowerPosition = hit.point;
-            TowerColor = Color.red - new Color(0, 0, 0, 0.6f);
+            GhostedTowerPosition = hit.point;
+            GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.6f);
 
-            for (int i = 0; i < buildingCubes.Count; i++)
+            for (int i = 0; i < buildingCubeList.Count; i++)
             {
-                if (hit.transform.gameObject == buildingCubes[i] && !cubeStates[i].isBusy)
+                if (hit.transform.gameObject == buildingCubeList[i] && !cubeStateList[i].IsBusy)
                 {
-                    TowerPosition = buildingCubes[i].transform.position;
-                    TowerColor = Color.green - new Color(0, 0, 0, 0.6f);
-                    cubeStates[i].isChosen = true;
+                    GhostedTowerPosition = buildingCubeList[i].transform.position;
+                    GhostedTowerColor = Color.green - new Color(0, 0, 0, 0.6f);
+                    cubeStateList[i].IsChosen = true;
 
                     if (Input.GetMouseButtonDown(0))
                     {
-                        cubeStates[i].isBusy = true;
-                        ui.BuildModeActive = false;
+                        cubeStateList[i].IsBusy = true;
+                        ui.IsBuildModeActive = false;
                     }
                 }
                 else
                 {
-                    cubeStates[i].isChosen = false;
+                    cubeStateList[i].IsChosen = false;
                 }
             }
 
@@ -84,7 +83,7 @@ public class TowerPlacer : MonoBehaviour
         Destroy(towerList[lastTowerIndex]);
         towerList.RemoveAt(lastTowerIndex);
 
-        ui.BuildModeActive = false;
+        ui.IsBuildModeActive = false;
     }
 
     private void Start()
@@ -100,17 +99,17 @@ public class TowerPlacer : MonoBehaviour
 
     private void Update()
     {
-        if (ui.BuildModeActive && canBuild)
+        if (ui.IsBuildModeActive && canBuild)
         {
-            if (!towerCreated)
+            if (!isTowerCreated)
             {
-                CreateTower();
-                towerCreated = true;
+                CreateGhostedTower();
+                isTowerCreated = true;
             }
 
-            PlaceTower();
+            PlaceGhostedTower();
         }
         else
-            towerCreated = false;
+            isTowerCreated = false;
     }
 }

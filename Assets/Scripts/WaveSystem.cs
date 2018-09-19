@@ -45,7 +45,7 @@ public class WaveSystem : MonoBehaviour
 
 	private void Update ()
     {
-        if (ui.WaveStarted)
+        if (ui.IsWaveStarted)
         {
             if (!creepsSpawned)
                SpawnCreeps(creepsAmountNotSpawned, 0.5f);                      
@@ -65,7 +65,7 @@ public class WaveSystem : MonoBehaviour
                 {
                     creepsAmountSpawned = 0;
                     creepsSpawned = false;                   
-                    ui.WaveStarted = false;            
+                    ui.IsWaveStarted = false;            
                 }
             }
         }

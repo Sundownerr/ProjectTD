@@ -5,76 +5,89 @@ using UnityEngine;
 public class Tower : MonoBehaviour
 {
     public GameObject TowerPlacer, UIManager;
-    public bool builded;
+    public bool IsTowerBuilded;
 
-    private List<Renderer> towerRenderers;
-    private TowerPlacer towerData;
+    private Transform towerRangeTransform, towerTransform;
+    private List<Renderer> towerRendererList;
+    private TowerPlacer towerPlacerData;       
+    private RangeCollider rangeCollider;
     private UI ui;
-    private Transform towerRange, towerTransform;
-    private RangeCollider range;
 
-	void Start ()
+    private void StartTowerBuild(Vector3 towerPos)
+    {
+        towerTransform.position = towerPos;
+
+        for (int i = 0; i < towerRendererList.Count; i++)
+        {
+            towerRendererList[i].material.color = towerPlacerData.GhostedTowerColor;
+        }
+    }
+
+    private bool EndTowerBuild()
+    {
+        for (int i = 0; i < towerRendererList.Count; i++)
+        {
+            towerRendererList[i].material.color = Color.blue;
+        }
+       
+        towerRangeTransform.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
+
+        return true;
+    }
+
+    private void Start ()
     {
         TowerPlacer = GameObject.Find("TowerManager");
         UIManager = GameObject.Find("UIManager");
         ui = UIManager.GetComponent<UI>();       
-        towerData = TowerPlacer.GetComponent<TowerPlacer>();
+        towerPlacerData = TowerPlacer.GetComponent<TowerPlacer>();
         towerTransform = transform;
-        towerRenderers = new List<Renderer>();
+        towerRendererList = new List<Renderer>();
 
         for (int i = 0; i < GetComponentsInChildren<Renderer>().Length; i++)
         {
-            towerRenderers.Add(GetComponentsInChildren<Renderer>()[i]);
+            towerRendererList.Add(GetComponentsInChildren<Renderer>()[i]);
         }      
 
-        towerRange = transform.GetChild(1);
+        towerRangeTransform = transform.GetChild(1);
 
-        range = towerRange.gameObject.GetComponent<RangeCollider>();
+        rangeCollider = towerRangeTransform.gameObject.GetComponent<RangeCollider>();
 
         var randomNumber = Random.Range(5, 30);
 
-        towerRange.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
+        towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
 
 	}
 
-    void Update()
+    private void Update()
     {
-        if (!builded && ui.BuildModeActive)
+        if (!IsTowerBuilded && ui.IsBuildModeActive)
         {
-            transform.position = towerData.TowerPosition;
-
-            for (int i = 0; i < towerRenderers.Count; i++)
-            {
-                towerRenderers[i].material.color = towerData.TowerColor;
-            }
+            StartTowerBuild(towerPlacerData.GhostedTowerPosition);
         }
         else
         {
-            for (int i = 0; i < towerRenderers.Count; i++)
-            {
-                towerRenderers[i].material.color = Color.blue;
-            }
-
-            builded = true;
-
-            towerRange.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
+            IsTowerBuilded = EndTowerBuild();
         }
-
-        if (builded)
+        
+        if (IsTowerBuilded)
         {
-            if (range.IsCreepInRange)
+            if (rangeCollider.IsCreepInRange)
             {
-                Vector3 offset = range.CreepInRangeList[0].transform.position - towerTransform.position;
+                var offset = rangeCollider.CreepInRangeList[0].transform.position - towerTransform.position;
                 offset.y = 0;
 
-                Quaternion towerRotation = Quaternion.LookRotation(offset);
+                var towerRotation = Quaternion.LookRotation(offset);
 
-                towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 2.9f) ;
+                towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 3.1f);
             }
             else
             {
-                towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 0.8f);
-            }           
+                if (towerTransform.rotation != Quaternion.Euler(0, 0, 0))
+                {
+                    towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 1f);
+                }
+            }
         }
     }    
 }

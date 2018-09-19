@@ -6,7 +6,7 @@ public class UI : MonoBehaviour
 
     public Button StartWaveButton, BuildModeButton, ReadyButton;
     public GameObject CreepPrefab, GridManager;
-    public bool BuildModeActive, WaveStarted, PlayerReady;
+    public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
 
 
 	void Start ()
@@ -21,21 +21,21 @@ public class UI : MonoBehaviour
 	
     private void StartWave()
     {
-        WaveStarted = true;
+        IsWaveStarted = true;
     }
 
     private void BuildTower()
     {
-        if (GridManager.GetComponent<CreateGrid>().isGridBuilded)
+        if (GridManager.GetComponent<CreateGrid>().IsGridBuilded)
         {
-            if (!BuildModeActive)           
-                BuildModeActive = true;
+            if (!IsBuildModeActive)           
+                IsBuildModeActive = true;
         }
     }
 
     private void CheckReady()
     {
-        PlayerReady = true;
+        IsPlayerReady = true;
         Destroy(ReadyButton.gameObject);
     }
 

@@ -6,14 +6,15 @@ using UnityEngine.Rendering;
 public class CreateGrid : MonoBehaviour
 {
     public GameObject BuildingCube;
-    public bool isGridBuilded;
+    public bool IsGridBuilded;
 
     private List<GameObject> BuildingAreas;
 
     private IEnumerator BuildTimer()
     {
-        yield return new WaitForSeconds(0.5f);        
-        isGridBuilded = true;
+        yield return new WaitForSeconds(0.5f); 
+        
+        IsGridBuilded = true;
     }
 
     private void GridCreate(int count)
@@ -36,6 +37,7 @@ public class CreateGrid : MonoBehaviour
     private void Start()
     {
         BuildingAreas = new List<GameObject>(GameObject.FindGameObjectsWithTag("BuildingArea"));
+
         GridCreate(BuildingAreas.Count);
         StartCoroutine(BuildTimer());
     }

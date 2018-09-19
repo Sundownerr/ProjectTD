@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName ="New Tower", menuName ="Base Tower")]
 public class TowerStats : ScriptableObject
 {
-
     public string towerName;
 
     public float damage, range, attackSpeed, triggerChance, critChance, critMultiplier, multicritCount;
