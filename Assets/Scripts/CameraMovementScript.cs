@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class CameraMovementScript : MonoBehaviour
 {   
     private Rigidbody camRigidBody;
@@ -26,7 +25,6 @@ public class CameraMovementScript : MonoBehaviour
             {
                 rotationX -= 2;
                 camRigidBody.AddTorque(Vector3.left * 10);
-
                 camRigidBody.AddForce(Vector3.down * 2500);
             }
         }
@@ -37,7 +35,6 @@ public class CameraMovementScript : MonoBehaviour
             {
                 rotationX += 2;
                 camRigidBody.AddTorque(Vector3.right * 10);
-
                 camRigidBody.AddForce(Vector3.up * 2500);
             }
         }
