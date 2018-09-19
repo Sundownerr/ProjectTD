@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Buff : ScriptableObject
+public class Buff : Effect
 {
-    public string buffName, buffDescription;
-
     public float duration;
 }

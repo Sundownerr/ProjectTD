@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class TowerPassiveAbility : ScriptableObject
+public class TowerAbilty : ScriptableObject
 {
 
     public string abilityName, abilityDescription;
 
-    public float triggerChance, range, damage;
-
+    public float manaCost, cooldown, triggerChance;
 }

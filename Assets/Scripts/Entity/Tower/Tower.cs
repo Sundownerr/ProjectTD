@@ -68,11 +68,12 @@ public class Tower : MonoBehaviour
                 offset.y = 0;
 
                 Quaternion towerRotation = Quaternion.LookRotation(offset);
-                towerTransform.rotation = towerRotation;
+
+                towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 2.9f) ;
             }
             else
             {
-                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 0.8f);
+                towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 0.8f);
             }           
         }
     }    
