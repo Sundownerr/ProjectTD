@@ -13,15 +13,6 @@ public class Tower : MonoBehaviour
     private List<ParticleSystem> bulletParticleSystemList;
     private RangeCollider rangeCollider;
     private float timer;
- 
-
-    private float CalcDistance(Vector3 position1, Vector3 position2)
-    {
-        float xD = position2.x - position1.x;
-        float yD = position2.y - position1.y; 
-        float zD = position2.z - position1.z;
-        return xD * xD + yD * yD + zD * zD;
-    }
     
     private void StartTowerBuild()
     {    
@@ -50,7 +41,7 @@ public class Tower : MonoBehaviour
 
         var towerRotation = Quaternion.LookRotation(offset);
 
-        towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 5f);
+        towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 9f);
     }
 
     private void RotateTowerToDefault()
@@ -62,7 +53,7 @@ public class Tower : MonoBehaviour
     }
 
     private void ShootAtCreep(float delay)
-    {    
+    {
         if (timer < delay)
         {
             timer += 0.5f;
@@ -70,26 +61,30 @@ public class Tower : MonoBehaviour
             if (timer == 0.5f)
             {
                 bulletList.Add(Instantiate(Bullet, towerTransform.position, Quaternion.Euler(0, 0, 0)));
-                
-                bulletParticleSystemList.Add(bulletList[bulletList.Count - 1].GetComponent<ParticleSystem>());              
+
+                bulletParticleSystemList.Add(bulletList[bulletList.Count - 1].GetComponent<ParticleSystem>());
             }
-          
+
             for (int i = 0; i < bulletList.Count; i++)
             {
-                if (Vector3.Distance(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > 10)
+                if (GameManager.CalcDistance(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > 30)
                 {
                     bulletList[i].transform.position = Vector3.Lerp(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
                 }
                 else
                 {
+                   
                     var em = bulletParticleSystemList[i].emission;
-                    em.enabled = false;                   
+                    em.enabled = false;
                 }
-            }          
+            }
         }
         else
         {
-            StartCoroutine(RemoveBullets(bulletParticleSystemList[0].main.startLifetime.constant));
+            if (bulletList.Count > 0)
+            {
+                StartCoroutine(RemoveBullets(bulletParticleSystemList[0].main.startLifetime.constant));
+            }
             timer = 0;
         }
     }
@@ -143,18 +138,22 @@ public class Tower : MonoBehaviour
         
         if (IsTowerBuilded)
         {
-            if (rangeCollider.IsCreepInRange)
+            if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
             {
                 RotateTowerAtCreep();
                 ShootAtCreep(40f);
             }
             else
             {
+                if(bulletList.Count > 0)
+                {
+                    Destroy(bulletList[0]);
+                    bulletList.RemoveAt(0);
+                    bulletParticleSystemList.RemoveAt(0);
+                }
+
                 RotateTowerToDefault();
             }
-        }
-        
-       
-    }
-    
+        }             
+    }   
 }

@@ -14,6 +14,15 @@ public class TowerPlaceSystem : MonoBehaviour
     private RaycastHit hit;
     
 
+    private IEnumerator Refresh()
+    {
+        GameManager.Instance.UISystem.IsBuildModeActive = false;
+
+        yield return new WaitForSeconds(0.05f);
+
+        GameManager.Instance.UISystem.IsBuildModeActive = true;
+    }
+
     private IEnumerator GetTowerCellData()
     {
         while (!GameManager.Instance.GridSystem.IsGridBuilded)
@@ -57,7 +66,9 @@ public class TowerPlaceSystem : MonoBehaviour
 
                         if (Input.GetKey(KeyCode.LeftShift))
                         {
-                            isTowerCreated = false;                           
+                            isTowerCreated = false;
+
+                            StartCoroutine(Refresh());
                         }
                         else
                         {
