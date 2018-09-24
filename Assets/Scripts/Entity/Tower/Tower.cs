@@ -7,6 +7,7 @@ public class Tower : MonoBehaviour
     public GameObject Bullet;
     public bool IsTowerBuilded;
 
+    public TowerStats towerStats;
     private Transform towerRangeTransform, towerTransform;
     private List<Renderer> towerRendererList;
     private List<GameObject> bulletList;
@@ -85,6 +86,7 @@ public class Tower : MonoBehaviour
             {
                 StartCoroutine(RemoveBullets(bulletParticleSystemList[0].main.startLifetime.constant));
             }
+
             timer = 0;
         }
     }
@@ -102,7 +104,8 @@ public class Tower : MonoBehaviour
     }
 
     private void Start ()
-    {   
+    {
+        
         towerTransform = transform;
 
         towerRendererList = new List<Renderer>();

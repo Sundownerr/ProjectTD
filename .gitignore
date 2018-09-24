@@ -289,3 +289,5 @@ __pycache__/
 /Assets/New LightmapParameters.giparams
 *.csproj
 /Assets/ImportedAssets
+/Assets/Sprites
+*.asset

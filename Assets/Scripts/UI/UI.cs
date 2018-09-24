@@ -19,7 +19,10 @@ public class UI : MonoBehaviour
 	
     private void StartWave()
     {
-        IsWaveStarted = true;
+        if (GameManager.Instance.CreepList.Count == 0)
+        {
+            IsWaveStarted = true;
+        }
     }
 
     private void BuildTower()

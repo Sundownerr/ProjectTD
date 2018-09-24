@@ -4,84 +4,35 @@ using UnityEngine;
 
 public class TowerCellExpand
 {
-
-    private bool FillForwardSide(bool isForwardFilled, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
+    private bool FillSide(bool isSideFilled, Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
     {
-        if (isForwardFilled)
+        var direction1 = new Vector3();
+        var direction2 = new Vector3();
+
+        if (checkMode == 1)
+        {
+            direction1 = Vector3.left;
+            direction2 = Vector3.right;
+        }
+        else
+        {
+            direction1 = Vector3.forward;
+            direction2 = Vector3.back;
+        }
+
+        if (isSideFilled)
         {
             return true;
         }
         else
-        {
-            var forwardRayHit = Physics.Raycast(cell.transform.position + Vector3.left * cell.transform.lossyScale.x / 2, Vector3.forward, rayDistance, layerMask) |
-                Physics.Raycast(cell.transform.position + Vector3.right * cell.transform.lossyScale.x / 2, Vector3.forward, rayDistance, layerMask);
+        {           
+            var sideRayHit = 
+                Physics.Raycast(cell.transform.position + direction1 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask) |
+                Physics.Raycast(cell.transform.position + direction2 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask);
 
-            if(!forwardRayHit)
+            if (!sideRayHit)
             {
-                Object.Instantiate(cellPrefab, cell.transform.position + Vector3.forward * spacing, cell.transform.rotation).name = cell.transform.name;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool FillBackwardSide(bool isBackwardFilled, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
-    {
-        if (isBackwardFilled)
-        {
-            return true;
-        }
-        else
-        {
-            var backRayHit = Physics.Raycast(cell.transform.position + Vector3.left * cell.transform.lossyScale.x / 2, Vector3.back, rayDistance, layerMask) |
-                Physics.Raycast(cell.transform.position + Vector3.right * cell.transform.lossyScale.x / 2, Vector3.back, rayDistance, layerMask);
-
-            if (!backRayHit)
-            {
-                Object.Instantiate(cellPrefab, cell.transform.position + Vector3.back * spacing, cell.transform.rotation).name = cell.transform.name;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool FillRightSide(bool isRightFilled, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
-    {
-        if (isRightFilled)
-        {
-            return true;
-        }
-        else
-        {
-            var rightRayHit = Physics.Raycast(cell.transform.position + Vector3.forward * cell.transform.lossyScale.x / 2, Vector3.right, rayDistance, layerMask) |
-                Physics.Raycast(cell.transform.position + Vector3.back * cell.transform.lossyScale.x / 2, Vector3.right, rayDistance, layerMask);
-
-            if (!rightRayHit)
-            {
-                Object.Instantiate(cellPrefab, cell.transform.position + Vector3.right * spacing, cell.transform.rotation).name = cell.transform.name;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool FillLeftSide(bool isLeftFilled, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
-    {
-        if (isLeftFilled)
-        {
-            return true;
-        }
-        else
-        {
-            var leftRayHit = Physics.Raycast(cell.transform.position + Vector3.forward * cell.transform.lossyScale.x / 2, Vector3.left, rayDistance, layerMask) |
-                Physics.Raycast(cell.transform.position + Vector3.back * cell.transform.lossyScale.x / 2, Vector3.left, rayDistance, layerMask);
-
-            if (!leftRayHit)
-            {
-                Object.Instantiate(cellPrefab, cell.transform.position + Vector3.left * spacing, cell.transform.rotation).name = cell.transform.name;
+                Object.Instantiate(cellPrefab, cell.transform.position + spawnDirection * spacing, cell.transform.rotation).name = cell.transform.name;
                 return true;
             }
         }
@@ -99,10 +50,10 @@ public class TowerCellExpand
         var spacing = cell.transform.localScale.x + 1;
         var rayDistance = cell.transform.localScale.x;
 
-        var raycastHit1 = new RaycastHit();
-        var raycastHit2 = new RaycastHit();
-        var raycastHit3 = new RaycastHit();
-        var raycastHit4 = new RaycastHit();
+        var forwardRaycastHit = new RaycastHit();
+        var backRaycastHit = new RaycastHit();
+        var rightRaycastHit = new RaycastHit();
+        var leftRaycastHit = new RaycastHit();
 
         var buildingAreaLayer = 1 << 8;
         var terrainLayer = 1 << 9;
@@ -114,22 +65,23 @@ public class TowerCellExpand
         var rRay = new Ray(cell.transform.position + Vector3.right * 15, Vector3.down);
         var lRay = new Ray(cell.transform.position + Vector3.left * 15, Vector3.down);
 
-        var rayHit = Physics.Raycast(fRay, out raycastHit1, 5, buildLayerMask) |
-            Physics.Raycast(bRay, out raycastHit2, 5, buildLayerMask) |
-            Physics.Raycast(rRay, out raycastHit3, 5, buildLayerMask) |
-            Physics.Raycast(lRay, out raycastHit4, 5, buildLayerMask);
+        var rayHit = 
+            Physics.Raycast(fRay, out forwardRaycastHit, 5, buildLayerMask) |
+            Physics.Raycast(bRay, out backRaycastHit, 5, buildLayerMask) |
+            Physics.Raycast(rRay, out rightRaycastHit, 5, buildLayerMask) |
+            Physics.Raycast(lRay, out leftRaycastHit, 5, buildLayerMask);
 
         if (rayHit)
         {
             for (int i = 0; i < buildingAreas.Count; i++)
             {
-                forwardFilled = FillForwardSide(forwardFilled, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+                forwardFilled = FillSide(forwardFilled, Vector3.forward, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
 
-                backFilled = FillBackwardSide(forwardFilled, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+                backFilled = FillSide(backFilled, Vector3.back, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
 
-                leftFilled = FillLeftSide(leftFilled, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+                leftFilled = FillSide(leftFilled, Vector3.left, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
 
-                rightFilled = FillRightSide(rightFilled, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+                rightFilled = FillSide(rightFilled, Vector3.right, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
             }
         }
         else

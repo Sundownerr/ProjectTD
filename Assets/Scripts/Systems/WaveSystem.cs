@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class WaveSystem : MonoBehaviour
 {
-    private List<GameObject> creeps;
-    private List<Creep> creepData;
+
     private bool creepsSpawned;
     private int creepsAmountSpawned, creepsAmountNotSpawned, spawnDelay;
     
     private void SpawnCreeps(int amount, float delay)
     {
-        if (spawnDelay < 19)
+        if (spawnDelay < delay)
         {
             spawnDelay++;
 
@@ -19,8 +18,8 @@ public class WaveSystem : MonoBehaviour
             {
                 if (creepsAmountSpawned < amount)
                 {
-                    creeps.Add(Instantiate(GameManager.Instance.CreepPrefab));
-                    creepData.Add(creeps[creeps.Count - 1].GetComponent<Creep>());
+                    Instantiate(GameManager.Instance.CreepPrefab);
+                    
                     creepsAmountSpawned++;
                 }
                 else
@@ -37,33 +36,23 @@ public class WaveSystem : MonoBehaviour
     
     private void Start ()
     {       
-        creeps = new List<GameObject>();
-        creepData = new List<Creep>();
-        creepsAmountNotSpawned = 5;
+      
+        
+        creepsAmountNotSpawned = 15;
 	}	
 
 	private void Update ()
-    {
-        
+    {      
         if (GameManager.Instance.UISystem.IsWaveStarted)
         {
             if (!creepsSpawned)
             {
-                SpawnCreeps(creepsAmountNotSpawned, 0.5f);
+                SpawnCreeps(creepsAmountNotSpawned, 10f);
             }
 
             if (creepsSpawned)
-            {
-                for (int i = 0; i < creepData.Count; i++)
-                {
-                    if(creepData[i].ReachedLastWaypoint)
-                    {
-                        creeps.RemoveAt(i);
-                        creepData.RemoveAt(i);
-                    }
-                }
-
-                if(creeps.Count == 0)
+            {              
+                if(GameManager.Instance.CreepList.Count == 0)
                 {
                     creepsAmountSpawned = 0;
                     creepsSpawned = false;

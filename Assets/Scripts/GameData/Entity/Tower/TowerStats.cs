@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName ="New Tower", menuName ="Base Tower")]
-public class TowerStats : ScriptableObject
+public class TowerStats : Entity
 {
-    public string towerName;
-
     public float damage, range, attackSpeed, triggerChance, critChance, critMultiplier, multicritCount;
     public float spellDamage, spellCritChance, spellCritMultiplier;
     public float mana, manaRegen;

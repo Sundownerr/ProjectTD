@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 
 
-public class Creep : MonoBehaviour
+public class CreepSample : MonoBehaviour
 {
     public bool ReachedLastWaypoint;
+    public CreepStats Stats;
 
     private Transform creepTransform;
     private float speed;
@@ -14,10 +15,17 @@ public class Creep : MonoBehaviour
     {
         GameManager.Instance.CreepList.Add(gameObject);
 
+        Stats = ScriptableObject.CreateInstance<CreepStats>();
+
+        Stats.hp = 100f;
+        Stats.entityName = "retard";
+        Stats.armorIndex = 0;
+        Stats.moveSpeed = 250f;
+        
         speed = 200f;
 
         creepTransform = transform;
-        creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position;
+        creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
     }
 
     private void Update()
@@ -27,17 +35,17 @@ public class Creep : MonoBehaviour
         if (waypointIndex < GameManager.Instance.WaypointList.Count - 1)
         {
             if (!waypointReached)
-            {
-                
+            {              
                 creepTransform.Translate(Vector3.forward * Time.deltaTime * speed, Space.Self);
                 creepTransform.position = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
 
                 var lookRotation = Quaternion.LookRotation(GameManager.Instance.WaypointList[waypointIndex].transform.position - creepTransform.position);
+
                 var rotation = Quaternion.Lerp(creepTransform.rotation, lookRotation, Time.deltaTime * 10f);
                 rotation.z = 0;
                 rotation.x = 0;
-                creepTransform.localRotation = rotation;
-                
+
+                creepTransform.localRotation = rotation;               
             }
             else
             {
