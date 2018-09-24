@@ -288,3 +288,4 @@ __pycache__/
 /Assets/Scripts/GameData/TowerStats/BaseTower.asset
 /Assets/New LightmapParameters.giparams
 *.csproj
+/Assets/ImportedAssets

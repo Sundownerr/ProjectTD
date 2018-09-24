@@ -57,8 +57,7 @@ public class TowerPlaceSystem : MonoBehaviour
 
                         if (Input.GetKey(KeyCode.LeftShift))
                         {
-                            isTowerCreated = false;
-                            
+                            isTowerCreated = false;                           
                         }
                         else
                         {
@@ -86,7 +85,6 @@ public class TowerPlaceSystem : MonoBehaviour
         Destroy(GameManager.Instance.TowerList[lastTowerIndex]);
         GameManager.Instance.TowerList.RemoveAt(lastTowerIndex);
         
-
         GameManager.Instance.UISystem.IsBuildModeActive = false;
     }
 

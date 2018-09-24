@@ -9,14 +9,22 @@ public class Tower : MonoBehaviour
 
     private Transform towerRangeTransform, towerTransform;
     private List<Renderer> towerRendererList;
-    private List<GameObject> bullets, bulletsToRemove;     
+    private List<GameObject> bulletList;
+    private List<ParticleSystem> bulletParticleSystemList;
     private RangeCollider rangeCollider;
     private float timer;
+ 
+
+    private float CalcDistance(Vector3 position1, Vector3 position2)
+    {
+        float xD = position2.x - position1.x;
+        float yD = position2.y - position1.y; 
+        float zD = position2.z - position1.z;
+        return xD * xD + yD * yD + zD * zD;
+    }
     
     private void StartTowerBuild()
-    {
-      
-
+    {    
         for (int i = 0; i < towerRendererList.Count; i++)
         {
             towerRendererList[i].material.color = GameManager.Instance.TowerPlaceSystem.GhostedTowerColor;
@@ -61,34 +69,41 @@ public class Tower : MonoBehaviour
 
             if (timer == 0.5f)
             {
-                bullets.Add(Instantiate(Bullet, towerTransform.position, Quaternion.Euler(0, 0, 0)));            
+                bulletList.Add(Instantiate(Bullet, towerTransform.position, Quaternion.Euler(0, 0, 0)));
+                
+                bulletParticleSystemList.Add(bulletList[bulletList.Count - 1].GetComponent<ParticleSystem>());              
             }
-
-            for (int i = 0; i < bullets.Count; i++)
+          
+            for (int i = 0; i < bulletList.Count; i++)
             {
-                if (Vector3.Distance(bullets[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > 35)
+                if (Vector3.Distance(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > 10)
                 {
-                    bullets[i].transform.position = Vector3.Lerp(bullets[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
+                    bulletList[i].transform.position = Vector3.Lerp(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
                 }
                 else
                 {
-                    bullets[i].GetComponent<ParticleSystem>().Stop();
-                    
+                    var em = bulletParticleSystemList[i].emission;
+                    em.enabled = false;                   
                 }
             }          
         }
         else
         {
-            StartCoroutine(RemoveBullets());
+            StartCoroutine(RemoveBullets(bulletParticleSystemList[0].main.startLifetime.constant));
             timer = 0;
         }
     }
 
-    private IEnumerator RemoveBullets()
+    private IEnumerator RemoveBullets(float delay)
     {
-        yield return new WaitForSeconds(1f);
-        Destroy(bullets[0]);
-        bullets.RemoveAt(0);
+        yield return new WaitForSeconds(delay);
+
+        if (bulletList.Count > 0)
+        {
+            Destroy(bulletList[0]);
+            bulletList.RemoveAt(0);
+            bulletParticleSystemList.RemoveAt(0);
+        }
     }
 
     private void Start ()
@@ -96,8 +111,8 @@ public class Tower : MonoBehaviour
         towerTransform = transform;
 
         towerRendererList = new List<Renderer>();
-        bullets = new List<GameObject>();
-        bulletsToRemove = new List<GameObject>();
+        bulletList = new List<GameObject>();
+        bulletParticleSystemList = new List<ParticleSystem>();
 
         for (int i = 0; i < GetComponentsInChildren<Renderer>().Length; i++)
         {

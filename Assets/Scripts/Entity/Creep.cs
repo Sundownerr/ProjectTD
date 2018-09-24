@@ -1,27 +1,47 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
+﻿using UnityEngine;
+
 
 public class Creep : MonoBehaviour
 {
     public bool ReachedLastWaypoint;
 
-    private Transform waypointTransform;
+    private Transform creepTransform;
     private float speed;
-    private NavMeshAgent agent;
+    private bool waypointReached;
+    private int waypointIndex;
 
     private void Start ()
     {
         GameManager.Instance.CreepList.Add(gameObject);
-        speed = 5f;
-        agent = GetComponent<NavMeshAgent>();
 
-        waypointTransform = GameObject.Find("Waypoint6").transform;
+        speed = 200f;
 
-       
-        agent.SetDestination(waypointTransform.position);
-        agent.Move(waypointTransform.position);
-       
-    }  
+        creepTransform = transform;
+        creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position;
+    }
+
+    private void Update()
+    {
+        waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 50;
+
+        if (waypointIndex < GameManager.Instance.WaypointList.Count - 1)
+        {
+            if (!waypointReached)
+            {
+                creepTransform.Translate(Vector3.forward * Time.deltaTime * speed, Space.Self);
+
+                var lookRotation = Quaternion.LookRotation(GameManager.Instance.WaypointList[waypointIndex].transform.position - creepTransform.position);
+                creepTransform.rotation = Quaternion.Lerp(creepTransform.rotation, lookRotation, Time.deltaTime * 10f);
+            }
+            else
+            {
+                waypointIndex++;
+            }
+        }
+        else
+        {
+            Destroy(gameObject, 1f);
+            GameManager.Instance.CreepList.Remove(gameObject);
+        }
+    }
 }
