@@ -3,9 +3,7 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
-
     public Button StartWaveButton, BuildModeButton, ReadyButton;
-    public GameObject CreepPrefab, GridManager;
     public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
 
 
@@ -26,10 +24,12 @@ public class UI : MonoBehaviour
 
     private void BuildTower()
     {
-        if (GridManager.GetComponent<CreateGrid>().IsGridBuilded)
+        if (GameManager.Instance.GridSystem.IsGridBuilded)
         {
-            if (!IsBuildModeActive)           
+            if (!IsBuildModeActive)
+            {
                 IsBuildModeActive = true;
+            }
         }
     }
 

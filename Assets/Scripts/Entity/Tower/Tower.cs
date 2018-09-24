@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public GameObject TowerPlacer, UIManager;
+    public GameObject Bullet;
     public bool IsTowerBuilded;
 
     private Transform towerRangeTransform, towerTransform;
     private List<Renderer> towerRendererList;
-    private TowerPlacer towerPlacerData;       
+    private List<GameObject> bullets, bulletsToRemove;     
     private RangeCollider rangeCollider;
-    private UI ui;
-
-    private void StartTowerBuild(Vector3 towerPos)
+    private float timer;
+    
+    private void StartTowerBuild()
     {
-        towerTransform.position = towerPos;
+      
 
         for (int i = 0; i < towerRendererList.Count; i++)
         {
-            towerRendererList[i].material.color = towerPlacerData.GhostedTowerColor;
+            towerRendererList[i].material.color = GameManager.Instance.TowerPlaceSystem.GhostedTowerColor;
         }
     }
 
@@ -35,14 +35,69 @@ public class Tower : MonoBehaviour
         return true;
     }
 
-    private void Start ()
+    private void RotateTowerAtCreep()
     {
-        TowerPlacer = GameObject.Find("TowerManager");
-        UIManager = GameObject.Find("UIManager");
-        ui = UIManager.GetComponent<UI>();       
-        towerPlacerData = TowerPlacer.GetComponent<TowerPlacer>();
+        var offset = rangeCollider.CreepInRangeList[0].transform.position - towerTransform.position;
+        offset.y = 0;
+
+        var towerRotation = Quaternion.LookRotation(offset);
+
+        towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 5f);
+    }
+
+    private void RotateTowerToDefault()
+    {
+        if (towerTransform.rotation != Quaternion.Euler(0, 0, 0))
+        {
+            towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 1f);
+        }
+    }
+
+    private void ShootAtCreep(float delay)
+    {    
+        if (timer < delay)
+        {
+            timer += 0.5f;
+
+            if (timer == 0.5f)
+            {
+                bullets.Add(Instantiate(Bullet, towerTransform.position, Quaternion.Euler(0, 0, 0)));            
+            }
+
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                if (Vector3.Distance(bullets[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > 35)
+                {
+                    bullets[i].transform.position = Vector3.Lerp(bullets[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
+                }
+                else
+                {
+                    bullets[i].GetComponent<ParticleSystem>().Stop();
+                    
+                }
+            }          
+        }
+        else
+        {
+            StartCoroutine(RemoveBullets());
+            timer = 0;
+        }
+    }
+
+    private IEnumerator RemoveBullets()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(bullets[0]);
+        bullets.RemoveAt(0);
+    }
+
+    private void Start ()
+    {   
         towerTransform = transform;
+
         towerRendererList = new List<Renderer>();
+        bullets = new List<GameObject>();
+        bulletsToRemove = new List<GameObject>();
 
         for (int i = 0; i < GetComponentsInChildren<Renderer>().Length; i++)
         {
@@ -61,9 +116,10 @@ public class Tower : MonoBehaviour
 
     private void Update()
     {
-        if (!IsTowerBuilded && ui.IsBuildModeActive)
+
+        if (!IsTowerBuilded && GameManager.Instance.UISystem.IsBuildModeActive)
         {
-            StartTowerBuild(towerPlacerData.GhostedTowerPosition);
+            StartTowerBuild();
         }
         else
         {
@@ -74,20 +130,16 @@ public class Tower : MonoBehaviour
         {
             if (rangeCollider.IsCreepInRange)
             {
-                var offset = rangeCollider.CreepInRangeList[0].transform.position - towerTransform.position;
-                offset.y = 0;
-
-                var towerRotation = Quaternion.LookRotation(offset);
-
-                towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 3.1f);
+                RotateTowerAtCreep();
+                ShootAtCreep(40f);
             }
             else
             {
-                if (towerTransform.rotation != Quaternion.Euler(0, 0, 0))
-                {
-                    towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 1f);
-                }
+                RotateTowerToDefault();
             }
         }
-    }    
+        
+       
+    }
+    
 }

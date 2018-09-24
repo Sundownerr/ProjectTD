@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Creep : MonoBehaviour {
-
+public class Creep : MonoBehaviour
+{
     public bool ReachedLastWaypoint;
 
     private Transform waypointTransform;
@@ -13,6 +13,7 @@ public class Creep : MonoBehaviour {
 
     private void Start ()
     {
+        GameManager.Instance.CreepList.Add(gameObject);
         speed = 5f;
         agent = GetComponent<NavMeshAgent>();
 
@@ -22,7 +23,5 @@ public class Creep : MonoBehaviour {
         agent.SetDestination(waypointTransform.position);
         agent.Move(waypointTransform.position);
        
-    }
-
-  
+    }  
 }

@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class WaveSystem : MonoBehaviour
 {
-    public GameObject UIManager, Creep;
-
-    private UI ui;
     private List<GameObject> creeps;
     private List<Creep> creepData;
     private bool creepsSpawned;
@@ -14,7 +11,7 @@ public class WaveSystem : MonoBehaviour
     
     private void SpawnCreeps(int amount, float delay)
     {
-        if (spawnDelay < 20)
+        if (spawnDelay < 19)
         {
             spawnDelay++;
 
@@ -22,22 +19,24 @@ public class WaveSystem : MonoBehaviour
             {
                 if (creepsAmountSpawned < amount)
                 {
-                    creeps.Add(Instantiate(Creep));
+                    creeps.Add(Instantiate(GameManager.Instance.CreepPrefab));
                     creepData.Add(creeps[creeps.Count - 1].GetComponent<Creep>());
                     creepsAmountSpawned++;
                 }
                 else
+                {
                     creepsSpawned = true;
+                }
             }
         }
         else
+        {
             spawnDelay = 0;
+        }
     }
-
+    
     private void Start ()
-    {
-        UIManager = GameObject.Find("UIManager");
-        ui = UIManager.GetComponent<UI>();
+    {       
         creeps = new List<GameObject>();
         creepData = new List<Creep>();
         creepsAmountNotSpawned = 5;
@@ -45,10 +44,13 @@ public class WaveSystem : MonoBehaviour
 
 	private void Update ()
     {
-        if (ui.IsWaveStarted)
+        
+        if (GameManager.Instance.UISystem.IsWaveStarted)
         {
             if (!creepsSpawned)
-               SpawnCreeps(creepsAmountNotSpawned, 0.5f);                      
+            {
+                SpawnCreeps(creepsAmountNotSpawned, 0.5f);
+            }
 
             if (creepsSpawned)
             {
@@ -64,8 +66,8 @@ public class WaveSystem : MonoBehaviour
                 if(creeps.Count == 0)
                 {
                     creepsAmountSpawned = 0;
-                    creepsSpawned = false;                   
-                    ui.IsWaveStarted = false;            
+                    creepsSpawned = false;
+                    GameManager.Instance.UISystem.IsWaveStarted = false;            
                 }
             }
         }

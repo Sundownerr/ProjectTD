@@ -286,3 +286,5 @@ __pycache__/
 /Assets/Textures
 /Assets/Terrain.asset
 /Assets/Scripts/GameData/TowerStats/BaseTower.asset
+/Assets/New LightmapParameters.giparams
+*.csproj
