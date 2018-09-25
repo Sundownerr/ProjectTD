@@ -12,7 +12,11 @@ public class Tower : MonoBehaviour
     private List<Renderer> towerRendererList;
     private List<GameObject> bulletList;
     private List<ParticleSystem> bulletParticleSystemList;
+    private List<Transform> bulletTransformList;
     private RangeCollider rangeCollider;
+    private ObjectPool bulletPool;
+    private int bulletCounter;
+
     private float timer;
     
     private void StartTowerBuild()
@@ -55,28 +59,40 @@ public class Tower : MonoBehaviour
 
     private void ShootAtCreep(float delay)
     {
+
         if (timer < delay)
         {
             timer += 0.5f;
 
             if (timer == 0.5f)
             {
-                bulletList.Add(Instantiate(Bullet, towerTransform.position, Quaternion.Euler(0, 0, 0)));
+                bulletList.Add(bulletPool.GetObject());
+                bulletTransformList.Add(bulletList[bulletList.Count - 1].transform);
+
+                bulletList[bulletList.Count - 1].transform.position = towerTransform.position;
+                bulletList[bulletList.Count - 1].transform.rotation = towerTransform.rotation;             
 
                 bulletParticleSystemList.Add(bulletList[bulletList.Count - 1].GetComponent<ParticleSystem>());
+
+                var em = bulletParticleSystemList[bulletParticleSystemList.Count - 1].emission;
+                em.enabled = true;
+
+                bulletList[bulletList.Count - 1].SetActive(true);
+
+    
             }
 
             for (int i = 0; i < bulletList.Count; i++)
             {
-                if (GameManager.CalcDistance(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > 30)
+                if (GameManager.CalcDistance(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > rangeCollider.CreepInRangeList[0].transform.lossyScale.x)
                 {
                     bulletList[i].transform.position = Vector3.Lerp(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
                 }
                 else
                 {
-                   
                     var em = bulletParticleSystemList[i].emission;
                     em.enabled = false;
+                    
                 }
             }
         }
@@ -88,7 +104,7 @@ public class Tower : MonoBehaviour
             }
 
             timer = 0;
-        }
+        }      
     }
 
     private IEnumerator RemoveBullets(float delay)
@@ -97,9 +113,10 @@ public class Tower : MonoBehaviour
 
         if (bulletList.Count > 0)
         {
-            Destroy(bulletList[0]);
+            bulletList[0].SetActive(false);
             bulletList.RemoveAt(0);
             bulletParticleSystemList.RemoveAt(0);
+           // bulletTransformList.RemoveAt(0);
         }
     }
 
@@ -111,6 +128,15 @@ public class Tower : MonoBehaviour
         towerRendererList = new List<Renderer>();
         bulletList = new List<GameObject>();
         bulletParticleSystemList = new List<ParticleSystem>();
+        bulletTransformList = new List<Transform>();
+
+        bulletPool = new ObjectPool
+        {
+            poolObject = Bullet
+            //parent = towerTransform
+        };
+
+        bulletPool.Initialize();
 
         for (int i = 0; i < GetComponentsInChildren<Renderer>().Length; i++)
         {
@@ -121,42 +147,60 @@ public class Tower : MonoBehaviour
 
         rangeCollider = towerRangeTransform.gameObject.GetComponent<RangeCollider>();
 
-        var randomNumber = Random.Range(5, 30);
+        var randomNumber = Random.Range(15, 30);
 
         towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
 
-	}
+       StartCoroutine(UpdateTowerState());
 
-    private void Update()
+    }
+
+    private IEnumerator UpdateTowerState()
     {
+        while (!IsTowerBuilded)
+        {
+            yield return new WaitForEndOfFrame();
 
-        if (!IsTowerBuilded && GameManager.Instance.UISystem.IsBuildModeActive)
-        {
-            StartTowerBuild();
-        }
-        else
-        {
-            IsTowerBuilded = EndTowerBuild();
-        }
-        
-        if (IsTowerBuilded)
-        {
-            if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
+            if (!IsTowerBuilded && GameManager.Instance.UISystem.IsBuildModeActive)
             {
-                RotateTowerAtCreep();
-                ShootAtCreep(40f);
+                StartTowerBuild();
             }
             else
             {
-                if(bulletList.Count > 0)
+                IsTowerBuilded = EndTowerBuild();
+
+                StartCoroutine(LookForCreeps());
+            }
+        }              
+    }
+
+    private IEnumerator LookForCreeps()
+    {
+        while (true)
+        {
+            yield return new WaitForFixedUpdate();
+
+            if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
+            {
+                RotateTowerAtCreep();
+                ShootAtCreep(25f);
+            }
+            else
+            {
+                if (bulletList.Count > 0)
                 {
-                    Destroy(bulletList[0]);
-                    bulletList.RemoveAt(0);
-                    bulletParticleSystemList.RemoveAt(0);
+                    for (int i = 0; i < bulletList.Count; i++)
+                    {
+                        bulletList[i].transform.Translate(Vector3.forward * 200, Space.Self);
+                    }
+
+                    StartCoroutine(RemoveBullets(0.2f));
                 }
 
                 RotateTowerToDefault();
             }
-        }             
-    }   
+        }
+    }
 }
+
+

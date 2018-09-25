@@ -89,5 +89,7 @@ public class TowerCellExpand
             GameManager.Instance.TowerCellList.Remove(cell);
             Object.Destroy(cell);
         }
+
+        
     }
 }

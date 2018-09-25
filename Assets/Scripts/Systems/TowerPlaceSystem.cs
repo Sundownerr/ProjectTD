@@ -49,7 +49,7 @@ public class TowerPlaceSystem : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.6f);
+            GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.8f);
             GameManager.Instance.TowerList[GameManager.Instance.TowerList.Count -  1].transform.position = hit.point;
 
             for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
@@ -57,7 +57,7 @@ public class TowerPlaceSystem : MonoBehaviour
                 if (hit.transform.gameObject == GameManager.Instance.TowerCellList[i] && !towerCellStateList[i].IsBusy)
                 {
                     GameManager.Instance.TowerList[GameManager.Instance.TowerList.Count - 1].transform.position = GameManager.Instance.TowerCellList[i].transform.position;
-                    GhostedTowerColor = Color.green - new Color(0, 0, 0, 0.6f);
+                    GhostedTowerColor = Color.green - new Color(0, 0, 0, 0.8f);
                     towerCellStateList[i].IsChosen = true;
 
                     if (Input.GetMouseButtonDown(0))

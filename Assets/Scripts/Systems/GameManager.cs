@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {   
     public List<GameObject> TowerCellList, TowerCellAreaList, TowerList, CreepList, WaypointList;
-    public GameObject TowerCellPrefab, CreepPrefab, TowerPrefab, CreepSpawnPoint;
+    public GameObject TowerCellPrefab, CreepPrefab, TowerPrefab, CreepSpawnPoint, TowerCellParent;
     public TowerPlaceSystem TowerPlaceSystem;
     public GridSystem GridSystem;
     public WaveSystem WaveSystem;

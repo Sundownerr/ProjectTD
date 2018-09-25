@@ -11,6 +11,14 @@ public class CreepSample : MonoBehaviour
     private bool waypointReached;
     private int waypointIndex;
 
+    public float spawnEffectTime = 1;
+    public AnimationCurve fadeIn;
+
+    float timer = 0;
+    Renderer _renderer;
+
+    int shaderProperty;
+
     private void Start ()
     {
         GameManager.Instance.CreepList.Add(gameObject);
@@ -26,10 +34,22 @@ public class CreepSample : MonoBehaviour
 
         creepTransform = transform;
         creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
+
+        shaderProperty = Shader.PropertyToID("_cutoff");
+        _renderer = GetComponent<Renderer>();
+      
     }
 
     private void Update()
     {
+
+        if (timer < spawnEffectTime)
+        {
+            timer += Time.deltaTime;
+        }    
+
+        _renderer.material.SetFloat(shaderProperty, fadeIn.Evaluate(Mathf.InverseLerp(0, spawnEffectTime, timer)));
+
         waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 70;
 
         if (waypointIndex < GameManager.Instance.WaypointList.Count - 1)

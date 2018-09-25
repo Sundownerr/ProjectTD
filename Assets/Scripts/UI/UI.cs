@@ -7,16 +7,16 @@ public class UI : MonoBehaviour
     public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
 
 
-	void Start ()
+    void Start()
     {
         Cursor.lockState = CursorLockMode.Confined;
 
         StartWaveButton.onClick.AddListener(StartWave);
         BuildModeButton.onClick.AddListener(BuildTower);
         ReadyButton.onClick.AddListener(CheckReady);
-      
+
     }
-	
+
     private void StartWave()
     {
         if (GameManager.Instance.CreepList.Count == 0)
@@ -42,5 +42,31 @@ public class UI : MonoBehaviour
         Destroy(ReadyButton.gameObject);
     }
 
-   
+    private void Update()
+    {
+        if (GameManager.Instance.GridSystem.IsGridBuilded)
+        {
+            if (IsBuildModeActive)
+            {
+                if (!GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                {
+                    for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+                    {
+                        GameManager.Instance.TowerCellList[i].SetActive(true);
+                    }
+                }
+            }
+
+            if (!IsBuildModeActive)
+            {
+                if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                {
+                    for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+                    {
+                        GameManager.Instance.TowerCellList[i].SetActive(false);
+                    }
+                }
+            }
+        }
+    }
 }

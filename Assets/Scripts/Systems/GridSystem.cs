@@ -13,7 +13,7 @@ public class GridSystem : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f); 
         
-        IsGridBuilded = true;
+        IsGridBuilded = true; 
     }
 
     private void CreateGrid(int count)
@@ -28,7 +28,7 @@ public class GridSystem : MonoBehaviour
             {              
                 var spawnPos = GameManager.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GameManager.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
                 var towerCell = Instantiate(GameManager.Instance.TowerCellPrefab, spawnPos, Quaternion.Euler(0, 0, 0)); 
-                towerCell.name = GameManager.Instance.TowerCellAreaList[i].name + " Cube";           
+                towerCell.name = GameManager.Instance.TowerCellAreaList[i].name + " Cell";           
             }
         }
     }

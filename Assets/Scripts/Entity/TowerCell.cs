@@ -12,7 +12,10 @@ public class TowerCell : MonoBehaviour
 
     private void Start ()
     {
+       
+
         GameManager.Instance.TowerCellList.Add(gameObject);
+        gameObject.transform.parent = GameManager.Instance.TowerCellParent.transform;
                   
         cellRenderer = GetComponent<Renderer>();
 
@@ -26,8 +29,7 @@ public class TowerCell : MonoBehaviour
     private void Update()
     {
         if (GameManager.Instance.UISystem.IsBuildModeActive)
-        {
-            isTransparent = false;
+        {                     
             cellRenderer.material.color = blueColor;        
 
             if (IsBusy)
@@ -38,14 +40,6 @@ public class TowerCell : MonoBehaviour
            
             if (IsChosen)       
                 cellRenderer.material.color = greenColor;           
-        }
-        else
-        {
-            if(!isTransparent)
-            {
-                cellRenderer.material.color = new Color(0, 0, 0, 0);
-                isTransparent = true;
-            }
-        }
+        }       
     }
 }
