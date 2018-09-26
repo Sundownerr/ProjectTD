@@ -1,71 +1,87 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
 
-public class UI : MonoBehaviour
+namespace Game.System
 {
-    public Button StartWaveButton, BuildModeButton, ReadyButton;
-    public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
-
-
-    void Start()
+    public class UI : MonoBehaviour
     {
-        Cursor.lockState = CursorLockMode.Confined;
+        public Button StartWaveButton, BuildModeButton, ReadyButton;
+        public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
 
-        StartWaveButton.onClick.AddListener(StartWave);
-        BuildModeButton.onClick.AddListener(BuildTower);
-        ReadyButton.onClick.AddListener(CheckReady);
 
-    }
-
-    private void StartWave()
-    {
-        if (GameManager.Instance.CreepList.Count == 0)
+        void Start()
         {
-            IsWaveStarted = true;
+            Cursor.lockState = CursorLockMode.Confined;
+
+            StartWaveButton.onClick.AddListener(StartWave);
+            BuildModeButton.onClick.AddListener(BuildTower);
+            ReadyButton.onClick.AddListener(CheckReady);
+
         }
-    }
 
-    private void BuildTower()
-    {
-        if (GameManager.Instance.GridSystem.IsGridBuilded)
+        private void StartWave()
         {
-            if (!IsBuildModeActive)
+            if (GameManager.Instance.CreepList.Count == 0)
             {
-                IsBuildModeActive = true;
+                IsWaveStarted = true;
             }
         }
-    }
 
-    private void CheckReady()
-    {
-        IsPlayerReady = true;
-        Destroy(ReadyButton.gameObject);
-    }
-
-    private void Update()
-    {
-        if (GameManager.Instance.GridSystem.IsGridBuilded)
+        private void BuildTower()
         {
-            if (IsBuildModeActive)
+            if (GameManager.Instance.GridSystem.IsGridBuilded)
             {
-                if (!GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                if (!IsBuildModeActive)
                 {
-                    for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
-                    {
-                        GameManager.Instance.TowerCellList[i].SetActive(true);
-                    }
+                    IsBuildModeActive = true;
                 }
             }
+        }
 
-            if (!IsBuildModeActive)
+        private void CheckReady()
+        {
+            IsPlayerReady = true;
+            Destroy(ReadyButton.gameObject);
+        }
+
+        private IEnumerator Test()
+        {
+            var t = 0;
+
+            while (t < 5)
             {
-                if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
-                {
-                    
-                    for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
-                    {
+                yield return new WaitForSeconds(0.2f);
+                t++;
+                Debug.Log(t);
+            }
+        }
 
-                        GameManager.Instance.TowerCellList[i].SetActive(false);
+        private void Update()
+        {
+
+            if (GameManager.Instance.GridSystem.IsGridBuilded)
+            {
+                if (IsBuildModeActive)
+                {
+                    if (!GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                    {
+                        for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+                        {
+                            GameManager.Instance.TowerCellList[i].SetActive(true);
+                        }
+                    }
+                }
+
+                if (!IsBuildModeActive)
+                {
+                    if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                    {
+                        for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+                        {
+                            GameManager.Instance.TowerCellList[i].SetActive(false);
+                        }
                     }
                 }
             }

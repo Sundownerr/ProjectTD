@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaypointSystem : MonoBehaviour
+namespace Game.System
 {
-    public List<GameObject> Waypoints;
-
-    private void Start()
+    public class WaypointSystem : MonoBehaviour
     {
-        GameManager.Instance.WaypointList = Waypoints;
+        public List<GameObject> Waypoints;
+
+        private void Start()
+        {
+            GameManager.Instance.WaypointList = Waypoints;
+        }
     }
 }

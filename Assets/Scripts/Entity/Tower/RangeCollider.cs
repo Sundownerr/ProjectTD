@@ -2,39 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangeCollider : MonoBehaviour
+namespace Game.Tower
 {
 
-    public bool IsCreepInRange;
-    public List<GameObject> CreepInRangeList;
-
-    private void Start()
+    public class RangeCollider : MonoBehaviour
     {
-        CreepInRangeList = new List<GameObject>();
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        CreepInRangeList.Add(other.gameObject);
-        IsCreepInRange = true;
-    }
+        public bool IsCreepInRange;
+        public List<GameObject> CreepInRangeList;
 
-    private void OnTriggerStay(Collider other)
-    {
-        
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (CreepInRangeList.Count > 0)
+        private void Start()
         {
-            CreepInRangeList.RemoveAt(0);
+            CreepInRangeList = new List<GameObject>();
         }
-       
-        if(CreepInRangeList.Count == 0)
-        {
-            IsCreepInRange = false;
-        }
-    }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            CreepInRangeList.Add(other.gameObject);
+            IsCreepInRange = true;
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (CreepInRangeList.Count > 0)
+            {
+                CreepInRangeList.RemoveAt(0);
+            }
+
+            if (CreepInRangeList.Count == 0)
+            {
+                IsCreepInRange = false;
+            }
+        }
+
+    }
 }
