@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System;
+using UnityEngine;
 
 
-public class CreepSample : MonoBehaviour
+public class CreepSample : ExtendedMonoBehaviour
 {
     public bool ReachedLastWaypoint;
     public CreepStats Stats;
@@ -22,6 +24,7 @@ public class CreepSample : MonoBehaviour
     private void Start ()
     {
         GameManager.Instance.CreepList.Add(gameObject);
+        transform.parent = GameManager.Instance.CreepParent;
 
         Stats = ScriptableObject.CreateInstance<CreepStats>();
 
@@ -37,19 +40,28 @@ public class CreepSample : MonoBehaviour
 
         shaderProperty = Shader.PropertyToID("_cutoff");
         _renderer = GetComponent<Renderer>();
+
+        StartCoroutine(ShowSpawnEffect());
       
+    }
+
+    private IEnumerator ShowSpawnEffect()
+    {
+        while (timer < spawnEffectTime)
+        {
+            timer += Time.deltaTime;
+
+            _renderer.material.SetFloat(shaderProperty, fadeIn.Evaluate(Mathf.InverseLerp(0, spawnEffectTime, timer)));
+            yield return new WaitForFixedUpdate();
+        }
+
+        
     }
 
     private void Update()
     {
-
-        if (timer < spawnEffectTime)
-        {
-            timer += Time.deltaTime;
-        }    
-
-        _renderer.material.SetFloat(shaderProperty, fadeIn.Evaluate(Mathf.InverseLerp(0, spawnEffectTime, timer)));
-
+        
+  
         waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 70;
 
         if (waypointIndex < GameManager.Instance.WaypointList.Count - 1)

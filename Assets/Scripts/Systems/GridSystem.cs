@@ -11,7 +11,7 @@ public class GridSystem : MonoBehaviour
     {
         CreateGrid(GameManager.Instance.TowerCellAreaList.Count);
 
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForEndOfFrame(); 
         
         IsGridBuilded = true; 
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower : MonoBehaviour
+public class Tower : ExtendedMonoBehaviour
 {
     public GameObject Bullet;
     public bool IsTowerBuilded;
@@ -31,7 +31,7 @@ public class Tower : MonoBehaviour
     {
         for (int i = 0; i < towerRendererList.Count; i++)
         {
-            towerRendererList[i].material.color = Color.blue;
+            towerRendererList[i].material.color = Color.white - new Color (0.2f, 0.2f, 0.2f);
         }
        
         towerRangeTransform.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
@@ -116,14 +116,15 @@ public class Tower : MonoBehaviour
             bulletList[0].SetActive(false);
             bulletList.RemoveAt(0);
             bulletParticleSystemList.RemoveAt(0);
-           // bulletTransformList.RemoveAt(0);
         }
     }
 
     private void Start ()
     {
-        
         towerTransform = transform;
+
+        towerStats = ScriptableObject.CreateInstance<TowerStats>();
+        towerStats.entityName = "asdas";
 
         towerRendererList = new List<Renderer>();
         bulletList = new List<GameObject>();
@@ -133,7 +134,6 @@ public class Tower : MonoBehaviour
         bulletPool = new ObjectPool
         {
             poolObject = Bullet
-            //parent = towerTransform
         };
 
         bulletPool.Initialize();
@@ -151,7 +151,7 @@ public class Tower : MonoBehaviour
 
         towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
 
-       StartCoroutine(UpdateTowerState());
+        StartCoroutine(UpdateTowerState());
 
     }
 
@@ -183,7 +183,7 @@ public class Tower : MonoBehaviour
             if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
             {
                 RotateTowerAtCreep();
-                ShootAtCreep(25f);
+                ShootAtCreep(5f);
             }
             else
             {

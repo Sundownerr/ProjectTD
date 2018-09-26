@@ -5,14 +5,12 @@ using UnityEngine;
 
 public class TowerPlaceSystem : MonoBehaviour
 {
-
-
     public Color GhostedTowerColor;
 
     private List<TowerCell> towerCellStateList;
     private bool canBuild, isTowerCreated;
     private RaycastHit hit;
-    
+    private int layerMask;
 
     private IEnumerator Refresh()
     {
@@ -40,13 +38,14 @@ public class TowerPlaceSystem : MonoBehaviour
 
     private void CreateGhostedTower()
     {
-        GameManager.Instance.TowerList.Add(Instantiate(GameManager.Instance.TowerPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0f, 0f, 0f)));
+        GameManager.Instance.TowerList.Add(Instantiate(GameManager.Instance.TowerPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0f, 0f, 0f), GameManager.Instance.TowerParent));
     }
 
     private void PlaceGhostedTower()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+   
         if (Physics.Raycast(ray, out hit))
         {
             GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.8f);
@@ -102,6 +101,9 @@ public class TowerPlaceSystem : MonoBehaviour
     private void Start()
     {
         towerCellStateList = new List<TowerCell>();
+
+        layerMask = 1 << 10;
+        layerMask = layerMask;
 
         StartCoroutine(GetTowerCellData());
     }

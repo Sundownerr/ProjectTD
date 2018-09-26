@@ -1,21 +1,18 @@
 ﻿
 using UnityEngine;
 
-public class TowerCell : MonoBehaviour
+public class TowerCell : ExtendedMonoBehaviour
 {  
     public bool IsBusy, IsChosen;
 
     private Color blueColor, redColor, greenColor;
     private Renderer cellRenderer;
 
-    private bool isTransparent;
-
     private void Start ()
-    {
-       
+    {       
 
         GameManager.Instance.TowerCellList.Add(gameObject);
-        gameObject.transform.parent = GameManager.Instance.TowerCellParent.transform;
+        gameObject.transform.parent = GameManager.Instance.TowerCellParent;
                   
         cellRenderer = GetComponent<Renderer>();
 

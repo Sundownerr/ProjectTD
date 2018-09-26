@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-    [System.Serializable]
-    public class ObjectPool
-    {
+[System.Serializable]
+public class ObjectPool
+{
 
     public GameObject poolObject;
     public Transform parent;
-    public uint poolLenght = 5;
+    public uint poolLenght = 2;
 
     protected List<GameObject> poolList = new List<GameObject>();
 
@@ -19,6 +19,7 @@ using System.Collections.Generic;
             Debug.LogError("ObjectPooler missing prefab");
             return;
         }
+
         for (int i = 0; i < poolLenght; ++i)
         {
             CreateObject();
@@ -29,7 +30,7 @@ using System.Collections.Generic;
     {
         for (int i = 0; i < poolList.Count; ++i)
         {
-            if (!poolList[i].activeInHierarchy)
+            if (!poolList[i].activeSelf)
             {
                 return poolList[i];
             }
@@ -51,21 +52,15 @@ using System.Collections.Generic;
         {
             Object.Destroy(poolList[i]);
         }
+
         poolList.Clear();
     }
 
     protected void CreateObject()
     {
-        GameObject go = Object.Instantiate(poolObject) as GameObject;
+        poolList.Add(Object.Instantiate(poolObject));
 
-        go.SetActive(false);
-
-        if (parent != null)
-        {
-            go.transform.parent = parent;
-            go.transform.position = go.transform.parent.position;
-        }
-        poolList.Add(go);
+        poolList[poolList.Count - 1].SetActive(false);
     }
 
 }

@@ -61,8 +61,10 @@ public class UI : MonoBehaviour
             {
                 if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
                 {
+                    
                     for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
                     {
+
                         GameManager.Instance.TowerCellList[i].SetActive(false);
                     }
                 }

@@ -35,9 +35,7 @@ public class WaveSystem : MonoBehaviour
     }
     
     private void Start ()
-    {       
-      
-        
+    {                   
         creepsAmountNotSpawned = 15;
 	}	
 
