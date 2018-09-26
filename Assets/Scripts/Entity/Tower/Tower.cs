@@ -12,7 +12,7 @@ namespace Game.Tower
         public bool IsTowerBuilded;
         public TowerStats towerStats;
 
-        private Transform towerRangeTransform, towerTransform;
+        private Transform towerRangeTransform, movingPartTransform, shootPointTransform;
         private List<Renderer> towerRendererList;
         private List<GameObject> bulletList;
         private List<ParticleSystem> bulletParticleSystemList;
@@ -44,19 +44,19 @@ namespace Game.Tower
 
         private void RotateTowerAtCreep()
         {
-            var offset = rangeCollider.CreepInRangeList[0].transform.position - towerTransform.position;
+            var offset = rangeCollider.CreepInRangeList[0].transform.position - transform.position;
             offset.y = 0;
 
             var towerRotation = Quaternion.LookRotation(offset);
 
-            towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, towerRotation, Time.deltaTime * 9f);
+            movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }
 
         private void RotateTowerToDefault()
         {
-            if (towerTransform.rotation != Quaternion.Euler(0, 0, 0))
+            if (movingPartTransform.rotation != Quaternion.Euler(0, 0, 0))
             {
-                towerTransform.rotation = Quaternion.Lerp(towerTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 1f);
+                movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 1f);
             }
         }
 
@@ -72,8 +72,8 @@ namespace Game.Tower
                     bulletList.Add(bulletPool.GetObject());
                     bulletTransformList.Add(bulletList[bulletList.Count - 1].transform);
 
-                    bulletList[bulletList.Count - 1].transform.position = towerTransform.position;
-                    bulletList[bulletList.Count - 1].transform.rotation = towerTransform.rotation;
+                    bulletList[bulletList.Count - 1].transform.position = shootPointTransform.position;
+                    bulletList[bulletList.Count - 1].transform.rotation = movingPartTransform.rotation;
 
                     bulletParticleSystemList.Add(bulletList[bulletList.Count - 1].GetComponentInChildren<ParticleSystem>());
 
@@ -82,7 +82,7 @@ namespace Game.Tower
 
                     bulletList[bulletList.Count - 1].SetActive(true);
 
-
+                    
                 }
 
                 for (int i = 0; i < bulletList.Count; i++)
@@ -124,61 +124,50 @@ namespace Game.Tower
 
         private void Start()
         {
-            towerTransform = transform;
-
-            towerStats = ScriptableObject.CreateInstance<TowerStats>();
-            towerStats.entityName = "asdas";
-
             towerRendererList = new List<Renderer>();
             bulletList = new List<GameObject>();
             bulletParticleSystemList = new List<ParticleSystem>();
             bulletTransformList = new List<Transform>();
-
+            towerStats = ScriptableObject.CreateInstance<TowerStats>();
             bulletPool = new ObjectPool
             {
                 poolObject = Bullet
             };
 
             bulletPool.Initialize();
+            towerStats.entityName = "SampleTowerName";
+                      
+           
+                towerRendererList.AddRange(GetComponentsInChildren<Renderer>());
+            
 
-            for (int i = 0; i < GetComponentsInChildren<Renderer>().Length; i++)
-            {
-                towerRendererList.Add(GetComponentsInChildren<Renderer>()[i]);
-            }
+            towerRangeTransform = transform.GetChild(0);
+            movingPartTransform = transform.GetChild(1);
+            shootPointTransform = movingPartTransform.GetChild(0).GetChild(0);
 
-            towerRangeTransform = transform.GetChild(1);
+            Debug.Log(movingPartTransform);
 
             rangeCollider = towerRangeTransform.gameObject.GetComponent<RangeCollider>();
 
-            var randomNumber = Random.Range(15, 30);
+            var randomNumber = Random.Range(750, 900);
 
             towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
-
-            StartCoroutine(UpdateTowerState());
-
+            
         }
-
-        private IEnumerator UpdateTowerState()
-        {
-            while (!IsTowerBuilded)
-            {
-                yield return new WaitForEndOfFrame();
-
-                if (!IsTowerBuilded && GameManager.Instance.UISystem.IsBuildModeActive)
-                {
-                    StartTowerBuild();
-                }
-                else
-                {
-                    IsTowerBuilded = EndTowerBuild();
-
-
-                }
-            }
-        }
+   
 
         private void LateUpdate()
         {
+
+            if (!IsTowerBuilded && GameManager.Instance.UISystem.IsBuildModeActive)
+            {
+                StartTowerBuild();
+            }
+            else
+            {
+                IsTowerBuilded = EndTowerBuild();
+            }
+
             if (IsTowerBuilded)
             {
                 if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)

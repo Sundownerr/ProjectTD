@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Debuff : ScriptableObject
+namespace Game.Data.Effect
 {
-    public string debuffName, debuffDescription;
+    public class Debuff : ScriptableObject
+    {
+        public string debuffName, debuffDescription;
 
-    public float duration;
+        public float duration;
+    }
 }

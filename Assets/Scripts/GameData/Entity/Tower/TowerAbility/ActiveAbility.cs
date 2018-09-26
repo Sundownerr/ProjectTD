@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveAbility : TowerAbilty
+namespace Game.Data.Entity.Tower
 {
-    public bool IsAOE, IsChaining;
+    public class ActiveAbility : TowerAbilty
+    {
+        public bool IsAOE, IsChaining;
 
-    
+
+    }
 }

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Entity : ScriptableObject
+namespace Game.Data.Entity
 {
-    public string entityName;
-    string entityDescription;
+    public class Entity : ScriptableObject
+    {
+        public string entityName;
+        string entityDescription;
+    }
 }

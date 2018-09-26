@@ -13,7 +13,6 @@ namespace Game.System
         private List<TowerCell> towerCellStateList;
         private bool canBuild, isTowerCreated;
         private RaycastHit hit;
-        private int layerMask;
 
         private IEnumerator Refresh()
         {
@@ -104,9 +103,6 @@ namespace Game.System
         private void Start()
         {
             towerCellStateList = new List<TowerCell>();
-
-            layerMask = 1 << 10;
-            layerMask = layerMask;
 
             StartCoroutine(GetTowerCellData());
         }

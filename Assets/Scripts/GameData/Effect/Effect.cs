@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Effect : ScriptableObject
+namespace Game.Data.Effect
 {
-    public string effectName, effectDescription;
+    public class Effect : ScriptableObject
+    {
+        public string effectName, effectDescription;
 
+    }
 }

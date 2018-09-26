@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TowerAbilty : ScriptableObject
+namespace Game.Data.Entity.Tower
 {
+    public class TowerAbilty : ScriptableObject
+    {
 
-    public string abilityName, abilityDescription;
+        public string abilityName, abilityDescription;
 
-    public float manaCost, cooldown, triggerChance;
+        public float manaCost, cooldown, triggerChance;
+    }
 }

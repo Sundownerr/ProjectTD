@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Buff : Effect
+namespace Game.Data.Effect
 {
-    public float duration;
+    public class Buff : Effect
+    {
+        public float duration;
+    }
 }

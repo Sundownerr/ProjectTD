@@ -2,8 +2,6 @@
 
 public abstract class ExtendedMonoBehaviour : MonoBehaviour
 {
-    protected Transform CachedTransform;
-
     public new Transform transform
     {
         get
@@ -15,6 +13,9 @@ public abstract class ExtendedMonoBehaviour : MonoBehaviour
             return CachedTransform;
         }
     }
+
+ 
+    protected Transform CachedTransform;
 
     protected virtual void Awake()
     {

@@ -35,9 +35,9 @@ namespace Game.Creep
             Stats.hp = 100f;
             Stats.entityName = "retard";
             Stats.armorIndex = 0;
-            Stats.moveSpeed = 250f;
+            Stats.moveSpeed = 450f;
 
-            speed = 200f;
+            
 
             creepTransform = transform;
             creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
@@ -72,7 +72,7 @@ namespace Game.Creep
             {
                 if (!waypointReached)
                 {
-                    creepTransform.Translate(Vector3.forward * Time.deltaTime * speed, Space.Self);
+                    creepTransform.Translate(Vector3.forward * Time.deltaTime * Stats.moveSpeed, Space.Self);
                     creepTransform.position = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
 
                     var lookRotation = Quaternion.LookRotation(GameManager.Instance.WaypointList[waypointIndex].transform.position - creepTransform.position);

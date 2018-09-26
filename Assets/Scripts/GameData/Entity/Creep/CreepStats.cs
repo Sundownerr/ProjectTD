@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreepStats : Entity
+namespace Game.Data.Entity.Creep
 {
-    public float hp, moveSpeed;
-    public int armorIndex;	
+    public class CreepStats : Entity
+    {
+        public float hp, moveSpeed;
+        public int armorIndex;
+    }
 }
