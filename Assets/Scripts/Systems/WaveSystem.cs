@@ -47,7 +47,7 @@ namespace Game.System
             {
                 if (!creepsSpawned)
                 {
-                    SpawnCreeps(creepsAmountNotSpawned, 10f);
+                    SpawnCreeps(creepsAmountNotSpawned, 30f);
                 }
 
                 if (creepsSpawned)

@@ -35,9 +35,7 @@ namespace Game.Creep
             Stats.hp = 100f;
             Stats.entityName = "retard";
             Stats.armorIndex = 0;
-            Stats.moveSpeed = 450f;
-
-            
+            Stats.moveSpeed = 450f;            
 
             creepTransform = transform;
             creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
@@ -58,17 +56,14 @@ namespace Game.Creep
                 _renderer.material.SetFloat(shaderProperty, fadeIn.Evaluate(Mathf.InverseLerp(0, spawnEffectTime, timer)));
                 yield return new WaitForFixedUpdate();
             }
-
-
         }
 
         private void Update()
         {
 
-
             waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 70;
 
-            if (waypointIndex < GameManager.Instance.WaypointList.Count - 1)
+            if (waypointIndex < GameManager.Instance.WaypointList.Length - 1)
             {
                 if (!waypointReached)
                 {

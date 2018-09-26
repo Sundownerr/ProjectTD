@@ -2,32 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : ExtendedMonoBehaviour
+namespace Game.Tower
 {
-    public ParticleSystem[] particleSystemList;
-
-    protected override void Awake()
+    public class Bullet : ExtendedMonoBehaviour
     {
-        gameObject.SetActive(false);
-    }
+        public ParticleSystem[] particleSystemList;
+        public float speed;
+        public bool isDestinationReached;
+        public GameObject Target;
+        private ParticleSystem.EmissionModule emissionModule;
 
-    private void OnEnable()
-    {
-        for (int i = 0; i < particleSystemList.Length; i++)
+        protected override void Awake()
         {
-            var emissionModule = particleSystemList[i].emission;
-            emissionModule.enabled = true;
-            particleSystemList[i].Play();
+            gameObject.SetActive(false);
         }
-    }
 
-    public void DisableParticles()
-    {
-        for (int i = 0; i < particleSystemList.Length; i++)
+        private void OnEnable()
         {
-            var emissionModule = particleSystemList[i].emission;
-            emissionModule.enabled = false;
-            particleSystemList[i].Stop();
+            isDestinationReached = false;
+            
+            for (int i = 0; i < particleSystemList.Length; i++)
+            {
+                emissionModule = particleSystemList[i].emission;
+                emissionModule.enabled = true;
+                particleSystemList[i].Play();
+            }
+        }
+
+        public void DisableParticles()
+        {
+            for (int i = 0; i < particleSystemList.Length; i++)
+            {
+                emissionModule = particleSystemList[i].emission;
+                emissionModule.enabled = false;
+                particleSystemList[i].Stop();
+            }
+
+          
         }
     }
 }

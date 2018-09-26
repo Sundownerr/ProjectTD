@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-
 
     [System.Serializable]
     public class ObjectPool
     {
-
         public GameObject poolObject;
         public Transform parent;
-        public uint poolLenght = 2;
+        public uint poolLenght =3;
 
         protected List<GameObject> poolList = new List<GameObject>();
 

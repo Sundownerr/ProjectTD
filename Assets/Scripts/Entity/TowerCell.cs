@@ -13,7 +13,7 @@ namespace Game.TowerCells
 
         private void Start()
         {
-
+            
             GameManager.Instance.TowerCellList.Add(gameObject);
             gameObject.transform.parent = GameManager.Instance.TowerCellParent;
 

@@ -7,13 +7,15 @@ namespace Game.System
 
     public class GameManager : MonoBehaviour
     {
-        public List<GameObject> TowerCellList, TowerCellAreaList, TowerList, CreepList, WaypointList;
+        public GameObject[]  WaypointList, TowerCellAreaList;
+        public List<GameObject> TowerList, CreepList, TowerCellList;
         public GameObject TowerCellPrefab, CreepPrefab, TowerPrefab, CreepSpawnPoint;
         public Transform TowerCellParent, BulletParent, TowerParent, CreepParent;
         public TowerPlaceSystem TowerPlaceSystem;
         public GridSystem GridSystem;
         public WaveSystem WaveSystem;
         public UI UISystem;
+
 
         public static GameManager Instance;
 

@@ -75,9 +75,6 @@ namespace Game.Tower
             var randomNumber = Random.Range(750, 900);
 
             towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
-
-           
-
         }
    
         private void LateUpdate()
@@ -97,7 +94,7 @@ namespace Game.Tower
                 if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
                 {
                     RotateTowerAtCreep();
-                    TowerCombatSystem.ShootAtCreep(5f);
+                    TowerCombatSystem.ShootAtCreep(25f);
                 }
                 else
                 {
@@ -110,63 +107,3 @@ namespace Game.Tower
 
     }
 }
-
-//private void ShootAtCreep(float delay)
-//{
-
-//    if (timer < delay)
-//    {
-//        timer += 0.5f;
-
-//        if (timer == 0.5f)
-//        {
-//            bulletList.Add(bulletPool.GetObject());
-//            bulletTransformList.Add(bulletList[bulletList.Count - 1].transform);
-
-//            bulletList[bulletList.Count - 1].transform.position = shootPointTransform.position;
-//            bulletList[bulletList.Count - 1].transform.rotation = movingPartTransform.rotation;
-
-//            bulletParticleSystemList.Add(bulletList[bulletList.Count - 1].GetComponentInChildren<ParticleSystem>());
-
-//            var em = bulletParticleSystemList[bulletParticleSystemList.Count - 1].emission;
-//            em.enabled = true;
-
-//            bulletList[bulletList.Count - 1].SetActive(true);
-//        }
-
-//        for (int i = 0; i < bulletList.Count; i++)
-//        {
-//            if (GameManager.CalcDistance(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > rangeCollider.CreepInRangeList[0].transform.lossyScale.x)
-//            {
-//                bulletList[i].transform.position = Vector3.Lerp(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
-//            }
-//            else
-//            {
-//                var em = bulletParticleSystemList[i].emission;
-//                em.enabled = false;
-
-//            }
-//        }
-//    }
-//    else
-//    {
-//        if (bulletList.Count > 0)
-//        {
-//            StartCoroutine(RemoveBullets(bulletParticleSystemList[0].main.startLifetime.constant));
-//        }
-
-//        timer = 0;
-//    }
-//}
-
-//private IEnumerator RemoveBullets(float delay)
-//{
-//    yield return new WaitForSeconds(delay);
-
-//    if (bulletList.Count > 0)
-//    {
-//        bulletList[0].SetActive(false);
-//        bulletList.RemoveAt(0);
-//        bulletParticleSystemList.RemoveAt(0);
-//    }
-//}

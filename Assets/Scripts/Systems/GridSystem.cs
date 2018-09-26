@@ -11,7 +11,7 @@ namespace Game.System
 
         private IEnumerator BuildTimer()
         {
-            CreateGrid(GameManager.Instance.TowerCellAreaList.Count);
+            CreateGrid(GameManager.Instance.TowerCellAreaList.Length);
 
             yield return new WaitForEndOfFrame();
 

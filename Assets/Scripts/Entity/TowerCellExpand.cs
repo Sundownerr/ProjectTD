@@ -44,7 +44,7 @@ namespace Game.TowerCells
             return false;
         }
 
-        public TowerCellExpand(GameObject cell, GameObject cellPrefab, List<GameObject> buildingAreas)
+        public TowerCellExpand(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
         {
             var forwardFilled = false;
             var backFilled = false;
@@ -77,7 +77,7 @@ namespace Game.TowerCells
 
             if (rayHit)
             {
-                for (int i = 0; i < buildingAreas.Count; i++)
+                for (int i = 0; i < buildingAreas.Length; i++)
                 {
                     forwardFilled = FillSide(forwardFilled, Vector3.forward, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
 
