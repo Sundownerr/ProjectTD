@@ -1,69 +1,106 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Game.System;
 
 namespace Game.Tower.CombatSystem
 {
 
-    public class TowerCombatSystem
+    public class TowerCombatSystem : MonoBehaviour
     {
-        private float attackSpeed;
 
-        public TowerCombatSystem(GameObject tower)
-        {
-            attackSpeed = tower.GetComponent<Tower>().towerStats.attackSpeed;
+        public Tower towerData;
+     
+        private List<GameObject> bulletList;
+        private List<Bullet> bulletDataList;
+        private ObjectPool bulletPool;
+        private float timer;
+        private float bulletLifetime;
 
+        private void Start()
+        {         
+            towerData = gameObject.GetComponent<Tower>();
+            bulletList = new List<GameObject>();
+            bulletDataList = new List<Bullet>();
+
+            bulletPool = new ObjectPool
+            {
+                poolObject = towerData.Bullet
+            };
+
+            bulletPool.Initialize();
         }
 
-        public void ShootAtCreep()
+        public void ShootAtCreep(float delay)
         {
-            //    if (timer < delay)
-            //    {
-            //        timer += 0.5f;
+            if (timer < delay)
+            {
+                timer += 0.5f;
 
-            //        if (timer == 0.5f)
-            //        {
-            //            bulletList.Add(bulletPool.GetObject());
-            //            bulletTransformList.Add(bulletList[bulletList.Count - 1].transform);
+                if (timer == 0.5f)
+                {
+                    bulletList.Add(bulletPool.GetObject());
 
-            //            bulletList[bulletList.Count - 1].transform.position = towerTransform.position;
-            //            bulletList[bulletList.Count - 1].transform.rotation = towerTransform.rotation;
+                    bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<Bullet>());
+                    
+                    bulletList[bulletList.Count - 1].transform.position = towerData.shootPointTransform.position;
+                    bulletList[bulletList.Count - 1].transform.rotation = towerData.movingPartTransform.rotation;
 
-            //            bulletParticleSystemList.Add(bulletList[bulletList.Count - 1].GetComponent<ParticleSystem>());
+                    bulletLifetime = bulletDataList[bulletDataList.Count - 1].particleSystemList[0].main.startLifetime.constant;
 
-            //            var em = bulletParticleSystemList[bulletParticleSystemList.Count - 1].emission;
-            //            em.enabled = true;
+                    bulletList[bulletList.Count - 1].SetActive(true);
+                }
 
-            //            bulletList[bulletList.Count - 1].SetActive(true);
+                for (int i = 0; i < bulletList.Count; i++)
+                {
+                    var isDistanceOk = GameManager.CalcDistance(
+                        bulletList[i].transform.position, 
+                        towerData.rangeCollider.CreepInRangeList[0].transform.position) > towerData.rangeCollider.CreepInRangeList[0].transform.lossyScale.x;
 
+                    if (isDistanceOk)
+                    {
+                        var position = Vector3.Lerp(bulletList[i].transform.position, towerData.rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
+                        bulletList[i].transform.position = position;
+                    }
+                    else
+                    {
+                        bulletDataList[i].DisableParticles();
+                    }
+                }
+            }
+            else
+            {
+                if (bulletList.Count > 0)
+                {
+                    StartCoroutine(RemoveBullet( bulletLifetime));
+                }
 
-            //        }
+                timer = 0;
+            }
+        }
 
-            //        for (int i = 0; i < bulletList.Count; i++)
-            //        {
-            //            if (GameManager.CalcDistance(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position) > rangeCollider.CreepInRangeList[0].transform.lossyScale.x)
-            //            {
-            //                bulletList[i].transform.position = Vector3.Lerp(bulletList[i].transform.position, rangeCollider.CreepInRangeList[0].transform.position, Time.deltaTime * 10f);
-            //            }
-            //            else
-            //            {
-            //                var em = bulletParticleSystemList[i].emission;
-            //                em.enabled = false;
+        public void MoveBulletForward()
+        {
+            if (bulletList.Count > 0)
+            {
+                for (int i = 0; i < bulletList.Count; i++)
+                {
+                    bulletList[i].transform.Translate(Vector3.forward * 200, Space.Self);
+                }
 
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (bulletList.Count > 0)
-            //        {
-            //            StartCoroutine(RemoveBullets(bulletParticleSystemList[0].main.startLifetime.constant));
-            //        }
+                StartCoroutine(RemoveBullet(0.2f));
+            }
+        }
 
-            //        timer = 0;
-            //    }
-            //}
+        public IEnumerator RemoveBullet(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            
+            if (bulletList.Count > 0)
+            {
+                bulletList[0].SetActive(false);
+                bulletList.RemoveAt(0);
+            }
         }
     }
 }

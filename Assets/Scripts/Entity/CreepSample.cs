@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 using Game.System;
-
+using Game.Data.Entity.Creep;
 
 namespace Game.Creep
 {
