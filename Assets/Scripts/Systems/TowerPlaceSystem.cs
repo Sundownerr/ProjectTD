@@ -9,6 +9,7 @@ namespace Game.System
     public class TowerPlaceSystem : ExtendedMonoBehaviour
     {
         public Color GhostedTowerColor;
+        public LayerMask LayerMask;
 
         private List<TowerCell> towerCellStateList;
         private bool canBuild, isTowerCreated;
@@ -47,8 +48,7 @@ namespace Game.System
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, 10000, LayerMask))
             {
                 GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.8f);
                 GameManager.Instance.TowerList[GameManager.Instance.TowerList.Count - 1].transform.position = hit.point;

@@ -14,7 +14,11 @@ namespace Game.System
         public TowerPlaceSystem TowerPlaceSystem;
         public GridSystem GridSystem;
         public WaveSystem WaveSystem;
+        public PlayerSystem PlayerSystem;
         public UI UISystem;
+        public TowerUISystem TowerUISystem;
+        public Canvas UICanvas;
+
 
 
         public static GameManager Instance;

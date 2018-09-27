@@ -10,7 +10,7 @@ namespace Game.Tower
 
     public class Tower : ExtendedMonoBehaviour
     {
-        public GameObject Bullet;
+        public GameObject Bullet, TowerPlaceEffect;
         public bool IsTowerBuilded;
         public TowerStats towerStats;
         public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
@@ -29,12 +29,21 @@ namespace Game.Tower
 
         private bool EndTowerBuild()
         {
-            for (int i = 0; i < towerRendererList.Count; i++)
+            if (!IsTowerBuilded)
             {
-                towerRendererList[i].material.color = Color.white - new Color(0.2f, 0.2f, 0.2f);
-            }
+                for (int i = 0; i < towerRendererList.Count; i++)
+                {
+                    towerRendererList[i].material.color = Color.white - new Color(0.2f, 0.2f, 0.2f);
+                }
 
-            towerRangeTransform.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
+                towerRangeTransform.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
+
+                gameObject.layer = 14;
+                var towerPlaceEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90,0,0));
+                Destroy(towerPlaceEffect, 2f);
+
+                return true;
+            }
 
             return true;
         }
@@ -72,7 +81,7 @@ namespace Game.Tower
 
             rangeCollider = towerRangeTransform.gameObject.GetComponent<RangeCollider>();
 
-            var randomNumber = Random.Range(1210, 1200);
+            var randomNumber = Random.Range(510, 900);
 
             towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
         }
@@ -85,7 +94,9 @@ namespace Game.Tower
             }
             else
             {
+                
                 IsTowerBuilded = EndTowerBuild();
+               
             }
 
             if (IsTowerBuilded)

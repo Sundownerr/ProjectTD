@@ -13,7 +13,7 @@ namespace Game.Tower.CombatSystem
         private List<GameObject> bulletList;
         private List<Bullet> bulletDataList;
         private ObjectPool bulletPool;
-        private float timer;
+        private float bulletSpeed;
         private float bulletLifetime;
         private bool isCooldown;
         
@@ -22,18 +22,21 @@ namespace Game.Tower.CombatSystem
         {         
             towerData = gameObject.GetComponent<Tower>();
             bulletList = new List<GameObject>();
-            bulletDataList = new List<Bullet>();
-
-            bulletPool = new ObjectPool
-            {
-                poolObject = towerData.Bullet
-            };
-
-            bulletPool.Initialize();
+            bulletDataList = new List<Bullet>();          
         }
 
-        private IEnumerator CreateBullet(float delay)
+        private IEnumerator CreateBullet(float cooldown)
         {
+            if (bulletPool == null)
+            {
+                bulletPool = new ObjectPool
+                {
+                    poolObject = towerData.Bullet
+                };
+
+                bulletPool.Initialize();
+            }
+
             bulletList.Add(bulletPool.GetObject());
             var last = bulletList.Count - 1;
 
@@ -42,12 +45,13 @@ namespace Game.Tower.CombatSystem
             bulletList[last].transform.position = towerData.shootPointTransform.position;
             bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
 
-            bulletLifetime = bulletDataList[last].particleSystemList[0].main.startLifetime.constant;
+            bulletLifetime = bulletDataList[last].BulletLifetime;
+            bulletSpeed = bulletDataList[last].Speed;
             bulletDataList[last].Target = towerData.rangeCollider.CreepInRangeList[0];
 
             bulletList[last].SetActive(true);
 
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSeconds(cooldown);
 
             isCooldown = false;
 
@@ -57,35 +61,31 @@ namespace Game.Tower.CombatSystem
             }
         }
 
-        public void ShootAtCreep(float delay)
+        public void ShootAtCreep(float cooldown)
         {
             if(!isCooldown)
             {
                 isCooldown = true;
-                StartCoroutine(CreateBullet(delay));
+                StartCoroutine(CreateBullet(cooldown));
             }              
 
             for (int i = 0; i < bulletList.Count; i++)
             {
                 if (bulletDataList[i].Target != null)
                 {
-
-
                     var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
 
-                    if (!bulletDataList[i].isDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x)
+                    if (!bulletDataList[i].IsDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x)
                     {
                         bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                        bulletList[i].transform.Translate(Vector3.forward * (10f + distance / 10), Space.Self);
+                        bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
                     }
                     else
                     {
-                        bulletDataList[i].isDestinationReached = true;
+                        bulletDataList[i].IsDestinationReached = true;
                         bulletDataList[i].DisableParticles();
                     }
-                }
-                
-                
+                }                           
             }
         }
 
@@ -93,20 +93,20 @@ namespace Game.Tower.CombatSystem
         {
             if (bulletList.Count > 0)
             {
-                if (bulletDataList[bulletDataList.Count - 1].Target != null)
+
+                for (int i = 0; i < bulletList.Count; i++)
                 {
-                    for (int i = 0; i < bulletList.Count; i++)
+                    if (bulletDataList[i].Target != null)
                     {
                         var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
 
                         bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                        bulletList[i].transform.Translate(Vector3.forward * (15f + distance / 10), Space.Self);
+                        bulletList[i].transform.Translate(Vector3.forward * (25f + distance / 10), Space.Self);
                     }
-
-                    StartCoroutine(RemoveBullet(bulletLifetime));
                 }
-               
+                StartCoroutine(RemoveBullet(bulletLifetime));
             }
+
         }
 
 

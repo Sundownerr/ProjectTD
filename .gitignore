@@ -291,3 +291,4 @@ __pycache__/
 /Assets/ImportedAssets
 /Assets/Sprites
 *.asset
+/Assets/Prefabs/UI
