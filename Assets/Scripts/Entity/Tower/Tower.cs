@@ -72,16 +72,13 @@ namespace Game.Tower
 
             rangeCollider = towerRangeTransform.gameObject.GetComponent<RangeCollider>();
 
-            var randomNumber = Random.Range(750, 900);
+            var randomNumber = Random.Range(1210, 1200);
 
             towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
         }
-
-        
-   
+       
         private void LateUpdate()
         {
-
             if (!IsTowerBuilded && GameManager.Instance.UISystem.IsBuildModeActive)
             {
                 StartTowerBuild();
@@ -96,11 +93,11 @@ namespace Game.Tower
                 if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
                 {
                     RotateTowerAtCreep();
-                    TowerCombatSystem.ShootAtCreep(0.1f);
+                    TowerCombatSystem.ShootAtCreep(0.3f);
                 }
                 else
                 {
-                    TowerCombatSystem.MoveBulletForward();
+                    TowerCombatSystem.MoveBulletOutOfRange();
                     
                     RotateTowerToDefault();
                 }

@@ -32,14 +32,8 @@ namespace Game.Tower.CombatSystem
             bulletPool.Initialize();
         }
 
-        public void CreateBullet()
-        {
-            
-        }
-
         private IEnumerator CreateBullet(float delay)
         {
-
             bulletList.Add(bulletPool.GetObject());
             var last = bulletList.Count - 1;
 
@@ -73,22 +67,29 @@ namespace Game.Tower.CombatSystem
 
             for (int i = 0; i < bulletList.Count; i++)
             {
-                var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
+                if (bulletDataList[i].Target != null)
+                {
 
-                if (!bulletDataList[i].isDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x)
-                {
-                    bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                    bulletList[i].transform.Translate(Vector3.forward * (10f + distance / 10), Space.Self);
+
+                    var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
+
+                    if (!bulletDataList[i].isDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x)
+                    {
+                        bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
+                        bulletList[i].transform.Translate(Vector3.forward * (10f + distance / 10), Space.Self);
+                    }
+                    else
+                    {
+                        bulletDataList[i].isDestinationReached = true;
+                        bulletDataList[i].DisableParticles();
+                    }
                 }
-                else
-                {
-                    bulletDataList[i].isDestinationReached = true;
-                    bulletDataList[i].DisableParticles();
-                }
+                
+                
             }
         }
 
-        public void MoveBulletForward()
+        public void MoveBulletOutOfRange()
         {
             if (bulletList.Count > 0)
             {
@@ -99,13 +100,15 @@ namespace Game.Tower.CombatSystem
                         var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
 
                         bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                        bulletList[i].transform.Translate(Vector3.forward * (5f + distance / 10), Space.Self);
+                        bulletList[i].transform.Translate(Vector3.forward * (15f + distance / 10), Space.Self);
                     }
 
                     StartCoroutine(RemoveBullet(bulletLifetime));
                 }
+               
             }
         }
+
 
         public IEnumerator RemoveBullet(float delay)
         {
