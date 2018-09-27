@@ -76,6 +76,8 @@ namespace Game.Tower
 
             towerRangeTransform.localScale = new Vector3(randomNumber, 0.0001f, randomNumber);
         }
+
+        
    
         private void LateUpdate()
         {
@@ -94,7 +96,7 @@ namespace Game.Tower
                 if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
                 {
                     RotateTowerAtCreep();
-                    TowerCombatSystem.ShootAtCreep(25f);
+                    TowerCombatSystem.ShootAtCreep(0.1f);
                 }
                 else
                 {

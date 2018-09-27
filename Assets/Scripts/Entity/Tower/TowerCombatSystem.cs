@@ -15,6 +15,8 @@ namespace Game.Tower.CombatSystem
         private ObjectPool bulletPool;
         private float timer;
         private float bulletLifetime;
+        private bool isCooldown;
+        
 
         private void Start()
         {         
@@ -30,58 +32,59 @@ namespace Game.Tower.CombatSystem
             bulletPool.Initialize();
         }
 
+        public void CreateBullet()
+        {
+            
+        }
+
+        private IEnumerator CreateBullet(float delay)
+        {
+
+            bulletList.Add(bulletPool.GetObject());
+            var last = bulletList.Count - 1;
+
+            bulletDataList.Add(bulletList[last].GetComponent<Bullet>());
+
+            bulletList[last].transform.position = towerData.shootPointTransform.position;
+            bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
+
+            bulletLifetime = bulletDataList[last].particleSystemList[0].main.startLifetime.constant;
+            bulletDataList[last].Target = towerData.rangeCollider.CreepInRangeList[0];
+
+            bulletList[last].SetActive(true);
+
+            yield return new WaitForSeconds(delay);
+
+            isCooldown = false;
+
+            if (bulletList.Count > 0)
+            {
+                StartCoroutine(RemoveBullet(bulletLifetime));
+            }
+        }
+
         public void ShootAtCreep(float delay)
         {
-            if (timer < delay)
+            if(!isCooldown)
             {
-                timer += 0.5f;
+                isCooldown = true;
+                StartCoroutine(CreateBullet(delay));
+            }              
 
-                if (timer == 0.5f)
-                {
-                    bulletList.Add(bulletPool.GetObject());
-                    var last = bulletList.Count - 1;
-
-                    bulletDataList.Add(bulletList[last].GetComponent<Bullet>());
-
-                    bulletList[last].transform.position = towerData.shootPointTransform.position;
-                    bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
-
-                    bulletLifetime = bulletDataList[last].particleSystemList[0].main.startLifetime.constant;
-                    bulletDataList[last].Target = towerData.rangeCollider.CreepInRangeList[0];
-
-                    bulletList[last].SetActive(true);
-                }
-
-
-                for (int i = 0; i < bulletList.Count; i++)
-                {
-                   
-                     
-                        var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
-
-                        if (!bulletDataList[i].isDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x)
-                        {
-                            bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                            bulletList[i].transform.Translate(Vector3.forward * (10f + distance / 10), Space.Self);
-
-                        }
-                        else
-                        {
-                            bulletDataList[i].isDestinationReached = true;
-                            bulletDataList[i].DisableParticles();
-                        }
-                    }
-                
-
-            }
-            else
+            for (int i = 0; i < bulletList.Count; i++)
             {
-                if (bulletList.Count > 0)
-                {
-                    StartCoroutine(RemoveBullet(bulletLifetime));
-                }
+                var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
 
-                timer = 0;
+                if (!bulletDataList[i].isDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x)
+                {
+                    bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
+                    bulletList[i].transform.Translate(Vector3.forward * (10f + distance / 10), Space.Self);
+                }
+                else
+                {
+                    bulletDataList[i].isDestinationReached = true;
+                    bulletDataList[i].DisableParticles();
+                }
             }
         }
 

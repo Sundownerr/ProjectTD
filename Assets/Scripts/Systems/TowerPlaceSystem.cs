@@ -6,7 +6,7 @@ using Game.TowerCells;
 
 namespace Game.System
 {
-    public class TowerPlaceSystem : MonoBehaviour
+    public class TowerPlaceSystem : ExtendedMonoBehaviour
     {
         public Color GhostedTowerColor;
 
