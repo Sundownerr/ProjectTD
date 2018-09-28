@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+#pragma warning disable CS1591 
 public class MainMenuScript : MonoBehaviour
 {
     public Button QuitButton, NewGameButton;

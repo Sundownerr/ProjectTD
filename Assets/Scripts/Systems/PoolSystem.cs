@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
-    [System.Serializable]
+#pragma warning disable CS1591
+[System.Serializable]
     public class ObjectPool
     {
         public GameObject poolObject;

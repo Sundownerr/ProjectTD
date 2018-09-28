@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#pragma warning disable CS1591 
+
 namespace Game.Tower
 {
     public class Bullet : ExtendedMonoBehaviour
     {
+
         public ParticleSystem[] ParticleSystemList;
+
         public float Speed;
         public bool IsDestinationReached;
         public float BulletLifetime;

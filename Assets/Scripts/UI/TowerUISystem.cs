@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+#pragma warning disable CS1591 
 namespace Game.System
 {
     public class TowerUISystem : MonoBehaviour

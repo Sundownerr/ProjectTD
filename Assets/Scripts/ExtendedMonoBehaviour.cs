@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+#pragma warning disable CS1591 
 public abstract class ExtendedMonoBehaviour : MonoBehaviour
 {
     public new Transform transform

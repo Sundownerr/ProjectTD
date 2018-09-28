@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using Game.System;
 using Game.Data.Entity.Creep;
-
+#pragma warning disable CS1591 
 namespace Game.Creep
 {
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using Game.System;
-
+#pragma warning disable CS1591 
 namespace Game.Tower.CombatSystem
 {
 

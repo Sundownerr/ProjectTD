@@ -4,7 +4,7 @@ using UnityEngine;
 using Game.System;
 using Game.Data.Entity.Tower;
 using Game.Tower.CombatSystem;
-
+#pragma warning disable CS1591 
 namespace Game.Tower
 {
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
+#pragma warning disable CS1591 
 namespace Game.System
 {
     public class PlayerSystem : MonoBehaviour

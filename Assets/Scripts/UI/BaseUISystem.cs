@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
-
+#pragma warning disable CS1591 
 namespace Game.System
 {
     public class BaseUISystem : MonoBehaviour

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-
+#pragma warning disable CS1591 
 namespace Game.System
 {
     public class GridSystem : MonoBehaviour
