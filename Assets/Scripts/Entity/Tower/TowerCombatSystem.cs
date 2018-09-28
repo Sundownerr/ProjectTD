@@ -61,21 +61,15 @@ namespace Game.Tower.CombatSystem
             }
         }
 
-        public void ShootAtCreep(float cooldown)
+        private void MoveBullet()
         {
-            if(!isCooldown)
-            {
-                isCooldown = true;
-                StartCoroutine(CreateBullet(cooldown));
-            }              
-
             for (int i = 0; i < bulletList.Count; i++)
             {
                 if (bulletDataList[i].Target != null)
                 {
                     var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
 
-                    if (!bulletDataList[i].IsDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x)
+                    if (!bulletDataList[i].IsDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x - 5)
                     {
                         bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
                         bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
@@ -85,30 +79,30 @@ namespace Game.Tower.CombatSystem
                         bulletDataList[i].IsDestinationReached = true;
                         bulletDataList[i].DisableParticles();
                     }
-                }                           
+                }
             }
+        }
+
+        public void ShootAtCreep(float cooldown)
+        {
+            if(!isCooldown)
+            {
+                isCooldown = true;
+                StartCoroutine(CreateBullet(cooldown));
+            }
+
+            MoveBullet();
         }
 
         public void MoveBulletOutOfRange()
         {
             if (bulletList.Count > 0)
             {
+                MoveBullet();
 
-                for (int i = 0; i < bulletList.Count; i++)
-                {
-                    if (bulletDataList[i].Target != null)
-                    {
-                        var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
-
-                        bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                        bulletList[i].transform.Translate(Vector3.forward * (25f + distance / 10), Space.Self);
-                    }
-                }
                 StartCoroutine(RemoveBullet(bulletLifetime));
             }
-
         }
-
 
         public IEnumerator RemoveBullet(float delay)
         {

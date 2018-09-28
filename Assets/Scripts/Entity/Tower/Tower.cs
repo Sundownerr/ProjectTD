@@ -14,7 +14,7 @@ namespace Game.Tower
         public bool IsTowerBuilded;
         public TowerStats towerStats;
         public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
-        public RangeCollider rangeCollider;
+        public TowerRange rangeCollider;
 
         private List<Renderer> towerRendererList;
         public TowerCombatSystem TowerCombatSystem;
@@ -79,7 +79,7 @@ namespace Game.Tower
             movingPartTransform = transform.GetChild(1);
             shootPointTransform = movingPartTransform.GetChild(0).GetChild(0);
 
-            rangeCollider = towerRangeTransform.gameObject.GetComponent<RangeCollider>();
+            rangeCollider = towerRangeTransform.gameObject.GetComponent<TowerRange>();
 
             var randomNumber = Random.Range(510, 900);
 

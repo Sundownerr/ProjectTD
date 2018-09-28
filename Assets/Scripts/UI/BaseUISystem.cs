@@ -18,7 +18,6 @@ namespace Game.System
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
             ReadyButton.onClick.AddListener(CheckReady);
-
         }
 
         private void StartWave()
@@ -26,9 +25,7 @@ namespace Game.System
             if (GameManager.Instance.CreepList.Count == 0)
             {
                 IsWaveStarted = true;
-                StartWaveButton.gameObject.SetActive(false);
-
-               
+                StartWaveButton.gameObject.SetActive(false);              
             }
         }
 
@@ -47,13 +44,10 @@ namespace Game.System
         {
             IsPlayerReady = true;
             Destroy(ReadyButton.gameObject);
-        }
-
-       
+        }      
 
         private void Update()
         {
-
             if (GameManager.Instance.GridSystem.IsGridBuilded)
             {
                 if (IsBuildModeActive)
