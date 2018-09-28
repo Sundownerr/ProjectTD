@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace Game.System
 {
-    public class UI : MonoBehaviour
+    public class BaseUISystem : MonoBehaviour
     {
         public Button StartWaveButton, BuildModeButton, ReadyButton;
         public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
@@ -26,6 +26,9 @@ namespace Game.System
             if (GameManager.Instance.CreepList.Count == 0)
             {
                 IsWaveStarted = true;
+                StartWaveButton.gameObject.SetActive(false);
+
+               
             }
         }
 
@@ -46,17 +49,7 @@ namespace Game.System
             Destroy(ReadyButton.gameObject);
         }
 
-        private IEnumerator Test()
-        {
-            var t = 0;
-
-            while (t < 5)
-            {
-                yield return new WaitForSeconds(0.2f);
-                t++;
-                Debug.Log(t);
-            }
-        }
+       
 
         private void Update()
         {

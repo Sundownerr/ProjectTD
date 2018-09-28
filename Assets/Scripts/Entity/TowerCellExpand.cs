@@ -8,7 +8,7 @@ namespace Game.TowerCells
 
     public class TowerCellExpand
     {
-        private bool FillSide(bool isSideFilled, Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
+        private bool FillSide( Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
         {
             var direction1 = new Vector3();
             var direction2 = new Vector3();
@@ -24,11 +24,7 @@ namespace Game.TowerCells
                 direction2 = Vector3.back;
             }
 
-            if (isSideFilled)
-            {
-                return true;
-            }
-            else
+           
             {
                 var sideRayHit =
                     Physics.Raycast(cell.transform.position + direction1 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask) |
@@ -46,10 +42,18 @@ namespace Game.TowerCells
 
         public TowerCellExpand(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
         {
-            var forwardFilled = false;
-            var backFilled = false;
-            var leftFilled = false;
-            var rightFilled = false;
+            for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+            {
+
+                if (cell != GameManager.Instance.TowerCellList[i])
+                {
+                    if (cell.transform.position == GameManager.Instance.TowerCellList[i].transform.position)
+                    {
+                        Debug.Log(cell.transform + " = " + GameManager.Instance.TowerCellList[i].transform);
+                    }
+                }
+            }
+            
 
             var spacing = cell.transform.localScale.x + 1;
             var rayDistance = cell.transform.localScale.x;
@@ -76,17 +80,15 @@ namespace Game.TowerCells
                 Physics.Raycast(lRay, out leftRaycastHit, 5, buildLayerMask);
 
             if (rayHit)
-            {
-                for (int i = 0; i < buildingAreas.Length; i++)
-                {
-                    forwardFilled = FillSide(forwardFilled, Vector3.forward, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+            {              
+                   FillSide(Vector3.forward, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
 
-                    backFilled = FillSide(backFilled, Vector3.back, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+                    FillSide(Vector3.back, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
 
-                    leftFilled = FillSide(leftFilled, Vector3.left, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+                    FillSide(Vector3.left, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
 
-                    rightFilled = FillSide(rightFilled, Vector3.right, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
-                }
+                   FillSide(Vector3.right, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
+                
             }
             else
             {

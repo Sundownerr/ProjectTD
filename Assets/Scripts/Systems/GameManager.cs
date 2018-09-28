@@ -15,7 +15,7 @@ namespace Game.System
         public GridSystem GridSystem;
         public WaveSystem WaveSystem;
         public PlayerSystem PlayerSystem;
-        public UI UISystem;
+        public BaseUISystem UISystem;
         public TowerUISystem TowerUISystem;
         public Canvas UICanvas;
 

@@ -13,7 +13,7 @@ namespace Game.System
         {
             CreateGrid(GameManager.Instance.TowerCellAreaList.Length);
 
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(2f);
 
             IsGridBuilded = true;
         }
@@ -29,8 +29,8 @@ namespace Game.System
                 if (!Physics.Raycast(ray, 100, layerMask))
                 {
                     var spawnPos = GameManager.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GameManager.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
-                    var towerCell = Instantiate(GameManager.Instance.TowerCellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));
-                    towerCell.name = GameManager.Instance.TowerCellAreaList[i].name + " Cell";
+                    Instantiate(GameManager.Instance.TowerCellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));
+              
                 }
             }
         }
