@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Game.System;
+
 
 namespace Game.TowerCells
 {
-
     public class TowerCellExpand
     {
-        private bool FillSide( Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
+        private bool FillSide(Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
         {
             var direction1 = new Vector3();
             var direction2 = new Vector3();
@@ -24,17 +22,14 @@ namespace Game.TowerCells
                 direction2 = Vector3.back;
             }
 
-           
-            {
-                var sideRayHit =
-                    Physics.Raycast(cell.transform.position + direction1 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask) |
-                    Physics.Raycast(cell.transform.position + direction2 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask);
+            var sideRayHit =
+                Physics.Raycast(cell.transform.position + direction1 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask) |
+                Physics.Raycast(cell.transform.position + direction2 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask);
 
-                if (!sideRayHit)
-                {
-                    Object.Instantiate(cellPrefab, cell.transform.position + spawnDirection * spacing, cell.transform.rotation).name = cell.transform.name;
-                    return true;
-                }
+            if (!sideRayHit)
+            {
+                Object.Instantiate(cellPrefab, cell.transform.position + spawnDirection * spacing, cell.transform.rotation).name = cell.transform.name;
+                return true;
             }
 
             return false;
@@ -54,7 +49,6 @@ namespace Game.TowerCells
                 }
             }
             
-
             var spacing = cell.transform.localScale.x + 1;
             var rayDistance = cell.transform.localScale.x;
 
@@ -95,8 +89,6 @@ namespace Game.TowerCells
                 GameManager.Instance.TowerCellList.Remove(cell);
                 Object.Destroy(cell);
             }
-
-
         }
     }
 }

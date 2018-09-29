@@ -7,15 +7,12 @@ using UnityEngine.EventSystems;
 namespace Game.System
 {
     public class PlayerSystem : MonoBehaviour
-    {
-
-        public static int PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_ChOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
-        public LayerMask LayerMask;
-        private Ray WorldRay;
-
+    {           
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
+        public LayerMask LayerMask;
 
+        private Ray WorldRay;
         private bool isHitUI;
         private RaycastHit hit;
         private PointerEventData pointerEventData;
@@ -39,7 +36,6 @@ namespace Game.System
 
                 if (results.Count > 0)
                 {
-                    Debug.Log(results[0].gameObject);
                     isHitUI = true;
                 }
             }            
@@ -48,7 +44,6 @@ namespace Game.System
 
             if (Physics.Raycast(WorldRay, out hit, 10000, LayerMask))
             {
-
                 if (hit.transform.gameObject.layer == 14)
                 {
                     if (Input.GetMouseButtonDown(0) && !GameManager.Instance.TowerUISystem.gameObject.activeSelf)

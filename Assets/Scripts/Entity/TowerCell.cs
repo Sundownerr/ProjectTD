@@ -18,7 +18,7 @@ namespace Game.TowerCells
 
             cellRenderer = GetComponent<Renderer>();
 
-            var towerCellExpand = new TowerCellExpand(gameObject, GameManager.Instance.TowerCellPrefab, GameManager.Instance.TowerCellAreaList);
+            new TowerCellExpand(gameObject, GameManager.Instance.TowerCellPrefab, GameManager.Instance.TowerCellAreaList);
 
             redColor = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             greenColor = new Color(0.1f, 0.3f, 0.1f, 0.5f);
