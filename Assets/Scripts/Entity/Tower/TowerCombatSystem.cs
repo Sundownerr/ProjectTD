@@ -67,17 +67,21 @@ namespace Game.Tower.CombatSystem
             {
                 if (bulletDataList[i].Target != null)
                 {
-                    var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
+                    var distance = 
+                        GameManager.CalcDistance(
+                            bulletList[i].transform.position,
+                            bulletDataList[i].Target.transform.position
+                            );
 
-                    if (!bulletDataList[i].IsDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x - 5)
+                    if (!bulletDataList[i].IsReachedTarget && distance > bulletDataList[i].Target.transform.lossyScale.x - 5)
                     {
                         bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
                         bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
                     }
                     else
                     {
-                        bulletDataList[i].IsDestinationReached = true;
-                        bulletDataList[i].DisableParticles();
+                        bulletDataList[i].IsReachedTarget = true;
+                        bulletDataList[i].Show(false);
                     }
                 }
             }
@@ -111,7 +115,7 @@ namespace Game.Tower.CombatSystem
             if (bulletList.Count > 0)
             {
                 bulletList[0].SetActive(false);
-                bulletDataList[0].DisableParticles();
+                bulletDataList[0].Show(false);
                 bulletDataList.RemoveAt(0);
                 bulletList.RemoveAt(0);
             }

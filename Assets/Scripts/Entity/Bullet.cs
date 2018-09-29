@@ -10,11 +10,11 @@ namespace Game.Tower
     {
 
         public ParticleSystem[] ParticleSystemList;
-
-        public float Speed;
-        public bool IsDestinationReached;
+        public bool IsReachedTarget;
         public float BulletLifetime;
         public GameObject Target;
+        public float Speed;
+        
         private ParticleSystem.EmissionModule emissionModule;
 
         protected override void Awake()
@@ -27,24 +27,27 @@ namespace Game.Tower
 
         private void OnEnable()
         {
-            IsDestinationReached = false;
-            
-            for (int i = 0; i < ParticleSystemList.Length; i++)
-            {
-                emissionModule = ParticleSystemList[i].emission;
-                emissionModule.enabled = true;
-                ParticleSystemList[i].Play();
-            }
+            IsReachedTarget = false;
+
+            Show(true);
         }
 
-        public void DisableParticles()
+        public void Show(bool enabled)
         {
             for (int i = 0; i < ParticleSystemList.Length; i++)
             {
                 emissionModule = ParticleSystemList[i].emission;
-                emissionModule.enabled = false;
-                ParticleSystemList[i].Stop();
+                emissionModule.enabled = enabled;
+
+                if (enabled)
+                {
+                    ParticleSystemList[i].Play();
+                }
+                else
+                {
+                    ParticleSystemList[i].Stop();
+                }
             }
-        }
+        }      
     }
 }
