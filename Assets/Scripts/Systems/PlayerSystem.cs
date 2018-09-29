@@ -9,7 +9,7 @@ namespace Game.System
     public class PlayerSystem : MonoBehaviour
     {
         public GameObject ChoosedTower;
-        public static int PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_ChOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
+        public static int PLAYERSTATE, PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_CHOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
         public LayerMask LayerMask;
         private Ray WorldRay;
 
@@ -21,13 +21,23 @@ namespace Game.System
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
 
+        private void Awake()
+        {
+            PLAYERSTATE_IDLE = 0;
+            PLAYERSTATE_CHOOSEDCREEP = 1;
+            PLAYERSTATE_CHOOSEDTOWER = 2;
+            PLAYERSTATE_PLACINGTOWER = 3;
+        }
+
         private void Start()
         {
             results = new List<RaycastResult>();
+            PLAYERSTATE = PLAYERSTATE_IDLE;
         }
 
         private void LateUpdate()
         {
+          
             pointerEventData = new PointerEventData(EventSystem)
             {
                 position = Input.mousePosition
@@ -55,27 +65,26 @@ namespace Game.System
                 {
                     if (isMouseOnTower)
                     {
-                        ChoosedTower = hit.transform.gameObject;
-
-                        
+                        ChoosedTower = hit.transform.gameObject;                    
 
                         if (!GameManager.Instance.TowerUISystem.gameObject.activeSelf)
                         {
                             GameManager.Instance.TowerUISystem.gameObject.SetActive(true);
                         }                        
 
-                        StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());                     
-                       
+                        StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());
+
+                        PLAYERSTATE = PLAYERSTATE_CHOOSEDTOWER;
                     }
 
                     if (isMouseNotOnUI)
-                    {
-                        
-
+                    {                      
                         if (Input.GetMouseButtonDown(0) && GameManager.Instance.TowerUISystem.gameObject.activeSelf)
                         {
                             GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
                         }
+
+                        PLAYERSTATE = PLAYERSTATE_IDLE;
                     }
                 }
             }

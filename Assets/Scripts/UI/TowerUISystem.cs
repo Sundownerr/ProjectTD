@@ -13,7 +13,7 @@ namespace Game.System
         public TextMeshProUGUI DamageValue, RangeValue, ManaValue, AttackSpeedValue, TriggerChanceValue, SpellDamageValue, SpellCritChanceValue;
         public TextMeshProUGUI TowerName, CritChanceValue;
 
-        private Tower choosedTower;
+        public TowerBaseSystem choosedtowerBaseSystem;
 
         private void Awake()
         {
@@ -22,10 +22,11 @@ namespace Game.System
 
         private void OnEnable()
         {
-            var choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower.GetComponent<Tower.TowerBaseSystem>();
-            var choosedTowerStats = choosedTower.TowerStats;
+            var choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower;
+            choosedtowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
+            var choosedTowerStats = choosedtowerBaseSystem.TowerStats;
 
-            choosedTower.GetComponent<Tower.TowerRangeSystem>().Show(true);
+            choosedtowerBaseSystem.TowerRange.Show(true);
 
             TowerName.text = choosedTowerStats.entityName;
             DamageValue.text = KiloFormat(choosedTowerStats.damage);
@@ -40,7 +41,10 @@ namespace Game.System
 
         private void OnDisable()
         {
-            
+            if (choosedtowerBaseSystem != null)
+            {
+                choosedtowerBaseSystem.TowerRange.Show(false);
+            }
         }
 
         public IEnumerator RefreshUI()

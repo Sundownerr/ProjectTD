@@ -37,7 +37,7 @@ namespace Game.Tower
                     towerRendererList[i].material.color = Color.white - new Color(0.2f, 0.2f, 0.2f);
                 }
 
-                towerRangeTransform.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
+                TowerRange.Show(false);
 
                 gameObject.layer = 14;
 
@@ -90,8 +90,6 @@ namespace Game.Tower
 
             TowerRange = towerRangeTransform.gameObject.GetComponent<TowerRangeSystem>();
 
-            var randomNumber = Random.Range(510, 900);
-
             towerRangeTransform.localScale = new Vector3(TowerStats.range, 0.001f, TowerStats.range);
             
         }
@@ -121,13 +119,17 @@ namespace Game.Tower
                     RotateTowerToDefault();
                 }
 
+                
                 if(GameManager.Instance.UISystem.IsBuildModeActive)
                 {
                     TowerRange.Show(true);
                 }
                 else
                 {
-                    TowerRange.Show(false);
+                    if (PlayerSystem.PLAYERSTATE != PlayerSystem.PLAYERSTATE_CHOOSEDTOWER)
+                    {
+                        TowerRange.Show(false);
+                    }                   
                 }
             }
         }
