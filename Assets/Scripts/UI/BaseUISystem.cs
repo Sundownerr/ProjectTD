@@ -49,9 +49,7 @@ namespace Game.System
         }      
 
         private void LateUpdate()
-        {
-
-          
+        {          
             if (GameManager.Instance.GridSystem.IsGridBuilded)
             {
                 if (IsBuildModeActive)

@@ -57,6 +57,8 @@ namespace Game.System
                     {
                         ChoosedTower = hit.transform.gameObject;
 
+                        
+
                         if (!GameManager.Instance.TowerUISystem.gameObject.activeSelf)
                         {
                             GameManager.Instance.TowerUISystem.gameObject.SetActive(true);
@@ -68,6 +70,8 @@ namespace Game.System
 
                     if (isMouseNotOnUI)
                     {
+                        
+
                         if (Input.GetMouseButtonDown(0) && GameManager.Instance.TowerUISystem.gameObject.activeSelf)
                         {
                             GameManager.Instance.TowerUISystem.gameObject.SetActive(false);

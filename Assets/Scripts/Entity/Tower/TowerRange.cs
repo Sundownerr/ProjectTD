@@ -7,12 +7,10 @@ namespace Game.Tower
 
     public class TowerRange : ExtendedMonoBehaviour
     {
-
         public bool IsCreepInRange;
         public List<GameObject> CreepInRangeList;
 
-        private Renderer renderer;
-        private bool isTransparent;
+        private Renderer rend;
 
         private IEnumerator DeleteMissing()
         {
@@ -34,16 +32,16 @@ namespace Game.Tower
         {
             if (show)
             {
-                if (renderer.material.color != new Color(0, 0.5f, 0, 0.2f))
+                if (rend.material.color != new Color(0, 0.5f, 0, 0.2f))
                 {
-                    renderer.material.color = new Color(0, 0.5f, 0, 0.2f);
+                    rend.material.color = new Color(0, 0.5f, 0, 0.2f);
                 }
             }
             else
             {
-                if (renderer.material.color != new Color(0f, 0f, 0f, 0f))
+                if (rend.material.color != new Color(0f, 0f, 0f, 0f))
                 {
-                    renderer.material.color = new Color(0f, 0f, 0f, 0f);
+                    rend.material.color = new Color(0f, 0f, 0f, 0f);
                 }
             }
         }
@@ -52,7 +50,7 @@ namespace Game.Tower
         {
             CreepInRangeList = new List<GameObject>();
             transform.position += new Vector3(0, -5, 0);
-            renderer = GetComponent<Renderer>();
+            rend = GetComponent<Renderer>();
         }
 
         private void OnTriggerEnter(Collider other)

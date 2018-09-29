@@ -6,22 +6,24 @@ namespace Game.System
 {
     public class WaveSystem : MonoBehaviour
     {
-        private bool isCreepsStartSpawning;
+        private bool isCreepsStartSpawning, isCreepsSpawned;
 
         private IEnumerator SpawnCreeps(int needToSpawnCount, float spawnDelay)
         {
-            var spawnedCreepCount = 0;
-
-            isCreepsStartSpawning = true;
+            var spawnedCreepCount = 0;         
 
             while (spawnedCreepCount < needToSpawnCount)
             {
                 Instantiate(GameManager.Instance.CreepPrefab);
 
+                isCreepsStartSpawning = true;
+
                 spawnedCreepCount++;
 
                 yield return new WaitForSeconds(spawnDelay);
             }
+
+            isCreepsSpawned = true;            
         }
 
         private void LateUpdate()
@@ -30,15 +32,17 @@ namespace Game.System
             {
                 if (!isCreepsStartSpawning)
                 {
-                    StartCoroutine(SpawnCreeps(5, 0.1f));
+                    StartCoroutine(SpawnCreeps(25, 0.1f));
                 }
 
-                if (isCreepsStartSpawning)
+                if (isCreepsSpawned)
                 {
                     if (GameManager.Instance.CreepList.Count == 0)
                     {
-                        isCreepsStartSpawning = false;
+                        isCreepsSpawned = false;
+                        isCreepsStartSpawning = false;                       
                         GameManager.Instance.UISystem.IsWaveStarted = false;
+                        GameManager.Instance.UISystem.StartWaveButton.gameObject.SetActive(true);
                     }
                 }
             }
