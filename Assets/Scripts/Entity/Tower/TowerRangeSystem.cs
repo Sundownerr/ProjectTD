@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.Tower
 {
 
-    public class TowerRange : ExtendedMonoBehaviour
+    public class TowerRangeSystem : ExtendedMonoBehaviour
     {
         public bool IsCreepInRange;
         public List<GameObject> CreepInRangeList;

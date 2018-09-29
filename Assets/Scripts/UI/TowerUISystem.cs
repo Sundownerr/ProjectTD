@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Game.Tower;
 #pragma warning disable CS1591 
 namespace Game.System
 {
@@ -12,6 +13,8 @@ namespace Game.System
         public TextMeshProUGUI DamageValue, RangeValue, ManaValue, AttackSpeedValue, TriggerChanceValue, SpellDamageValue, SpellCritChanceValue;
         public TextMeshProUGUI TowerName, CritChanceValue;
 
+        private Tower choosedTower;
+
         private void Awake()
         {
             gameObject.SetActive(false);
@@ -19,23 +22,27 @@ namespace Game.System
 
         private void OnEnable()
         {
-            var choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower.GetComponent<Tower.Tower>();
+            var choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower.GetComponent<Tower.TowerBaseSystem>();
             var choosedTowerStats = choosedTower.TowerStats;
 
-            choosedTower.GetComponent<Tower.TowerRange>().Show(true);
+            choosedTower.GetComponent<Tower.TowerRangeSystem>().Show(true);
 
-            DamageValue.text = KiloFormat(choosedTowerStats.damage).ToString();
-            RangeValue.text = KiloFormat(choosedTowerStats.range).ToString();
-            ManaValue.text = KiloFormat(choosedTowerStats.mana).ToString();
-            AttackSpeedValue.text = KiloFormat(choosedTowerStats.attackSpeed).ToString();
-            TriggerChanceValue.text = KiloFormat(choosedTowerStats.triggerChance).ToString() + "%";
-            SpellCritChanceValue.text = KiloFormat(choosedTowerStats.spellCritChance).ToString() + "%";
-            SpellDamageValue.text = KiloFormat(choosedTowerStats.spellDamage).ToString() + "%";
             TowerName.text = choosedTowerStats.entityName;
-            CritChanceValue.text = KiloFormat(choosedTowerStats.critChance).ToString() + "%";
+            DamageValue.text = KiloFormat(choosedTowerStats.damage);
+            RangeValue.text = KiloFormat(choosedTowerStats.range);
+            ManaValue.text = KiloFormat(choosedTowerStats.mana);
+            AttackSpeedValue.text = KiloFormat(choosedTowerStats.attackSpeed);
+            TriggerChanceValue.text = KiloFormat(choosedTowerStats.triggerChance) + "%";
+            SpellCritChanceValue.text = KiloFormat(choosedTowerStats.spellCritChance) + "%";
+            SpellDamageValue.text = KiloFormat(choosedTowerStats.spellDamage) + "%";           
+            CritChanceValue.text = KiloFormat(choosedTowerStats.critChance) + "%";
+        }
+
+        private void OnDisable()
+        {
             
         }
-        
+
         public IEnumerator RefreshUI()
         {
             gameObject.SetActive(false);

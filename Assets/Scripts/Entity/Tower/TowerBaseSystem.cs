@@ -8,13 +8,13 @@ using Game.Tower.CombatSystem;
 namespace Game.Tower
 {
 
-    public class Tower : ExtendedMonoBehaviour
+    public class TowerBaseSystem : ExtendedMonoBehaviour
     {
         public GameObject Bullet, TowerPlaceEffect;
         public bool IsTowerBuilded;
         public TowerStats TowerStats;
         public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
-        public TowerRange TowerRange;
+        public TowerRangeSystem TowerRange;
         public TowerCombatSystem TowerCombatSystem;
 
         private List<Renderer> towerRendererList;
@@ -88,7 +88,7 @@ namespace Game.Tower
             movingPartTransform = transform.GetChild(1);
             shootPointTransform = movingPartTransform.GetChild(0).GetChild(0);
 
-            TowerRange = towerRangeTransform.gameObject.GetComponent<TowerRange>();
+            TowerRange = towerRangeTransform.gameObject.GetComponent<TowerRangeSystem>();
 
             var randomNumber = Random.Range(510, 900);
 

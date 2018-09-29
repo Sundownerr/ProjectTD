@@ -8,7 +8,7 @@ namespace Game.Tower.CombatSystem
 
     public class TowerCombatSystem : MonoBehaviour
     {
-        public Tower towerData;
+        public TowerBaseSystem towerData;
      
         private List<GameObject> bulletList;
         private List<Bullet> bulletDataList;
@@ -20,7 +20,7 @@ namespace Game.Tower.CombatSystem
 
         private void Start()
         {         
-            towerData = gameObject.GetComponent<Tower>();
+            towerData = gameObject.GetComponent<TowerBaseSystem>();
             bulletList = new List<GameObject>();
             bulletDataList = new List<Bullet>();          
         }

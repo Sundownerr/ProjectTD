@@ -6,7 +6,7 @@ using Game.System;
 namespace Game.TowerCells
 {
 
-    public class TowerCellExpand
+    public class TowerCellExpandSystem
     {
         private bool FillSide( Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
         {
@@ -40,7 +40,7 @@ namespace Game.TowerCells
             return false;
         }
 
-        public TowerCellExpand(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
+        public TowerCellExpandSystem(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
         {
             for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
             {
