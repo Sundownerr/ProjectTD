@@ -19,7 +19,7 @@ namespace Game.System
 
         private void OnEnable()
         {
-            var choosedTowerStats = GameManager.Instance.PlayerSystem.ChoosedTower.GetComponent<Tower.Tower>().towerStats;
+            var choosedTowerStats = GameManager.Instance.PlayerSystem.ChoosedTower.GetComponent<Tower.Tower>().TowerStats;
 
             DamageValue.text = KiloFormat(choosedTowerStats.damage).ToString();
             RangeValue.text = KiloFormat(choosedTowerStats.range).ToString();

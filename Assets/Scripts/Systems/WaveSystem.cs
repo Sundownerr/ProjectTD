@@ -7,7 +7,6 @@ namespace Game.System
     public class WaveSystem : MonoBehaviour
     {
         private bool isCreepsStartSpawning;
-        private int creepsAmountSpawned;
 
         private IEnumerator SpawnCreeps(int needToSpawnCount, float spawnDelay)
         {
@@ -38,7 +37,6 @@ namespace Game.System
                 {
                     if (GameManager.Instance.CreepList.Count == 0)
                     {
-                        creepsAmountSpawned = 0;
                         isCreepsStartSpawning = false;
                         GameManager.Instance.UISystem.IsWaveStarted = false;
                     }

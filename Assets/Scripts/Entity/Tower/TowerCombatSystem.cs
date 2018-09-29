@@ -47,7 +47,7 @@ namespace Game.Tower.CombatSystem
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
             bulletSpeed = bulletDataList[last].Speed;
-            bulletDataList[last].Target = towerData.rangeCollider.CreepInRangeList[0];
+            bulletDataList[last].Target = towerData.TowerRange.CreepInRangeList[0];
 
             bulletList[last].SetActive(true);
 

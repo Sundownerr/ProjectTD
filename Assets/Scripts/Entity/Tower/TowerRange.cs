@@ -11,6 +11,9 @@ namespace Game.Tower
         public bool IsCreepInRange;
         public List<GameObject> CreepInRangeList;
 
+        private Renderer renderer;
+        private bool isTransparent;
+
         private IEnumerator DeleteMissing()
         {
             while (CreepInRangeList.Count > 0)
@@ -27,10 +30,29 @@ namespace Game.Tower
             }
         }
 
+        public void Show(bool show)
+        {
+            if (show)
+            {
+                if (renderer.material.color != new Color(0, 0.5f, 0, 0.2f))
+                {
+                    renderer.material.color = new Color(0, 0.5f, 0, 0.2f);
+                }
+            }
+            else
+            {
+                if (renderer.material.color != new Color(0f, 0f, 0f, 0f))
+                {
+                    renderer.material.color = new Color(0f, 0f, 0f, 0f);
+                }
+            }
+        }
+
         private void Start()
         {
             CreepInRangeList = new List<GameObject>();
             transform.position += new Vector3(0, -5, 0);
+            renderer = GetComponent<Renderer>();
         }
 
         private void OnTriggerEnter(Collider other)

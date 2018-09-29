@@ -12,13 +12,12 @@ namespace Game.Tower
     {
         public GameObject Bullet, TowerPlaceEffect;
         public bool IsTowerBuilded;
-        public TowerStats towerStats;
+        public TowerStats TowerStats;
         public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
-        public TowerRange rangeCollider;
+        public TowerRange TowerRange;
         public TowerCombatSystem TowerCombatSystem;
 
         private List<Renderer> towerRendererList;
-        private bool isRangeShowed;
        
 
         private void StartTowerBuild()
@@ -53,7 +52,7 @@ namespace Game.Tower
 
         private void RotateTowerAtCreep()
         {
-            var offset = rangeCollider.CreepInRangeList[0].transform.position - transform.position;
+            var offset = TowerRange.CreepInRangeList[0].transform.position - transform.position;
             offset.y = 0;
 
             var towerRotation = Quaternion.LookRotation(offset);
@@ -68,34 +67,20 @@ namespace Game.Tower
                 movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 1f);
             }
         }
-
-        private bool ShowTowerRange(bool isShowed)
-        {
-            if (!isShowed)
-            {
-                towerRangeTransform.GetComponent<Renderer>().material.color = new Color(0, 0.5f, 0, 0.2f);
-                return true;
-            }
-            else
-            {
-                towerRangeTransform.GetComponent<Renderer>().material.color = new Color(0, 0f, 0, 0f);
-                return false;
-            }
-        }
-
+      
         private void Start()
         {
             
-            towerStats = ScriptableObject.CreateInstance<TowerStats>();
+            TowerStats = ScriptableObject.CreateInstance<TowerStats>();
             towerRendererList = new List<Renderer>();
                                 
-            towerStats.entityName = "SampleTowerName" +Random.Range(100, 1000);
-            towerStats.damage = Random.Range(1000,10000);
-            towerStats.range = Random.Range(510, 900);
-            towerStats.critChance = Mathf.Floor(Random.Range(0, 1f) * 100);
-            towerStats.mana = Random.Range(0, 100000);
-            towerStats.spellDamage = Mathf.Floor(Random.Range(0, 10f) * 100);
-            towerStats.triggerChance = Mathf.Floor(Random.Range(0, 1f) * 100);
+            TowerStats.entityName = "SampleTowerName" +Random.Range(100, 1000);
+            TowerStats.damage = Random.Range(1000,10000);
+            TowerStats.range = Random.Range(510, 900);
+            TowerStats.critChance = Mathf.Floor(Random.Range(0, 1f) * 100);
+            TowerStats.mana = Random.Range(0, 100000);
+            TowerStats.spellDamage = Mathf.Floor(Random.Range(0, 10f) * 100);
+            TowerStats.triggerChance = Mathf.Floor(Random.Range(0, 1f) * 100);
 
             towerRendererList.AddRange(GetComponentsInChildren<Renderer>());
             
@@ -103,11 +88,11 @@ namespace Game.Tower
             movingPartTransform = transform.GetChild(1);
             shootPointTransform = movingPartTransform.GetChild(0).GetChild(0);
 
-            rangeCollider = towerRangeTransform.gameObject.GetComponent<TowerRange>();
+            TowerRange = towerRangeTransform.gameObject.GetComponent<TowerRange>();
 
             var randomNumber = Random.Range(510, 900);
 
-            towerRangeTransform.localScale = new Vector3(towerStats.range, 0.001f, towerStats.range);
+            towerRangeTransform.localScale = new Vector3(TowerStats.range, 0.001f, TowerStats.range);
             
         }
        
@@ -124,10 +109,10 @@ namespace Game.Tower
 
             if (IsTowerBuilded)
             {
-                if (rangeCollider.CreepInRangeList.Count > 0 && rangeCollider.CreepInRangeList[0] != null && rangeCollider.IsCreepInRange)
+                if (TowerRange.CreepInRangeList.Count > 0 && TowerRange.CreepInRangeList[0] != null && TowerRange.IsCreepInRange)
                 {
                     RotateTowerAtCreep();
-                    TowerCombatSystem.ShootAtCreep(0.3f);
+                    TowerCombatSystem.ShootAtCreep(0.2f);
                 }
                 else
                 {
@@ -136,13 +121,13 @@ namespace Game.Tower
                     RotateTowerToDefault();
                 }
 
-                if(GameManager.Instance.UISystem.IsBuildModeActive && !isRangeShowed)
+                if(GameManager.Instance.UISystem.IsBuildModeActive)
                 {
-                    ShowTowerRange(false);
+                    TowerRange.Show(true);
                 }
                 else
                 {
-                    ShowTowerRange(true);
+                    TowerRange.Show(false);
                 }
             }
         }
