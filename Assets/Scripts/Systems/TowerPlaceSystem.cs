@@ -42,6 +42,7 @@ namespace Game.System
         private void CreateGhostedTower()
         {
             GameManager.Instance.TowerList.Add(Instantiate(GameManager.Instance.TowerPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0f, 0f, 0f), GameManager.Instance.TowerParent));
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
         }
 
         private void PlaceGhostedTower()

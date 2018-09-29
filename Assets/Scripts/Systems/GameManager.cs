@@ -19,9 +19,8 @@ namespace Game.System
         public TowerUISystem TowerUISystem;
         public Canvas UICanvas;
 
-
-
         public static GameManager Instance;
+        public static int PLAYERSTATE, PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_CHOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
 
         void Awake()
         {
@@ -33,6 +32,13 @@ namespace Game.System
             {
                 Debug.Log("Warning: multiple " + this + " in scene!");
             }
+
+            PLAYERSTATE_IDLE = 0;
+            PLAYERSTATE_CHOOSEDCREEP = 1;
+            PLAYERSTATE_CHOOSEDTOWER = 2;
+            PLAYERSTATE_PLACINGTOWER = 3;
+
+            PLAYERSTATE = PLAYERSTATE_IDLE;
         }
 
         public static float CalcDistance(Vector3 pos1, Vector3 pos2)

@@ -17,8 +17,7 @@ namespace Game.Tower
         public TowerRangeSystem TowerRange;
         public TowerCombatSystem TowerCombatSystem;
 
-        private List<Renderer> towerRendererList;
-       
+        private List<Renderer> towerRendererList;       
 
         private void StartTowerBuild()
         {
@@ -96,7 +95,7 @@ namespace Game.Tower
        
         private void LateUpdate()
         {
-            if (!IsTowerBuilded && GameManager.Instance.UISystem.IsBuildModeActive)
+            if (!IsTowerBuilded && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
             {
                 StartTowerBuild();
             }
@@ -126,7 +125,7 @@ namespace Game.Tower
                 }
                 else
                 {
-                    if (PlayerSystem.PLAYERSTATE != PlayerSystem.PLAYERSTATE_CHOOSEDTOWER)
+                    if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_CHOOSEDTOWER)
                     {
                         TowerRange.Show(false);
                     }                   

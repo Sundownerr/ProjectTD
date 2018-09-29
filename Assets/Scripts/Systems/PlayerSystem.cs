@@ -8,36 +8,24 @@ namespace Game.System
 {
     public class PlayerSystem : MonoBehaviour
     {
-        public GameObject ChoosedTower;
-        public static int PLAYERSTATE, PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_CHOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
-        public LayerMask LayerMask;
-        private Ray WorldRay;
-
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
+        public GameObject ChoosedTower;     
+        public LayerMask LayerMask;
 
-        private bool isHitUI;
-        private RaycastHit hit;
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
-
-        private void Awake()
-        {
-            PLAYERSTATE_IDLE = 0;
-            PLAYERSTATE_CHOOSEDCREEP = 1;
-            PLAYERSTATE_CHOOSEDTOWER = 2;
-            PLAYERSTATE_PLACINGTOWER = 3;
-        }
+        private RaycastHit hit;
+        private Ray WorldRay;
+        private bool isHitUI;
 
         private void Start()
         {
-            results = new List<RaycastResult>();
-            PLAYERSTATE = PLAYERSTATE_IDLE;
+            results = new List<RaycastResult>();          
         }
 
         private void LateUpdate()
-        {
-          
+        {      
             pointerEventData = new PointerEventData(EventSystem)
             {
                 position = Input.mousePosition
@@ -74,7 +62,7 @@ namespace Game.System
 
                         StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());
 
-                        PLAYERSTATE = PLAYERSTATE_CHOOSEDTOWER;
+                        GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_CHOOSEDTOWER;
                     }
 
                     if (isMouseNotOnUI)
@@ -84,7 +72,7 @@ namespace Game.System
                             GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
                         }
 
-                        PLAYERSTATE = PLAYERSTATE_IDLE;
+                        GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
                     }
                 }
             }
