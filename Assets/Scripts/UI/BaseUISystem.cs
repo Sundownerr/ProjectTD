@@ -9,9 +9,10 @@ namespace Game.System
     {
         public Button StartWaveButton, BuildModeButton, ReadyButton;
         public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
+        public int WaveTimer;
 
 
-        void Start()
+        private void Start()
         {
             Cursor.lockState = CursorLockMode.Confined;
 
@@ -22,10 +23,11 @@ namespace Game.System
 
         private void StartWave()
         {
-            if (GameManager.Instance.CreepList.Count == 0)
+            if (GameManager.Instance.CreepList.Count == 0 && !IsWaveStarted)
             {
                 IsWaveStarted = true;
-                StartWaveButton.gameObject.SetActive(false);              
+                StartWaveButton.gameObject.SetActive(false);
+               
             }
         }
 
@@ -48,6 +50,8 @@ namespace Game.System
 
         private void LateUpdate()
         {
+
+          
             if (GameManager.Instance.GridSystem.IsGridBuilded)
             {
                 if (IsBuildModeActive)

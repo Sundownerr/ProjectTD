@@ -6,56 +6,40 @@ namespace Game.System
 {
     public class WaveSystem : MonoBehaviour
     {
+        private bool isCreepsStartSpawning;
+        private int creepsAmountSpawned;
 
-        private bool creepsSpawned;
-        private int creepsAmountSpawned, creepsAmountNotSpawned, spawnDelay;
-
-        private void SpawnCreeps(int amount, float delay)
+        private IEnumerator SpawnCreeps(int needToSpawnCount, float spawnDelay)
         {
-            if (spawnDelay < delay)
+            var spawnedCreepCount = 0;
+
+            isCreepsStartSpawning = true;
+
+            while (spawnedCreepCount < needToSpawnCount)
             {
-                spawnDelay++;
+                Instantiate(GameManager.Instance.CreepPrefab);
 
-                if (spawnDelay == 1)
-                {
-                    if (creepsAmountSpawned < amount)
-                    {
-                        Instantiate(GameManager.Instance.CreepPrefab);
+                spawnedCreepCount++;
 
-                        creepsAmountSpawned++;
-                    }
-                    else
-                    {
-                        creepsSpawned = true;
-                    }
-                }
+                yield return new WaitForSeconds(spawnDelay);
             }
-            else
-            {
-                spawnDelay = 0;
-            }
-        }
-
-        private void Start()
-        {
-            creepsAmountNotSpawned = 15;
         }
 
         private void LateUpdate()
         {
             if (GameManager.Instance.UISystem.IsWaveStarted)
             {
-                if (!creepsSpawned)
+                if (!isCreepsStartSpawning)
                 {
-                    SpawnCreeps(creepsAmountNotSpawned, 30f);
+                    StartCoroutine(SpawnCreeps(5, 0.1f));
                 }
 
-                if (creepsSpawned)
+                if (isCreepsStartSpawning)
                 {
                     if (GameManager.Instance.CreepList.Count == 0)
                     {
                         creepsAmountSpawned = 0;
-                        creepsSpawned = false;
+                        isCreepsStartSpawning = false;
                         GameManager.Instance.UISystem.IsWaveStarted = false;
                     }
                 }
