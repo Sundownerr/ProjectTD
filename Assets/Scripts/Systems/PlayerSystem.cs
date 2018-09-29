@@ -8,7 +8,7 @@ namespace Game.System
 {
     public class PlayerSystem : MonoBehaviour
     {
-
+        public GameObject ChoosedTower;
         public static int PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_ChOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
         public LayerMask LayerMask;
         private Ray WorldRay;
@@ -39,7 +39,6 @@ namespace Game.System
 
                 if (results.Count > 0)
                 {
-                    Debug.Log(results[0].gameObject);
                     isHitUI = true;
                 }
             }            
@@ -49,26 +48,36 @@ namespace Game.System
             if (Physics.Raycast(WorldRay, out hit, 10000, LayerMask))
             {
 
-                if (hit.transform.gameObject.layer == 14)
-                {
-                    if (Input.GetMouseButtonDown(0) && !GameManager.Instance.TowerUISystem.gameObject.activeSelf)
-                    {
-                        GameManager.Instance.TowerUISystem.gameObject.SetActive(true);
-                    }
-                }
+                var isMouseOnTower = hit.transform.gameObject.layer == 14;
+                var isMouseNotOnUI = !isHitUI && hit.transform.gameObject.layer == 9;
 
-                if (!isHitUI && hit.transform.gameObject.layer == 9)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    if (Input.GetMouseButtonDown(0) && GameManager.Instance.TowerUISystem.gameObject.activeSelf)
+                    if (isMouseOnTower)
                     {
-                        GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
+                        ChoosedTower = hit.transform.gameObject;
+
+                        if (!GameManager.Instance.TowerUISystem.gameObject.activeSelf)
+                        {
+                            GameManager.Instance.TowerUISystem.gameObject.SetActive(true);
+                        }                        
+
+                        StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());                     
+                       
+                    }
+
+                    if (isMouseNotOnUI)
+                    {
+                        if (Input.GetMouseButtonDown(0) && GameManager.Instance.TowerUISystem.gameObject.activeSelf)
+                        {
+                            GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
+                        }
                     }
                 }
             }
 
             if (results.Count > 0)
             {
-
                 results.Clear();
                 isHitUI = false;
             }

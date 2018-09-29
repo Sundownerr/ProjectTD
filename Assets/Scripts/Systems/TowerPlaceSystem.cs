@@ -107,7 +107,7 @@ namespace Game.System
             StartCoroutine(GetTowerCellData());
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             if (GameManager.Instance.UISystem.IsBuildModeActive && canBuild)
             {

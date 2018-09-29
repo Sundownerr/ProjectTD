@@ -13,7 +13,7 @@ namespace Game.System
         {
             CreateGrid(GameManager.Instance.TowerCellAreaList.Length);
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
 
             IsGridBuilded = true;
         }
@@ -35,9 +35,39 @@ namespace Game.System
             }
         }
 
+        private void CellsSetActive(bool active)
+        {
+            for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+            {
+                GameManager.Instance.TowerCellList[i].SetActive(active);
+            }
+        }
+
         private void Start()
         {
             StartCoroutine(BuildTimer());
+        }
+
+        private void LateUpdate()
+        {
+            if (IsGridBuilded)
+            {
+                if (GameManager.Instance.UISystem.IsBuildModeActive)
+                {
+                    if (!GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                    {
+                        CellsSetActive(GameManager.Instance.UISystem.IsBuildModeActive);
+                    }
+                }
+
+                if (!GameManager.Instance.UISystem.IsBuildModeActive)
+                {
+                    if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                    {
+                        CellsSetActive(GameManager.Instance.UISystem.IsBuildModeActive);
+                    }
+                }
+            }
         }
     }
 }

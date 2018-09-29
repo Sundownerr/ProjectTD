@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.Tower
 {
 
-    public class TowerRange : MonoBehaviour
+    public class TowerRange : ExtendedMonoBehaviour
     {
 
         public bool IsCreepInRange;
@@ -29,7 +29,8 @@ namespace Game.Tower
 
         private void Start()
         {
-            CreepInRangeList = new List<GameObject>();           
+            CreepInRangeList = new List<GameObject>();
+            transform.position += new Vector3(0, -5, 0);
         }
 
         private void OnTriggerEnter(Collider other)

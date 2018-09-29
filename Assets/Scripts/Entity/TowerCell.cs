@@ -25,7 +25,7 @@ namespace Game.TowerCells
             blueColor = new Color(0.1f, 0.1f, 0.3f, 0.4f);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             if (GameManager.Instance.UISystem.IsBuildModeActive)
             {
@@ -38,7 +38,9 @@ namespace Game.TowerCells
                 }
 
                 if (IsChosen)
+                {
                     cellRenderer.material.color = greenColor;
+                }
             }
         }
     }

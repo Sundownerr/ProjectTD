@@ -7,9 +7,10 @@ namespace Game.Data.Entity.Tower
     [CreateAssetMenu(fileName = "New Tower", menuName = "Base Tower")]
     public class TowerStats : Entity
     {
-        public float damage, range, attackSpeed, triggerChance, critChance, critMultiplier, multicritCount;
-        public float spellDamage, spellCritChance, spellCritMultiplier;
-        public float mana, manaRegen;
+        public int damage, range, critMultiplier, spellCritMultiplier, mana,  multicritCount;
+        public float attackSpeed, triggerChance, critChance, manaRegen;
+        public float spellDamage, spellCritChance;
+  
         public float goldRatio, expRatio, itemDropRatio, itemQuialityRatio;
         public float buffDuration, debuffDuration;
 

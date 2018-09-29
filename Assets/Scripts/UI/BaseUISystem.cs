@@ -46,7 +46,7 @@ namespace Game.System
             Destroy(ReadyButton.gameObject);
         }      
 
-        private void Update()
+        private void LateUpdate()
         {
             if (GameManager.Instance.GridSystem.IsGridBuilded)
             {

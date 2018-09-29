@@ -58,7 +58,7 @@ namespace Game.Creep
             }
         }
 
-        private void Update()
+        private void LateUpdate()
         {
 
             waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 70;

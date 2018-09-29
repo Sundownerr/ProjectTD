@@ -41,7 +41,7 @@ namespace Game.System
             creepsAmountNotSpawned = 15;
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             if (GameManager.Instance.UISystem.IsWaveStarted)
             {
