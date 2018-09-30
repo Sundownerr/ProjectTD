@@ -35,7 +35,7 @@ namespace Game.Creep
             Stats.hp = 100f;
             Stats.entityName = "retard";
             Stats.armorIndex = 0;
-            Stats.moveSpeed = 450f;            
+            Stats.moveSpeed = 150f;            
 
             creepTransform = transform;
             creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);

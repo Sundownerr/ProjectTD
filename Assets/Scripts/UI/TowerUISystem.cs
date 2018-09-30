@@ -65,8 +65,10 @@ namespace Game.System
                 if(GameManager.Instance.TowerList[i] == choosedTower)
                 {
                     GameManager.Instance.TowerList[i].GetComponent<TowerCombatSystem>().bulletPool.DestroyPool();
+                    choosedTowerBaseSystem.OcuppiedCell.GetComponent<TowerCells.TowerCell>().IsBusy = false;
                     Destroy(GameManager.Instance.TowerList[i]);
                     GameManager.Instance.TowerList.RemoveAt(i);
+
                     gameObject.SetActive(false);
                 }
             }

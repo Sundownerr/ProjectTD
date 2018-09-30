@@ -9,6 +9,7 @@ namespace Game.System
     public class TowerPlaceSystem : ExtendedMonoBehaviour
     {
         public Color GhostedTowerColor;
+        public GameObject NewBusyCell;
         public LayerMask LayerMask;
 
         private List<TowerCell> towerCellStateList;
@@ -63,6 +64,7 @@ namespace Game.System
                         if (Input.GetMouseButtonDown(0))
                         {
                             towerCellStateList[i].IsBusy = true;
+                            NewBusyCell = GameManager.Instance.TowerCellList[i];
 
                             isTowerCreated = false;
 

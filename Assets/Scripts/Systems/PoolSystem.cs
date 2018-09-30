@@ -6,7 +6,7 @@ using System.Collections.Generic;
     {
         public GameObject poolObject;
         public Transform parent;
-        public uint poolLenght =3;
+        public uint poolLenght = 2;
 
         protected List<GameObject> poolList = new List<GameObject>();
 

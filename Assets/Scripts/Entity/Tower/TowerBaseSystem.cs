@@ -10,14 +10,13 @@ namespace Game.Tower
 
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
-        public GameObject Bullet, TowerPlaceEffect;
+        public GameObject Bullet, TowerPlaceEffect, OcuppiedCell;
         public bool IsTowerBuilded;
         public TowerStats TowerStats;
         public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
         public TowerRangeSystem TowerRange;
         public TowerCombatSystem TowerCombatSystem;
-
-        private List<Renderer> towerRendererList;       
+        private List<Renderer> towerRendererList;           
 
         private void StartTowerBuild()
         {
@@ -43,6 +42,7 @@ namespace Game.Tower
                 var towerPlaceEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90,0,0));
                 Destroy(towerPlaceEffect, 2f);
 
+                OcuppiedCell = GameManager.Instance.TowerPlaceSystem.NewBusyCell;
                 return true;
             }
 

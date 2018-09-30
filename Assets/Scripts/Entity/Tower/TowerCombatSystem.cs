@@ -13,29 +13,30 @@ namespace Game.Tower
 
         private List<GameObject> bulletList;
         private List<Bullet> bulletDataList;       
-        private float bulletSpeed;
-        private float bulletLifetime;
+        private float bulletSpeed, bulletLifetime, distance, targetScale;
         private bool isCooldown;
-        
+        private Vector3 targetLastPos;
+        private Transform targetTransform;
 
         private void Start()
         {         
             towerData = gameObject.GetComponent<TowerBaseSystem>();
             bulletList = new List<GameObject>();
-            bulletDataList = new List<Bullet>();          
+            bulletDataList = new List<Bullet>();
+
+
+            bulletPool = new ObjectPool
+            {
+                poolObject = towerData.Bullet
+            };
+
+            bulletPool.Initialize();
+
         }
 
         private IEnumerator CreateBullet(float cooldown)
         {
-            if (bulletPool == null)
-            {
-                bulletPool = new ObjectPool
-                {
-                    poolObject = towerData.Bullet
-                };
-
-                bulletPool.Initialize();
-            }
+           
 
             bulletList.Add(bulletPool.GetObject());
             var last = bulletList.Count - 1;
@@ -48,6 +49,9 @@ namespace Game.Tower
             bulletLifetime = bulletDataList[last].BulletLifetime;
             bulletSpeed = bulletDataList[last].Speed;
             bulletDataList[last].Target = towerData.TowerRange.CreepInRangeList[0];
+
+           
+            
 
             bulletList[last].SetActive(true);
 
@@ -63,26 +67,32 @@ namespace Game.Tower
 
         private void MoveBullet()
         {
+
             for (int i = 0; i < bulletList.Count; i++)
             {
                 if (bulletDataList[i].Target != null)
                 {
-                    var distance = 
-                        GameManager.CalcDistance(
-                            bulletList[i].transform.position,
-                            bulletDataList[i].Target.transform.position
-                            );
+                    targetTransform = bulletDataList[i].Target.transform;
 
-                    if (!bulletDataList[i].IsReachedTarget && distance > bulletDataList[i].Target.transform.lossyScale.x - 5)
-                    {
-                        bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                        bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
-                    }
-                    else
-                    {
-                        bulletDataList[i].IsReachedTarget = true;
-                        bulletDataList[i].Show(false);
-                    }
+                    targetLastPos = targetTransform.position;
+
+                    targetScale = targetTransform.lossyScale.x - 5;
+
+                    distance = GameManager.CalcDistance(
+                            bulletList[i].transform.position,
+                            targetLastPos
+                            );                                    
+                }
+
+                if (!bulletDataList[i].IsReachedTarget && distance > targetScale)
+                {
+                    bulletList[i].transform.LookAt(targetLastPos);
+                    bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
+                }
+                else
+                {
+                    bulletDataList[i].IsReachedTarget = true;
+                    bulletDataList[i].Show(false);
                 }
             }
         }
