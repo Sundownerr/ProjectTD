@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 #pragma warning disable CS1591 
-public class CameraMovementScript : MonoBehaviour
+public class CameraMovementScript : ExtendedMonoBehaviour
 {   
     private Rigidbody camRigidBody;
     private float speed, boundary, rotationX;
@@ -15,11 +15,13 @@ public class CameraMovementScript : MonoBehaviour
         boundary = 10f;
 
         rotationX = 54f;
+
+   
     }
 
     private void FixedUpdate()
     {
-        if (Input.GetAxis("Mouse ScrollWheel") > 0) 
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
             if (rotationX > 53)
             {
@@ -29,7 +31,7 @@ public class CameraMovementScript : MonoBehaviour
             }
         }
 
-        if (Input.GetAxis("Mouse ScrollWheel") < 0) 
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             if (rotationX < 72)
             {
@@ -44,19 +46,26 @@ public class CameraMovementScript : MonoBehaviour
         var onTopEdge = Input.mousePosition.y > Screen.height - boundary;
         var onBottomEdge = Input.mousePosition.y < 0 + boundary;
 
+        var vel = Vector3.zero;
+
         if (transform.position.x < 220f & onLeftEdge)
-            camRigidBody.AddForce(Vector3.right * speed);
+            vel = Vector3.right * speed;
 
         if (transform.position.x > -65f & onRightEdge)
-            camRigidBody.AddForce(Vector3.left * speed);
+            vel = Vector3.left * speed;
 
         if (transform.position.z > -700f & onBottomEdge)
-            camRigidBody.AddForce(Vector3.back * speed);
+            vel = Vector3.back * speed;
 
         if (transform.position.z < 104f & onTopEdge)
-            camRigidBody.AddForce(Vector3.forward * speed);
+            vel = Vector3.forward * speed;
 
+        camRigidBody.AddForce(vel);
     }
 }
+
+
+
+
 
 

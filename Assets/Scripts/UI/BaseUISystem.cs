@@ -8,7 +8,7 @@ namespace Game.System
     public class BaseUISystem : MonoBehaviour
     {
         public Button StartWaveButton, BuildModeButton, ReadyButton;
-        public bool IsBuildModeActive, IsWaveStarted, IsPlayerReady;
+        public bool IsWaveStarted, IsPlayerReady;
         public int WaveTimer;
 
 
@@ -26,8 +26,7 @@ namespace Game.System
             if (GameManager.Instance.CreepList.Count == 0 && !IsWaveStarted)
             {
                 IsWaveStarted = true;
-                StartWaveButton.gameObject.SetActive(false);
-               
+                StartWaveButton.gameObject.SetActive(false);               
             }
         }
 
@@ -35,10 +34,7 @@ namespace Game.System
         {
             if (GameManager.Instance.GridSystem.IsGridBuilded)
             {
-                if (!IsBuildModeActive)
-                {
-                    IsBuildModeActive = true;
-                }
+                GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
             }
         }
 
@@ -48,32 +44,5 @@ namespace Game.System
             Destroy(ReadyButton.gameObject);
         }      
 
-        private void LateUpdate()
-        {          
-            if (GameManager.Instance.GridSystem.IsGridBuilded)
-            {
-                if (IsBuildModeActive)
-                {
-                    if (!GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
-                    {
-                        for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
-                        {
-                            GameManager.Instance.TowerCellList[i].SetActive(true);
-                        }
-                    }
-                }
-
-                if (!IsBuildModeActive)
-                {
-                    if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
-                    {
-                        for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
-                        {
-                            GameManager.Instance.TowerCellList[i].SetActive(false);
-                        }
-                    }
-                }
-            }
-        }
     }
 }

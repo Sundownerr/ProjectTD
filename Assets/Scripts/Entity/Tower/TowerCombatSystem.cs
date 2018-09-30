@@ -3,16 +3,16 @@ using System.Collections;
 using UnityEngine;
 using Game.System;
 #pragma warning disable CS1591 
-namespace Game.Tower.CombatSystem
+namespace Game.Tower
 {
 
     public class TowerCombatSystem : MonoBehaviour
     {
         public TowerBaseSystem towerData;
-     
+        public ObjectPool bulletPool;
+
         private List<GameObject> bulletList;
-        private List<Bullet> bulletDataList;
-        private ObjectPool bulletPool;
+        private List<Bullet> bulletDataList;       
         private float bulletSpeed;
         private float bulletLifetime;
         private bool isCooldown;

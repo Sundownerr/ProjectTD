@@ -10,40 +10,44 @@ namespace Game.System
     public class TowerUISystem : MonoBehaviour
     {
 
-        public TextMeshProUGUI DamageValue, RangeValue, ManaValue, AttackSpeedValue, TriggerChanceValue, SpellDamageValue, SpellCritChanceValue;
-        public TextMeshProUGUI TowerName, CritChanceValue;
+        public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
+        public TextMeshProUGUI TowerName, CritChance;
 
-        public TowerBaseSystem choosedtowerBaseSystem;
+        public Button SellButton, UpgradeButton;
+
+        private TowerBaseSystem choosedTowerBaseSystem;
+        private GameObject choosedTower;
 
         private void Awake()
         {
             gameObject.SetActive(false);
+            SellButton.onClick.AddListener(SellTower);
         }
 
         private void OnEnable()
         {
-            var choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower;
-            choosedtowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
-            var choosedTowerStats = choosedtowerBaseSystem.TowerStats;
+            choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower;
+            choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
+            var choosedTowerStats = choosedTowerBaseSystem.TowerStats;
 
-            choosedtowerBaseSystem.TowerRange.Show(true);
+            choosedTowerBaseSystem.TowerRange.Show(true);
 
             TowerName.text = choosedTowerStats.entityName;
-            DamageValue.text = KiloFormat(choosedTowerStats.damage);
-            RangeValue.text = KiloFormat(choosedTowerStats.range);
-            ManaValue.text = KiloFormat(choosedTowerStats.mana);
-            AttackSpeedValue.text = KiloFormat(choosedTowerStats.attackSpeed);
-            TriggerChanceValue.text = KiloFormat(choosedTowerStats.triggerChance) + "%";
-            SpellCritChanceValue.text = KiloFormat(choosedTowerStats.spellCritChance) + "%";
-            SpellDamageValue.text = KiloFormat(choosedTowerStats.spellDamage) + "%";           
-            CritChanceValue.text = KiloFormat(choosedTowerStats.critChance) + "%";
+            Damage.text = KiloFormat(choosedTowerStats.damage);
+            Range.text = KiloFormat(choosedTowerStats.range);
+            Mana.text = KiloFormat(choosedTowerStats.mana);
+            AttackSpeed.text = KiloFormat(choosedTowerStats.attackSpeed);
+            TriggerChance.text = KiloFormat(choosedTowerStats.triggerChance) + "%";
+            SpellCritChance.text = KiloFormat(choosedTowerStats.spellCritChance) + "%";
+            SpellDamage.text = KiloFormat(choosedTowerStats.spellDamage) + "%";           
+            CritChance.text = KiloFormat(choosedTowerStats.critChance) + "%";
         }
 
         private void OnDisable()
         {
-            if (choosedtowerBaseSystem != null)
+            if (choosedTowerBaseSystem != null)
             {
-                choosedtowerBaseSystem.TowerRange.Show(false);
+                choosedTowerBaseSystem.TowerRange.Show(false);
             }
         }
 
@@ -52,6 +56,20 @@ namespace Game.System
             gameObject.SetActive(false);
             yield return new WaitForFixedUpdate();
             gameObject.SetActive(true);
+        }
+
+        private void SellTower()
+        {
+            for (int i = 0; i < GameManager.Instance.TowerList.Count; i++)
+            {
+                if(GameManager.Instance.TowerList[i] == choosedTower)
+                {
+                    GameManager.Instance.TowerList[i].GetComponent<TowerCombatSystem>().bulletPool.DestroyPool();
+                    Destroy(GameManager.Instance.TowerList[i]);
+                    GameManager.Instance.TowerList.RemoveAt(i);
+                    gameObject.SetActive(false);
+                }
+            }
         }
 
         private string KiloFormat(float num)

@@ -12,16 +12,14 @@ namespace Game.System
         public LayerMask LayerMask;
 
         private List<TowerCell> towerCellStateList;
-        private bool canBuild, isTowerCreated;
+        private bool isCanBuild, isTowerCreated;
         private RaycastHit hit;
 
         private IEnumerator Refresh()
-        {
-            GameManager.Instance.UISystem.IsBuildModeActive = false;
-
-            yield return new WaitForSeconds(0.05f);
-
-            GameManager.Instance.UISystem.IsBuildModeActive = true;
+        {          
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+            yield return new WaitForEndOfFrame();
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;         
         }
 
         private IEnumerator GetTowerCellData()
@@ -36,7 +34,7 @@ namespace Game.System
                 towerCellStateList.Add(GameManager.Instance.TowerCellList[i].GetComponent<TowerCell>());
             }
 
-            canBuild = true;
+            isCanBuild = true;
         }
 
         private void CreateGhostedTower()
@@ -46,7 +44,7 @@ namespace Game.System
         }
 
         private void PlaceGhostedTower()
-        {
+        {          
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit, 10000, LayerMask))
@@ -66,15 +64,15 @@ namespace Game.System
                         {
                             towerCellStateList[i].IsBusy = true;
 
-                            if (Input.GetKey(KeyCode.LeftShift))
-                            {
-                                isTowerCreated = false;
+                            isTowerCreated = false;
 
+                            if (Input.GetKey(KeyCode.LeftShift))
+                            {                               
                                 StartCoroutine(Refresh());
                             }
                             else
-                            {
-                                GameManager.Instance.UISystem.IsBuildModeActive = false;
+                            {                              
+                                GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
                             }
                         }
                     }
@@ -98,7 +96,8 @@ namespace Game.System
             Destroy(GameManager.Instance.TowerList[lastTowerIndex]);
             GameManager.Instance.TowerList.RemoveAt(lastTowerIndex);
 
-            GameManager.Instance.UISystem.IsBuildModeActive = false;
+           
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
         }
 
         private void Start()
@@ -108,9 +107,9 @@ namespace Game.System
             StartCoroutine(GetTowerCellData());
         }
 
-        private void LateUpdate()
+        private void Update()
         {
-            if (GameManager.Instance.UISystem.IsBuildModeActive && canBuild)
+            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && isCanBuild)
             {
                 if (!isTowerCreated)
                 {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 using Game.Data.Entity.Tower;
-using Game.Tower.CombatSystem;
-#pragma warning disable CS1591 
+
+
 namespace Game.Tower
 {
 
@@ -93,7 +93,7 @@ namespace Game.Tower
             
         }
        
-        private void LateUpdate()
+        private void Update()
         {
             if (!IsTowerBuilded && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
             {
@@ -118,8 +118,8 @@ namespace Game.Tower
                     RotateTowerToDefault();
                 }
 
-                
-                if(GameManager.Instance.UISystem.IsBuildModeActive)
+
+                if(GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
                 {
                     TowerRange.Show(true);
                 }

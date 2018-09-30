@@ -52,19 +52,19 @@ namespace Game.System
         {
             if (IsGridBuilded)
             {
-                if (GameManager.Instance.UISystem.IsBuildModeActive)
+                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
                 {
                     if (!GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
                     {
-                        CellsSetActive(GameManager.Instance.UISystem.IsBuildModeActive);
+                        CellsSetActive(true);
                     }
                 }
 
-                if (!GameManager.Instance.UISystem.IsBuildModeActive)
+                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
                 {
                     if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
                     {
-                        CellsSetActive(GameManager.Instance.UISystem.IsBuildModeActive);
+                        CellsSetActive(false);
                     }
                 }
             }

@@ -24,7 +24,7 @@ namespace Game.System
             results = new List<RaycastResult>();          
         }
 
-        private void LateUpdate()
+        private void Update()
         {      
             pointerEventData = new PointerEventData(EventSystem)
             {
@@ -51,14 +51,14 @@ namespace Game.System
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (isMouseOnTower)
+                    if (isMouseOnTower && !Input.GetKey(KeyCode.LeftShift))
                     {
-                        ChoosedTower = hit.transform.gameObject;                    
+                        ChoosedTower = hit.transform.gameObject;
 
                         if (!GameManager.Instance.TowerUISystem.gameObject.activeSelf)
                         {
                             GameManager.Instance.TowerUISystem.gameObject.SetActive(true);
-                        }                        
+                        }
 
                         StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());
 
@@ -66,14 +66,19 @@ namespace Game.System
                     }
 
                     if (isMouseNotOnUI)
-                    {                      
-                        if (Input.GetMouseButtonDown(0) && GameManager.Instance.TowerUISystem.gameObject.activeSelf)
+                    {
+                        if (GameManager.Instance.TowerUISystem.gameObject.activeSelf)
                         {
                             GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
                         }
 
-                        GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+                        if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                        {
+                            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+                        }
                     }
+
+                    
                 }
             }
 

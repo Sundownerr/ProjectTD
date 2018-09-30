@@ -25,10 +25,12 @@ namespace Game.TowerCells
             blueColor = new Color(0.1f, 0.1f, 0.3f, 0.4f);
         }
 
-        private void LateUpdate()
+        private void Update()
         {
-            if (GameManager.Instance.UISystem.IsBuildModeActive)
+            
+            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
             {
+                
                 cellRenderer.material.color = blueColor;
 
                 if (IsBusy)
