@@ -14,9 +14,7 @@ public class CameraMovementScript : ExtendedMonoBehaviour
         speed = 2000f;
         boundary = 10f;
 
-        rotationX = 54f;
-
-   
+        rotationX = 54f;  
     }
 
     private void Update()

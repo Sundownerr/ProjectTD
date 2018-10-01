@@ -8,6 +8,28 @@ namespace Game.System
     {
         private bool isCreepSpawning, isCreepsSpawned;
 
+        private void LateUpdate()
+        {
+            if (GameManager.Instance.UISystem.IsWaveStarted)
+            {
+                if (!isCreepSpawning)
+                {
+                    StartCoroutine(SpawnCreeps(35, 0.1f));
+                }
+
+                if (isCreepsSpawned)
+                {
+                    if (GameManager.Instance.CreepList.Count == 0)
+                    {
+                        isCreepsSpawned = false;
+                        isCreepSpawning = false;
+                        GameManager.Instance.UISystem.IsWaveStarted = false;
+                        GameManager.Instance.UISystem.StartWaveButton.gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
+
         private IEnumerator SpawnCreeps(int needToSpawnCount, float spawnDelay)
         {
             var spawnedCreepCount = 0;         
@@ -24,28 +46,6 @@ namespace Game.System
             }
 
             isCreepsSpawned = true;            
-        }
-
-        private void LateUpdate()
-        {
-            if (GameManager.Instance.UISystem.IsWaveStarted)
-            {
-                if (!isCreepSpawning)
-                {
-                    StartCoroutine(SpawnCreeps(35, 0.1f));
-                }
-
-                if (isCreepsSpawned)
-                {
-                    if (GameManager.Instance.CreepList.Count == 0)
-                    {
-                        isCreepsSpawned = false;
-                        isCreepSpawning = false;                       
-                        GameManager.Instance.UISystem.IsWaveStarted = false;
-                        GameManager.Instance.UISystem.StartWaveButton.gameObject.SetActive(true);
-                    }
-                }
-            }
         }
     }
 }

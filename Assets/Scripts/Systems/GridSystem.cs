@@ -9,6 +9,33 @@ namespace Game.System
     {
         public bool IsGridBuilded;
 
+        private void Start()
+        {
+            StartCoroutine(BuildTimer());
+        }
+
+        private void Update()
+        {
+            if (IsGridBuilded)
+            {
+                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+                {
+                    if (!GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
+                    {
+                        CellsSetActive(true);
+                    }
+                }
+
+                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                {
+                    if (GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
+                    {
+                        CellsSetActive(false);
+                    }
+                }
+            }
+        }
+
         private IEnumerator BuildTimer()
         {
             CreateGrid(GameManager.Instance.TowerCellAreaList.Length);
@@ -41,33 +68,6 @@ namespace Game.System
             {
                 GameManager.Instance.CellList[i].SetActive(active);
             }
-        }
-
-        private void Start()
-        {
-            StartCoroutine(BuildTimer());
-        }
-
-        private void Update()
-        {
-            if (IsGridBuilded)
-            {
-                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
-                {
-                    if (!GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
-                    {
-                        CellsSetActive(true);
-                    }
-                }
-
-                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
-                {
-                    if (GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
-                    {
-                        CellsSetActive(false);
-                    }
-                }
-            }
-        }
+        }       
     }
 }

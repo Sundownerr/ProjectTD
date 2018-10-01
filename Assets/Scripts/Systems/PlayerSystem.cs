@@ -77,8 +77,6 @@ namespace Game.System
                             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
                         }
                     }
-
-                    
                 }
             }
 

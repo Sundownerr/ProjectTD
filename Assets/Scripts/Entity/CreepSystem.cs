@@ -32,6 +32,28 @@ namespace Game.Creep
             creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0); 
         }
 
+        private void Update()
+        {
+            waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 70;
+
+            if (waypointIndex < GameManager.Instance.WaypointList.Length - 1)
+            {
+                if (!waypointReached)
+                {
+                    MoveCreep();
+                    RotateCreep();
+                }
+                else
+                {
+                    waypointIndex++;
+                }
+            }
+            else
+            {
+                RemoveCreep();
+            }
+        }
+
         private void MoveCreep()
         {
             creepTransform.Translate(Vector3.forward * Time.deltaTime * Stats.moveSpeed, Space.Self);
@@ -56,36 +78,13 @@ namespace Game.Creep
             if (Stats.hp <= 0)
             {
                 RemoveCreep();
-            }
-           
+            }         
         }
 
         private void RemoveCreep()
         {
             Destroy(gameObject);
             GameManager.Instance.CreepList.Remove(gameObject);
-        }
-
-        private void Update()
-        {
-            waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 70;
-
-            if (waypointIndex < GameManager.Instance.WaypointList.Length - 1)
-            {
-                if (!waypointReached)
-                {
-                    MoveCreep();
-                    RotateCreep();
-                }
-                else
-                {
-                    waypointIndex++;
-                }
-            }
-            else
-            {
-                RemoveCreep();
-            }
-        }
+        }      
     }
 }

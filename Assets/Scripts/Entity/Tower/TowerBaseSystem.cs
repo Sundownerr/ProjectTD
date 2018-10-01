@@ -57,7 +57,6 @@ namespace Game.Tower
 
             if (IsTowerPlaced)
             {
-
                 var isCreepInRange = TowerRange.CreepInRangeList.Count > 0 && TowerRange.CreepInRangeList[0] != null;
 
                 if (isCreepInRange)
