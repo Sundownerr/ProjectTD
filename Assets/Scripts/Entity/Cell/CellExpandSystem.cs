@@ -6,7 +6,7 @@ using Game.System;
 namespace Game.TowerCells
 {
 
-    public class TowerCellExpandSystem
+    public class CellExpandSystem
     {
         private bool FillSide( Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
         {
@@ -40,16 +40,16 @@ namespace Game.TowerCells
             return false;
         }
 
-        public TowerCellExpandSystem(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
+        public CellExpandSystem(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
         {
-            for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
             {
 
-                if (cell != GameManager.Instance.TowerCellList[i])
+                if (cell != GameManager.Instance.CellList[i])
                 {
-                    if (cell.transform.position == GameManager.Instance.TowerCellList[i].transform.position)
+                    if (cell.transform.position == GameManager.Instance.CellList[i].transform.position)
                     {
-                        Debug.Log(cell.transform + " = " + GameManager.Instance.TowerCellList[i].transform);
+                        Debug.Log(cell.transform + " = " + GameManager.Instance.CellList[i].transform);
                     }
                 }
             }
@@ -92,7 +92,7 @@ namespace Game.TowerCells
             }
             else
             {
-                GameManager.Instance.TowerCellList.Remove(cell);
+                GameManager.Instance.CellList.Remove(cell);
                 Object.Destroy(cell);
             }
 

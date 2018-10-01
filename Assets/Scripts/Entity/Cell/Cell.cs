@@ -4,7 +4,7 @@ using Game.System;
 namespace Game.TowerCells
 {
 
-    public class TowerCell : ExtendedMonoBehaviour
+    public class Cell : ExtendedMonoBehaviour
     {
         public bool IsBusy, IsChosen;
 
@@ -12,25 +12,23 @@ namespace Game.TowerCells
         private Renderer cellRenderer;
 
         private void Start()
-        {
-            GameManager.Instance.TowerCellList.Add(gameObject);
-            transform.parent = GameManager.Instance.TowerCellParent;
+        {            
+            GameManager.Instance.CellList.Add(gameObject);
+            transform.parent = GameManager.Instance.CellParent;
 
             cellRenderer = GetComponent<Renderer>();
-
-            new TowerCellExpandSystem(gameObject, GameManager.Instance.TowerCellPrefab, GameManager.Instance.TowerCellAreaList);
 
             redColor = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             greenColor = new Color(0.1f, 0.3f, 0.1f, 0.5f);
             blueColor = new Color(0.1f, 0.1f, 0.3f, 0.4f);
+
+            new CellExpandSystem(gameObject, GameManager.Instance.CellPrefab, GameManager.Instance.TowerCellAreaList);
         }
 
         private void Update()
-        {
-            
+        {            
             if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
-            {
-                
+            {               
                 cellRenderer.material.color = blueColor;
 
                 if (IsBusy)

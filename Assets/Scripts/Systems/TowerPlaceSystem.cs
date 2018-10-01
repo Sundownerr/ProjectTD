@@ -8,24 +8,48 @@ namespace Game.System
 {
     public class TowerPlaceSystem : ExtendedMonoBehaviour
     {
+        public Vector3 GhostedTowerPos;
         public Color GhostedTowerColor;
         public GameObject NewBusyCell;
         public LayerMask LayerMask;
-        public Vector3 GhostedTowerPos;
-
-        private List<TowerCell> towerCellStateList;
-        private bool isCanBuild, isTowerCreated, isOnCooldown;
+        
+        private bool isCanBuild, isTowerCreated;
+        private Color transparentRed, transparentGreen;
+        private List<Cell> towerCellStateList;       
         private RaycastHit hit;
         private Camera mainCam;
+       
+        private void Start()
+        {
+            towerCellStateList = new List<Cell>();
+            mainCam = Camera.main;
 
-        private Color transparentRed, transparentGreen;
+            StartCoroutine(GetTowerCellData());
+
+            transparentRed = Color.red - new Color(0, 0, 0, 0.8f);
+            transparentGreen = Color.green - new Color(0, 0, 0, 0.8f);
+        }
+
+        private void Update()
+        {
+            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && isCanBuild)
+            {
+                if (!isTowerCreated)
+                {
+                    CreateGhostedTower();
+
+                    isTowerCreated = true;
+                }
+
+                MoveGhostedTower();
+            }
+        }
 
         private IEnumerator Refresh()
         {
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
             yield return new WaitForFixedUpdate();
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
-            isOnCooldown = false;
         }
 
         private IEnumerator GetTowerCellData()
@@ -35,9 +59,9 @@ namespace Game.System
                 yield return new WaitForSeconds(0.05f);
             }
 
-            for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
             {
-                towerCellStateList.Add(GameManager.Instance.TowerCellList[i].GetComponent<TowerCell>());
+                towerCellStateList.Add(GameManager.Instance.CellList[i].GetComponent<Cell>());
             }
 
             isCanBuild = true;
@@ -58,8 +82,7 @@ namespace Game.System
         private void MoveGhostedTower()
         {          
             var ray = mainCam.ScreenPointToRay(Input.mousePosition);
-
-            var towerCellList = GameManager.Instance.TowerCellList;
+            var towerCellList = GameManager.Instance.CellList;
 
             if (Physics.Raycast(ray, out hit, 5000, LayerMask))
             {
@@ -107,40 +130,15 @@ namespace Game.System
 
         private void DeleteTower()
         {
-            var lastTowerIndex = GameManager.Instance.TowerList.Count - 1;
+            var towerList = GameManager.Instance.TowerList;
+            var lastTowerIndex = towerList.Count - 1;
 
-            Destroy(GameManager.Instance.TowerList[lastTowerIndex]);
-            GameManager.Instance.TowerList.RemoveAt(lastTowerIndex);
-           
-            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+            Destroy(towerList[lastTowerIndex]);
+            towerList.RemoveAt(lastTowerIndex);
 
             isTowerCreated = false;
-        }
 
-        private void Start()
-        {
-            towerCellStateList = new List<TowerCell>();
-            mainCam = Camera.main;
-
-            StartCoroutine(GetTowerCellData());
-
-            transparentRed = Color.red - new Color(0, 0, 0, 0.8f);
-            transparentGreen = Color.green - new Color(0, 0, 0, 0.8f);
-        }
-
-        private void Update()
-        {
-            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && isCanBuild)
-            {
-                if (!isTowerCreated)
-                {
-                    CreateGhostedTower();
-
-                    isTowerCreated = true;
-                }
-
-                MoveGhostedTower();
-            }
-        }
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;          
+        }      
     }
 }

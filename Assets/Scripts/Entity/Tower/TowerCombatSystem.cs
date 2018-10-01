@@ -6,7 +6,7 @@ using Game.System;
 namespace Game.Tower
 {
 
-    public class TowerCombatSystem : MonoBehaviour
+    public class TowerCombatSystem : ExtendedMonoBehaviour
     {
         public TowerBaseSystem towerData;
         public ObjectPool bulletPool;
@@ -43,8 +43,7 @@ namespace Game.Tower
             bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
-            bulletSpeed = bulletDataList[last].Speed;
-             
+            bulletSpeed = bulletDataList[last].Speed;             
 
             bulletList[last].SetActive(true);
 

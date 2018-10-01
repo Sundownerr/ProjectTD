@@ -29,7 +29,7 @@ namespace Game.System
                 if (!Physics.Raycast(ray, 100, layerMask))
                 {
                     var spawnPos = GameManager.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GameManager.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
-                    Instantiate(GameManager.Instance.TowerCellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));
+                    Instantiate(GameManager.Instance.CellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));
               
                 }
             }
@@ -37,9 +37,9 @@ namespace Game.System
 
         private void CellsSetActive(bool active)
         {
-            for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
             {
-                GameManager.Instance.TowerCellList[i].SetActive(active);
+                GameManager.Instance.CellList[i].SetActive(active);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Game.System
             {
                 if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
                 {
-                    if (!GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                    if (!GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
                     {
                         CellsSetActive(true);
                     }
@@ -62,7 +62,7 @@ namespace Game.System
 
                 if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
                 {
-                    if (GameManager.Instance.TowerCellList[GameManager.Instance.TowerCellList.Count - 1].activeSelf)
+                    if (GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
                     {
                         CellsSetActive(false);
                     }
