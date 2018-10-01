@@ -19,13 +19,10 @@ namespace Game.Tower
         private List<Renderer> towerRendererList;           
 
         private void StartTowerPlace()
-        {
-
-            
+        {          
             for (int i = 0; i < towerRendererList.Count; i++)
             {
                 towerRendererList[i].material.color = GameManager.Instance.TowerPlaceSystem.GhostedTowerColor;
-                //towerRendererList[i].enabled = GameManager.Instance.TowerPlaceSystem.GhostedTowerVisible;
             }
 
             transform.position = GameManager.Instance.TowerPlaceSystem.GhostedTowerPos;

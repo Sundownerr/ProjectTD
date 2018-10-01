@@ -19,7 +19,7 @@ public class CameraMovementScript : ExtendedMonoBehaviour
    
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {

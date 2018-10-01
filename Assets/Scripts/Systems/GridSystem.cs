@@ -48,7 +48,7 @@ namespace Game.System
             StartCoroutine(BuildTimer());
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             if (IsGridBuilded)
             {
