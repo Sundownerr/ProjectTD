@@ -8,20 +8,23 @@ namespace Game.System
 {
     public class TowerPlaceSystem : ExtendedMonoBehaviour
     {
+        public bool GhostedTowerVisible;
         public Color GhostedTowerColor;
         public GameObject NewBusyCell;
         public LayerMask LayerMask;
         public Vector3 GhostedTowerPos;
 
         private List<TowerCell> towerCellStateList;
-        private bool isCanBuild, isTowerCreated;
+        private bool isCanBuild, isTowerCreated, isOnCooldown;
         private RaycastHit hit;
+        private Ray ray;
 
         private IEnumerator Refresh()
-        {          
+        {
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
-            yield return new WaitForEndOfFrame();
-            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;         
+            yield return new WaitForFixedUpdate();
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
+            isOnCooldown = false;
         }
 
         private IEnumerator GetTowerCellData()
@@ -47,9 +50,9 @@ namespace Game.System
 
         private void PlaceGhostedTower()
         {          
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, 10000, LayerMask))
+            if (Physics.Raycast(ray, out hit, 5000, LayerMask))
             {
                 GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.8f);
                 GhostedTowerPos = hit.point;
@@ -57,24 +60,25 @@ namespace Game.System
                 for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
                 {
                     if (hit.transform.gameObject == GameManager.Instance.TowerCellList[i] && !towerCellStateList[i].IsBusy)
-                    {                        
+                    {
                         GhostedTowerPos = GameManager.Instance.TowerCellList[i].transform.position;
+
                         GhostedTowerColor = Color.green - new Color(0, 0, 0, 0.8f);
                         towerCellStateList[i].IsChosen = true;
 
                         if (Input.GetMouseButtonDown(0))
-                        {
+                        {                       
                             towerCellStateList[i].IsBusy = true;
                             NewBusyCell = GameManager.Instance.TowerCellList[i];
 
                             isTowerCreated = false;
 
                             if (Input.GetKey(KeyCode.LeftShift))
-                            {                               
+                            {
                                 StartCoroutine(Refresh());
                             }
                             else
-                            {                              
+                            {
                                 GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
                             }
                         }
@@ -88,7 +92,7 @@ namespace Game.System
                 if (Input.GetMouseButtonDown(1))
                 {
                     DeleteTower();
-                }
+                }              
             }
         }
 
@@ -100,6 +104,8 @@ namespace Game.System
             GameManager.Instance.TowerList.RemoveAt(lastTowerIndex);
            
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+
+            isTowerCreated = false;
         }
 
         private void Start()
@@ -121,10 +127,6 @@ namespace Game.System
                 }
 
                 PlaceGhostedTower();
-            }
-            else
-            {
-                isTowerCreated = false;
             }
         }
     }

@@ -11,26 +11,29 @@ namespace Game.Tower
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
         public GameObject Bullet, TowerPlaceEffect, OcuppiedCell;
-        public bool IsTowerBuilded;
+        public bool IsTowerPlaced;
         public TowerStats TowerStats;
         public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
         public TowerRangeSystem TowerRange;
         public TowerCombatSystem TowerCombatSystem;
         private List<Renderer> towerRendererList;           
 
-        private void StartTowerBuild()
+        private void StartTowerPlace()
         {
+
+            
             for (int i = 0; i < towerRendererList.Count; i++)
             {
                 towerRendererList[i].material.color = GameManager.Instance.TowerPlaceSystem.GhostedTowerColor;
+                //towerRendererList[i].enabled = GameManager.Instance.TowerPlaceSystem.GhostedTowerVisible;
             }
 
             transform.position = GameManager.Instance.TowerPlaceSystem.GhostedTowerPos;
         }
 
-        private bool EndTowerBuild()
+        private bool EndTowerPlace()
         {
-            if (!IsTowerBuilded)
+            if (!IsTowerPlaced)
             {
                 for (int i = 0; i < towerRendererList.Count; i++)
                 {
@@ -45,6 +48,12 @@ namespace Game.Tower
                 Destroy(towerPlaceEffect, 2f);
 
                 OcuppiedCell = GameManager.Instance.TowerPlaceSystem.NewBusyCell;
+
+                if (transform.position != OcuppiedCell.transform.position)
+                {
+                    transform.position = OcuppiedCell.transform.position;
+                }
+
                 return true;
             }
 
@@ -97,20 +106,22 @@ namespace Game.Tower
        
         private void Update()
         {
-            if (!IsTowerBuilded && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+            if (!IsTowerPlaced && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
             {
-                StartTowerBuild();
+                StartTowerPlace();
             }
             else
             {
-                IsTowerBuilded = EndTowerBuild();              
+                IsTowerPlaced = EndTowerPlace();    
+                
             }
 
-            if (IsTowerBuilded)
-            {
+            if (IsTowerPlaced)
+            {               
                 if (TowerRange.CreepInRangeList.Count > 0 && TowerRange.CreepInRangeList[0] != null && TowerRange.IsCreepInRange)
                 {
                     RotateTowerAtCreep();
+
                     TowerCombatSystem.ShootAtCreep(0.7f);
                 }
                 else
