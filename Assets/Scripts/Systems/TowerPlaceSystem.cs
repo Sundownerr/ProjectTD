@@ -11,6 +11,7 @@ namespace Game.System
         public Color GhostedTowerColor;
         public GameObject NewBusyCell;
         public LayerMask LayerMask;
+        public Vector3 GhostedTowerPos;
 
         private List<TowerCell> towerCellStateList;
         private bool isCanBuild, isTowerCreated;
@@ -51,13 +52,13 @@ namespace Game.System
             if (Physics.Raycast(ray, out hit, 10000, LayerMask))
             {
                 GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.8f);
-                GameManager.Instance.TowerList[GameManager.Instance.TowerList.Count - 1].transform.position = hit.point;
+                GhostedTowerPos = hit.point;
 
                 for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
                 {
                     if (hit.transform.gameObject == GameManager.Instance.TowerCellList[i] && !towerCellStateList[i].IsBusy)
-                    {
-                        GameManager.Instance.TowerList[GameManager.Instance.TowerList.Count - 1].transform.position = GameManager.Instance.TowerCellList[i].transform.position;
+                    {                        
+                        GhostedTowerPos = GameManager.Instance.TowerCellList[i].transform.position;
                         GhostedTowerColor = Color.green - new Color(0, 0, 0, 0.8f);
                         towerCellStateList[i].IsChosen = true;
 
@@ -97,7 +98,6 @@ namespace Game.System
 
             Destroy(GameManager.Instance.TowerList[lastTowerIndex]);
             GameManager.Instance.TowerList.RemoveAt(lastTowerIndex);
-
            
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
         }

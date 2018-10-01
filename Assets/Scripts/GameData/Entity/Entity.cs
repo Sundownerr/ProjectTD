@@ -7,6 +7,6 @@ namespace Game.Data.Entity
     public class Entity : ScriptableObject
     {
         public string entityName;
-        string entityDescription;
+        public string entityDescription;
     }
 }

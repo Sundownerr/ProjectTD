@@ -32,7 +32,7 @@ namespace Game.System
             {
                 if (!isCreepSpawning)
                 {
-                    StartCoroutine(SpawnCreeps(5, 0.1f));
+                    StartCoroutine(SpawnCreeps(35, 0.1f));
                 }
 
                 if (isCreepsSpawned)

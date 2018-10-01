@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Tower
 {
-    public class Bullet : ExtendedMonoBehaviour
+    public class BulletSystem : ExtendedMonoBehaviour
     {
 
         public ParticleSystem[] ParticleSystemList;

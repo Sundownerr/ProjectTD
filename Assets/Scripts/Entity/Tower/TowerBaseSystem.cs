@@ -24,6 +24,8 @@ namespace Game.Tower
             {
                 towerRendererList[i].material.color = GameManager.Instance.TowerPlaceSystem.GhostedTowerColor;
             }
+
+            transform.position = GameManager.Instance.TowerPlaceSystem.GhostedTowerPos;
         }
 
         private bool EndTowerBuild()
@@ -74,12 +76,12 @@ namespace Game.Tower
             towerRendererList = new List<Renderer>();
                                 
             TowerStats.entityName = "SampleTowerName" +Random.Range(100, 1000);
-            TowerStats.damage = Random.Range(1000,10000);
-            TowerStats.range = Random.Range(510, 900);
-            TowerStats.critChance = Mathf.Floor(Random.Range(0, 1f) * 100);
-            TowerStats.mana = Random.Range(0, 100000);
-            TowerStats.spellDamage = Mathf.Floor(Random.Range(0, 10f) * 100);
-            TowerStats.triggerChance = Mathf.Floor(Random.Range(0, 1f) * 100);
+            TowerStats.Damage = Random.Range(10,20);
+            TowerStats.Range = Random.Range(510, 900);
+            TowerStats.CritChance = Mathf.Floor(Random.Range(0, 1f) * 100);
+            TowerStats.Mana = Random.Range(0, 100000);
+            TowerStats.SpellDamage = Mathf.Floor(Random.Range(0, 10f) * 100);
+            TowerStats.TriggerChance = Mathf.Floor(Random.Range(0, 1f) * 100);
 
             towerRendererList.AddRange(GetComponentsInChildren<Renderer>());
             
@@ -89,7 +91,7 @@ namespace Game.Tower
 
             TowerRange = towerRangeTransform.gameObject.GetComponent<TowerRangeSystem>();
 
-            towerRangeTransform.localScale = new Vector3(TowerStats.range, 0.001f, TowerStats.range);
+            towerRangeTransform.localScale = new Vector3(TowerStats.Range, 0.001f, TowerStats.Range);
             
         }
        
@@ -109,7 +111,7 @@ namespace Game.Tower
                 if (TowerRange.CreepInRangeList.Count > 0 && TowerRange.CreepInRangeList[0] != null && TowerRange.IsCreepInRange)
                 {
                     RotateTowerAtCreep();
-                    TowerCombatSystem.ShootAtCreep(0.2f);
+                    TowerCombatSystem.ShootAtCreep(0.7f);
                 }
                 else
                 {

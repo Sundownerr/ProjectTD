@@ -33,14 +33,14 @@ namespace Game.System
             choosedTowerBaseSystem.TowerRange.Show(true);
 
             TowerName.text = choosedTowerStats.entityName;
-            Damage.text = KiloFormat(choosedTowerStats.damage);
-            Range.text = KiloFormat(choosedTowerStats.range);
-            Mana.text = KiloFormat(choosedTowerStats.mana);
-            AttackSpeed.text = KiloFormat(choosedTowerStats.attackSpeed);
-            TriggerChance.text = KiloFormat(choosedTowerStats.triggerChance) + "%";
-            SpellCritChance.text = KiloFormat(choosedTowerStats.spellCritChance) + "%";
-            SpellDamage.text = KiloFormat(choosedTowerStats.spellDamage) + "%";           
-            CritChance.text = KiloFormat(choosedTowerStats.critChance) + "%";
+            Damage.text = KiloFormat(choosedTowerStats.Damage);
+            Range.text = KiloFormat(choosedTowerStats.Range);
+            Mana.text = KiloFormat(choosedTowerStats.Mana);
+            AttackSpeed.text = KiloFormat(choosedTowerStats.AttackSpeed);
+            TriggerChance.text = KiloFormat(choosedTowerStats.TriggerChance) + "%";
+            SpellCritChance.text = KiloFormat(choosedTowerStats.SpellCritChance) + "%";
+            SpellDamage.text = KiloFormat(choosedTowerStats.SpellDamage) + "%";           
+            CritChance.text = KiloFormat(choosedTowerStats.CritChance) + "%";
         }
 
         private void OnDisable()

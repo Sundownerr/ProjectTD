@@ -12,7 +12,7 @@ namespace Game.Tower
         public ObjectPool bulletPool;
 
         private List<GameObject> bulletList;
-        private List<Bullet> bulletDataList;       
+        private List<BulletSystem> bulletDataList;       
         private float bulletSpeed, bulletLifetime, distance, targetScale;
         private bool isCooldown;
         private Vector3 targetLastPos;
@@ -22,8 +22,7 @@ namespace Game.Tower
         {         
             towerData = gameObject.GetComponent<TowerBaseSystem>();
             bulletList = new List<GameObject>();
-            bulletDataList = new List<Bullet>();
-
+            bulletDataList = new List<BulletSystem>();
 
             bulletPool = new ObjectPool
             {
@@ -31,27 +30,21 @@ namespace Game.Tower
             };
 
             bulletPool.Initialize();
-
         }
 
         private IEnumerator CreateBullet(float cooldown)
-        {
-           
-
+        {          
             bulletList.Add(bulletPool.GetObject());
             var last = bulletList.Count - 1;
 
-            bulletDataList.Add(bulletList[last].GetComponent<Bullet>());
+            bulletDataList.Add(bulletList[last].GetComponent<BulletSystem>());
 
             bulletList[last].transform.position = towerData.shootPointTransform.position;
             bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
             bulletSpeed = bulletDataList[last].Speed;
-            bulletDataList[last].Target = towerData.TowerRange.CreepInRangeList[0];
-
-           
-            
+             
 
             bulletList[last].SetActive(true);
 
@@ -70,18 +63,23 @@ namespace Game.Tower
 
             for (int i = 0; i < bulletList.Count; i++)
             {
+                if (towerData.TowerRange.CreepInRangeList.Count > 0)
+                {
+                    bulletDataList[i].Target = towerData.TowerRange.CreepInRangeList[0];
+                }
+
                 if (bulletDataList[i].Target != null)
                 {
                     targetTransform = bulletDataList[i].Target.transform;
 
-                    targetLastPos = targetTransform.position;
+                    targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y/ 2, 0);
 
-                    targetScale = targetTransform.lossyScale.x - 5;
+                    targetScale = targetTransform.lossyScale.x - 2;
 
                     distance = GameManager.CalcDistance(
                             bulletList[i].transform.position,
                             targetLastPos
-                            );                                    
+                            );               
                 }
 
                 if (!bulletDataList[i].IsReachedTarget && distance > targetScale)
@@ -91,8 +89,16 @@ namespace Game.Tower
                 }
                 else
                 {
-                    bulletDataList[i].IsReachedTarget = true;
-                    bulletDataList[i].Show(false);
+                    if (!bulletDataList[i].IsReachedTarget)
+                    {
+                        bulletDataList[i].IsReachedTarget = true;
+                        bulletDataList[i].Show(false);
+
+                        if (bulletDataList[i].Target != null)
+                        {
+                            bulletDataList[i].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.TowerStats.Damage);
+                        }                        
+                    }
                 }
             }
         }
