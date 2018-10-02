@@ -3,25 +3,53 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.TowerCells;
 
-
+#pragma warning disable CS1591 
 namespace Game.System
 {
     public class TowerPlaceSystem : ExtendedMonoBehaviour
     {
+        public Vector3 GhostedTowerPos;
         public Color GhostedTowerColor;
+        public GameObject NewBusyCell;
         public LayerMask LayerMask;
-
-        private List<TowerCell> towerCellStateList;
-        private bool canBuild, isTowerCreated;
+        
+        private bool isCanBuild, isTowerCreated;
+        private Color transparentRed, transparentGreen;
+        private List<Cell> towerCellStateList;       
         private RaycastHit hit;
+        private Camera mainCam;
+       
+        private void Start()
+        {
+            towerCellStateList = new List<Cell>();
+            mainCam = Camera.main;
+
+            StartCoroutine(GetTowerCellData());
+
+            transparentRed = Color.red - new Color(0, 0, 0, 0.8f);
+            transparentGreen = Color.green - new Color(0, 0, 0, 0.8f);
+        }
+
+        private void Update()
+        {
+            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && isCanBuild)
+            {
+                if (!isTowerCreated)
+                {
+                    CreateGhostedTower();
+
+                    isTowerCreated = true;
+                }
+
+                MoveGhostedTower();
+            }
+        }
 
         private IEnumerator Refresh()
         {
-            GameManager.Instance.UISystem.IsBuildModeActive = false;
-
-            yield return new WaitForSeconds(0.05f);
-
-            GameManager.Instance.UISystem.IsBuildModeActive = true;
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+            yield return new WaitForFixedUpdate();
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
         }
 
         private IEnumerator GetTowerCellData()
@@ -31,49 +59,59 @@ namespace Game.System
                 yield return new WaitForSeconds(0.05f);
             }
 
-            for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
+            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
             {
-                towerCellStateList.Add(GameManager.Instance.TowerCellList[i].GetComponent<TowerCell>());
+                towerCellStateList.Add(GameManager.Instance.CellList[i].GetComponent<Cell>());
             }
 
-            canBuild = true;
+            isCanBuild = true;
         }
 
         private void CreateGhostedTower()
         {
-            GameManager.Instance.TowerList.Add(Instantiate(GameManager.Instance.TowerPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0f, 0f, 0f), GameManager.Instance.TowerParent));
+            GameManager.Instance.TowerList.Add(Instantiate(GameManager.Instance.TowerPrefab, Vector3.zero, Quaternion.Euler(0f, 0f, 0f), GameManager.Instance.TowerParent));
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
         }
 
-        private void PlaceGhostedTower()
+        private void SetTowerColorAndPosition(Vector3 pos, Color color)
         {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            GhostedTowerPos = pos;
+            GhostedTowerColor = color;
+        }
 
-            if (Physics.Raycast(ray, out hit, 10000, LayerMask))
+        private void MoveGhostedTower()
+        {          
+            var ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            var towerCellList = GameManager.Instance.CellList;
+
+            if (Physics.Raycast(ray, out hit, 5000, LayerMask))
             {
-                GhostedTowerColor = Color.red - new Color(0, 0, 0, 0.8f);
-                GameManager.Instance.TowerList[GameManager.Instance.TowerList.Count - 1].transform.position = hit.point;
+                SetTowerColorAndPosition(hit.point, transparentRed);                        
 
-                for (int i = 0; i < GameManager.Instance.TowerCellList.Count; i++)
-                {
-                    if (hit.transform.gameObject == GameManager.Instance.TowerCellList[i] && !towerCellStateList[i].IsBusy)
+                for (int i = 0; i < towerCellList.Count; i++)
+                {                   
+                    var isHitTowerCell = hit.transform.gameObject == towerCellList[i];
+
+                    if (isHitTowerCell && !towerCellStateList[i].IsBusy)
                     {
-                        GameManager.Instance.TowerList[GameManager.Instance.TowerList.Count - 1].transform.position = GameManager.Instance.TowerCellList[i].transform.position;
-                        GhostedTowerColor = Color.green - new Color(0, 0, 0, 0.8f);
+                        SetTowerColorAndPosition(towerCellList[i].transform.position, transparentGreen);
+
                         towerCellStateList[i].IsChosen = true;
 
                         if (Input.GetMouseButtonDown(0))
-                        {
+                        {                       
                             towerCellStateList[i].IsBusy = true;
+                            NewBusyCell = towerCellList[i];
+
+                            isTowerCreated = false;
 
                             if (Input.GetKey(KeyCode.LeftShift))
                             {
-                                isTowerCreated = false;
-
                                 StartCoroutine(Refresh());
                             }
                             else
                             {
-                                GameManager.Instance.UISystem.IsBuildModeActive = false;
+                                GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
                             }
                         }
                     }
@@ -86,44 +124,21 @@ namespace Game.System
                 if (Input.GetMouseButtonDown(1))
                 {
                     DeleteTower();
-                }
+                }              
             }
         }
 
         private void DeleteTower()
         {
-            var lastTowerIndex = GameManager.Instance.TowerList.Count - 1;
+            var towerList = GameManager.Instance.TowerList;
+            var lastTowerIndex = towerList.Count - 1;
 
-            Destroy(GameManager.Instance.TowerList[lastTowerIndex]);
-            GameManager.Instance.TowerList.RemoveAt(lastTowerIndex);
+            Destroy(towerList[lastTowerIndex]);
+            towerList.RemoveAt(lastTowerIndex);
 
-            GameManager.Instance.UISystem.IsBuildModeActive = false;
-        }
+            isTowerCreated = false;
 
-        private void Start()
-        {
-            towerCellStateList = new List<TowerCell>();
-
-            StartCoroutine(GetTowerCellData());
-        }
-
-        private void Update()
-        {
-            if (GameManager.Instance.UISystem.IsBuildModeActive && canBuild)
-            {
-                if (!isTowerCreated)
-                {
-                    CreateGhostedTower();
-
-                    isTowerCreated = true;
-                }
-
-                PlaceGhostedTower();
-            }
-            else
-            {
-                isTowerCreated = false;
-            }
-        }
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;          
+        }      
     }
 }

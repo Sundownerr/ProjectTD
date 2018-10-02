@@ -2,18 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-
+#pragma warning disable CS1591 
 namespace Game.System
 {
     public class GridSystem : MonoBehaviour
     {
         public bool IsGridBuilded;
 
+        private void Start()
+        {
+            StartCoroutine(BuildTimer());
+        }
+
+        private void Update()
+        {
+            if (IsGridBuilded)
+            {
+                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+                {
+                    if (!GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
+                    {
+                        CellsSetActive(true);
+                    }
+                }
+
+                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                {
+                    if (GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1].activeSelf)
+                    {
+                        CellsSetActive(false);
+                    }
+                }
+            }
+        }
+
         private IEnumerator BuildTimer()
         {
             CreateGrid(GameManager.Instance.TowerCellAreaList.Length);
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
 
             IsGridBuilded = true;
         }
@@ -29,15 +56,18 @@ namespace Game.System
                 if (!Physics.Raycast(ray, 100, layerMask))
                 {
                     var spawnPos = GameManager.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GameManager.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
-                    Instantiate(GameManager.Instance.TowerCellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));
+                    Instantiate(GameManager.Instance.CellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));
               
                 }
             }
         }
 
-        private void Start()
+        private void CellsSetActive(bool active)
         {
-            StartCoroutine(BuildTimer());
-        }
+            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
+            {
+                GameManager.Instance.CellList[i].SetActive(active);
+            }
+        }       
     }
 }

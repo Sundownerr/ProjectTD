@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-    [System.Serializable]
+[System.Serializable]
     public class ObjectPool
     {
         public GameObject poolObject;
         public Transform parent;
-        public uint poolLenght =3;
+        public uint poolLenght = 2;
 
-        protected List<GameObject> poolList = new List<GameObject>();
+        public List<GameObject> poolList = new List<GameObject>();
 
         public void Initialize()
         {
@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
             for (int i = 0; i < poolLenght; ++i)
             {
-                CreateObject();
+                CreateObject(parent);
             }
         }
 
@@ -39,7 +39,7 @@ using System.Collections.Generic;
                 return null;
             }
 
-            CreateObject();
+            CreateObject(parent);
 
             return poolList[poolList.Count - 1];
         }
@@ -54,9 +54,9 @@ using System.Collections.Generic;
             poolList.Clear();
         }
 
-        protected void CreateObject()
+        protected void CreateObject(Transform parent)
         {
-            poolList.Add(Object.Instantiate(poolObject));
+            poolList.Add(Object.Instantiate(poolObject, parent));
 
             poolList[poolList.Count - 1].SetActive(false);
         }

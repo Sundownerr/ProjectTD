@@ -2,53 +2,50 @@
 using System.Collections;
 using UnityEngine;
 using Game.System;
-
-namespace Game.Tower.CombatSystem
+#pragma warning disable CS1591 
+namespace Game.Tower
 {
-
-    public class TowerCombatSystem : MonoBehaviour
+    
+    public class TowerCombatSystem : ExtendedMonoBehaviour
     {
-        public Tower towerData;
-     
+        public TowerBaseSystem towerData;
+        public ObjectPool bulletPool;
+
         private List<GameObject> bulletList;
-        private List<Bullet> bulletDataList;
-        private ObjectPool bulletPool;
-        private float bulletSpeed;
-        private float bulletLifetime;
+        private List<BulletSystem> bulletDataList;       
+        private float bulletSpeed, bulletLifetime, distance, targetScale;
         private bool isCooldown;
-        
+        private Vector3 targetLastPos;
+        private Transform targetTransform;
 
         private void Start()
         {         
-            towerData = gameObject.GetComponent<Tower>();
+            towerData = gameObject.GetComponent<TowerBaseSystem>();
             bulletList = new List<GameObject>();
-            bulletDataList = new List<Bullet>();          
+            bulletDataList = new List<BulletSystem>();
+
+            bulletPool = new ObjectPool
+            {
+                poolObject = towerData.Bullet,
+                parent = GameManager.Instance.BulletParent
+            };
+
+            bulletPool.Initialize();
         }
 
         private IEnumerator CreateBullet(float cooldown)
-        {
-            if (bulletPool == null)
-            {
-                bulletPool = new ObjectPool
-                {
-                    poolObject = towerData.Bullet
-                };
-
-                bulletPool.Initialize();
-            }
-
+        {          
             bulletList.Add(bulletPool.GetObject());
             var last = bulletList.Count - 1;
 
-            bulletDataList.Add(bulletList[last].GetComponent<Bullet>());
+            bulletDataList.Add(bulletList[last].GetComponent<BulletSystem>());
 
             bulletList[last].transform.position = towerData.shootPointTransform.position;
             bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
             bulletSpeed = bulletDataList[last].Speed;
-            bulletDataList[last].Target = towerData.rangeCollider.CreepInRangeList[0];
-
+            
             bulletList[last].SetActive(true);
 
             yield return new WaitForSeconds(cooldown);
@@ -57,27 +54,58 @@ namespace Game.Tower.CombatSystem
 
             if (bulletList.Count > 0)
             {
-                StartCoroutine(RemoveBullet(bulletLifetime));
+                StartCoroutine(RemoveBullet(bulletLifetime - 0.1f));
             }
+        }
+
+        private void GetTargetData(int i)
+        {
+            targetTransform = bulletDataList[i].Target.transform;
+
+            targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y / 2, 0);
+
+            targetScale = targetTransform.lossyScale.x - 2;
+
+            distance = GameManager.CalcDistance(
+                    bulletList[i].transform.position,
+                    targetLastPos
+                    );
         }
 
         private void MoveBullet()
         {
-            for (int i = 0; i < bulletList.Count; i++)
+
+            if (bulletList.Count > 0)
             {
+                if (towerData.TowerRange.CreepInRangeList.Count > 0)
+                {
+                    bulletDataList[bulletList.Count - 1].Target = towerData.TowerRange.CreepInRangeList[0];
+                }
+            }
+
+            for (int i = 0; i < bulletList.Count; i++)
+            {             
                 if (bulletDataList[i].Target != null)
                 {
-                    var distance = GameManager.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
+                    GetTargetData(i);
+                }
 
-                    if (!bulletDataList[i].IsDestinationReached && distance > bulletDataList[i].Target.transform.lossyScale.x - 5)
+                if (!bulletDataList[i].IsReachedTarget && distance > targetScale)
+                {
+                    bulletList[i].transform.LookAt(targetLastPos);
+                    bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
+                }
+                else
+                {
+                    if (!bulletDataList[i].IsReachedTarget)
                     {
-                        bulletList[i].transform.LookAt(bulletDataList[i].Target.transform);
-                        bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
-                    }
-                    else
-                    {
-                        bulletDataList[i].IsDestinationReached = true;
-                        bulletDataList[i].DisableParticles();
+                        bulletDataList[i].IsReachedTarget = true;
+                        bulletDataList[i].Show(false);
+
+                        if (bulletDataList[i].Target != null)
+                        {
+                            bulletDataList[i].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.TowerStats.Damage);
+                        }                     
                     }
                 }
             }
@@ -96,11 +124,12 @@ namespace Game.Tower.CombatSystem
 
         public void MoveBulletOutOfRange()
         {
-            if (bulletList.Count > 0)
+            for (int i = 0; i < bulletList.Count; i++)
             {
-                MoveBullet();
-
-                StartCoroutine(RemoveBullet(bulletLifetime));
+                if(bulletList[i].activeSelf)
+                {
+                    MoveBullet();
+                }
             }
         }
 
@@ -111,10 +140,10 @@ namespace Game.Tower.CombatSystem
             if (bulletList.Count > 0)
             {
                 bulletList[0].SetActive(false);
-                bulletDataList[0].DisableParticles();
                 bulletDataList.RemoveAt(0);
                 bulletList.RemoveAt(0);
             }
+            
         }
     }
 }

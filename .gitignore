@@ -293,3 +293,5 @@ __pycache__/
 *.asset
 /Assets/Prefabs/UI
 /Assets/Models
+*.mtl
+*.png

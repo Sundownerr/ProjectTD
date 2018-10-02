@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using Game.System;
-
+#pragma warning disable CS1591 
 namespace Game.TowerCells
 {
 
-    public class TowerCell : ExtendedMonoBehaviour
+    public class Cell : ExtendedMonoBehaviour
     {
         public bool IsBusy, IsChosen;
 
@@ -12,33 +12,39 @@ namespace Game.TowerCells
         private Renderer cellRenderer;
 
         private void Start()
-        {
-            GameManager.Instance.TowerCellList.Add(gameObject);
-            transform.parent = GameManager.Instance.TowerCellParent;
+        {            
+            GameManager.Instance.CellList.Add(gameObject);
+            transform.parent = GameManager.Instance.CellParent;
 
             cellRenderer = GetComponent<Renderer>();
-
-            new TowerCellExpand(gameObject, GameManager.Instance.TowerCellPrefab, GameManager.Instance.TowerCellAreaList);
+            cellRenderer.material.color = new Color(0, 0, 0, 0);
 
             redColor = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             greenColor = new Color(0.1f, 0.3f, 0.1f, 0.5f);
             blueColor = new Color(0.1f, 0.1f, 0.3f, 0.4f);
+
+            new CellExpandSystem(gameObject, GameManager.Instance.CellPrefab, GameManager.Instance.TowerCellAreaList);
         }
 
         private void Update()
         {
-            if (GameManager.Instance.UISystem.IsBuildModeActive)
-            {
-                cellRenderer.material.color = blueColor;
-
+            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+            {             
                 if (IsBusy)
                 {
                     cellRenderer.material.color = redColor;
                     IsChosen = false;
                 }
+                else
+                {
+                    cellRenderer.material.color = blueColor;
+                }
+               
 
                 if (IsChosen)
+                {
                     cellRenderer.material.color = greenColor;
+                }
             }
         }
     }
