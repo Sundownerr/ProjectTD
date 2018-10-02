@@ -32,6 +32,13 @@ namespace Game.Tower
             Show(true);
         }
 
+        private void OnDisable()
+        {
+            Show(false);
+
+            IsReachedTarget = true;
+        }
+
         public void Show(bool enabled)
         {
             for (int i = 0; i < ParticleSystemList.Length; i++)

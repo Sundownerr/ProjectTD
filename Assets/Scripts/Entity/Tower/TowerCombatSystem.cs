@@ -5,7 +5,7 @@ using Game.System;
 #pragma warning disable CS1591 
 namespace Game.Tower
 {
-
+    
     public class TowerCombatSystem : ExtendedMonoBehaviour
     {
         public TowerBaseSystem towerData;
@@ -26,7 +26,8 @@ namespace Game.Tower
 
             bulletPool = new ObjectPool
             {
-                poolObject = towerData.Bullet
+                poolObject = towerData.Bullet,
+                parent = GameManager.Instance.BulletParent
             };
 
             bulletPool.Initialize();
@@ -43,8 +44,8 @@ namespace Game.Tower
             bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
-            bulletSpeed = bulletDataList[last].Speed;             
-
+            bulletSpeed = bulletDataList[last].Speed;
+            
             bulletList[last].SetActive(true);
 
             yield return new WaitForSeconds(cooldown);
@@ -53,32 +54,40 @@ namespace Game.Tower
 
             if (bulletList.Count > 0)
             {
-                StartCoroutine(RemoveBullet(bulletLifetime));
+                StartCoroutine(RemoveBullet(bulletLifetime - 0.1f));
             }
+        }
+
+        private void GetTargetData(int i)
+        {
+            targetTransform = bulletDataList[i].Target.transform;
+
+            targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y / 2, 0);
+
+            targetScale = targetTransform.lossyScale.x - 2;
+
+            distance = GameManager.CalcDistance(
+                    bulletList[i].transform.position,
+                    targetLastPos
+                    );
         }
 
         private void MoveBullet()
         {
 
-            for (int i = 0; i < bulletList.Count; i++)
+            if (bulletList.Count > 0)
             {
                 if (towerData.TowerRange.CreepInRangeList.Count > 0)
                 {
-                    bulletDataList[i].Target = towerData.TowerRange.CreepInRangeList[0];
+                    bulletDataList[bulletList.Count - 1].Target = towerData.TowerRange.CreepInRangeList[0];
                 }
+            }
 
+            for (int i = 0; i < bulletList.Count; i++)
+            {             
                 if (bulletDataList[i].Target != null)
                 {
-                    targetTransform = bulletDataList[i].Target.transform;
-
-                    targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y/ 2, 0);
-
-                    targetScale = targetTransform.lossyScale.x - 2;
-
-                    distance = GameManager.CalcDistance(
-                            bulletList[i].transform.position,
-                            targetLastPos
-                            );               
+                    GetTargetData(i);
                 }
 
                 if (!bulletDataList[i].IsReachedTarget && distance > targetScale)
@@ -96,7 +105,7 @@ namespace Game.Tower
                         if (bulletDataList[i].Target != null)
                         {
                             bulletDataList[i].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.TowerStats.Damage);
-                        }                        
+                        }                     
                     }
                 }
             }
@@ -115,11 +124,12 @@ namespace Game.Tower
 
         public void MoveBulletOutOfRange()
         {
-            if (bulletList.Count > 0)
+            for (int i = 0; i < bulletList.Count; i++)
             {
-                MoveBullet();
-
-                StartCoroutine(RemoveBullet(bulletLifetime));
+                if(bulletList[i].activeSelf)
+                {
+                    MoveBullet();
+                }
             }
         }
 
@@ -130,10 +140,10 @@ namespace Game.Tower
             if (bulletList.Count > 0)
             {
                 bulletList[0].SetActive(false);
-                bulletDataList[0].Show(false);
                 bulletDataList.RemoveAt(0);
                 bulletList.RemoveAt(0);
             }
+            
         }
     }
 }

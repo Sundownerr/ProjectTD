@@ -17,6 +17,7 @@ namespace Game.TowerCells
             transform.parent = GameManager.Instance.CellParent;
 
             cellRenderer = GetComponent<Renderer>();
+            cellRenderer.material.color = new Color(0, 0, 0, 0);
 
             redColor = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             greenColor = new Color(0.1f, 0.3f, 0.1f, 0.5f);
@@ -26,16 +27,19 @@ namespace Game.TowerCells
         }
 
         private void Update()
-        {            
+        {
             if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
-            {               
-                cellRenderer.material.color = blueColor;
-
+            {             
                 if (IsBusy)
                 {
                     cellRenderer.material.color = redColor;
                     IsChosen = false;
                 }
+                else
+                {
+                    cellRenderer.material.color = blueColor;
+                }
+               
 
                 if (IsChosen)
                 {

@@ -18,6 +18,7 @@ namespace Game.Tower
         public bool IsTowerPlaced;
     
         private List<Renderer> towerRendererList;
+        private bool isRangeShowed;
 
         private void Start()
         {
@@ -57,16 +58,14 @@ namespace Game.Tower
 
             if (IsTowerPlaced)
             {
-                var isCreepInRange = TowerRange.CreepInRangeList.Count > 0 && TowerRange.CreepInRangeList[0] != null;
-
-                if (isCreepInRange)
+                if (TowerRange.CreepInRangeList.Count > 0 && TowerRange.CreepInRangeList[0] != null)
                 {
                     RotateTowerAtCreep();
 
                     TowerCombatSystem.ShootAtCreep(TowerStats.AttackSpeed);
                 }
-                else
-                {
+                else 
+                {                  
                     TowerCombatSystem.MoveBulletOutOfRange();
                 }
 
