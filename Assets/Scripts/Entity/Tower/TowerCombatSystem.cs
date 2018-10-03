@@ -8,16 +8,17 @@ namespace Game.Tower
     
     public class TowerCombatSystem : ExtendedMonoBehaviour
     {
-        public TowerBaseSystem towerData;
-        public ObjectPool bulletPool;
 
+        public bool IsAllBulletsInactive;
+
+        private ObjectPool bulletPool;
+        private TowerBaseSystem towerData;
         private List<GameObject> bulletList;
         private List<BulletSystem> bulletDataList;       
         private float bulletSpeed, bulletLifetime, distance, targetScale;
         private bool isCooldown;
         private Vector3 targetLastPos;
         private Transform targetTransform;
-        private GameObject target, newTarget;
 
         private void Start()
         {         
@@ -32,6 +33,12 @@ namespace Game.Tower
             };
 
             bulletPool.Initialize();
+            IsAllBulletsInactive = true;
+        }
+
+        private void OnDestroy()
+        {
+            bulletPool.DestroyPool();
         }
 
         private IEnumerator CreateBullet(float cooldown)
@@ -46,8 +53,8 @@ namespace Game.Tower
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
             bulletSpeed = bulletDataList[last].Speed;
+
             bulletDataList[bulletDataList.Count - 1].Target = towerData.RangeSystem.CreepInRangeList[0];
-            target = towerData.RangeSystem.CreepInRangeList[0];
 
             bulletList[last].SetActive(true);
 
@@ -113,15 +120,33 @@ namespace Game.Tower
             MoveBullet();
         }
 
+        public bool CheckAllBulletInactive()
+        {
+            bool response = true;
+
+            for (int i = 0; i < bulletList.Count; i++)
+            {
+                if (bulletList[i].activeSelf)
+                {
+                    response = false;
+                    break;
+                }
+            }
+
+            IsAllBulletsInactive = response;
+            return response;
+        }
+
         public void MoveBulletOutOfRange()
         {
             for (int i = 0; i < bulletList.Count; i++)
             {
-                if(bulletList[i].activeSelf)
+                if (bulletList[i].activeSelf)
                 {
                     MoveBullet();
                 }
             }
+
         }
 
         public IEnumerator RemoveBullet(float delay)
@@ -133,7 +158,9 @@ namespace Game.Tower
                 bulletList[0].SetActive(false);
                 bulletDataList.RemoveAt(0);
                 bulletList.RemoveAt(0);
-            }           
+            }
+
+            CheckAllBulletInactive();
         }
     }
 }

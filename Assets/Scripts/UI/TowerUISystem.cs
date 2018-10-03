@@ -64,11 +64,7 @@ namespace Game.System
             {
                 if(GameManager.Instance.TowerList[i] == choosedTower)
                 {
-                    GameManager.Instance.TowerList[i].GetComponent<TowerCombatSystem>().bulletPool.DestroyPool();
-                    choosedTowerBaseSystem.OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
-                    Destroy(GameManager.Instance.TowerList[i]);
-                    GameManager.Instance.TowerList.RemoveAt(i);
-
+                    choosedTower.GetComponent<TowerBaseSystem>().Sell();
                     gameObject.SetActive(false);
                 }
             }
@@ -91,7 +87,7 @@ namespace Game.System
             if (num >= 1000)
                 return (num / 1000).ToString("0.#" + "K");
 
-            return num.ToString("#,0");
+            return num.ToString("0.#");
         }
     }
 }

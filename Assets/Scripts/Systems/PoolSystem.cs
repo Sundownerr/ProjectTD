@@ -8,7 +8,7 @@ using System.Collections.Generic;
         public Transform parent;
         public uint poolLenght = 2;
 
-        public List<GameObject> poolList = new List<GameObject>();
+        private List<GameObject> poolList = new List<GameObject>();
 
         public void Initialize()
         {

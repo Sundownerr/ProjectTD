@@ -24,24 +24,35 @@ namespace Game.System
             towerCellStateList = new List<Cell>();
             mainCam = Camera.main;
 
-            StartCoroutine(GetTowerCellData());
-
             transparentRed = Color.red - new Color(0, 0, 0, 0.8f);
             transparentGreen = Color.green - new Color(0, 0, 0, 0.8f);
         }
 
         private void Update()
         {
-            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && isCanBuild)
-            {
-                if (!isTowerCreated)
-                {
-                    CreateGhostedTower();
 
-                    isTowerCreated = true;
+            if (GameManager.Instance.GridSystem.IsGridBuilded && !isCanBuild)
+            {
+                for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
+                {
+                    towerCellStateList.Add(GameManager.Instance.CellList[i].GetComponent<Cell>());
                 }
 
-                MoveGhostedTower();
+                isCanBuild = true;
+            }
+            else
+            {
+                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+                {
+                    if (!isTowerCreated)
+                    {
+                        CreateGhostedTower();
+
+                        isTowerCreated = true;
+                    }
+
+                    MoveGhostedTower();
+                }
             }
         }
 
@@ -50,22 +61,7 @@ namespace Game.System
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
             yield return new WaitForFixedUpdate();
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
-        }
-
-        private IEnumerator GetTowerCellData()
-        {
-            while (!GameManager.Instance.GridSystem.IsGridBuilded)
-            {
-                yield return new WaitForSeconds(0.05f);
-            }
-
-            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
-            {
-                towerCellStateList.Add(GameManager.Instance.CellList[i].GetComponent<Cell>());
-            }
-
-            isCanBuild = true;
-        }
+        }    
 
         private void CreateGhostedTower()
         {

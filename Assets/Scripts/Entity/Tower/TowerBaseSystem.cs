@@ -15,7 +15,7 @@ namespace Game.Tower
         public TowerCombatSystem TowerCombatSystem;
         public TowerRangeSystem RangeSystem;
         public TowerStats TowerStats;
-        public bool IsTowerPlaced;
+        public bool IsPlaced;
     
         private List<Renderer> towerRendererList;
 
@@ -34,26 +34,29 @@ namespace Game.Tower
 
         private void Update()
         {
-            if (!IsTowerPlaced && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+            if (!IsPlaced && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
             {
-                StartTowerPlace();
+                StartPlacing();
             }
             else
             {
-                EndTowerPlace();
+                EndPlacing();
             }
 
-            if (IsTowerPlaced)
+            if (IsPlaced)
             {
                 if (RangeSystem.CreepInRangeList.Count > 0 && RangeSystem.CreepInRangeList[0] != null)
                 {
-                    RotateTowerAtCreep();
+                    RotateAtCreep();
 
                     TowerCombatSystem.Shoot(TowerStats.AttackSpeed);
                 }
-                else 
+                else
                 {
-                    TowerCombatSystem.MoveBulletOutOfRange();
+                    if (!TowerCombatSystem.IsAllBulletsInactive)
+                    {
+                        TowerCombatSystem.MoveBulletOutOfRange();
+                    }
                 }
 
                 if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
@@ -75,19 +78,19 @@ namespace Game.Tower
             }
         }
 
-        private void StartTowerPlace()
+        private void StartPlacing()
         {
             SetTowerColor(GameManager.Instance.TowerPlaceSystem.GhostedTowerColor);
 
             transform.position = GameManager.Instance.TowerPlaceSystem.GhostedTowerPos;
         }
 
-        private void EndTowerPlace()
+        private void EndPlacing()
         {
-            if (!IsTowerPlaced)
+            if (!IsPlaced)
             {
-                var towerPlaceEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
-                Destroy(towerPlaceEffect, 1f);
+                var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
+                Destroy(placeEffect, 1f);
 
                 OcuppiedCell = GameManager.Instance.TowerPlaceSystem.NewBusyCell;
 
@@ -101,11 +104,11 @@ namespace Game.Tower
                 gameObject.layer = 14;
                 RangeSystem.Show(false);
                             
-                IsTowerPlaced = true;
+                IsPlaced = true;
             }
         }
 
-        private void RotateTowerAtCreep()
+        private void RotateAtCreep()
         {
             var offset = RangeSystem.CreepInRangeList[0].transform.position - transform.position;
             offset.y = 0;
@@ -114,5 +117,12 @@ namespace Game.Tower
 
             MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }            
+
+        public void Sell()
+        {
+            OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
+            GameManager.Instance.TowerList.Remove(gameObject);
+            Destroy(gameObject);            
+        }
     }
 }
