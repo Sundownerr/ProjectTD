@@ -11,7 +11,7 @@ namespace Game.Tower
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
         public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
-        public GameObject Bullet, TowerPlaceEffect, OcuppiedCell;
+        public GameObject Bullet, TowerPlaceEffect, OcuppiedCell, Range;
         public TowerCombatSystem TowerCombatSystem;
         public TowerRangeSystem TowerRange;
         public TowerStats TowerStats;
@@ -22,6 +22,8 @@ namespace Game.Tower
 
         private void Start()
         {
+            Range = Instantiate(GameManager.Instance.RangePrefab, transform);
+
             TowerStats = ScriptableObject.CreateInstance<TowerStats>();
             towerRendererList = new List<Renderer>();
 
@@ -36,11 +38,11 @@ namespace Game.Tower
 
             towerRendererList.AddRange(GetComponentsInChildren<Renderer>());
 
-            towerRangeTransform = transform.GetChild(0);
+            towerRangeTransform = Range.transform;
             movingPartTransform = transform.GetChild(1);
             shootPointTransform = movingPartTransform.GetChild(0).GetChild(0);
 
-            TowerRange = towerRangeTransform.gameObject.GetComponent<TowerRangeSystem>();
+            TowerRange = Range.GetComponent<TowerRangeSystem>();
 
             towerRangeTransform.localScale = new Vector3(TowerStats.Range, 0.001f, TowerStats.Range);
         }

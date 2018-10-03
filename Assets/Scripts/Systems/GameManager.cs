@@ -9,7 +9,7 @@ namespace Game.System
     {
         public GameObject[]  WaypointList, TowerCellAreaList;
         public List<GameObject> TowerList, CreepList, CellList;
-        public GameObject CellPrefab, CreepPrefab, TowerPrefab, CreepSpawnPoint;
+        public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint;
         public Transform CellParent, BulletParent, TowerParent, CreepParent;
         public TowerPlaceSystem TowerPlaceSystem;
         public GridSystem GridSystem;

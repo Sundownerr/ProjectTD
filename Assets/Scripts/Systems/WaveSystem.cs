@@ -37,7 +37,7 @@ namespace Game.System
             while (spawnedCreepCount < needToSpawnCount)
             {
                 Instantiate(GameManager.Instance.CreepPrefab);
-
+                
                 isCreepSpawning = true;
 
                 spawnedCreepCount++;

@@ -7,6 +7,10 @@ namespace Game.Data.Entity.Tower
     [CreateAssetMenu(fileName = "New Tower", menuName = "Base Tower")]
     public class TowerStats : Entity
     {
+        private void OnEnable()
+        {
+            
+        }
         public int Id, Exp, Level;
         public GameObject StaticPart, MovingPart, ShootingPart;
         public int Damage, Range, CritMultiplier, SpellCritMultiplier, Mana,  MulticritCount;
@@ -16,9 +20,10 @@ namespace Game.Data.Entity.Tower
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio;
         public float BuffDuration, DebuffDuration;
         
-        public TowerGradeStats[] TowerGradeStats;
-        public float[] GradeCosts;
-        public float[] DamageToArmor;
+        public List<TowerGradeStats> TowerGradeStatList;
+        public List<Ability> TowerAbilityList;
+        public List<float> GradeCostList;
+        public List<float> DamageToArmorList;
 
     }
 }
