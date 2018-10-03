@@ -30,7 +30,7 @@ namespace Game.System
             choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
             var choosedTowerStats = choosedTowerBaseSystem.TowerStats;
 
-            choosedTowerBaseSystem.TowerRange.Show(true);
+            choosedTowerBaseSystem.RangeSystem.Show(true);
 
             TowerName.text = choosedTowerStats.entityName;
             Damage.text = KiloFormat(choosedTowerStats.Damage);
@@ -47,7 +47,7 @@ namespace Game.System
         {
             if (choosedTowerBaseSystem != null)
             {
-                choosedTowerBaseSystem.TowerRange.Show(false);
+                choosedTowerBaseSystem.RangeSystem.Show(false);
             }
         }
 

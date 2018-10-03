@@ -17,6 +17,7 @@ namespace Game.Tower
         private bool isCooldown;
         private Vector3 targetLastPos;
         private Transform targetTransform;
+        private GameObject target, newTarget;
 
         private void Start()
         {         
@@ -27,7 +28,7 @@ namespace Game.Tower
             bulletPool = new ObjectPool
             {
                 poolObject = towerData.Bullet,
-                parent = GameManager.Instance.BulletParent
+                parent = null
             };
 
             bulletPool.Initialize();
@@ -40,12 +41,15 @@ namespace Game.Tower
 
             bulletDataList.Add(bulletList[last].GetComponent<BulletSystem>());
 
-            bulletList[last].transform.position = towerData.shootPointTransform.position;
-            bulletList[last].transform.rotation = towerData.movingPartTransform.rotation;
+            bulletList[last].transform.position = towerData.ShootPointTransform.position;
+            bulletList[last].transform.rotation = towerData.MovingPartTransform.rotation;
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
             bulletSpeed = bulletDataList[last].Speed;
-            
+            bulletDataList[bulletDataList.Count - 1].Target = towerData.RangeSystem.CreepInRangeList[0];
+            target = towerData.RangeSystem.CreepInRangeList[0];
+
+
             bulletList[last].SetActive(true);
 
             yield return new WaitForSeconds(cooldown);
@@ -58,28 +62,21 @@ namespace Game.Tower
             }
         }
 
-        private void GetTargetData(int i)
-        {
-            targetTransform = bulletDataList[i].Target.transform;
-
-            targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y / 2, 0);
-
-            targetScale = targetTransform.lossyScale.x - 2;
-
-            distance = GameManager.CalcDistance(
-                    bulletList[i].transform.position,
-                    targetLastPos
-                    );
-        }
 
         private void MoveBullet()
         {
 
             if (bulletList.Count > 0)
             {
-                if (towerData.TowerRange.CreepInRangeList.Count > 0)
+                if (towerData.RangeSystem.CreepInRangeList.Count > 0)
                 {
-                    bulletDataList[bulletList.Count - 1].Target = towerData.TowerRange.CreepInRangeList[0];
+                    
+                    newTarget = bulletDataList[bulletList.Count - 1].Target;
+
+                    if(target != newTarget)
+                    {
+                        RemoveBullet(0f);
+                    }
                 }
             }
 
@@ -87,7 +84,16 @@ namespace Game.Tower
             {             
                 if (bulletDataList[i].Target != null)
                 {
-                    GetTargetData(i);
+                    targetTransform = bulletDataList[i].Target.transform;
+
+                    targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y / 2, 0);
+
+                    targetScale = targetTransform.lossyScale.x - 2;
+
+                    distance = GameManager.CalcDistance(
+                            bulletList[i].transform.position,
+                            targetLastPos
+                            );
                 }
 
                 if (!bulletDataList[i].IsReachedTarget && distance > targetScale)

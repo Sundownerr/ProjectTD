@@ -3,27 +3,13 @@ using System;
 
 namespace Game.Data.Effect
 {
-   
+    [CreateAssetMenu(fileName = "Stun", menuName = "Stun")]
     public class Stun : Effect
     {
         private float currentDuration;
         private readonly float targetMoveSpeed;
-        private Creep.CreepSystem targetData;
-
-        public Stun(GameObject target, float duration)
-        {
-            this.Duration = duration;
-            currentDuration = 0;
-
-            targetData = target.GetComponent<Creep.CreepSystem>();
-
-            targetMoveSpeed = targetData.Stats.moveSpeed;
-
-            StunTarget();
-        }
-
        
-        private void StunTarget()
+        private void StunTarget(Creep.CreepSystem targetData)
         {
             if(currentDuration < Duration)
             {

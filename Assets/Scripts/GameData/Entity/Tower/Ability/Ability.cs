@@ -11,12 +11,12 @@ namespace Game.Data
     
     public class Ability : ScriptableObject
     {
-        public int TowerID;
-
         public string AbilityName, AbilityDescription;
 
         public float ManaCost, Cooldown, TriggerChance;
         
         public List<Effect.Effect> EffectList;
     }
+
+
 }

@@ -10,41 +10,26 @@ namespace Game.Tower
 
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
-        public Transform towerRangeTransform, movingPartTransform, shootPointTransform;
+        public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
         public GameObject Bullet, TowerPlaceEffect, OcuppiedCell, Range;
         public TowerCombatSystem TowerCombatSystem;
-        public TowerRangeSystem TowerRange;
+        public TowerRangeSystem RangeSystem;
         public TowerStats TowerStats;
         public bool IsTowerPlaced;
     
         private List<Renderer> towerRendererList;
-        private bool isRangeShowed;
 
         private void Start()
         {
             Range = Instantiate(GameManager.Instance.RangePrefab, transform);
+            RangeSystem = Range.GetComponent<TowerRangeSystem>();
+            Range.transform.localScale = new Vector3(TowerStats.Range, 0.001f, TowerStats.Range);
 
-            TowerStats = ScriptableObject.CreateInstance<TowerStats>();
             towerRendererList = new List<Renderer>();
-
-            TowerStats.entityName = "SampleTowerName" + Random.Range(100, 1000);
-            TowerStats.Damage = Random.Range(10, 20);
-            TowerStats.Range = Random.Range(510, 900);
-            TowerStats.CritChance = Mathf.Floor(Random.Range(0, 1f) * 100);
-            TowerStats.Mana = Random.Range(0, 100000);
-            TowerStats.SpellDamage = Mathf.Floor(Random.Range(0, 10f) * 100);
-            TowerStats.TriggerChance = Mathf.Floor(Random.Range(0, 1f) * 100);
-            TowerStats.AttackSpeed = Random.Range(0.1f, 1f);
-
             towerRendererList.AddRange(GetComponentsInChildren<Renderer>());
-
-            towerRangeTransform = Range.transform;
-            movingPartTransform = transform.GetChild(1);
-            shootPointTransform = movingPartTransform.GetChild(0).GetChild(0);
-
-            TowerRange = Range.GetComponent<TowerRangeSystem>();
-
-            towerRangeTransform.localScale = new Vector3(TowerStats.Range, 0.001f, TowerStats.Range);
+                   
+            MovingPartTransform = transform.GetChild(0);
+            ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);            
         }
 
         private void Update()
@@ -60,24 +45,24 @@ namespace Game.Tower
 
             if (IsTowerPlaced)
             {
-                if (TowerRange.CreepInRangeList.Count > 0 && TowerRange.CreepInRangeList[0] != null)
+                if (RangeSystem.CreepInRangeList.Count > 0 && RangeSystem.CreepInRangeList[0] != null)
                 {
                     RotateTowerAtCreep();
 
                     TowerCombatSystem.ShootAtCreep(TowerStats.AttackSpeed);
                 }
                 else 
-                {                  
+                {
                     TowerCombatSystem.MoveBulletOutOfRange();
                 }
 
                 if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
                 {
-                    TowerRange.Show(true);
+                    RangeSystem.Show(true);
                 }
                 else if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_CHOOSEDTOWER)
                 {
-                    TowerRange.Show(false);
+                    RangeSystem.Show(false);
                 }
             }
         }
@@ -114,7 +99,7 @@ namespace Game.Tower
                 }
 
                 gameObject.layer = 14;
-                TowerRange.Show(false);
+                RangeSystem.Show(false);
                             
                 IsTowerPlaced = true;
             }
@@ -122,12 +107,12 @@ namespace Game.Tower
 
         private void RotateTowerAtCreep()
         {
-            var offset = TowerRange.CreepInRangeList[0].transform.position - transform.position;
+            var offset = RangeSystem.CreepInRangeList[0].transform.position - transform.position;
             offset.y = 0;
 
             var towerRotation = Quaternion.LookRotation(offset);
 
-            movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
+            MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }            
     }
 }

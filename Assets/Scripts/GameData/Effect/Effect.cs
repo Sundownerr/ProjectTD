@@ -5,7 +5,7 @@ namespace Game.Data.Effect
 {
 
     [Serializable]
-    public class Effect 
+    public class Effect : ScriptableObject
     {
         public string EffectName = "effectname", EffectDescription = "effectname";
         public float Duration = 0;

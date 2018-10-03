@@ -12,7 +12,7 @@ namespace Game.Data.Entity.Tower
             
         }
         public int Id, Exp, Level;
-        public GameObject StaticPart, MovingPart, ShootingPart;
+        public GameObject Prefab;
         public int Damage, Range, CritMultiplier, SpellCritMultiplier, Mana,  MulticritCount;
         public float AttackSpeed, TriggerChance, CritChance, ManaRegen;
         public float SpellDamage, SpellCritChance;
