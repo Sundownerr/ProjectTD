@@ -49,7 +49,6 @@ namespace Game.Tower
             bulletDataList[bulletDataList.Count - 1].Target = towerData.RangeSystem.CreepInRangeList[0];
             target = towerData.RangeSystem.CreepInRangeList[0];
 
-
             bulletList[last].SetActive(true);
 
             yield return new WaitForSeconds(cooldown);
@@ -62,38 +61,24 @@ namespace Game.Tower
             }
         }
 
+        private void GetTargetData(int index)
+        {
+            targetTransform = bulletDataList[index].Target.transform;
+
+            targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y / 2, 0);
+
+            targetScale = targetTransform.lossyScale.x - 2;
+
+            distance = GameManager.CalcDistance(bulletList[index].transform.position, targetLastPos);
+        }
 
         private void MoveBullet()
         {
-
-            if (bulletList.Count > 0)
-            {
-                if (towerData.RangeSystem.CreepInRangeList.Count > 0)
-                {
-                    
-                    newTarget = bulletDataList[bulletList.Count - 1].Target;
-
-                    if(target != newTarget)
-                    {
-                        RemoveBullet(0f);
-                    }
-                }
-            }
-
             for (int i = 0; i < bulletList.Count; i++)
-            {             
+            {
                 if (bulletDataList[i].Target != null)
                 {
-                    targetTransform = bulletDataList[i].Target.transform;
-
-                    targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y / 2, 0);
-
-                    targetScale = targetTransform.lossyScale.x - 2;
-
-                    distance = GameManager.CalcDistance(
-                            bulletList[i].transform.position,
-                            targetLastPos
-                            );
+                    GetTargetData(i);
                 }
 
                 if (!bulletDataList[i].IsReachedTarget && distance > targetScale)
@@ -111,13 +96,13 @@ namespace Game.Tower
                         if (bulletDataList[i].Target != null)
                         {
                             bulletDataList[i].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.TowerStats.Damage);
-                        }                     
+                        }
                     }
                 }
             }
         }
 
-        public void ShootAtCreep(float cooldown)
+        public void Shoot(float cooldown)
         {
             if(!isCooldown)
             {
@@ -148,8 +133,7 @@ namespace Game.Tower
                 bulletList[0].SetActive(false);
                 bulletDataList.RemoveAt(0);
                 bulletList.RemoveAt(0);
-            }
-            
+            }           
         }
     }
 }

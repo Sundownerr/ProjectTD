@@ -49,7 +49,7 @@ namespace Game.Tower
                 {
                     RotateTowerAtCreep();
 
-                    TowerCombatSystem.ShootAtCreep(TowerStats.AttackSpeed);
+                    TowerCombatSystem.Shoot(TowerStats.AttackSpeed);
                 }
                 else 
                 {
