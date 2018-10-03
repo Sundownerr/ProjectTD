@@ -28,7 +28,7 @@ namespace Game.System
         {
             choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower;
             choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
-            var choosedTowerStats = choosedTowerBaseSystem.TowerStats;
+            var choosedTowerStats = choosedTowerBaseSystem.Stats;
 
             choosedTowerBaseSystem.RangeSystem.Show(true);
 

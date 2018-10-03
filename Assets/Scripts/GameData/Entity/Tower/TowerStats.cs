@@ -7,12 +7,9 @@ namespace Game.Data.Entity.Tower
     [CreateAssetMenu(fileName = "New Tower", menuName = "Base Tower")]
     public class TowerStats : Entity
     {
-        private void OnEnable()
-        {
-            
-        }
+        
+
         public int Id, Exp, Level;
-        public GameObject Prefab;
         public int Damage, Range, CritMultiplier, SpellCritMultiplier, Mana,  MulticritCount;
         public float AttackSpeed, TriggerChance, CritChance, ManaRegen;
         public float SpellDamage, SpellCritChance;

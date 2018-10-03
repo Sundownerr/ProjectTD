@@ -12,21 +12,24 @@ namespace Game.Tower
     {
         public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
         public GameObject Bullet, TowerPlaceEffect, OcuppiedCell, Range;
-        public TowerCombatSystem TowerCombatSystem;
+        public TowerCombatSystem CombatSystem;
         public TowerRangeSystem RangeSystem;
-        public TowerStats TowerStats;
+        public TowerStats Stats, BaseStats;
         public bool IsPlaced;
     
-        private List<Renderer> towerRendererList;
+        private List<Renderer> rendererList;
 
         private void Start()
         {
+            Stats = Instantiate(BaseStats);
+
+            CombatSystem = GetComponent<TowerCombatSystem>();
             Range = Instantiate(GameManager.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
-            Range.transform.localScale = new Vector3(TowerStats.Range, 0.001f, TowerStats.Range);
+            Range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
 
-            towerRendererList = new List<Renderer>();
-            towerRendererList.AddRange(GetComponentsInChildren<Renderer>());
+            rendererList = new List<Renderer>();
+            rendererList.AddRange(GetComponentsInChildren<Renderer>());
                    
             MovingPartTransform = transform.GetChild(0);
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);            
@@ -34,6 +37,8 @@ namespace Game.Tower
 
         private void Update()
         {
+
+
             if (!IsPlaced && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
             {
                 StartPlacing();
@@ -49,13 +54,13 @@ namespace Game.Tower
                 {
                     RotateAtCreep();
 
-                    TowerCombatSystem.Shoot(TowerStats.AttackSpeed);
+                    CombatSystem.Shoot(Stats.AttackSpeed);
                 }
                 else
                 {
-                    if (!TowerCombatSystem.IsAllBulletsInactive)
+                    if (!CombatSystem.CheckAllBulletInactive())
                     {
-                        TowerCombatSystem.MoveBulletOutOfRange();
+                        CombatSystem.MoveBulletOutOfRange();
                     }
                 }
 
@@ -72,9 +77,9 @@ namespace Game.Tower
 
         private void SetTowerColor(Color color)
         {
-            for (int i = 0; i < towerRendererList.Count; i++)
+            for (int i = 0; i < rendererList.Count; i++)
             {
-                towerRendererList[i].material.color = color;
+                rendererList[i].material.color = color;
             }
         }
 
@@ -89,17 +94,17 @@ namespace Game.Tower
         {
             if (!IsPlaced)
             {
-                var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
-                Destroy(placeEffect, 1f);
-
                 OcuppiedCell = GameManager.Instance.TowerPlaceSystem.NewBusyCell;
-
-                SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));               
 
                 if (transform.position != OcuppiedCell.transform.position)
                 {
                     transform.position = OcuppiedCell.transform.position;
-                }
+                }              
+
+                SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
+
+                var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
+                Destroy(placeEffect, 1f);
 
                 gameObject.layer = 14;
                 RangeSystem.Show(false);

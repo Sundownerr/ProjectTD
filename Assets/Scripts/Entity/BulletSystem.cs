@@ -34,6 +34,7 @@ namespace Game.Tower
         {
             Show(false);
             IsReachedTarget = true;
+            
         }
 
         public void Show(bool enabled)

@@ -56,7 +56,7 @@ using System.Collections.Generic;
 
         protected void CreateObject(Transform parent)
         {
-            var obj = Object.Instantiate(poolObject);
+            var obj = Object.Instantiate(poolObject, parent);
         
             poolList.Add(obj);
 
