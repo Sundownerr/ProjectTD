@@ -35,7 +35,7 @@ namespace Game.Tower
         private void Start()
         {
             state = new StateMachine();
-            state.ChangeState(new CreateTowerState(this));
+            state.ChangeState(new SpawnState(this));
 
             isRangeShowed = true;
         }
@@ -113,11 +113,11 @@ namespace Game.Tower
             Destroy(gameObject);
         }    
 
-        public class CreateTowerState : IState
+        protected class SpawnState : IState
         {
             private readonly TowerBaseSystem owner;
 
-            public CreateTowerState(TowerBaseSystem owner)
+            public SpawnState(TowerBaseSystem owner)
             {
                 this.owner = owner;
             }
@@ -146,19 +146,18 @@ namespace Game.Tower
                     owner.StartPlacing();
                 }
                 else
-                {
-                    owner.EndPlacing();
+                {                  
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
             }
 
             public void Exit()
             {
-
+                owner.EndPlacing();
             }
         }
 
-        public class LookForCreepState : IState
+        protected class LookForCreepState : IState
         {
             private readonly TowerBaseSystem owner;
 
@@ -184,7 +183,7 @@ namespace Game.Tower
             }
         }
 
-        public class CombatState : IState
+        protected class CombatState : IState
         {
             private readonly TowerBaseSystem owner;
 
@@ -199,20 +198,20 @@ namespace Game.Tower
 
             public void Execute()
             {
+                for (int i = 0; i < owner.RangeSystem.CreepInRangeList.Count; i++)
+                {
+                    if (owner.RangeSystem.CreepInRangeList[i] == null)
+                    {
+                        owner.RangeSystem.CreepInRangeList.RemoveAt(i);
+                    }
+                }
+
                 if (owner.RangeSystem.CreepInRangeList.Count <= 0)
                 {
                     owner.state.ChangeState(new MoveRemainingBulletState(owner));
                 }
                 else
-                {
-                    for (int i = 0; i < owner.RangeSystem.CreepInRangeList.Count; i++)
-                    {
-                        if (owner.RangeSystem.CreepInRangeList[i] == null)
-                        {
-                            owner.RangeSystem.CreepInRangeList.RemoveAt(i);
-                        }
-                    }
-
+                {                  
                     owner.RotateAtCreep();
                     owner.CombatSystem.Shoot(owner.Stats.AttackSpeed);
                 }
@@ -223,7 +222,7 @@ namespace Game.Tower
             }
         }
 
-        public class MoveRemainingBulletState : IState
+        protected class MoveRemainingBulletState : IState
         {
             private readonly TowerBaseSystem owner;
 

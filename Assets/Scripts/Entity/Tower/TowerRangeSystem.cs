@@ -11,12 +11,16 @@ namespace Game.Tower
         public List<GameObject> CreepInRangeList;
 
         private Renderer rend;
+        private Color transparent, notTransparent;
 
         private void Start()
         {
             CreepInRangeList = new List<GameObject>();
             transform.position += new Vector3(0, -5, 0);
             rend = GetComponent<Renderer>();
+
+            transparent = new Color(0f, 0f, 0f, 0f);
+            notTransparent = new Color(0, 0.5f, 0, 0.2f);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -42,16 +46,16 @@ namespace Game.Tower
         {
             if (show)
             {
-                if (rend.material.color != new Color(0, 0.5f, 0, 0.2f))
+                if (rend.material.color != notTransparent)
                 {
-                    rend.material.color = new Color(0, 0.5f, 0, 0.2f);
+                    rend.material.color = notTransparent;
                 }
             }
             else
             {
-                if (rend.material.color != new Color(0f, 0f, 0f, 0f))
+                if (rend.material.color != transparent)
                 {
-                    rend.material.color = new Color(0f, 0f, 0f, 0f);
+                    rend.material.color = transparent;
                 }
             }
         }            

@@ -7,10 +7,16 @@ using Game.TowerCells;
 namespace Game.System
 {
     public class TowerPlaceSystem : ExtendedMonoBehaviour
-    {
+    { 
+        [HideInInspector]
         public Vector3 GhostedTowerPos;
+
+        [HideInInspector]
         public Color GhostedTowerColor;
+
+        [HideInInspector]
         public GameObject NewBusyCell;
+
         public LayerMask LayerMask;
         
         private bool isCanBuild, isTowerCreated;
@@ -30,7 +36,6 @@ namespace Game.System
 
         private void Update()
         {
-
             if (GameManager.Instance.GridSystem.IsGridBuilded && !isCanBuild)
             {
                 for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
