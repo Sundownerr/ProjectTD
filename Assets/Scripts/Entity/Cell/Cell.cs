@@ -6,6 +6,7 @@ namespace Game.TowerCells
 
     public class Cell : ExtendedMonoBehaviour
     {
+        [HideInInspector]
         public bool IsBusy, IsChosen;
 
         private Color blueColor, redColor, greenColor;

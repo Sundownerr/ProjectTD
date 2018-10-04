@@ -10,68 +10,55 @@ namespace Game.Tower
 
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
+        [HideInInspector]
         public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
-        public GameObject Bullet, TowerPlaceEffect, OcuppiedCell, Range;
+
+        [HideInInspector]
+        public GameObject OcuppiedCell, Range;
+
+        [HideInInspector]
         public TowerCombatSystem CombatSystem;
+
+        [HideInInspector]
         public TowerRangeSystem RangeSystem;
-        public TowerStats Stats, BaseStats;
-        public bool IsPlaced;
-    
-        private List<Renderer> rendererList;
+       
+        [HideInInspector]
+        public TowerStats Stats;
+
+        public TowerStats BaseStats;
+        public GameObject Bullet, TowerPlaceEffect;
+
+        protected List<Renderer> rendererList;
+        private StateMachine state;
+        private bool isRangeShowed;
 
         private void Start()
         {
-            Stats = Instantiate(BaseStats);
+            state = new StateMachine();
+            state.ChangeState(new CreateTowerState(this));
 
-            CombatSystem = GetComponent<TowerCombatSystem>();
-            Range = Instantiate(GameManager.Instance.RangePrefab, transform);
-            RangeSystem = Range.GetComponent<TowerRangeSystem>();
-            Range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
-
-            rendererList = new List<Renderer>();
-            rendererList.AddRange(GetComponentsInChildren<Renderer>());
-                   
-            MovingPartTransform = transform.GetChild(0);
-            ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);            
+            isRangeShowed = true;
         }
 
         private void Update()
         {
+            state.Update();
 
+            SetRangeShow();
+        }
 
-            if (!IsPlaced && GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+        private void SetRangeShow()
+        {
+            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && !isRangeShowed)
             {
-                StartPlacing();
+                RangeSystem.Show(true);
+                isRangeShowed = true;
             }
             else
+            if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_CHOOSEDTOWER && isRangeShowed && GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
             {
-                EndPlacing();
-            }
-
-            if (IsPlaced)
-            {
-                if (RangeSystem.CreepInRangeList.Count > 0 && RangeSystem.CreepInRangeList[0] != null)
-                {
-                    RotateAtCreep();
-
-                    CombatSystem.Shoot(Stats.AttackSpeed);
-                }
-                else
-                {
-                    if (!CombatSystem.CheckAllBulletInactive())
-                    {
-                        CombatSystem.MoveBulletOutOfRange();
-                    }
-                }
-
-                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
-                {
-                    RangeSystem.Show(true);
-                }
-                else if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_CHOOSEDTOWER)
-                {
-                    RangeSystem.Show(false);
-                }
+                RangeSystem.Show(false);
+                isRangeShowed = false;
             }
         }
 
@@ -92,25 +79,21 @@ namespace Game.Tower
 
         private void EndPlacing()
         {
-            if (!IsPlaced)
+            OcuppiedCell = GameManager.Instance.TowerPlaceSystem.NewBusyCell;
+
+            if (transform.position != OcuppiedCell.transform.position)
             {
-                OcuppiedCell = GameManager.Instance.TowerPlaceSystem.NewBusyCell;
-
-                if (transform.position != OcuppiedCell.transform.position)
-                {
-                    transform.position = OcuppiedCell.transform.position;
-                }              
-
-                SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
-
-                var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
-                Destroy(placeEffect, 1f);
-
-                gameObject.layer = 14;
-                RangeSystem.Show(false);
-                            
-                IsPlaced = true;
+                transform.position = OcuppiedCell.transform.position;
             }
+
+            SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
+
+            var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
+            Destroy(placeEffect, 1f);
+
+            gameObject.layer = 14;
+            RangeSystem.Show(false);
+
         }
 
         private void RotateAtCreep()
@@ -121,13 +104,153 @@ namespace Game.Tower
             var towerRotation = Quaternion.LookRotation(offset);
 
             MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
-        }            
+        }
 
         public void Sell()
         {
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
             GameManager.Instance.TowerList.Remove(gameObject);
-            Destroy(gameObject);            
+            Destroy(gameObject);
+        }    
+
+        public class CreateTowerState : IState
+        {
+            private readonly TowerBaseSystem owner;
+
+            public CreateTowerState(TowerBaseSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {               
+                owner.Stats = Instantiate(owner.BaseStats);
+
+                owner.CombatSystem = owner.GetComponent<TowerCombatSystem>();
+
+                owner.Range = Instantiate(GameManager.Instance.RangePrefab, owner.transform);
+                owner.RangeSystem = owner.Range.GetComponent<TowerRangeSystem>();
+                owner.Range.transform.localScale = new Vector3(owner.Stats.Range, 0.001f, owner.Stats.Range);
+
+                owner.rendererList = new List<Renderer>();
+                owner.rendererList.AddRange(owner.GetComponentsInChildren<Renderer>());
+
+                owner.MovingPartTransform = owner.transform.GetChild(0);
+                owner.ShootPointTransform = owner.MovingPartTransform.GetChild(0).GetChild(0);
+            }
+
+            public void Execute()
+            {
+                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+                {
+                    owner.StartPlacing();
+                }
+                else
+                {
+                    owner.EndPlacing();
+                    owner.state.ChangeState(new LookForCreepState(owner));
+                }
+            }
+
+            public void Exit()
+            {
+
+            }
+        }
+
+        public class LookForCreepState : IState
+        {
+            private readonly TowerBaseSystem owner;
+
+            public LookForCreepState(TowerBaseSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+            }
+
+            public void Execute()
+            {
+                if (owner.RangeSystem.CreepInRangeList.Count > 0)
+                {
+                    owner.state.ChangeState(new CombatState(owner));                  
+                }
+            }
+
+            public void Exit()
+            {
+            }
+        }
+
+        public class CombatState : IState
+        {
+            private readonly TowerBaseSystem owner;
+
+            public CombatState(TowerBaseSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+            }
+
+            public void Execute()
+            {
+                if (owner.RangeSystem.CreepInRangeList.Count <= 0)
+                {
+                    owner.state.ChangeState(new MoveRemainingBulletState(owner));
+                }
+                else
+                {
+                    for (int i = 0; i < owner.RangeSystem.CreepInRangeList.Count; i++)
+                    {
+                        if (owner.RangeSystem.CreepInRangeList[i] == null)
+                        {
+                            owner.RangeSystem.CreepInRangeList.RemoveAt(i);
+                        }
+                    }
+
+                    owner.RotateAtCreep();
+                    owner.CombatSystem.Shoot(owner.Stats.AttackSpeed);
+                }
+            }
+
+            public void Exit()
+            {
+            }
+        }
+
+        public class MoveRemainingBulletState : IState
+        {
+            private readonly TowerBaseSystem owner;
+
+            public MoveRemainingBulletState(TowerBaseSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+            }
+
+            public void Execute()
+            {
+                if (!owner.CombatSystem.CheckAllBulletInactive())
+                {
+                    owner.CombatSystem.MoveBulletOutOfRange();
+                }
+                else
+                {
+                    owner.state.ChangeState(new LookForCreepState(owner));
+                }
+            }
+
+            public void Exit()
+            {
+            }
         }
     }
 }

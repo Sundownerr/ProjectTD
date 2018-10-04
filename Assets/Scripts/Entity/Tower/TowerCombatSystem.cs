@@ -11,22 +11,20 @@ namespace Game.Tower
 
         public bool IsAllBulletsInactive;
 
-        private ObjectPool bulletPool;
-        private TowerBaseSystem towerData;
-        private List<GameObject> bulletList;
-        private List<BulletSystem> bulletDataList;
-        private List<Transform> targetTransformList;
         private float bulletSpeed, bulletLifetime, distance, targetScale;
-        private bool isCooldown;
-        private Vector3 targetLastPos;
+        private List<BulletSystem> bulletDataList;
+        private List<GameObject> bulletList;
         private Transform targetTransform;
+        private TowerBaseSystem towerData;
+        private Vector3 targetLastPos;
+        private ObjectPool bulletPool;     
+        private bool isCooldown;          
 
         private void Start()
         {         
             towerData = gameObject.GetComponent<TowerBaseSystem>();
             bulletList = new List<GameObject>();
             bulletDataList = new List<BulletSystem>();
-            targetTransformList = new List<Transform>();
 
             bulletPool = new ObjectPool
             {
@@ -55,10 +53,8 @@ namespace Game.Tower
 
             bulletLifetime = bulletDataList[last].BulletLifetime;
             bulletSpeed = bulletDataList[last].Speed;
-
             
-            bulletDataList[last].Target = towerData.RangeSystem.CreepInRangeList[0];
-            
+            bulletDataList[last].Target = towerData.RangeSystem.CreepInRangeList[0];        
 
             GetTargetData(last);
 
@@ -72,7 +68,6 @@ namespace Game.Tower
         private void GetTargetData(int index)
         {
             targetTransform = bulletDataList[index].Target.transform;          
-
             targetScale = targetTransform.lossyScale.x - 2;          
         }
 
@@ -87,9 +82,7 @@ namespace Game.Tower
                 }
                 else
                 {
-                    //StartCoroutine(RemoveBullet(bulletLifetime / 3));
-                    distance = 0;
-                    
+                    distance = 0;                    
                     bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
                 }
 
@@ -104,6 +97,7 @@ namespace Game.Tower
                     {
                         bulletDataList[i].IsReachedTarget = true;
                         bulletDataList[i].Show(false);
+
                         StartCoroutine(RemoveBullet(bulletLifetime));
 
                         if (bulletDataList[i].Target != null)

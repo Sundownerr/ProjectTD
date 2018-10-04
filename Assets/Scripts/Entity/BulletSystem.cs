@@ -8,13 +8,13 @@ namespace Game.Tower
 {
     public class BulletSystem : ExtendedMonoBehaviour
     {
-
         public ParticleSystem[] ParticleSystemList;
         public bool IsReachedTarget;
         public float BulletLifetime;
         public GameObject Target;
         public float Speed;
-        
+
+                          
         private ParticleSystem.EmissionModule emissionModule;
 
         protected override void Awake()

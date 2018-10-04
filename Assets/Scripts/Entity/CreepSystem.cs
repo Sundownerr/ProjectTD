@@ -15,7 +15,7 @@ namespace Game.Creep
         private Transform creepTransform;
         private bool waypointReached;
         private int waypointIndex;  
-
+        
         private void Start()
         {
             GameManager.Instance.CreepList.Add(gameObject);
@@ -29,7 +29,7 @@ namespace Game.Creep
             Stats.moveSpeed = 250f;            
 
             creepTransform = transform;
-            creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0); 
+            creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);             
         }
 
         private void Update()

@@ -28,21 +28,7 @@ namespace Game.Tower
                     CreepInRangeList.Add(other.gameObject);
                 }
             }                     
-        }
-
-        private void OnTriggerStay(Collider other)
-        {
-            if (CreepInRangeList.Count > 0)
-            {
-                for (int i = 0; i < CreepInRangeList.Count; i++)
-                {
-                    if (CreepInRangeList[i] == null)
-                    {
-                        CreepInRangeList.RemoveAt(i);                     
-                    }                
-                }
-            }
-        }
+        }    
 
         private void OnTriggerExit(Collider other)
         {
