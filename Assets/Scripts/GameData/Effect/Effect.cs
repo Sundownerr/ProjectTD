@@ -1,13 +1,21 @@
-﻿using System;
-using UnityEngine;
-#pragma warning disable CS1591 
+﻿using UnityEngine;
+using System.Collections.Generic;
+
 namespace Game.Data.Effect
 {
+    public interface IEffect
+    {
+        void InitEffect();
+    }
 
-    [Serializable]
-    public class Effect : ScriptableObject
+    public class Effect : ScriptableObject, IEffect
     {
         public string EffectName = "effectname", EffectDescription = "effectname";
-        public float Duration = 0;
+        public float Duration = 0, NextEffectInterval;
+        public List<GameObject> creep = new List<GameObject>(), tower = new List<GameObject>();
+        public Creep.CreepSystem creepData;
+        protected float currentDuration;
+
+        public virtual void InitEffect() {}
     }
 }

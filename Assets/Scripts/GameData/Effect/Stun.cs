@@ -1,25 +1,24 @@
 ﻿using UnityEngine;
-using System;
 
 namespace Game.Data.Effect
 {
     [CreateAssetMenu(fileName = "Stun", menuName = "Stun")]
-    public class Stun : Effect
-    {
-        private float currentDuration;
+    public class Stun : Effect, IEffect
+    {       
         private readonly float targetMoveSpeed;
        
-        private void StunTarget(Creep.CreepSystem targetData)
+        public override void InitEffect()
         {
-            if(currentDuration < Duration)
+            Debug.Log("init stun");
+            if (currentDuration < Duration)
             {
-                targetData.Stats.moveSpeed = 0;
+                creepData.Stats.moveSpeed = 0;
                 
                 currentDuration++;               
             }
             else
             {
-                targetData.Stats.moveSpeed = targetMoveSpeed;
+                creepData.Stats.moveSpeed = targetMoveSpeed;
             }
         }
     }

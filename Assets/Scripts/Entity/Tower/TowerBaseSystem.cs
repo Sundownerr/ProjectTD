@@ -10,23 +10,23 @@ namespace Game.Tower
 
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
-        [HideInInspector]
+      //  [HideInInspector]
         public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
 
-        [HideInInspector]
+       // [HideInInspector]
         public GameObject OcuppiedCell, Range;
 
-        [HideInInspector]
+      //  [HideInInspector]
         public TowerCombatSystem CombatSystem;
 
-        [HideInInspector]
+       // [HideInInspector]
         public TowerRangeSystem RangeSystem;
        
-        [HideInInspector]
+       // [HideInInspector]
         public TowerStats Stats;
 
         public TowerStats BaseStats;
-        public GameObject Bullet, TowerPlaceEffect;
+        public GameObject Bullet, TowerPlaceEffect, Target;
 
         protected List<Renderer> rendererList;
         private StateMachine state;
@@ -125,18 +125,25 @@ namespace Game.Tower
             public void Enter()
             {               
                 owner.Stats = Instantiate(owner.BaseStats);
-
                 owner.CombatSystem = owner.GetComponent<TowerCombatSystem>();
 
                 owner.Range = Instantiate(GameManager.Instance.RangePrefab, owner.transform);
                 owner.RangeSystem = owner.Range.GetComponent<TowerRangeSystem>();
                 owner.Range.transform.localScale = new Vector3(owner.Stats.Range, 0.001f, owner.Stats.Range);
 
-                owner.rendererList = new List<Renderer>();
-                owner.rendererList.AddRange(owner.GetComponentsInChildren<Renderer>());
-
                 owner.MovingPartTransform = owner.transform.GetChild(0);
                 owner.ShootPointTransform = owner.MovingPartTransform.GetChild(0).GetChild(0);
+
+                for (int i = 0; i < owner.Stats.TowerAbilityList.Count; i++)
+                {
+                    owner.Stats.TowerAbilityList[i] = Instantiate(owner.Stats.TowerAbilityList[i]);
+                    owner.Stats.TowerAbilityList[i].tower.Add(owner.gameObject);
+                    owner.Stats.TowerAbilityList[i].creep.Add(owner.Target);
+                    owner.Stats.TowerAbilityList[i].GetData();
+                }
+
+                owner.rendererList = new List<Renderer>();
+                owner.rendererList.AddRange(owner.GetComponentsInChildren<Renderer>());
             }
 
             public void Execute()
@@ -146,14 +153,15 @@ namespace Game.Tower
                     owner.StartPlacing();
                 }
                 else
-                {                  
+                {
+                    owner.EndPlacing();
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
             }
 
             public void Exit()
             {
-                owner.EndPlacing();
+               
             }
         }
 
@@ -190,10 +198,12 @@ namespace Game.Tower
             public CombatState(TowerBaseSystem owner)
             {
                 this.owner = owner;
+
             }
 
             public void Enter()
             {
+                owner.Stats.TowerAbilityList[0].creepData = owner.RangeSystem.CreepInRangeList[0].GetComponent<Creep.CreepSystem>();
             }
 
             public void Execute()
@@ -210,10 +220,13 @@ namespace Game.Tower
                 {
                     owner.state.ChangeState(new MoveRemainingBulletState(owner));
                 }
-                else
-                {                  
+                else if (owner.RangeSystem.CreepInRangeList[0] != null)
+                {
+                    owner.Target = owner.RangeSystem.CreepInRangeList[0];
                     owner.RotateAtCreep();
                     owner.CombatSystem.Shoot(owner.Stats.AttackSpeed);
+
+                    owner.Stats.TowerAbilityList[0].InitAbility();
                 }
             }
 

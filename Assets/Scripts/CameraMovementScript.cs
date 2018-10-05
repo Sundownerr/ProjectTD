@@ -21,20 +21,20 @@ public class CameraMovementScript : ExtendedMonoBehaviour
     {
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            if (rotationX > 53)
+            if (rotationX > 33)
             {
                 rotationX -= 2;
-                camRigidBody.AddTorque(Vector3.left * 10);
+                camRigidBody.AddTorque(Vector3.left * 7);
                 camRigidBody.AddForce(Vector3.down * 2500);
             }
         }
 
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            if (rotationX < 72)
+            if (rotationX < 82)
             {
                 rotationX += 2;
-                camRigidBody.AddTorque(Vector3.right * 10);
+                camRigidBody.AddTorque(Vector3.right * 7);
                 camRigidBody.AddForce(Vector3.up * 2500);
             }
         }
@@ -46,10 +46,10 @@ public class CameraMovementScript : ExtendedMonoBehaviour
 
         var vel = Vector3.zero;
 
-        if (transform.position.x < 220f & onLeftEdge)
+        if (transform.position.x < 240f & onLeftEdge)
             vel = Vector3.right * speed;
 
-        if (transform.position.x > -65f & onRightEdge)
+        if (transform.position.x > -305f & onRightEdge)
             vel = Vector3.left * speed;
 
         if (transform.position.z > -700f & onBottomEdge)

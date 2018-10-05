@@ -83,7 +83,7 @@ namespace Game.Tower
                 else
                 {
                     distance = 0;                    
-                    bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
+                    bulletList[i].transform.Translate(Vector3.forward * Random.Range(1, bulletSpeed), Space.Self);
                 }
 
                 if (!bulletDataList[i].IsReachedTarget && distance > targetScale)
