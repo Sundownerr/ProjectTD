@@ -28,9 +28,7 @@ namespace Game.System
         {
             choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower;
             choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
-            var choosedTowerStats = choosedTowerBaseSystem.Stats;
-
-            choosedTowerBaseSystem.RangeSystem.Show(true);
+            var choosedTowerStats = choosedTowerBaseSystem.Stats;         
 
             TowerName.text = choosedTowerStats.entityName;
             Damage.text = KiloFormat(choosedTowerStats.Damage);
@@ -41,14 +39,6 @@ namespace Game.System
             SpellCritChance.text = KiloFormat(choosedTowerStats.SpellCritChance) + "%";
             SpellDamage.text = KiloFormat(choosedTowerStats.SpellDamage) + "%";           
             CritChance.text = KiloFormat(choosedTowerStats.CritChance) + "%";
-        }
-
-        private void OnDisable()
-        {
-            if (choosedTowerBaseSystem != null)
-            {
-                choosedTowerBaseSystem.RangeSystem.Show(false);
-            }
         }
 
         public IEnumerator RefreshUI()

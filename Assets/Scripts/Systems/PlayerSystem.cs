@@ -45,7 +45,6 @@ namespace Game.System
 
             if (Physics.Raycast(WorldRay, out hit, 10000, LayerMask))
             {
-
                 var isMouseOnTower = hit.transform.gameObject.layer == 14;
                 var isMouseNotOnUI = !isHitUI && hit.transform.gameObject.layer == 9;
 
@@ -62,7 +61,10 @@ namespace Game.System
 
                         StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());
 
-                        GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_CHOOSEDTOWER;
+                        if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                        {
+                            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_CHOOSEDTOWER;
+                        }
                     }
 
                     if (isMouseNotOnUI)

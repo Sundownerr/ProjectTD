@@ -49,7 +49,11 @@ namespace Game.Tower
 
         private void SetRangeShow()
         {
-            if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && !isRangeShowed)
+            var isChoosedTower = 
+                GameManager.Instance.TowerUISystem.gameObject.activeSelf && 
+                GameManager.Instance.PlayerSystem.ChoosedTower == gameObject;
+
+            if (isChoosedTower || GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && !isRangeShowed)
             {
                 RangeSystem.Show(true);
                 isRangeShowed = true;
@@ -85,7 +89,7 @@ namespace Game.Tower
             {
                 transform.position = OcuppiedCell.transform.position;
             }
-
+            
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
             var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
@@ -154,14 +158,14 @@ namespace Game.Tower
                 }
                 else
                 {
-                    owner.EndPlacing();
+                    
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
             }
 
             public void Exit()
             {
-               
+                owner.EndPlacing();
             }
         }
 
@@ -176,6 +180,7 @@ namespace Game.Tower
 
             public void Enter()
             {
+           
             }
 
             public void Execute()

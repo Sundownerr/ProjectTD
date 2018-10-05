@@ -66,12 +66,12 @@ namespace Game.System
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
             yield return new WaitForFixedUpdate();
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
-        }    
+        }
 
         private void CreateGhostedTower()
         {
             GameManager.Instance.TowerList.Add(Instantiate(GameManager.Instance.TowerPrefab, Vector3.zero, Quaternion.Euler(0f, 0f, 0f), GameManager.Instance.TowerParent));
-            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
+            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;  
         }
 
         private void SetTowerColorAndPosition(Vector3 pos, Color color)
@@ -91,7 +91,7 @@ namespace Game.System
 
                 for (int i = 0; i < towerCellList.Count; i++)
                 {                   
-                    var isHitTowerCell = hit.transform.gameObject == towerCellList[i];
+                    var isHitTowerCell = hit.transform.gameObject == towerCellList[i];                 
 
                     if (isHitTowerCell && !towerCellStateList[i].IsBusy)
                     {
@@ -100,9 +100,9 @@ namespace Game.System
                         towerCellStateList[i].IsChosen = true;
 
                         if (Input.GetMouseButtonDown(0))
-                        {                       
-                            towerCellStateList[i].IsBusy = true;
+                        {
                             NewBusyCell = towerCellList[i];
+                            towerCellStateList[i].IsBusy = true;                            
 
                             isTowerCreated = false;
 
