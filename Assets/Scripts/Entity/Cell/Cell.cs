@@ -30,22 +30,19 @@ namespace Game.TowerCells
         private void Update()
         {
             if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
-            {             
+            {
                 if (IsBusy)
                 {
                     cellRenderer.material.color = redColor;
-                    IsChosen = false;
+                }
+                else if (IsChosen)
+                {
+                    cellRenderer.material.color = greenColor;
                 }
                 else
                 {
                     cellRenderer.material.color = blueColor;
-                }
-               
-
-                if (IsChosen)
-                {
-                    cellRenderer.material.color = greenColor;
-                }
+                }                  
             }
         }
     }

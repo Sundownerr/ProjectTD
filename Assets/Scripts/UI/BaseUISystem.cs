@@ -14,6 +14,7 @@ namespace Game.System
 
         private void Start()
         {
+            GameManager.Instance.BaseUISystem = this;
             Cursor.lockState = CursorLockMode.Confined;
 
             StartWaveButton.onClick.AddListener(StartWave);

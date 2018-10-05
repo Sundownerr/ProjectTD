@@ -12,6 +12,7 @@ namespace Game.System
         private void Start()
         {
             StartCoroutine(BuildTimer());
+            GameManager.Instance.GridSystem = this;
         }
 
         private void Update()

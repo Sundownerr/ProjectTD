@@ -27,6 +27,7 @@ namespace Game.System
        
         private void Start()
         {
+            GameManager.Instance.TowerPlaceSystem = this;
             towerCellStateList = new List<Cell>();
             mainCam = Camera.main;
 

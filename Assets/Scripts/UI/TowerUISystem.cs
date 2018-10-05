@@ -20,13 +20,14 @@ namespace Game.System
 
         private void Awake()
         {
+            GameManager.Instance.TowerUISystem = this;
             gameObject.SetActive(false);
             SellButton.onClick.AddListener(SellTower);
         }
 
         private void OnEnable()
         {
-            choosedTower = GameManager.Instance.PlayerSystem.ChoosedTower;
+            choosedTower = GameManager.Instance.PlayerInputSystem.ChoosedTower;
             choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
             var choosedTowerStats = choosedTowerBaseSystem.Stats;         
 

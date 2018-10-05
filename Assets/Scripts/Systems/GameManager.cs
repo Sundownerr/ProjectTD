@@ -14,8 +14,8 @@ namespace Game.System
         public TowerPlaceSystem TowerPlaceSystem;
         public GridSystem GridSystem;
         public WaveSystem WaveSystem;
-        public PlayerSystem PlayerSystem;
-        public BaseUISystem UISystem;
+        public PlayerInputSystem PlayerInputSystem;
+        public BaseUISystem BaseUISystem;
         public TowerUISystem TowerUISystem;
         public Canvas UICanvas;
 
@@ -43,7 +43,6 @@ namespace Game.System
 
         public static float CalcDistance(Vector3 pos1, Vector3 pos2)
         {
-
             Vector3 heading;
             float distanceSquared;
             float distance;

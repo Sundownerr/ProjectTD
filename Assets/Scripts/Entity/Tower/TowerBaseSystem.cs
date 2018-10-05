@@ -51,15 +51,15 @@ namespace Game.Tower
         {
             var isChoosedTower = 
                 GameManager.Instance.TowerUISystem.gameObject.activeSelf && 
-                GameManager.Instance.PlayerSystem.ChoosedTower == gameObject;
+                GameManager.Instance.PlayerInputSystem.ChoosedTower == gameObject;
 
-            if (isChoosedTower || GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER && !isRangeShowed)
+            if (isChoosedTower && !isRangeShowed)
             {
                 RangeSystem.Show(true);
                 isRangeShowed = true;
             }
             else
-            if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_CHOOSEDTOWER && isRangeShowed && GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+            if (!isChoosedTower && isRangeShowed)
             {
                 RangeSystem.Show(false);
                 isRangeShowed = false;

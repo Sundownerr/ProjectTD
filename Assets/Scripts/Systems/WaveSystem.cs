@@ -8,9 +8,14 @@ namespace Game.System
     {
         private bool isCreepSpawning, isCreepsSpawned;
 
+        private void Start()
+        {
+            GameManager.Instance.WaveSystem = this;
+        }
+
         private void LateUpdate()
         {
-            if (GameManager.Instance.UISystem.IsWaveStarted)
+            if (GameManager.Instance.BaseUISystem.IsWaveStarted)
             {
                 if (!isCreepSpawning)
                 {
@@ -23,8 +28,8 @@ namespace Game.System
                     {
                         isCreepsSpawned = false;
                         isCreepSpawning = false;
-                        GameManager.Instance.UISystem.IsWaveStarted = false;
-                        GameManager.Instance.UISystem.StartWaveButton.gameObject.SetActive(true);
+                        GameManager.Instance.BaseUISystem.IsWaveStarted = false;
+                        GameManager.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
                     }
                 }
             }
