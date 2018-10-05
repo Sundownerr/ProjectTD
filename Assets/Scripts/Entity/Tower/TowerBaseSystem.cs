@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 using Game.Data.Entity.Tower;
-
+using Game.Data.Effect;
 
 namespace Game.Tower
 {
@@ -17,7 +17,7 @@ namespace Game.Tower
         public GameObject OcuppiedCell, Range;
 
         [HideInInspector]
-        public TowerCombatSystem CombatSystem;
+        public TowerBulletSystem CombatSystem;
 
         [HideInInspector]
         public TowerRangeSystem RangeSystem;
@@ -29,6 +29,8 @@ namespace Game.Tower
         public GameObject Bullet, TowerPlaceEffect, Target;
 
         protected List<Renderer> rendererList;
+
+        private List<Effect> baseEffectList;
         private StateMachine state;
         private bool isRangeShowed;
 
@@ -128,8 +130,10 @@ namespace Game.Tower
 
             public void Enter()
             {               
+                
                 owner.Stats = Instantiate(owner.BaseStats);
-                owner.CombatSystem = owner.GetComponent<TowerCombatSystem>();
+                
+                owner.CombatSystem = owner.GetComponent<TowerBulletSystem>();
 
                 owner.Range = Instantiate(GameManager.Instance.RangePrefab, owner.transform);
                 owner.RangeSystem = owner.Range.GetComponent<TowerRangeSystem>();
@@ -143,7 +147,11 @@ namespace Game.Tower
                     owner.Stats.TowerAbilityList[i] = Instantiate(owner.Stats.TowerAbilityList[i]);
                     owner.Stats.TowerAbilityList[i].tower.Add(owner.gameObject);
                     owner.Stats.TowerAbilityList[i].creep.Add(owner.Target);
-                    owner.Stats.TowerAbilityList[i].GetData();
+
+                    for (int j = 0; j < owner.Stats.TowerAbilityList[i].EffectList.Count; j++)
+                    {
+                        owner.Stats.TowerAbilityList[i].EffectList[j] = Instantiate(owner.Stats.TowerAbilityList[i].EffectList[j]); ;
+                    }             
                 }
 
                 owner.rendererList = new List<Renderer>();
@@ -208,7 +216,7 @@ namespace Game.Tower
 
             public void Enter()
             {
-                owner.Stats.TowerAbilityList[0].creepData = owner.RangeSystem.CreepInRangeList[0].GetComponent<Creep.CreepSystem>();
+
             }
 
             public void Execute()
@@ -227,9 +235,11 @@ namespace Game.Tower
                 }
                 else if (owner.RangeSystem.CreepInRangeList[0] != null)
                 {
-                    owner.Target = owner.RangeSystem.CreepInRangeList[0];
+                    //owner.Target = owner.RangeSystem.CreepInRangeList[0];
                     owner.RotateAtCreep();
                     owner.CombatSystem.Shoot(owner.Stats.AttackSpeed);
+
+                    owner.Stats.TowerAbilityList[0].creepData = owner.RangeSystem.CreepInRangeList[0].GetComponent<Creep.CreepSystem>();
 
                     owner.Stats.TowerAbilityList[0].InitAbility();
                 }

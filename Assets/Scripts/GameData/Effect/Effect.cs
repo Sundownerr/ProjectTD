@@ -14,6 +14,7 @@ namespace Game.Data.Effect
         public float Duration = 0, NextEffectInterval;
         public List<GameObject> creep = new List<GameObject>(), tower = new List<GameObject>();
         public Creep.CreepSystem creepData;
+        protected bool isEffectEnded, isEffectSet;
         protected float currentDuration;
 
         public virtual void InitEffect() {}

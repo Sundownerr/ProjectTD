@@ -18,21 +18,82 @@ namespace Game.Data
         public List<GameObject> creep, tower;
         public Creep.CreepSystem creepData;
         private int effectCount;
-        private bool isEffectCooldown;
-
+        private bool isEffectCooldown, isAbilityCooldown;
+        private StateMachine state;
 
         public void Awake()
         {
-
+            state = new StateMachine();
+            state.ChangeState(new ChoseEffectState(this));
             creep = new List<GameObject>();
             tower = new List<GameObject>();
-            effectCount = 0;
         }
 
-        public void GetData()
+        public void InitAbility()
         {
-           
+            state.Update();
+        }
 
+        public class ChoseEffectState : IState
+        {
+            private Ability owner;
+
+            public ChoseEffectState(Ability owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {               
+            }
+
+            public void Execute()
+            {
+                if (!owner.isAbilityCooldown)
+                {
+                    if (owner.effectCount < owner.EffectList.Count)
+                    {
+                        owner.state.ChangeState(new SetEffectState(owner));
+                    }
+                }
+            }          
+
+            public void Exit()
+            {
+                owner.GetData();
+                GameManager.Instance.StartCoroutine(owner.AbilityCooldown(owner.Cooldown));
+            }
+        }
+
+        public class SetEffectState : IState
+        {
+            private Ability owner;
+
+            public SetEffectState(Ability owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+               
+                GameManager.Instance.StartCoroutine(owner.NextEffect(owner.EffectList[owner.effectCount].NextEffectInterval));
+               
+            }
+
+            public void Execute()
+            {
+                owner.EffectList[owner.effectCount].InitEffect();
+            }
+            
+            public void Exit()
+            {
+                owner.effectCount++;
+            }
+        }
+    
+        public void GetData()
+        {          
             for (int i = 0; i < EffectList.Count; i++)
             {
                 EffectList[i].creepData = creepData;
@@ -49,32 +110,18 @@ namespace Game.Data
             }
         }
 
-        public void InitAbility()
-        {
-            if (effectCount < EffectList.Count)
-            {
-                if (!isEffectCooldown)
-                {
-                    Debug.Log(effectCount);
-                    GetData();
-                    isEffectCooldown = true;
-                    EffectList[effectCount].InitEffect();
-                    GameManager.Instance.StartCoroutine(NextEffectInterval(EffectList[effectCount].NextEffectInterval));
-                }
-
-            }
-            else
-            {
-                effectCount = 0;
-            }
-        }
-
-        private IEnumerator NextEffectInterval(float delay)
+        private IEnumerator NextEffect(float delay)
         {
             yield return new WaitForSeconds(delay);
-            isEffectCooldown = false;
-
-            effectCount++;
+            state.ChangeState(new ChoseEffectState(this));
+        }
+     
+        private IEnumerator AbilityCooldown(float delay)
+        {
+            isAbilityCooldown = true;
+            yield return new WaitForSeconds(delay);
+            isAbilityCooldown = false;
+            effectCount = 0;
         }
     }
 

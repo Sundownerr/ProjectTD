@@ -6,9 +6,8 @@ using Game.System;
 namespace Game.Tower
 {
     
-    public class TowerCombatSystem : ExtendedMonoBehaviour
+    public class TowerBulletSystem : ExtendedMonoBehaviour
     {
-
         public bool IsAllBulletsInactive;
 
         private float bulletSpeed, bulletLifetime, distance, targetScale;
