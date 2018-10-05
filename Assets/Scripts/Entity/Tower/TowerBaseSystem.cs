@@ -10,19 +10,19 @@ namespace Game.Tower
 
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
-      //  [HideInInspector]
+        [HideInInspector]
         public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
 
-       // [HideInInspector]
+        [HideInInspector]
         public GameObject OcuppiedCell, Range;
 
-      //  [HideInInspector]
+        [HideInInspector]
         public TowerCombatSystem CombatSystem;
 
-       // [HideInInspector]
+        [HideInInspector]
         public TowerRangeSystem RangeSystem;
        
-       // [HideInInspector]
+        [HideInInspector]
         public TowerStats Stats;
 
         public TowerStats BaseStats;

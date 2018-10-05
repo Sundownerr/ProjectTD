@@ -12,10 +12,10 @@ namespace Game.System
 
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
         public TextMeshProUGUI TowerName, CritChance;
+        public bool IsSelligTower;
 
         public Button SellButton, UpgradeButton;
 
-        private TowerBaseSystem choosedTowerBaseSystem;
         private GameObject choosedTower;
 
         private void Awake()
@@ -28,7 +28,7 @@ namespace Game.System
         private void OnEnable()
         {
             choosedTower = GameManager.Instance.PlayerInputSystem.ChoosedTower;
-            choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
+            var choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
             var choosedTowerStats = choosedTowerBaseSystem.Stats;         
 
             TowerName.text = choosedTowerStats.entityName;
@@ -51,14 +51,7 @@ namespace Game.System
 
         private void SellTower()
         {
-            for (int i = 0; i < GameManager.Instance.TowerList.Count; i++)
-            {
-                if(GameManager.Instance.TowerList[i] == choosedTower)
-                {
-                    choosedTower.GetComponent<TowerBaseSystem>().Sell();
-                    gameObject.SetActive(false);
-                }
-            }
+            IsSelligTower = true;
         }
 
         private string KiloFormat(float num)

@@ -15,16 +15,15 @@ namespace Game.System
 
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
+        private StateMachine state;
         private RaycastHit hit;
         private Ray WorldRay;
         private bool isHitUI;
-        private StateMachine state;
-
+        
         private void Start()
         {
             GameManager.Instance.PlayerInputSystem = this;
             results = new List<RaycastResult>();
-
 
             state = new StateMachine();
             state.ChangeState(new GetInputState(this));
@@ -95,6 +94,11 @@ namespace Game.System
                 {
                     owner.results.Clear();
                     owner.isHitUI = false;
+                }
+
+                if(GameManager.Instance.TowerUISystem.IsSelligTower)
+                {
+                    owner.state.ChangeState(new SellingTowerState(owner));
                 }
             }
 
@@ -175,66 +179,31 @@ namespace Game.System
             {
             }
         }
+
+        public class SellingTowerState : IState
+        {
+            private readonly PlayerInputSystem owner;
+
+            public SellingTowerState(PlayerInputSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+                owner.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Sell();
+                owner.state.ChangeState(new GetInputState(owner));
+            }
+
+            public void Execute()
+            {
+            }
+
+            public void Exit()
+            {
+                GameManager.Instance.TowerUISystem.IsSelligTower = false;
+                GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
+            }
+        }
     }
 }
-//pointerEventData = new PointerEventData(EventSystem)
-//{
-//    position = Input.mousePosition
-//            };
-
-//            if (Input.GetMouseButtonDown(0))
-//            {
-//                GraphicRaycaster.Raycast(pointerEventData, results);
-
-//                if (results.Count > 0)
-//                {
-//                    isHitUI = true;
-//                }
-//            }            
-
-//            WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-//            if (Physics.Raycast(WorldRay, out hit, 10000, LayerMask))
-//            {
-//                var isMouseOnTower = !isHitUI && hit.transform.gameObject.layer == 14;
-//var isMouseNotOnUI = !isHitUI && hit.transform.gameObject.layer == 9;
-
-//                if (Input.GetMouseButtonDown(0))
-//                {
-//                    if (isMouseOnTower && !Input.GetKey(KeyCode.LeftShift))
-//                    {
-//                        ChoosedTower = hit.transform.gameObject;
-
-//                        if (!GameManager.Instance.TowerUISystem.gameObject.activeSelf)
-//                        {
-//                            GameManager.Instance.TowerUISystem.gameObject.SetActive(true);
-//                        }
-
-//                        StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());
-
-//                        if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
-//                        {
-//                            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_CHOOSEDTOWER;
-//                        }
-//                    }
-
-//                    if (isMouseNotOnUI)
-//                    {
-//                        if (GameManager.Instance.TowerUISystem.gameObject.activeSelf)
-//                        {
-//                            GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
-//                        }
-
-//                        if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
-//                        {
-//                            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
-//                        }
-//                    }
-//                }
-//            }
-
-//            if (results.Count > 0)
-//            {
-//                results.Clear();
-//                isHitUI = false;
-//            }
