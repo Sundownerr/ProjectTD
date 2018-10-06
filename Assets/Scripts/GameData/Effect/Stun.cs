@@ -9,36 +9,66 @@ namespace Game.Data.Effect
     public class Stun : Effect, IEffect
     {       
         private float targetMoveSpeed;
-       
+        public GameObject TestPrefab;
+
+        private GameObject prefab;
+
+        private void Awake()
+        {
+            isStackable = false;
+        }
+
         public override void InitEffect()
-        {            
-            if(!isEffectSet)
+        {
+            if (!isSet)
             {
-                targetMoveSpeed = creepData.Stats.moveSpeed;
                 GameManager.Instance.StartCoroutine(SetEffect(Duration));
-                isEffectEnded = false;
             }
 
-            if (!isEffectEnded)
-            {                                                  
-                Debug.Log("doing shit");
-                creepData.Stats.moveSpeed = 0;
+            if (!isEnded)
+            {
+                if (affectedCreepDataList.Count > 0)
+                {
+                    if (affectedCreepDataList[0] == null)
+                    {
+                        GameManager.Instance.StopAllCoroutines();
+                        isSet = false;
+                        isEnded = true;
+                    }
+                }
             }
         }
 
         public IEnumerator SetEffect(float delay)
         {
-            isEffectSet = true;
+            if (creepDataList[0] != null)
+            {
+                affectedCreepDataList.Add(creepDataList[0]);
 
-            Debug.Log("before timer");
+                if (affectedCreepDataList[0] != null)
+                {
+                    targetMoveSpeed = affectedCreepDataList[0].Stats.moveSpeed;
+                    prefab = Instantiate(TestPrefab, affectedCreepDataList[0].transform.position + Vector3.down * 30, Quaternion.Euler(0, 0, 0), affectedCreepDataList[0].transform);
+                }
 
-            yield return new WaitForSeconds(delay);
+                affectedCreepDataList[0].Stats.moveSpeed = 0;
 
-            Debug.Log("after timer");
+                isSet = true;
+                isEnded = false;
 
-            creepData.Stats.moveSpeed = targetMoveSpeed;
-            isEffectSet = false;
-            isEffectEnded = true;
+                yield return new WaitForSeconds(delay);
+
+                if (affectedCreepDataList[0] != null)
+                {
+                    affectedCreepDataList[0].Stats.moveSpeed = targetMoveSpeed;
+                    affectedCreepDataList.RemoveAt(0);
+                }
+                    Destroy(prefab);
+                
+
+                isSet = false;
+                isEnded = true;
+            }
         }
     }
 }

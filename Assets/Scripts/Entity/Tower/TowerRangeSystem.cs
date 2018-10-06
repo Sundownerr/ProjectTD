@@ -9,6 +9,7 @@ namespace Game.Tower
     public class TowerRangeSystem : ExtendedMonoBehaviour
     {
         public List<GameObject> CreepInRangeList;
+        public List<Creep.CreepSystem> CreepInRangeSystemList;
 
         private Renderer rend;
         private Color transparent, notTransparent;
@@ -16,6 +17,7 @@ namespace Game.Tower
         private void Start()
         {
             CreepInRangeList = new List<GameObject>();
+            CreepInRangeSystemList = new List<Creep.CreepSystem>();
             transform.position += new Vector3(0, -5, 0);
             rend = GetComponent<Renderer>();
 
@@ -29,7 +31,8 @@ namespace Game.Tower
             {
                 if (other.gameObject == GameManager.Instance.CreepList[i])
                 {
-                    CreepInRangeList.Add(other.gameObject);
+                    CreepInRangeSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
+                    CreepInRangeList.Add(other.gameObject);                    
                 }
             }                     
         }    
@@ -38,7 +41,8 @@ namespace Game.Tower
         {
             if (CreepInRangeList.Count > 0)
             {
-                CreepInRangeList.RemoveAt(0);
+                CreepInRangeSystemList.Remove(other.gameObject.GetComponent<Creep.CreepSystem>());
+                CreepInRangeList.Remove(other.gameObject);
             }
         }
    

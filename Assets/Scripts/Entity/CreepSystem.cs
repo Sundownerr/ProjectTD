@@ -50,7 +50,7 @@ namespace Game.Creep
             }
             else
             {
-                RemoveCreep();
+                Destroy(gameObject);
             }
         }
 
@@ -77,13 +77,13 @@ namespace Game.Creep
 
             if (Stats.hp <= 0)
             {
-                RemoveCreep();
+                Destroy(gameObject);
             }         
         }
 
-        private void RemoveCreep()
+        private void OnDestroy()
         {
-            Destroy(gameObject);
+           
             GameManager.Instance.CreepList.Remove(gameObject);
         }      
     }

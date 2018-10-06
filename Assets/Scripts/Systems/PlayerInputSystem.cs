@@ -20,7 +20,7 @@ namespace Game.System
         private Ray WorldRay;
         private bool isHitUI;
         
-        private void Start()
+        private void Awake()
         {
             GameManager.Instance.PlayerInputSystem = this;
             results = new List<RaycastResult>();

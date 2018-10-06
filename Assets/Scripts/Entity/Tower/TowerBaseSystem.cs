@@ -14,10 +14,7 @@ namespace Game.Tower
         public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
 
         [HideInInspector]
-        public GameObject OcuppiedCell, Range;
-
-        [HideInInspector]
-        public TowerBulletSystem CombatSystem;
+        public GameObject OcuppiedCell, Range;        
 
         [HideInInspector]
         public TowerRangeSystem RangeSystem;
@@ -30,14 +27,43 @@ namespace Game.Tower
 
         protected List<Renderer> rendererList;
 
-        private List<Effect> baseEffectList;
+        private TowerBulletSystem combatSystem;
+        private TowerAbilitySystem abilitySystem;
         private StateMachine state;
-        private bool isRangeShowed;
+        private bool isRangeShowed, isTowerPlaced;    
 
         private void Start()
         {
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
+
+            Stats = Instantiate(BaseStats);
+
+            combatSystem = GetComponent<TowerBulletSystem>();
+            abilitySystem = GetComponent<TowerAbilitySystem>();
+
+            Range = Instantiate(GameManager.Instance.RangePrefab, transform);
+            RangeSystem = Range.GetComponent<TowerRangeSystem>();
+            Range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
+
+            MovingPartTransform = transform.GetChild(0);
+            ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
+
+            for (int i = 0; i < Stats.TowerAbilityList.Count; i++)
+            {
+                Stats.TowerAbilityList[i] = Instantiate(Stats.TowerAbilityList[i]);
+                Stats.TowerAbilityList[i].towerList.Add(gameObject);
+                Stats.TowerAbilityList[i].creepList.Add(Target);
+
+                for (int j = 0; j < Stats.TowerAbilityList[i].EffectList.Count; j++)
+                {
+                    Stats.TowerAbilityList[i].EffectList[j] = Instantiate(Stats.TowerAbilityList[i].EffectList[j]); ;
+                }
+            }
+
+            rendererList = new List<Renderer>();
+            rendererList.AddRange(GetComponentsInChildren<Renderer>());
+
 
             isRangeShowed = true;
         }
@@ -45,6 +71,11 @@ namespace Game.Tower
         private void Update()
         {
             state.Update();
+
+            if (isTowerPlaced)
+            {
+                abilitySystem.state.Update();
+            }
 
             SetRangeShow();
         }
@@ -129,33 +160,7 @@ namespace Game.Tower
             }
 
             public void Enter()
-            {               
-                
-                owner.Stats = Instantiate(owner.BaseStats);
-                
-                owner.CombatSystem = owner.GetComponent<TowerBulletSystem>();
-
-                owner.Range = Instantiate(GameManager.Instance.RangePrefab, owner.transform);
-                owner.RangeSystem = owner.Range.GetComponent<TowerRangeSystem>();
-                owner.Range.transform.localScale = new Vector3(owner.Stats.Range, 0.001f, owner.Stats.Range);
-
-                owner.MovingPartTransform = owner.transform.GetChild(0);
-                owner.ShootPointTransform = owner.MovingPartTransform.GetChild(0).GetChild(0);
-
-                for (int i = 0; i < owner.Stats.TowerAbilityList.Count; i++)
-                {
-                    owner.Stats.TowerAbilityList[i] = Instantiate(owner.Stats.TowerAbilityList[i]);
-                    owner.Stats.TowerAbilityList[i].tower.Add(owner.gameObject);
-                    owner.Stats.TowerAbilityList[i].creep.Add(owner.Target);
-
-                    for (int j = 0; j < owner.Stats.TowerAbilityList[i].EffectList.Count; j++)
-                    {
-                        owner.Stats.TowerAbilityList[i].EffectList[j] = Instantiate(owner.Stats.TowerAbilityList[i].EffectList[j]); ;
-                    }             
-                }
-
-                owner.rendererList = new List<Renderer>();
-                owner.rendererList.AddRange(owner.GetComponentsInChildren<Renderer>());
+            {                                                           
             }
 
             public void Execute()
@@ -165,8 +170,7 @@ namespace Game.Tower
                     owner.StartPlacing();
                 }
                 else
-                {
-                    
+                {                  
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
             }
@@ -174,6 +178,7 @@ namespace Game.Tower
             public void Exit()
             {
                 owner.EndPlacing();
+                owner.isTowerPlaced = true;
             }
         }
 
@@ -211,12 +216,10 @@ namespace Game.Tower
             public CombatState(TowerBaseSystem owner)
             {
                 this.owner = owner;
-
             }
 
             public void Enter()
             {
-
             }
 
             public void Execute()
@@ -226,7 +229,8 @@ namespace Game.Tower
                     if (owner.RangeSystem.CreepInRangeList[i] == null)
                     {
                         owner.RangeSystem.CreepInRangeList.RemoveAt(i);
-                    }
+                        owner.RangeSystem.CreepInRangeSystemList.RemoveAt(i);
+                    }                 
                 }
 
                 if (owner.RangeSystem.CreepInRangeList.Count <= 0)
@@ -234,14 +238,10 @@ namespace Game.Tower
                     owner.state.ChangeState(new MoveRemainingBulletState(owner));
                 }
                 else if (owner.RangeSystem.CreepInRangeList[0] != null)
-                {
-                    //owner.Target = owner.RangeSystem.CreepInRangeList[0];
+                {                 
+                    owner.Target = owner.RangeSystem.CreepInRangeList[0];
                     owner.RotateAtCreep();
-                    owner.CombatSystem.Shoot(owner.Stats.AttackSpeed);
-
-                    owner.Stats.TowerAbilityList[0].creepData = owner.RangeSystem.CreepInRangeList[0].GetComponent<Creep.CreepSystem>();
-
-                    owner.Stats.TowerAbilityList[0].InitAbility();
+                    owner.combatSystem.Shoot(owner.Stats.AttackSpeed);                                     
                 }
             }
 
@@ -265,9 +265,9 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (!owner.CombatSystem.CheckAllBulletInactive())
+                if (!owner.combatSystem.CheckAllBulletInactive())
                 {
-                    owner.CombatSystem.MoveBulletOutOfRange();
+                    owner.combatSystem.MoveBulletOutOfRange();
                 }
                 else
                 {

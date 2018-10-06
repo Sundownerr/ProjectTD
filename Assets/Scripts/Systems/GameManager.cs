@@ -39,6 +39,10 @@ namespace Game.System
             PLAYERSTATE_PLACINGTOWER = 3;
 
             PLAYERSTATE = PLAYERSTATE_IDLE;
+
+            Application.targetFrameRate = 70;
+           
+            QualitySettings.vSyncCount = 0;
         }
 
         public static float CalcDistance(Vector3 pos1, Vector3 pos2)
