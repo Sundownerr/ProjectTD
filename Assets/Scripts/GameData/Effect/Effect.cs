@@ -6,6 +6,9 @@ namespace Game.Data.Effect
     public interface IEffect
     {
         void InitEffect();
+        void StartEffect();
+        void ContinueEffect();
+        void EndEffect();
     }
 
     public class Effect : ScriptableObject, IEffect
@@ -16,6 +19,24 @@ namespace Game.Data.Effect
         public bool isEnded, isSet, isStackable;
         protected float currentDuration;
 
-        public virtual void InitEffect() {}
+        public virtual void ContinueEffect()
+        {
+           
+        }
+
+        public virtual void EndEffect()
+        {
+            
+        }
+
+        public virtual void InitEffect()
+        {
+          
+        }
+
+        public virtual void StartEffect()
+        {
+           
+        }
     }
 }

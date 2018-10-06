@@ -49,30 +49,31 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
             }
             else
             {
-
-
-
-
                 for (int i = 0; i < owner.towerBaseSystem.Stats.TowerAbilityList.Count; i++)
                 {
-                    if (owner.towerBaseSystem.Stats.TowerAbilityList[i].creepDataList.Count > 0)
+                    for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList.Count; j++)
                     {
-                        for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList.Count; j++)
+                        var isNotEnded =
+                            !owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].isEnded &&
+                            owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].affectedCreepDataList.Count > 0;
+
+                        if (isNotEnded)
                         {
-                            if (!owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].isEnded)
+                            owner.state.ChangeState(new ContinueEffectState(owner));
+                        }
+                    }
+
+                    if (owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count > 0)
+                    {
+                        for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count; j++)
+                        {
+                            var isNotEnded =
+                            !owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].isEnded &&
+                            owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].affectedCreepDataList.Count > 0;
+
+                            if (isNotEnded)
                             {
                                 owner.state.ChangeState(new ContinueEffectState(owner));
-                            }
-                        }
-
-                        if (owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count > 0)
-                        {
-                            for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count; j++)
-                            {
-                                if (!owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].isEnded)
-                                {
-                                    owner.state.ChangeState(new ContinueEffectState(owner));
-                                }
                             }
                         }
                     }
@@ -103,30 +104,43 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
 
         public void Execute()
         {
-            Debug.Log("asd");
-            
+            if (owner.isAllEffectsEnded)
+            {
+                owner.state.ChangeState(new CombatState(owner));
+            }
+            else
+            {
+                for (int i = 0; i < owner.towerBaseSystem.Stats.TowerAbilityList.Count; i++)
+                {
+                    owner.towerBaseSystem.Stats.TowerAbilityList[i].InitAbility();
+                }
+            }
+
             for (int i = 0; i < owner.towerBaseSystem.Stats.TowerAbilityList.Count; i++)
             {
-                owner.towerBaseSystem.Stats.TowerAbilityList[i].SetTarget(owner.towerBaseSystem.RangeSystem.CreepInRangeSystemList);
-
-                owner.towerBaseSystem.Stats.TowerAbilityList[i].InitAbility();
-
                 for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList.Count; j++)
                 {
                     owner.isAllEffectsEnded = true;
 
-                    if(!owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].isEnded)
+                    if (!owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].isEnded)
+                    {
+                        owner.isAllEffectsEnded = false;
+                    }
+                }
+
+                for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count; j++)
+                {
+                    owner.isAllEffectsEnded = true;
+
+                    if (!owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].isEnded)
                     {
                         owner.isAllEffectsEnded = false;
                     }
                 }
             }
 
-            if (owner.isAllEffectsEnded)
-            {
-                owner.state.ChangeState(new CombatState(owner));
-            }
             
+
         }
 
         public void Exit()

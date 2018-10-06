@@ -16,7 +16,6 @@ namespace Game.Data
         public List<Creep.CreepSystem> creepDataList;
 
         private int effectCount;
-        private List<int> stackEffectCount;
         private bool isAbilityCooldown;
         private StateMachine state;
 
@@ -28,7 +27,6 @@ namespace Game.Data
             creepList = new List<GameObject>();
             towerList = new List<GameObject>();
             StackEffectList = new List<Effect.Effect>();
-            stackEffectCount = new List<int>();
         }
 
         public void InitAbility()
@@ -71,7 +69,6 @@ namespace Game.Data
 
         private IEnumerator AbilityCooldown(float delay)
         {
-            Debug.Log(effectCount);
             isAbilityCooldown = true;
 
             yield return new WaitForSeconds(delay);
@@ -97,7 +94,7 @@ namespace Game.Data
             {
                 if (!owner.isAbilityCooldown)
                 {
-                    if (owner.effectCount < owner.EffectList.Count || owner.stackEffectCount[owner.StackEffectList.Count - 1] < owner.StackEffectList.Count)
+                    if (owner.effectCount < owner.EffectList.Count || owner.StackEffectList.Count > 0)
                     {
                         owner.state.ChangeState(new SetEffectState(owner));
                     }
@@ -108,18 +105,6 @@ namespace Game.Data
             {               
                 GameManager.Instance.StartCoroutine(owner.AbilityCooldown(owner.Cooldown));
 
-                if(owner.StackEffectList.Count > 0)
-                {
-                    for (int i = 0; i < owner.StackEffectList.Count; i++)
-                    {
-                        if (owner.StackEffectList[i].isEnded)
-                        {
-                            Destroy(owner.StackEffectList[i]);
-                            owner.StackEffectList.RemoveAt(i);
-                            owner.stackEffectCount.RemoveAt(i);
-                        }
-                    }
-                }
             }
         }
 
@@ -140,7 +125,7 @@ namespace Game.Data
                 {
                     for (int i = 0; i < owner.StackEffectList.Count; i++)
                     {
-                        GameManager.Instance.StartCoroutine(owner.NextEffect(owner.StackEffectList[owner.stackEffectCount[owner.StackEffectList.Count - 1]].NextEffectInterval));
+                        GameManager.Instance.StartCoroutine(owner.NextEffect(owner.StackEffectList[i].NextEffectInterval));
                     }
                 }             
             }
@@ -149,24 +134,40 @@ namespace Game.Data
             {
                 owner.EffectList[owner.effectCount].InitEffect();
 
-                if(owner.StackEffectList.Count > 0)
-                {
-                    owner.StackEffectList[owner.stackEffectCount[owner.StackEffectList.Count - 1]].InitEffect();
+                
+
+                if (owner.StackEffectList.Count > 0)
+                {                   
+                    for (int i = 0; i < owner.StackEffectList.Count; i++)
+                    {
+                        
+
+                        if (owner.StackEffectList[i].isEnded)
+                        {
+                            Destroy(owner.StackEffectList[i]);
+                            owner.StackEffectList.RemoveAt(i);
+                        }
+                        else
+                        {
+                            
+                            owner.StackEffectList[i].InitEffect();
+                        }
+                    }
                 }
             }
 
             public void Exit()
             {
+                owner.effectCount++;
+
                 if (!owner.EffectList[owner.effectCount].isEnded)
                 {
                     if (owner.EffectList[owner.effectCount].isStackable)
                     {
-                        owner.StackEffectList.Add(owner.EffectList[owner.effectCount]);
-                        owner.stackEffectCount.Add(-1);
-                        owner.stackEffectCount[owner.stackEffectCount.Count - 1]++;
+                        Debug.Log("Adding Stack of " + owner.EffectList[owner.effectCount].EffectName);
+                        owner.StackEffectList.Add(Instantiate(owner.EffectList[owner.effectCount]));
                     }
-                }
-                owner.effectCount++;
+                }              
             }
         }       
     }

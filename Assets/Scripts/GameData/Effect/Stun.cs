@@ -13,35 +13,17 @@ namespace Game.Data.Effect
 
         private GameObject prefab;
 
-        private void Awake()
-        {
-            isStackable = false;
-        }
-
         public override void InitEffect()
         {
             if (!isSet)
             {
                 GameManager.Instance.StartCoroutine(SetEffect(Duration));
             }
-
-            if (!isEnded)
-            {
-                if (affectedCreepDataList.Count > 0)
-                {
-                    if (affectedCreepDataList[0] == null)
-                    {
-                        GameManager.Instance.StopAllCoroutines();
-                        isSet = false;
-                        isEnded = true;
-                    }
-                }
-            }
         }
 
-        public IEnumerator SetEffect(float delay)
+        public override void StartEffect()
         {
-            if (creepDataList[0] != null)
+            if (creepDataList.Count > 0)
             {
                 affectedCreepDataList.Add(creepDataList[0]);
 
@@ -55,20 +37,54 @@ namespace Game.Data.Effect
 
                 isSet = true;
                 isEnded = false;
+            }
+        }
 
-                yield return new WaitForSeconds(delay);
+        public override void ContinueEffect()
+        {
+            if (!isEnded)
+            {
+                if (affectedCreepDataList.Count > 0)
+                {
+                    if (affectedCreepDataList[0] == null)
+                    {
+                        GameManager.Instance.StopCoroutine(SetEffect(Duration));
+                        affectedCreepDataList.RemoveAt(0);
+                        Destroy(prefab);
+                        isSet = false;
+                        isEnded = true;
+                    }
+                }
+            }
+        }
 
+        public override void EndEffect()
+        {
+
+            if (affectedCreepDataList.Count > 0)
+            {
                 if (affectedCreepDataList[0] != null)
                 {
                     affectedCreepDataList[0].Stats.moveSpeed = targetMoveSpeed;
                     affectedCreepDataList.RemoveAt(0);
                 }
-                    Destroy(prefab);
-                
-
-                isSet = false;
-                isEnded = true;
             }
+            Destroy(prefab);
+
+
+            isSet = false;
+            isEnded = true;
         }
+
+        public IEnumerator SetEffect(float delay)
+        {
+            StartEffect();
+
+            yield return new WaitForSeconds(delay);
+
+            EndEffect();
+        }
+
+       
     }
 }
