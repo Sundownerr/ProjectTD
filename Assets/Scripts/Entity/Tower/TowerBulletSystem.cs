@@ -67,7 +67,7 @@ namespace Game.Tower
         private void GetTargetData(int index)
         {
             targetTransform = bulletDataList[index].Target.transform;          
-            targetScale = targetTransform.lossyScale.x - 2;          
+            targetScale = targetTransform.GetChild(0).lossyScale.x - 2;          
         }
 
         private void MoveBullet()
@@ -77,7 +77,7 @@ namespace Game.Tower
                 if (targetTransform != null)
                 {
                     distance = GameManager.CalcDistance(bulletList[i].transform.position, targetLastPos);
-                    targetLastPos = targetTransform.position + new Vector3(0, targetTransform.lossyScale.y / 2, 0);
+                    targetLastPos = targetTransform.position + new Vector3(Random.Range(-5, 5), targetTransform.lossyScale.y / 2 + Random.Range(-5, 5), Random.Range(-5, 5));
                 }
                 else
                 {

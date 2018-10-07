@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 
-
-
 namespace Game.Data.Effect
 {
     [CreateAssetMenu(fileName = "DoT", menuName = "Base DoT")]
-    public class DoT : Effect, IEffect
+    public class DoT : Effect
     {
-        private int damageTick, creepCounter;
+        public int DamagePerTick;
+        private float damageTick, creepCounter;
 
         public override void InitEffect()
         {
@@ -24,17 +23,40 @@ namespace Game.Data.Effect
 
         public override void StartEffect()
         {
-            affectedCreepDataList.Add(creepDataList[0]);
-
-            if (affectedCreepDataList.Count > 0)
+            if (creepDataList.Count > 0)
             {
-                if (affectedCreepDataList[0] != null)
+                if(affectedCreepDataList.Count == 0)
                 {
-                    affectedCreepDataList[0].GetComponent<Renderer>().material.color = Color.green;
+                    affectedCreepDataList.Add(creepDataList[0]);
                 }
+                else
+                {
+                    for (int i = 0; i < affectedCreepDataList.Count; i++)
+                    {
+                        if (affectedCreepDataList[i] == creepDataList[0])
+                        {
+                            EndEffect();
+                            break;
+                        }
+                    }
+                            affectedCreepDataList.Add(creepDataList[0]);                        
+                    
+                }             
+                
+                if (affectedCreepDataList.Count > 0)
+                {
+                    for (int i = 0; i < affectedCreepDataList.Count; i++)
+                    {
+                        if (affectedCreepDataList[i] != null)
+                        {
+                            affectedCreepDataList[i].creepRenderer.material.color = Color.green;
+                        }
+                    }
+                    
 
-                isSet = true;
-                isEnded = false;
+                    isSet = true;
+                    isEnded = false;
+                }
             }
         }
 
@@ -44,11 +66,13 @@ namespace Game.Data.Effect
             {
                 if (affectedCreepDataList.Count > 0)
                 {
-                    if (affectedCreepDataList[0] == null)
+                    for (int i = 0; i < affectedCreepDataList.Count; i++)
                     {
-                        GameManager.Instance.StopCoroutine(SetEffect(1f));
-                        affectedCreepDataList.RemoveAt(0);
-                        EndEffect();
+                        if (affectedCreepDataList[i] == null)
+                        {
+                            GameManager.Instance.StopCoroutine(SetEffect(1f));
+                            EndEffect();
+                        }
                     }
                 }
             }
@@ -58,45 +82,52 @@ namespace Game.Data.Effect
         {
             if (affectedCreepDataList.Count > 0)
             {
-                if (affectedCreepDataList[0] != null)
+                for (int i = 0; i < affectedCreepDataList.Count; i++)
                 {
-                    affectedCreepDataList[0].GetComponent<Renderer>().material.color = Color.white;
+                    if (affectedCreepDataList[i] != null)
+                    {
+                        affectedCreepDataList[i].creepRenderer.material.color = Color.white;
+                    }                    
                 }
-
                 affectedCreepDataList.RemoveAt(0);
             }
 
             damageTick = 0;
+
             isSet = false;
             isEnded = true;
         }
 
         public IEnumerator SetEffect(float delay)
         {
-            if (creepDataList.Count > 0)
-            {
-                StartEffect();
+            StartEffect();
 
-                while (damageTick < Duration && affectedCreepDataList.Count > 0)
+            while (damageTick < Duration)
+            {              
+                if (affectedCreepDataList.Count > 0)
                 {
-                    if (affectedCreepDataList[0] != null)
-                    {
-                        affectedCreepDataList[0].GetDamage(40);                       
-                    }
-                    else
-                    {
-                        EndEffect();
-                    }
-                    
                     damageTick++;
 
-                    yield return new WaitForSeconds(delay);                   
+                    for (int i = 0; i < affectedCreepDataList.Count; i++)
+                    {
+                        if (affectedCreepDataList[i] != null)
+                        {
+                            affectedCreepDataList[i].GetDamage(DamagePerTick);
+                        }
+                    }
+                }
+                else
+                {
+                    damageTick = Duration;
+                    EndEffect();
+                    break;
                 }
 
-                EndEffect();
+                
+                yield return new WaitForSeconds(delay);
             }
-        }
 
-      
+            EndEffect();
+        }
     }
 }

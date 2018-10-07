@@ -18,6 +18,7 @@ namespace Game.Data.Entity.Tower
         public float BuffDuration, DebuffDuration;
         
         public List<TowerGradeStats> TowerGradeStatList;
+        [Expandable]
         public List<Ability> TowerAbilityList;
         public List<float> GradeCostList;
         public List<float> DamageToArmorList;

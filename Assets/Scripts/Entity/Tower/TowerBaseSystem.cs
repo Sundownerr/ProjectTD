@@ -52,8 +52,6 @@ namespace Game.Tower
             for (int i = 0; i < Stats.TowerAbilityList.Count; i++)
             {
                 Stats.TowerAbilityList[i] = Instantiate(Stats.TowerAbilityList[i]);
-                Stats.TowerAbilityList[i].towerList.Add(gameObject);
-                Stats.TowerAbilityList[i].creepList.Add(Target);
 
                 for (int j = 0; j < Stats.TowerAbilityList[i].EffectList.Count; j++)
                 {
@@ -63,7 +61,6 @@ namespace Game.Tower
 
             rendererList = new List<Renderer>();
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
-
 
             isRangeShowed = true;
         }

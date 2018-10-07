@@ -6,7 +6,7 @@ using Game.System;
 namespace Game.Data.Effect
 {
     [CreateAssetMenu(fileName = "Stun", menuName = "Stun")]
-    public class Stun : Effect, IEffect
+    public class Stun : Effect
     {       
         private float targetMoveSpeed;
         public GameObject TestPrefab;
@@ -19,6 +19,8 @@ namespace Game.Data.Effect
             {
                 GameManager.Instance.StartCoroutine(SetEffect(Duration));
             }
+
+            ContinueEffect();
         }
 
         public override void StartEffect()
@@ -27,16 +29,23 @@ namespace Game.Data.Effect
             {
                 affectedCreepDataList.Add(creepDataList[0]);
 
-                if (affectedCreepDataList[0] != null)
+                if (affectedCreepDataList.Count > 0)
                 {
-                    targetMoveSpeed = affectedCreepDataList[0].Stats.moveSpeed;
-                    prefab = Instantiate(TestPrefab, affectedCreepDataList[0].transform.position + Vector3.down * 30, Quaternion.Euler(0, 0, 0), affectedCreepDataList[0].transform);
+                    for (int i = 0; i < affectedCreepDataList.Count; i++)
+                    {
+                        if (affectedCreepDataList[i] != null)
+                        {
+                            targetMoveSpeed = affectedCreepDataList[i].Stats.moveSpeed;
+
+                            prefab = Instantiate(TestPrefab, affectedCreepDataList[i].transform.position, Quaternion.Euler(0, 0, 0), affectedCreepDataList[i].transform);
+
+                            affectedCreepDataList[i].Stats.moveSpeed = 0;
+                        }
+                    }                   
+
+                    isSet = true;
+                    isEnded = false;
                 }
-
-                affectedCreepDataList[0].Stats.moveSpeed = 0;
-
-                isSet = true;
-                isEnded = false;
             }
         }
 
@@ -60,17 +69,23 @@ namespace Game.Data.Effect
 
         public override void EndEffect()
         {
-
             if (affectedCreepDataList.Count > 0)
             {
-                if (affectedCreepDataList[0] != null)
+                for (int i = 0; i < affectedCreepDataList.Count; i++)
                 {
-                    affectedCreepDataList[0].Stats.moveSpeed = targetMoveSpeed;
-                    affectedCreepDataList.RemoveAt(0);
+                    if (affectedCreepDataList[i] != null)
+                    {
+                        affectedCreepDataList[i].Stats.moveSpeed = targetMoveSpeed;
+                       
+                    }
                 }
+                affectedCreepDataList.RemoveAt(0);
+            }
+            else
+            {
+                GameManager.Instance.StopCoroutine(SetEffect(Duration));
             }
             Destroy(prefab);
-
 
             isSet = false;
             isEnded = true;
@@ -83,8 +98,6 @@ namespace Game.Data.Effect
             yield return new WaitForSeconds(delay);
 
             EndEffect();
-        }
-
-       
+        }      
     }
 }

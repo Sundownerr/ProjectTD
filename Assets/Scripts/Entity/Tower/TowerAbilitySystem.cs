@@ -63,20 +63,20 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                         }
                     }
 
-                    if (owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count > 0)
-                    {
-                        for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count; j++)
-                        {
-                            var isNotEnded =
-                            !owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].isEnded &&
-                            owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].affectedCreepDataList.Count > 0;
+                    //if (owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count > 0)
+                    //{
+                    //    for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count; j++)
+                    //    {
+                    //        var isNotEnded =
+                    //        !owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].isEnded &&
+                    //        owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].affectedCreepDataList.Count > 0;
 
-                            if (isNotEnded)
-                            {
-                                owner.state.ChangeState(new ContinueEffectState(owner));
-                            }
-                        }
-                    }
+                    //        if (isNotEnded)
+                    //        {
+                    //            owner.state.ChangeState(new ContinueEffectState(owner));
+                    //        }
+                    //    }
+                    //}
                 }
             }
         }
@@ -128,19 +128,16 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                     }
                 }
 
-                for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count; j++)
-                {
-                    owner.isAllEffectsEnded = true;
+                //for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList.Count; j++)
+                //{
+                //    owner.isAllEffectsEnded = true;
 
-                    if (!owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].isEnded)
-                    {
-                        owner.isAllEffectsEnded = false;
-                    }
-                }
+                //    if (!owner.towerBaseSystem.Stats.TowerAbilityList[i].StackEffectList[j].isEnded)
+                //    {
+                //        owner.isAllEffectsEnded = false;
+                //    }
+                //}
             }
-
-            
-
         }
 
         public void Exit()

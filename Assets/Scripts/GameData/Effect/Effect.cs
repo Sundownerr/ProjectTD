@@ -11,13 +11,14 @@ namespace Game.Data.Effect
         void EndEffect();
     }
 
-    public class Effect : ScriptableObject, IEffect
+    public abstract class Effect : ScriptableObject, IEffect
     {
-        public string EffectName = "effectname", EffectDescription = "effectname";
-        public float Duration = 0, NextEffectInterval;
+        public string EffectName, EffectDescription;
+        public float Duration, NextEffectInterval;
+        [HideInInspector]
         public List<Creep.CreepSystem> creepDataList, affectedCreepDataList;
+        [HideInInspector]
         public bool isEnded, isSet, isStackable;
-        protected float currentDuration;
 
         public virtual void ContinueEffect()
         {

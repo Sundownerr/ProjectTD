@@ -11,6 +11,7 @@ namespace Game.Creep
     {
         public bool ReachedLastWaypoint;
         public CreepStats Stats;
+        public Renderer creepRenderer;
 
         private Transform creepTransform;
         private bool waypointReached;
@@ -20,6 +21,8 @@ namespace Game.Creep
         {
             GameManager.Instance.CreepList.Add(gameObject);
             transform.parent = GameManager.Instance.CreepParent;
+
+            creepRenderer = transform.GetChild(0).GetComponent<Renderer>();
 
             Stats = ScriptableObject.CreateInstance<CreepStats>();
 
