@@ -10,7 +10,8 @@ namespace Game.Data
     public class Ability : ScriptableObject
     {
         public string AbilityName, AbilityDescription;
-        public float ManaCost, Cooldown, TriggerChance;     
+        public float Cooldown, TriggerChance;
+        public int ManaCost;
         [Expandable]
         public List<Effect.Effect> EffectList, StackEffectList;
         public List<Creep.CreepSystem> creepDataList;

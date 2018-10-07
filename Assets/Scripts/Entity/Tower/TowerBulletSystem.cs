@@ -10,7 +10,7 @@ namespace Game.Tower
     {
         public bool IsAllBulletsInactive;
 
-        private float bulletSpeed, bulletLifetime, distance, targetScale;
+        private float bulletSpeed, bulletLifetime, distance, targetScaleX, targetScaleY;
         private List<BulletSystem> bulletDataList;
         private List<GameObject> bulletList;
         private Transform targetTransform;
@@ -67,7 +67,8 @@ namespace Game.Tower
         private void GetTargetData(int index)
         {
             targetTransform = bulletDataList[index].Target.transform;          
-            targetScale = targetTransform.GetChild(0).lossyScale.x - 2;          
+            targetScaleX = targetTransform.GetChild(0).lossyScale.x - 2;
+            targetScaleY = targetTransform.GetChild(0).lossyScale.y;
         }
 
         private void MoveBullet()
@@ -77,7 +78,7 @@ namespace Game.Tower
                 if (targetTransform != null)
                 {
                     distance = GameManager.CalcDistance(bulletList[i].transform.position, targetLastPos);
-                    targetLastPos = targetTransform.position + new Vector3(Random.Range(-5, 5), targetTransform.lossyScale.y / 2 + Random.Range(-5, 5), Random.Range(-5, 5));
+                    targetLastPos = targetTransform.position + new Vector3(Random.Range(-15, 15), targetScaleY + Random.Range(-5, 5), Random.Range(-15, 15));
                 }
                 else
                 {
@@ -85,7 +86,7 @@ namespace Game.Tower
                     bulletList[i].transform.Translate(Vector3.forward * Random.Range(1, bulletSpeed), Space.Self);
                 }
 
-                if (!bulletDataList[i].IsReachedTarget && distance > targetScale)
+                if (!bulletDataList[i].IsReachedTarget && distance > targetScaleX)
                 {
                     bulletList[i].transform.LookAt(targetLastPos);
                     bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);

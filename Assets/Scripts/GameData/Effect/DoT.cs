@@ -9,7 +9,9 @@ namespace Game.Data.Effect
     public class DoT : Effect
     {
         public int DamagePerTick;
-        private float damageTick, creepCounter;
+
+        private float creepCounter;
+        private double damageTick;
 
         public override void InitEffect()
         {
