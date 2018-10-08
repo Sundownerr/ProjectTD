@@ -10,6 +10,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
     private TowerBaseSystem towerBaseSystem;
     private List<Game.Data.Ability> stackedAbilityList;
     private bool isAllEffectsEnded, isAllStackedEffectsEnded, isStackRequired;
+    private int abilityStackRequiredIndex, stackCounter;
 
     private void Start()
     {
@@ -31,6 +32,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
 
         public void Enter()
         {
+            Debug.Log("Look For Creep State");
         }
 
         public void Execute()
@@ -52,6 +54,50 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
         }
     }
 
+    public class CreateStackAbilityState : IState
+    {
+        TowerAbilitySystem owner;
+
+        public CreateStackAbilityState(TowerAbilitySystem owner)
+        {
+            this.owner = owner;
+        }
+
+        public void Enter()
+        {
+            var tower = owner.towerBaseSystem;
+            var abilityList = tower.Stats.AbilityList;
+
+            Debug.Log("CreateStackAbilityState");
+            var ability = Instantiate(abilityList[owner.abilityStackRequiredIndex]);
+            owner.stackedAbilityList.Add(ability);
+            owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].StackReset();
+            
+
+
+            for (int i = 0; i < owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList.Count; i++)
+            {
+                owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList[i] = 
+                    Instantiate(owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList[i]);
+
+                owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList[i].StackReset();
+            }
+
+            owner.isStackRequired = false;
+
+            Debug.Log(owner.stackedAbilityList.Count);
+            owner.state.ChangeState(new CombatState(owner));
+        }
+
+        public void Execute()
+        {         
+        }
+
+        public void Exit()
+        {
+        }
+    }
+
 
     public class CombatState: IState
     {
@@ -64,12 +110,13 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
 
         public void Enter()
         {
+            Debug.Log("Combat State");
         }
 
         public void Execute()
         {
             var tower = owner.towerBaseSystem;
-            var abilityList = tower.Stats.AbilityList;
+            var abilityList = owner.towerBaseSystem.Stats.AbilityList;
 
             var isCreepInRange = 
                 tower.RangeSystem.CreepInRangeList.Count > 0 && 
@@ -83,22 +130,36 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                     abilityList[i].SetTarget(tower.RangeSystem.CreepInRangeSystemList);
 
                     abilityList[i].InitAbility();
-
-                    owner.isStackRequired = false;
-
+                   
                     if (!abilityList[i].IsAbilityOnCooldown && abilityList[i].IsStackable)
                     {
+                        if (abilityList[i].EffectCount < abilityList[i].EffectList.Count - 1)
+                        {
+                            owner.abilityStackRequiredIndex = i;
+                            owner.state.ChangeState(new CreateStackAbilityState(owner));
+                        }
+
                         for (int j = 0; j < abilityList[i].EffectList.Count; j++)
                         {
                             if (!abilityList[i].EffectList[j].IsEnded)
                             {
-                                owner.isStackRequired
-                                owner.stackedAbilityList.Add(Instantiate(abilityList[i]));
+                                owner.abilityStackRequiredIndex = i;
+                                owner.state.ChangeState(new CreateStackAbilityState(owner));
                                 
-                                break;
                             }
                         }
+
+                       
                     }
+                   
+                    //Debug.Log("Processing abiltiy;");
+                }
+
+                if (owner.isStackRequired)
+                {
+                    
+                    //Debug.Log("Stacking ability..");
+
                 }
 
                 if (owner.stackedAbilityList.Count > 0)
@@ -117,18 +178,24 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                             {
                                 owner.isAllStackedEffectsEnded = false;
                             }
+                            else
+                            {
+                                //Destroy(owner.stackedAbilityList[i].EffectList[j]);
+                                //owner.stackedAbilityList[i].EffectList.RemoveAt(j);
+                            }
                         }
-
                         if (owner.isAllStackedEffectsEnded)
                         {
                             Destroy(owner.stackedAbilityList[i]);
                             owner.stackedAbilityList.RemoveAt(i);
                         }
-                    }
+
+                    }                   
                 }
             }
             else
             {
+                Debug.Log("No creep in range");
                 for (int i = 0; i < abilityList.Count; i++)
                 {
                     for (int j = 0; j < abilityList[i].EffectList.Count; j++)
@@ -153,7 +220,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                         }
                     }
                 }
-
+                Debug.Log("Going to Look For Creep State");
                 owner.state.ChangeState(new LookForCreepState(owner));
             }
         }
@@ -176,6 +243,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
 
         public void Enter()
         {
+            Debug.Log("Continu Effect State");
         }
 
         public void Execute()
@@ -187,7 +255,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                 tower.RangeSystem.CreepInRangeList.Count > 0 &&
                 tower.RangeSystem.CreepInRangeList[0] != null;
 
-            if (owner.isAllEffectsEnded || isCreepInRange)
+            if ((owner.isAllEffectsEnded && owner.isAllStackedEffectsEnded) || isCreepInRange)
             {
                 owner.state.ChangeState(new CombatState(owner));
             }
@@ -212,6 +280,8 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                 {
                     for (int i = 0; i < owner.stackedAbilityList.Count; i++)
                     {
+                        owner.stackedAbilityList[i].InitAbility();
+
                         for (int j = 0; j < owner.stackedAbilityList[i].EffectList.Count; j++)
                         {
                             owner.isAllStackedEffectsEnded = true;
@@ -219,10 +289,14 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                             if (!owner.stackedAbilityList[i].EffectList[j].IsEnded)
                             {
                                 owner.isAllStackedEffectsEnded = false;
-                            }                         
+                            }
+                            else
+                            {
+                                Destroy(owner.stackedAbilityList[i].EffectList[j]);
+                                owner.stackedAbilityList[i].EffectList.RemoveAt(j);
+                            }
                         }
-
-                        if (owner.isAllEffectsEnded)
+                        if (owner.isAllStackedEffectsEnded)
                         {
                             Destroy(owner.stackedAbilityList[i]);
                             owner.stackedAbilityList.RemoveAt(i);

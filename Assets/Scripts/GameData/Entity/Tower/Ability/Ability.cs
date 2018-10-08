@@ -18,11 +18,11 @@ namespace Game.Data
         public string AbilityName, AbilityDescription;
         public float Cooldown, TriggerChance;
         public int ManaCost;
-        public bool IsStackable, IsAbilityOnCooldown;
-
-        private int effectCount;
+        public bool IsStackable, IsStacked, IsAbilityOnCooldown;
+        public int EffectCount;
         
         private StateMachine state;
+
 
         private void Awake()
         {
@@ -74,16 +74,25 @@ namespace Game.Data
             }
         }
 
+        public void StackReset()
+        {
+            IsStacked = true;
+            EffectCount = 0;
+            IsAbilityOnCooldown = false;
+            state.ChangeState(new ChoseEffectState(this));
+        }
+
         private IEnumerator NextEffect(float delay)
         {
             yield return new WaitForSeconds(delay);
 
-            if (effectCount < EffectList.Count - 1)
+            if (EffectCount < EffectList.Count - 1)
             {
                 state.ChangeState(new SetEffectState(this));
             }
             else
-            {                
+            {
+                EffectCount = 0;
                 state.ChangeState(new ChoseEffectState(this));
             }           
         }
@@ -93,13 +102,15 @@ namespace Game.Data
             IsAbilityOnCooldown = true;
 
             yield return new WaitForSeconds(delay);
-          
-            if (effectCount > EffectList.Count - 1)
-            {
-                effectCount = 0;
-            }
 
-            IsAbilityOnCooldown = false;
+            if (!IsStacked)
+            {
+                
+
+
+                Debug.Log("NotStacked cd");
+                IsAbilityOnCooldown = false;
+            }
         }
 
         public class ChoseEffectState : IState
@@ -119,7 +130,7 @@ namespace Game.Data
             {
                 if (!owner.IsAbilityOnCooldown)
                 {                    
-                    if (owner.effectCount < owner.EffectList.Count)
+                    if (owner.EffectCount < owner.EffectList.Count)
                     {
                         owner.state.ChangeState(new SetEffectState(owner));
                     }
@@ -143,17 +154,17 @@ namespace Game.Data
 
             public void Enter()
             {             
-                GameManager.Instance.StartCoroutine(owner.NextEffect(owner.EffectList[owner.effectCount].NextEffectInterval));               
+                GameManager.Instance.StartCoroutine(owner.NextEffect(owner.EffectList[owner.EffectCount].NextEffectInterval));               
             }
 
             public void Execute()
             {
-                owner.EffectList[owner.effectCount].InitEffect();
+                owner.EffectList[owner.EffectCount].InitEffect();
             }
 
             public void Exit()
             {
-                owner.effectCount++;                
+                owner.EffectCount++;
             }
         }       
     }

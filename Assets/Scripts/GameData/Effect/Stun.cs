@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 
@@ -70,6 +69,12 @@ namespace Game.Data.Effect
 
             IsSet = false;
             IsEnded = true;
+        }
+
+        public override void StackReset()
+        {
+            EndEffect();
+            StartEffect();
         }
     }
 }

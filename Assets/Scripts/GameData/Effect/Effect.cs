@@ -24,5 +24,6 @@ namespace Game.Data.Effect
         public virtual void StartEffect() { }
         public virtual void ContinueEffect() { }
         public virtual void EndEffect() { }
+        public virtual void StackReset() { }
     }
 }

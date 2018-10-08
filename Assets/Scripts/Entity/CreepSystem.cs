@@ -16,10 +16,10 @@ namespace Game.Creep
         public Renderer creepRenderer;
 
         private Transform creepTransform;
-        private bool waypointReached;
+        private bool waypointReached, isStunned;
         private int waypointIndex;
         private StateMachine state;
-        
+
         private void Start()
         {
             creepTransform = transform;
@@ -79,7 +79,12 @@ namespace Game.Creep
         private IEnumerator RemoveStunnedState(float delay)
         {
             yield return new WaitForSeconds(delay);
-            state.ChangeState(new WalkState(this));
+
+            if(isStunned)
+            {
+                state.ChangeState(new WalkState(this));
+                isStunned = false;
+            }          
         }
 
         public class WalkState : IState
@@ -100,7 +105,7 @@ namespace Game.Creep
             {
                 owner.waypointReached = GameManager.CalcDistance(
                         owner.creepTransform.position, 
-                        GameManager.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + UnityEngine.Random.Range(-10, 10));
+                        GameManager.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
 
                 if (owner.waypointIndex < GameManager.Instance.WaypointList.Length - 1)
                 {
@@ -138,12 +143,13 @@ namespace Game.Creep
 
             public void Enter()
             {
-                GameManager.Instance.StartCoroutine(owner.RemoveStunnedState(duration));
+                owner.isStunned = true;
+                owner.StartCoroutine(owner.RemoveStunnedState(duration));
             }
 
             public void Execute()
             {
-                
+               
             }
 
             public void Exit()
