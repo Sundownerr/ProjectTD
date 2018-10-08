@@ -10,7 +10,6 @@ namespace Game.Data.Effect
     {
         public GameObject TestPrefab;
 
-        private float defaultMoveSpeed;
         private GameObject prefab;
 
         public override void InitEffect()
@@ -33,14 +32,13 @@ namespace Game.Data.Effect
         {
             if (creepDataList.Count > 0)
             {
-                affectedCreepData = creepDataList[0];
-                defaultMoveSpeed = creepDataList[0].Stats.DefaultMoveSpeed;
+                affectedCreepData = creepDataList[0];               
 
                 if (affectedCreepData != null)
                 {
                     prefab = Instantiate(TestPrefab, affectedCreepData.transform.position, Quaternion.identity, affectedCreepData.transform);
 
-                    affectedCreepData.Stats.MoveSpeed = 0;
+                    affectedCreepData.GetStunned(Duration);
                 }
                 else
                 {
@@ -68,11 +66,6 @@ namespace Game.Data.Effect
 
         public override void EndEffect()
         {
-            if (affectedCreepData != null)
-            {
-                affectedCreepData.Stats.MoveSpeed = defaultMoveSpeed;
-            }
-
             Destroy(prefab);
 
             IsSet = false;

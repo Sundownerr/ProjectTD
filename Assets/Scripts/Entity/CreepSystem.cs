@@ -1,12 +1,10 @@
 ﻿using System.Collections;
-using System;
 using UnityEngine;
 using Game.System;
 using Game.Data.Entity.Creep;
-#pragma warning disable CS1591 
+
 namespace Game.Creep
 {
-
     public class CreepSystem : ExtendedMonoBehaviour
     {
         [HideInInspector]
@@ -19,53 +17,43 @@ namespace Game.Creep
 
         private Transform creepTransform;
         private bool waypointReached;
-        private int waypointIndex;  
+        private int waypointIndex;
+        private StateMachine state;
         
         private void Start()
         {
-            GameManager.Instance.CreepList.Add(gameObject);
-            transform.parent = GameManager.Instance.CreepParent;
+            creepTransform = transform;
+            creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
 
             creepRenderer = transform.GetChild(0).GetComponent<Renderer>();
 
-            Stats = Instantiate(Stats);              
+            Stats = Instantiate(Stats);
 
-            creepTransform = transform;
-            creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);             
+            state = new StateMachine();
+            state.ChangeState(new WalkState(this));
+
+            GameManager.Instance.CreepList.Add(gameObject);
+            transform.parent = GameManager.Instance.CreepParent;
         }
 
         private void Update()
         {
-            waypointReached = GameManager.CalcDistance(creepTransform.position, GameManager.Instance.WaypointList[waypointIndex].transform.position) < 70;
-
-            if (waypointIndex < GameManager.Instance.WaypointList.Length - 1)
-            {
-                if (!waypointReached)
-                {
-                    MoveCreep();
-                    RotateCreep();
-                }
-                else
-                {
-                    waypointIndex++;
-                }
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            state.Update();
         }
 
-        private void MoveCreep()
+        private void MoveAndRotateCreep()
         {
             creepTransform.Translate(Vector3.forward * Time.deltaTime * Stats.MoveSpeed, Space.Self);
-            creepTransform.position = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
+
+            var clampPos = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
+            creepTransform.position = clampPos;
+
+            RotateCreep();
         }
 
         private void RotateCreep()
         {
             var lookRotation = Quaternion.LookRotation(GameManager.Instance.WaypointList[waypointIndex].transform.position - creepTransform.position);
-
             var rotation = Quaternion.Lerp(creepTransform.rotation, lookRotation, Time.deltaTime * 10f);
             rotation.z = 0;
             rotation.x = 0;
@@ -79,15 +67,116 @@ namespace Game.Creep
 
             if (Stats.Health <= 0)
             {
-                
-                Destroy(gameObject);
+                state.ChangeState(new DestroyState(this));
             }         
         }
 
-        private void OnDestroy()
+        public void GetStunned(float duration)
         {
-            Destroy(Stats);
-            GameManager.Instance.CreepList.Remove(gameObject);
-        }      
+            state.ChangeState(new StunnedState(this, duration));
+        }
+
+        private IEnumerator RemoveStunnedState(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            state.ChangeState(new WalkState(this));
+        }
+
+        public class WalkState : IState
+        {
+            private CreepSystem owner;
+
+            public WalkState(CreepSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+
+            }
+
+            public void Execute()
+            {
+                owner.waypointReached = GameManager.CalcDistance(
+                        owner.creepTransform.position, 
+                        GameManager.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + UnityEngine.Random.Range(-10, 10));
+
+                if (owner.waypointIndex < GameManager.Instance.WaypointList.Length - 1)
+                {
+                    if (!owner.waypointReached)
+                    {
+                        owner.MoveAndRotateCreep();                       
+                    }
+                    else
+                    {
+                        owner.waypointIndex++;
+                    }
+                }
+                else
+                {
+                    owner.state.ChangeState(new DestroyState(owner));
+                }
+            }
+
+            public void Exit()
+            {
+
+            }
+        }
+
+        public class StunnedState : IState
+        {
+            private CreepSystem owner;
+            private float duration;
+
+            public StunnedState(CreepSystem owner, float duration)
+            {
+                this.owner = owner;
+                this.duration = duration;
+            }
+
+            public void Enter()
+            {
+                GameManager.Instance.StartCoroutine(owner.RemoveStunnedState(duration));
+            }
+
+            public void Execute()
+            {
+                
+            }
+
+            public void Exit()
+            {
+
+            }
+        }
+    }
+
+    public class DestroyState : IState
+    {
+        private CreepSystem owner;
+
+        public DestroyState(CreepSystem owner)
+        {
+            this.owner = owner;
+        }
+
+        public void Enter()
+        {
+            Object.Destroy(owner.Stats);
+            GameManager.Instance.CreepList.Remove(owner.gameObject);
+            Object.Destroy(owner.gameObject);
+        }
+
+        public void Execute()
+        {
+
+        }
+
+        public void Exit()
+        {
+
+        }
     }
 }
