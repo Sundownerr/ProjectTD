@@ -1,12 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#pragma warning disable CS1591 
+
 namespace Game.Data.Entity.Creep
 {
+    [CreateAssetMenu(fileName = "Creep", menuName = "Base Creep")]
     public class CreepStats : Entity
     {
-        public float hp, moveSpeed;
-        public int armorIndex;
+        public float Health, MoveSpeed, DefaultMoveSpeed;
+        public int ArmorIndex;
+
+        private void Awake()
+        {
+            MoveSpeed = DefaultMoveSpeed;
+        }
     }
+
+
 }

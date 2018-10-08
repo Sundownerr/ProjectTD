@@ -3,15 +3,8 @@ using System.Collections.Generic;
 
 namespace Game.Data.Effect
 {
-    public interface IEffect
-    {
-        void InitEffect();
-        void StartEffect();
-        void ContinueEffect();
-        void EndEffect();
-    }
-
-    public abstract class Effect : ScriptableObject, IEffect
+    
+    public abstract class Effect : ScriptableObject
     {
         public string EffectName, EffectDescription;
         public float Duration, NextEffectInterval;
@@ -20,26 +13,11 @@ namespace Game.Data.Effect
         public List<Creep.CreepSystem> creepDataList, affectedCreepDataList;
 
         [HideInInspector]
-        public bool isEnded, isSet, isStackable;
+        public bool IsEnded, IsSet;
 
-        public virtual void ContinueEffect()
-        {
-           
-        }
-
-        public virtual void EndEffect()
-        {
-            
-        }
-
-        public virtual void InitEffect()
-        {
-          
-        }
-
-        public virtual void StartEffect()
-        {
-           
-        }
+        public virtual void InitEffect() { }
+        public virtual void StartEffect() { }
+        public virtual void ContinueEffect() { }
+        public virtual void EndEffect() { }
     }
 }

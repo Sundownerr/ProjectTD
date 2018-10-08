@@ -9,8 +9,12 @@ namespace Game.Creep
 
     public class CreepSystem : ExtendedMonoBehaviour
     {
+        [HideInInspector]
         public bool ReachedLastWaypoint;
+
         public CreepStats Stats;
+
+        [HideInInspector]
         public Renderer creepRenderer;
 
         private Transform creepTransform;
@@ -24,12 +28,7 @@ namespace Game.Creep
 
             creepRenderer = transform.GetChild(0).GetComponent<Renderer>();
 
-            Stats = ScriptableObject.CreateInstance<CreepStats>();
-
-            Stats.hp = 100f;
-            Stats.entityName = "retard";
-            Stats.armorIndex = 0;
-            Stats.moveSpeed = 250f;            
+            Stats = Instantiate(Stats);              
 
             creepTransform = transform;
             creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);             
@@ -59,7 +58,7 @@ namespace Game.Creep
 
         private void MoveCreep()
         {
-            creepTransform.Translate(Vector3.forward * Time.deltaTime * Stats.moveSpeed, Space.Self);
+            creepTransform.Translate(Vector3.forward * Time.deltaTime * Stats.MoveSpeed, Space.Self);
             creepTransform.position = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
         }
 
@@ -76,17 +75,18 @@ namespace Game.Creep
 
         public void GetDamage(int damage)
         {
-            Stats.hp -= damage;
+            Stats.Health -= damage;
 
-            if (Stats.hp <= 0)
+            if (Stats.Health <= 0)
             {
+                
                 Destroy(gameObject);
             }         
         }
 
         private void OnDestroy()
         {
-           
+            Destroy(Stats);
             GameManager.Instance.CreepList.Remove(gameObject);
         }      
     }

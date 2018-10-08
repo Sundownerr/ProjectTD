@@ -8,30 +8,56 @@ namespace Game.Data.Effect
     [CreateAssetMenu(fileName = "DoT", menuName = "Base DoT")]
     public class DoT : Effect
     {
-        public int DamagePerTick;
-
-        private float creepCounter;
-        private double damageTick;
+        public int DamagePerTick; 
 
         public override void InitEffect()
         {
-            if (!isSet)
+            if (!IsSet)
             {
                 GameManager.Instance.StartCoroutine(SetEffect(1f));
+                StartEffect();
             }
 
             ContinueEffect();
+        }
+
+        public IEnumerator SetEffect(float delay)
+        {
+            var damageTick = 0;
+
+            while (damageTick < Duration)
+            {
+                if (affectedCreepDataList.Count > 0)
+                {
+                    damageTick++;
+
+                    for (int i = 0; i < affectedCreepDataList.Count; i++)
+                    {
+                        if (affectedCreepDataList[i] != null)
+                        {
+                            affectedCreepDataList[i].GetDamage(DamagePerTick);
+                        }
+                    }
+                }
+                else
+                {
+                    EndEffect();
+                    break;
+                }
+
+                yield return new WaitForSeconds(delay);
+            }
+
+            EndEffect();
         }
 
         public override void StartEffect()
         {
             if (creepDataList.Count > 0)
             {
-                if(affectedCreepDataList.Count == 0)
-                {
-                    affectedCreepDataList.Add(creepDataList[0]);
-                }
-                else
+                affectedCreepDataList.Add(creepDataList[0]);
+
+                if (affectedCreepDataList.Count > 1)
                 {
                     for (int i = 0; i < affectedCreepDataList.Count; i++)
                     {
@@ -41,9 +67,7 @@ namespace Game.Data.Effect
                             break;
                         }
                     }
-                            affectedCreepDataList.Add(creepDataList[0]);                        
-                    
-                }             
+                }                                    
                 
                 if (affectedCreepDataList.Count > 0)
                 {
@@ -53,18 +77,17 @@ namespace Game.Data.Effect
                         {
                             affectedCreepDataList[i].creepRenderer.material.color = Color.green;
                         }
-                    }
-                    
+                    }                    
 
-                    isSet = true;
-                    isEnded = false;
+                    IsSet = true;
+                    IsEnded = false;
                 }
             }
         }
 
         public override void ContinueEffect()
         {
-            if (!isEnded)
+            if (!IsEnded)
             {
                 if (affectedCreepDataList.Count > 0)
                 {
@@ -94,42 +117,8 @@ namespace Game.Data.Effect
                 affectedCreepDataList.RemoveAt(0);
             }
 
-            damageTick = 0;
-
-            isSet = false;
-            isEnded = true;
-        }
-
-        public IEnumerator SetEffect(float delay)
-        {
-            StartEffect();
-
-            while (damageTick < Duration)
-            {              
-                if (affectedCreepDataList.Count > 0)
-                {
-                    damageTick++;
-
-                    for (int i = 0; i < affectedCreepDataList.Count; i++)
-                    {
-                        if (affectedCreepDataList[i] != null)
-                        {
-                            affectedCreepDataList[i].GetDamage(DamagePerTick);
-                        }
-                    }
-                }
-                else
-                {
-                    damageTick = Duration;
-                    EndEffect();
-                    break;
-                }
-
-                
-                yield return new WaitForSeconds(delay);
-            }
-
-            EndEffect();
-        }
+            IsSet = false;
+            IsEnded = true;
+        }       
     }
 }

@@ -7,20 +7,33 @@ namespace Game.Data.Effect
 {
     [CreateAssetMenu(fileName = "Stun", menuName = "Stun")]
     public class Stun : Effect
-    {       
-        private float targetMoveSpeed;
+    {               
         public GameObject TestPrefab;
 
+        private List<float> defaultMoveSpeedList;
         private GameObject prefab;
+
+        private void Awake()
+        {
+            defaultMoveSpeedList = new List<float>();
+        }
 
         public override void InitEffect()
         {
-            if (!isSet)
+            if (!IsSet)
             {
                 GameManager.Instance.StartCoroutine(SetEffect(Duration));
+                StartEffect();
             }
 
             ContinueEffect();
+        }
+
+        public IEnumerator SetEffect(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            EndEffect();
         }
 
         public override void StartEffect()
@@ -28,6 +41,19 @@ namespace Game.Data.Effect
             if (creepDataList.Count > 0)
             {
                 affectedCreepDataList.Add(creepDataList[0]);
+                defaultMoveSpeedList.Add(creepDataList[0].Stats.DefaultMoveSpeed);
+
+                if (affectedCreepDataList.Count > 1)
+                {
+                    for (int i = 0; i < affectedCreepDataList.Count; i++)
+                    {
+                        if (affectedCreepDataList[i] == creepDataList[0])
+                        {
+                            EndEffect();
+                            break;
+                        }
+                    }
+                }
 
                 if (affectedCreepDataList.Count > 0)
                 {
@@ -35,33 +61,28 @@ namespace Game.Data.Effect
                     {
                         if (affectedCreepDataList[i] != null)
                         {
-                            targetMoveSpeed = affectedCreepDataList[i].Stats.moveSpeed;
+                            prefab = Instantiate(TestPrefab, affectedCreepDataList[i].transform.position, Quaternion.identity, affectedCreepDataList[i].transform);
 
-                            prefab = Instantiate(TestPrefab, affectedCreepDataList[i].transform.position, Quaternion.Euler(0, 0, 0), affectedCreepDataList[i].transform);
-
-                            affectedCreepDataList[i].Stats.moveSpeed = 0;
+                            affectedCreepDataList[i].Stats.MoveSpeed = 0;
                         }
                     }                   
 
-                    isSet = true;
-                    isEnded = false;
+                    IsSet = true;
+                    IsEnded = false;
                 }
             }
         }
 
         public override void ContinueEffect()
         {
-            if (!isEnded)
+            if (!IsEnded)
             {
                 if (affectedCreepDataList.Count > 0)
                 {
                     if (affectedCreepDataList[0] == null)
                     {
                         GameManager.Instance.StopCoroutine(SetEffect(Duration));
-                        affectedCreepDataList.RemoveAt(0);
-                        Destroy(prefab);
-                        isSet = false;
-                        isEnded = true;
+                        EndEffect();
                     }
                 }
             }
@@ -75,29 +96,18 @@ namespace Game.Data.Effect
                 {
                     if (affectedCreepDataList[i] != null)
                     {
-                        affectedCreepDataList[i].Stats.moveSpeed = targetMoveSpeed;
+                        affectedCreepDataList[i].Stats.MoveSpeed = defaultMoveSpeedList[i];
                        
                     }
                 }
                 affectedCreepDataList.RemoveAt(0);
+                defaultMoveSpeedList.RemoveAt(0);
             }
-            else
-            {
-                GameManager.Instance.StopCoroutine(SetEffect(Duration));
-            }
+   
             Destroy(prefab);
 
-            isSet = false;
-            isEnded = true;
-        }
-
-        public IEnumerator SetEffect(float delay)
-        {
-            StartEffect();
-
-            yield return new WaitForSeconds(delay);
-
-            EndEffect();
-        }      
+            IsSet = false;
+            IsEnded = true;
+        }         
     }
 }
