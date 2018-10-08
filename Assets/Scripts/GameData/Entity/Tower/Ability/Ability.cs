@@ -18,10 +18,10 @@ namespace Game.Data
         public string AbilityName, AbilityDescription;
         public float Cooldown, TriggerChance;
         public int ManaCost;
-        public bool IsStackable;
+        public bool IsStackable, IsAbilityOnCooldown;
 
         private int effectCount;
-        private bool isAbilityCooldown;
+        
         private StateMachine state;
 
         private void Awake()
@@ -32,14 +32,16 @@ namespace Game.Data
 
         private void OnValidate()
         {
-            var effectsDuration = 0f;
+            var effectsOverallInterval = 0f;
+            var effectsOverallDuration = 0f;
 
             for (int i = 0; i < EffectList.Count; i++)
             {
-                effectsDuration += EffectList[i].NextEffectInterval;
+                effectsOverallInterval += EffectList[i].NextEffectInterval;
+                effectsOverallDuration += EffectList[i].Duration;
             }
 
-            if(effectsDuration > Cooldown)
+            if(effectsOverallInterval > Cooldown || effectsOverallDuration > Cooldown)
             {
                 IsStackable = true;
             }
@@ -68,7 +70,7 @@ namespace Game.Data
         {
             for (int i = 0; i < EffectList.Count; i++)
             {
-                EffectList[i].creepDataList = creepDataList;
+                EffectList[i].CreepDataList = creepDataList;
             }
         }
 
@@ -88,7 +90,7 @@ namespace Game.Data
 
         private IEnumerator AbilityCooldown(float delay)
         {
-            isAbilityCooldown = true;
+            IsAbilityOnCooldown = true;
 
             yield return new WaitForSeconds(delay);
           
@@ -97,7 +99,7 @@ namespace Game.Data
                 effectCount = 0;
             }
 
-            isAbilityCooldown = false;
+            IsAbilityOnCooldown = false;
         }
 
         public class ChoseEffectState : IState
@@ -115,7 +117,7 @@ namespace Game.Data
 
             public void Execute()
             {
-                if (!owner.isAbilityCooldown)
+                if (!owner.IsAbilityOnCooldown)
                 {                    
                     if (owner.effectCount < owner.EffectList.Count)
                     {

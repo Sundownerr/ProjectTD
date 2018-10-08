@@ -49,9 +49,9 @@ namespace Game.Data.Effect
             {
                 damageTick++;
 
-                if (affectedCreepData != null)
+                if (AffectedCreepData != null)
                 {
-                    affectedCreepData.GetDamage(DamagePerTick);
+                    AffectedCreepData.GetDamage(DamagePerTick);
                 }
                 else
                 {
@@ -65,19 +65,19 @@ namespace Game.Data.Effect
 
         public override void StartEffect()
         {
-            if (creepDataList.Count > 0)
+            if (CreepDataList.Count > 0)
             {
-                affectedCreepData = creepDataList[0];
+                AffectedCreepData = CreepDataList[0];
 
-                if (affectedCreepData != null)
+                if (AffectedCreepData != null)
                 {
                     effectPrefab = Instantiate(EffectPrefab,
-                        affectedCreepData.transform.position + Vector3.up * affectedCreepData.transform.GetChild(0).lossyScale.x / 2,
+                        AffectedCreepData.transform.position + Vector3.up * AffectedCreepData.transform.GetChild(0).lossyScale.x / 2,
                         Quaternion.identity, 
-                        affectedCreepData.transform);
+                        AffectedCreepData.transform);
 
                     psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-                    affectedCreepData.creepRenderer.material.color = Color.green;
+                    AffectedCreepData.creepRenderer.material.color = Color.green;
                     Show(true);
                 }
                 else
@@ -96,7 +96,7 @@ namespace Game.Data.Effect
         {
             if (!IsEnded)
             {
-                if (affectedCreepData == null)
+                if (AffectedCreepData == null)
                 {
                     GameManager.Instance.StopCoroutine(SetEffect(1f));
                     EndEffect();
@@ -106,9 +106,9 @@ namespace Game.Data.Effect
 
         public override void EndEffect()
         {
-            if (affectedCreepData != null)
+            if (AffectedCreepData != null)
             {
-                affectedCreepData.creepRenderer.material.color = Color.white;
+                AffectedCreepData.creepRenderer.material.color = Color.white;
 
                 Destroy(effectPrefab);
             }

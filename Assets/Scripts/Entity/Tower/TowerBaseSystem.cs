@@ -49,13 +49,13 @@ namespace Game.Tower
             MovingPartTransform = transform.GetChild(0);
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
 
-            for (int i = 0; i < Stats.TowerAbilityList.Count; i++)
+            for (int i = 0; i < Stats.AbilityList.Count; i++)
             {
-                Stats.TowerAbilityList[i] = Instantiate(Stats.TowerAbilityList[i]);
+                Stats.AbilityList[i] = Instantiate(Stats.AbilityList[i]);
 
-                for (int j = 0; j < Stats.TowerAbilityList[i].EffectList.Count; j++)
+                for (int j = 0; j < Stats.AbilityList[i].EffectList.Count; j++)
                 {
-                    Stats.TowerAbilityList[i].EffectList[j] = Instantiate(Stats.TowerAbilityList[i].EffectList[j]); ;
+                    Stats.AbilityList[i].EffectList[j] = Instantiate(Stats.AbilityList[i].EffectList[j]); ;
                 }
             }
 

@@ -8,9 +8,9 @@ namespace Game.Data.Effect
     [CreateAssetMenu(fileName = "Stun", menuName = "Stun")]
     public class Stun : Effect
     {
-        public GameObject TestPrefab;
+        public GameObject EffectPrefab;
 
-        private GameObject prefab;
+        private GameObject effectPrefab;
 
         public override void InitEffect()
         {
@@ -30,15 +30,15 @@ namespace Game.Data.Effect
 
         public override void StartEffect()
         {
-            if (creepDataList.Count > 0)
+            if (CreepDataList.Count > 0)
             {
-                affectedCreepData = creepDataList[0];               
+                AffectedCreepData = CreepDataList[0];               
 
-                if (affectedCreepData != null)
+                if (AffectedCreepData != null)
                 {
-                    prefab = Instantiate(TestPrefab, affectedCreepData.transform.position, Quaternion.identity, affectedCreepData.transform);
+                    effectPrefab = Instantiate(EffectPrefab, AffectedCreepData.transform.position, Quaternion.identity, AffectedCreepData.transform);
 
-                    affectedCreepData.GetStunned(Duration);
+                    AffectedCreepData.GetStunned(Duration);
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace Game.Data.Effect
         {
             if (!IsEnded)
             {
-                if (affectedCreepData == null)
+                if (AffectedCreepData == null)
                 {
                     GameManager.Instance.StopCoroutine(SetEffect(Duration));
                     EndEffect();
@@ -66,7 +66,7 @@ namespace Game.Data.Effect
 
         public override void EndEffect()
         {
-            Destroy(prefab);
+            Destroy(effectPrefab);
 
             IsSet = false;
             IsEnded = true;

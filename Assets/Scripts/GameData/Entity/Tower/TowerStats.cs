@@ -6,9 +6,7 @@ namespace Game.Data.Entity.Tower
 {
     [CreateAssetMenu(fileName = "New Tower", menuName = "Base Tower")]
     public class TowerStats : Entity
-    {
-        
-
+    {        
         public int Id, Exp, Level;
         public int Damage, Range, CritMultiplier, SpellCritMultiplier, Mana,  MulticritCount;
         public float AttackSpeed, TriggerChance, CritChance, ManaRegen;
@@ -17,11 +15,12 @@ namespace Game.Data.Entity.Tower
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio;
         public float BuffDuration, DebuffDuration;
         
-        public List<TowerGradeStats> TowerGradeStatList;
+        public List<TowerGradeStats> GradeStatList;
+
         [Expandable]
-        public List<Ability> TowerAbilityList;
+        public List<Ability> AbilityList;
+
         public List<float> GradeCostList;
         public List<float> DamageToArmorList;
-
     }
 }

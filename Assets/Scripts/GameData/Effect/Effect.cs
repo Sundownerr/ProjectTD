@@ -10,13 +10,15 @@ namespace Game.Data.Effect
         public float Duration, NextEffectInterval;
 
         [HideInInspector]
-        public List<Creep.CreepSystem> creepDataList;
+        public List<Creep.CreepSystem> CreepDataList;
 
         [HideInInspector]
-        public Creep.CreepSystem affectedCreepData;
+        public Creep.CreepSystem AffectedCreepData;
 
         [HideInInspector]
-        public bool IsEnded, IsSet;
+        public bool IsEnded;
+
+        protected bool IsSet;
 
         public virtual void InitEffect() { }
         public virtual void StartEffect() { }
