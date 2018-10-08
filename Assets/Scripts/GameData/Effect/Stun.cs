@@ -22,10 +22,8 @@ namespace Game.Data.Effect
         {
             if (!IsSet)
             {
-                GameManager.Instance.StartCoroutine(SetEffect(Duration));
-                StartEffect();
+                StartEffect();                  
             }
-
             ContinueEffect();
         }
 
@@ -69,6 +67,8 @@ namespace Game.Data.Effect
 
                     IsSet = true;
                     IsEnded = false;
+
+                    GameManager.Instance.StartCoroutine(SetEffect(Duration));
                 }
             }
         }
