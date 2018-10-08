@@ -53,9 +53,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                 {
                     for (int j = 0; j < owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList.Count; j++)
                     {
-                        var isNotEnded =
-                            !owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].IsEnded &&
-                            owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].affectedCreepDataList.Count > 0;
+                        var isNotEnded = !owner.towerBaseSystem.Stats.TowerAbilityList[i].EffectList[j].IsEnded;
 
                         if (isNotEnded)
                         {

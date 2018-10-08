@@ -15,14 +15,8 @@ namespace Game.Data.Effect
         private GameObject effectPrefab;
         private ParticleSystem[] psList;
 
-        private void Awake()
-        {
-            
-        }
-
         private void Show(bool enabled)
         {
-            
             for (int i = 0; i < psList.Length; i++)
             {
                 var emissionModule = psList[i].emission;
@@ -31,7 +25,7 @@ namespace Game.Data.Effect
                 if (enabled)
                 {
                     psList[i].Play();
-                 
+
                 }
                 else
                 {
@@ -44,28 +38,20 @@ namespace Game.Data.Effect
         {
             if (!IsSet)
             {
-                StartEffect();                     
+                StartEffect();
             }
             ContinueEffect();
         }
 
         public IEnumerator SetEffect(float delay)
         {
-          
             while (damageTick < Duration)
-            {              
-                if (affectedCreepDataList.Count > 0)
-                {
-                    damageTick++;
-                   
+            {
+                damageTick++;
 
-                    for (int i = 0; i < affectedCreepDataList.Count; i++)
-                    {
-                        if (affectedCreepDataList[i] != null)
-                        {
-                            affectedCreepDataList[i].GetDamage(DamagePerTick);
-                        }
-                    }
+                if (affectedCreepData != null)
+                {
+                    affectedCreepData.GetDamage(DamagePerTick);
                 }
                 else
                 {
@@ -80,85 +66,57 @@ namespace Game.Data.Effect
         public override void StartEffect()
         {
             if (creepDataList.Count > 0)
-            {                
-                affectedCreepDataList.Add(creepDataList[0]);
+            {
+                affectedCreepData = creepDataList[0];
 
-                if (affectedCreepDataList.Count > 1)
+                if (affectedCreepData != null)
                 {
-                    for (int i = 0; i < affectedCreepDataList.Count; i++)
-                    {
-                        if (affectedCreepDataList[i] == creepDataList[0])
-                        {
-                           
-                            EndEffect();
-                            break;
-                        }
-                    }
-                }                                    
-                
-                if (affectedCreepDataList.Count > 0)
-                {    
-                    
-                    for (int i = 0; i < affectedCreepDataList.Count; i++)
-                    {
-                        if (affectedCreepDataList[i] != null)
-                        {
-                            effectPrefab = Instantiate(EffectPrefab, 
-                                affectedCreepDataList[i].transform.position + Vector3.up * affectedCreepDataList[i].transform.GetChild(0).lossyScale.x / 2, 
-                                Quaternion.Euler(0, 0, 0), affectedCreepDataList[i].transform);
+                    effectPrefab = Instantiate(EffectPrefab,
+                        affectedCreepData.transform.position + Vector3.up * affectedCreepData.transform.GetChild(0).lossyScale.x / 2,
+                        Quaternion.identity, 
+                        affectedCreepData.transform);
 
-                            psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-                            affectedCreepDataList[i].creepRenderer.material.color = Color.green;
-                            Show(true);
-                        }
-                    }                    
-
-                    IsSet = true;
-                    IsEnded = false;
-
-                    GameManager.Instance.StartCoroutine(SetEffect(1f));
+                    psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
+                    affectedCreepData.creepRenderer.material.color = Color.green;
+                    Show(true);
+                }
+                else
+                {
+                    EndEffect();
                 }
             }
+
+            IsSet = true;
+            IsEnded = false;
+
+            GameManager.Instance.StartCoroutine(SetEffect(1f));
         }
 
         public override void ContinueEffect()
         {
             if (!IsEnded)
             {
-                if (affectedCreepDataList.Count > 0)
+                if (affectedCreepData == null)
                 {
-                    for (int i = 0; i < affectedCreepDataList.Count; i++)
-                    {
-                        if (affectedCreepDataList[i] == null)
-                        {
-                            GameManager.Instance.StopCoroutine(SetEffect(1f));
-                            EndEffect();
-                        }
-                    }
+                    GameManager.Instance.StopCoroutine(SetEffect(1f));
+                    EndEffect();
                 }
             }
         }
 
         public override void EndEffect()
         {
-            if (affectedCreepDataList.Count > 0)
+            if (affectedCreepData != null)
             {
-                for (int i = 0; i < affectedCreepDataList.Count; i++)
-                {
-                    if (affectedCreepDataList[i] != null)
-                    {
-                        affectedCreepDataList[i].creepRenderer.material.color = Color.white;
-                    }                    
-                }
-                affectedCreepDataList.RemoveAt(0);
+                affectedCreepData.creepRenderer.material.color = Color.white;
+
+                Destroy(effectPrefab);
             }
 
-           
-            Destroy(effectPrefab);
             damageTick = 0;
 
             IsSet = false;
             IsEnded = true;
-        }       
+        }      
     }
 }

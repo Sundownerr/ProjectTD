@@ -13,9 +13,6 @@ namespace Game.Data
         public List<Effect.Effect> EffectList;
 
         [HideInInspector]
-        public List<Effect.Effect> StackEffectList;
-
-        [HideInInspector]
         public List<Creep.CreepSystem> creepDataList;
 
         public string AbilityName, AbilityDescription;
@@ -23,7 +20,7 @@ namespace Game.Data
         public int ManaCost;
         public bool IsStackable;
 
-        private int effectCount, stackEffectCount;
+        private int effectCount;
         private bool isAbilityCooldown;
         private StateMachine state;
 
@@ -31,8 +28,6 @@ namespace Game.Data
         {
             state = new StateMachine();
             state.ChangeState(new ChoseEffectState(this));
-
-            StackEffectList = new List<Effect.Effect>();
         }
 
         private void OnValidate()
@@ -74,14 +69,6 @@ namespace Game.Data
             for (int i = 0; i < EffectList.Count; i++)
             {
                 EffectList[i].creepDataList = creepDataList;
-            }
-
-            if (StackEffectList.Count > 0)
-            {
-                for (int i = 0; i < StackEffectList.Count; i++)
-                {
-                    StackEffectList[i].creepDataList = creepDataList;
-                }
             }
         }
 
