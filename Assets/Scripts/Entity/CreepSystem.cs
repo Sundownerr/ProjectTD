@@ -30,14 +30,14 @@ namespace Game.Creep
             }
 
             creepTransform = transform;
-            creepTransform.position = GameManager.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
+            creepTransform.position = GM.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
 
             creepRenderer = transform.GetChild(0).GetComponent<Renderer>();
 
             Stats = Instantiate(Stats);           
 
-            GameManager.Instance.CreepList.Add(gameObject);
-            transform.parent = GameManager.Instance.CreepParent;
+            GM.Instance.CreepList.Add(gameObject);
+            transform.parent = GM.Instance.CreepParent;
 
             state = new StateMachine();
             state.ChangeState(new WalkState(this));
@@ -60,7 +60,7 @@ namespace Game.Creep
 
         private void RotateCreep()
         {
-            var lookRotation = Quaternion.LookRotation(GameManager.Instance.WaypointList[waypointIndex].transform.position - creepTransform.position);
+            var lookRotation = Quaternion.LookRotation(GM.Instance.WaypointList[waypointIndex].transform.position - creepTransform.position);
             var rotation = Quaternion.Lerp(creepTransform.rotation, lookRotation, Time.deltaTime * 10f);
             rotation.z = 0;
             rotation.x = 0;
@@ -122,11 +122,11 @@ namespace Game.Creep
 
             public void Execute()
             {
-                owner.waypointReached = GameManager.CalcDistance(
+                owner.waypointReached = GM.CalcDistance(
                         owner.creepTransform.position, 
-                        GameManager.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
+                        GM.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
 
-                if (owner.waypointIndex < GameManager.Instance.WaypointList.Length - 1)
+                if (owner.waypointIndex < GM.Instance.WaypointList.Length - 1)
                 {
                     if (!owner.waypointReached)
                     {
@@ -190,7 +190,7 @@ namespace Game.Creep
         public void Enter()
         {
             Object.Destroy(owner.Stats);
-            GameManager.Instance.CreepList.Remove(owner.gameObject);
+            GM.Instance.CreepList.Remove(owner.gameObject);
             Object.Destroy(owner.gameObject);
         }
 

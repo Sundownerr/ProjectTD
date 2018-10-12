@@ -15,7 +15,7 @@ namespace Game.System
                 CachedTransform = transform;
             }
 
-            GameManager.Instance.BaseUISystem = this;
+            GM.Instance.BaseUISystem = this;
 
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
@@ -24,7 +24,7 @@ namespace Game.System
 
         private void StartWave()
         {
-            if (GameManager.Instance.CreepList.Count == 0 && !IsWaveStarted)
+            if (GM.Instance.CreepList.Count == 0 && !IsWaveStarted)
             {
                 IsWaveStarted = true;
                 StartWaveButton.gameObject.SetActive(false);               
@@ -33,9 +33,9 @@ namespace Game.System
 
         private void BuildTower()
         {
-            if (GameManager.Instance.GridSystem.IsGridBuilded)
+            if (GM.Instance.GridSystem.IsGridBuilded)
             {
-                GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
+                GM.PLAYERSTATE = GM.PLAYERSTATE_PLACINGTOWER;
             }
         }
 

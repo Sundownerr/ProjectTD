@@ -27,7 +27,7 @@ namespace Game.System
                 CachedTransform = transform;
             }
 
-            GameManager.Instance.PlayerInputSystem = this;
+            GM.Instance.PlayerInputSystem = this;
             results = new List<RaycastResult>();
 
             state = new StateMachine();
@@ -101,7 +101,7 @@ namespace Game.System
                     owner.isHitUI = false;
                 }
 
-                if(GameManager.Instance.TowerUISystem.IsSelligTower)
+                if(GM.Instance.TowerUISystem.IsSelligTower)
                 {
                     owner.state.ChangeState(new SellingTowerState(owner));
                 }
@@ -123,7 +123,7 @@ namespace Game.System
 
             public void Enter()
             {
-                var towerUI = GameManager.Instance.TowerUISystem;
+                var towerUI = GM.Instance.TowerUISystem;
 
                 owner.ChoosedTower = owner.hit.transform.gameObject;
 
@@ -134,9 +134,9 @@ namespace Game.System
 
                 owner.StartCoroutine(towerUI.RefreshUI());
 
-                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE != GM.PLAYERSTATE_PLACINGTOWER)
                 {
-                    GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_CHOOSEDTOWER;
+                    GM.PLAYERSTATE = GM.PLAYERSTATE_CHOOSEDTOWER;
                 }
 
                 owner.state.ChangeState(new GetInputState(owner));
@@ -162,16 +162,16 @@ namespace Game.System
 
             public void Enter()
             {
-                var towerUI = GameManager.Instance.TowerUISystem;
+                var towerUI = GM.Instance.TowerUISystem;
 
                 if (towerUI.gameObject.activeSelf)
                 {
                     towerUI.gameObject.SetActive(false);
                 }
 
-                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE != GM.PLAYERSTATE_PLACINGTOWER)
                 {
-                    GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+                    GM.PLAYERSTATE = GM.PLAYERSTATE_IDLE;
                 }
 
                 owner.state.ChangeState(new GetInputState(owner));
@@ -207,8 +207,8 @@ namespace Game.System
 
             public void Exit()
             {
-                GameManager.Instance.TowerUISystem.IsSelligTower = false;
-                GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
+                GM.Instance.TowerUISystem.IsSelligTower = false;
+                GM.Instance.TowerUISystem.gameObject.SetActive(false);
             }
         }
     }

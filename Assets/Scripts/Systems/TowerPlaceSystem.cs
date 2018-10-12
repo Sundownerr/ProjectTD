@@ -21,6 +21,7 @@ namespace Game.System
         private Camera mainCam;
         private StateMachine state;
         private Vector3 towerPos;
+        private TowerCells.Cell chosenCellState;
        
         protected override void Awake()
         {
@@ -29,7 +30,7 @@ namespace Game.System
                 CachedTransform = transform;
             }
 
-            GameManager.Instance.TowerPlaceSystem = this;
+            GM.Instance.TowerPlaceSystem = this;
             mainCam = Camera.main;
 
             transparentRed = Color.red - new Color(0, 0, 0, 0.8f);
@@ -46,16 +47,18 @@ namespace Game.System
 
         private IEnumerator Refresh()
         {
-            GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+            GM.PLAYERSTATE = GM.PLAYERSTATE_IDLE;
 
             yield return new WaitForFixedUpdate();
 
             state.ChangeState(new CreateTowerState(this));            
         }
 
-        private void CreateGhostedTower()
+        private void CreateTower()
         {
-            GameManager.Instance.TowerList.Add(Instantiate(GameManager.Instance.TowerPrefab, Vector3.zero, Quaternion.Euler(0f, 0f, 0f), GameManager.Instance.TowerParent));
+            GM.PLAYERSTATE = GM.PLAYERSTATE_PLACINGTOWER;
+            GM.Instance.TowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero, Quaternion.identity, GM.Instance.TowerParent));
+            state.ChangeState(new MoveTowerState(this)); 
         }
 
         private void SetTowerColorAndPosition(Vector3 pos, Color color)
@@ -64,11 +67,11 @@ namespace Game.System
             GhostedTowerColor = color;
         }
 
-        private void MoveGhostedTower()
+        private void MoveTower()
         {          
             var ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            var cellStateList = GameManager.Instance.CellStateList;
-            var cellList = GameManager.Instance.CellList;
+            var cellStateList = GM.Instance.CellStateList;
+            var cellList = GM.Instance.CellList;
 
             if (Physics.Raycast(ray, out hit, 5000, LayerMask))
             {              
@@ -81,24 +84,15 @@ namespace Game.System
 
                     if (isHitCell && !cellStateList[i].IsBusy)
                     {
-                        towerPos = cellStateList[i].transform.position;
-                        towerColor = transparentGreen;
+                        chosenCellState = cellStateList[i];
+                        chosenCellState.IsChosen = true;
 
-                        cellStateList[i].IsChosen = true;
+                        towerPos = chosenCellState.transform.position;
+                        towerColor = transparentGreen;                   
 
                         if (Input.GetMouseButtonDown(0))
                         {
-                            NewBusyCell = cellList[i];
-                            cellStateList[i].IsBusy = true;                            
-
-                            if (Input.GetKey(KeyCode.LeftShift))
-                            {
-                                StartCoroutine(Refresh());                                
-                            }
-                            else
-                            {
-                                state.ChangeState(new GetInputState(this));                               
-                            }
+                            state.ChangeState(new PlaceTowerState(this));
                         }
                     }
                     else
@@ -109,25 +103,40 @@ namespace Game.System
 
                 if (Input.GetMouseButtonDown(1))
                 {
-                    DeleteTower();
+                    state.ChangeState(new DeleteTowerState(this));
                 }
 
                 SetTowerColorAndPosition(towerPos, towerColor);
             }
         }
 
+        private void PlaceTower()
+        {
+            NewBusyCell = chosenCellState.gameObject;
+            chosenCellState.IsBusy = true;
+
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                StartCoroutine(Refresh());
+            }
+            else
+            {
+                state.ChangeState(new GetInputState(this));
+            }
+        }
+
         private void DeleteTower()
         {
-            var towerList = GameManager.Instance.TowerList;
+            var towerList = GM.Instance.TowerList;
             var lastTowerIndex = towerList.Count - 1;
 
             Destroy(towerList[lastTowerIndex]);
             towerList.RemoveAt(lastTowerIndex);
 
-            state.ChangeState(new GetInputState(this));      
+            state.ChangeState(new GetInputState(this));
         }
 
-        public class GetCellDataState : IState
+        protected class GetCellDataState : IState
         {
             TowerPlaceSystem owner;
 
@@ -143,7 +152,7 @@ namespace Game.System
 
             public void Execute()
             {
-                if (GameManager.Instance.GridSystem.IsGridBuilded)
+                if (GM.Instance.GridSystem.IsGridBuilded)
                 {
                     owner.state.ChangeState(new GetInputState(owner));
                 }
@@ -155,7 +164,7 @@ namespace Game.System
             }
         }
 
-        public class GetInputState : IState
+        protected class GetInputState : IState
         {
             TowerPlaceSystem owner;
 
@@ -166,12 +175,12 @@ namespace Game.System
 
             public void Enter()
             {
-                GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+                GM.PLAYERSTATE = GM.PLAYERSTATE_IDLE;
             }
 
             public void Execute()
             {
-                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE == GM.PLAYERSTATE_PLACINGTOWER)
                 {
                     owner.state.ChangeState(new CreateTowerState(owner));                   
                 }
@@ -183,7 +192,7 @@ namespace Game.System
             }
         }
 
-        public class CreateTowerState : IState
+        protected class CreateTowerState : IState
         {
             TowerPlaceSystem owner;
 
@@ -194,9 +203,7 @@ namespace Game.System
 
             public void Enter()
             {
-                GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_PLACINGTOWER;
-                owner.CreateGhostedTower();
-                owner.state.ChangeState(new PlaceTowerState(owner));               
+                owner.CreateTower();      
             }
 
             public void Execute()
@@ -211,11 +218,11 @@ namespace Game.System
         }
 
 
-        public class PlaceTowerState : IState
+        protected class MoveTowerState : IState
         {
             TowerPlaceSystem owner;
 
-            public PlaceTowerState(TowerPlaceSystem owner)
+            public MoveTowerState(TowerPlaceSystem owner)
             {
                 this.owner = owner;
             }
@@ -227,7 +234,7 @@ namespace Game.System
 
             public void Execute()
             {
-                owner.MoveGhostedTower();
+                owner.MoveTower();
             }
 
             public void Exit()
@@ -235,7 +242,53 @@ namespace Game.System
 
             }
         }
-    }
 
-    
+        protected class PlaceTowerState : IState
+        {
+            TowerPlaceSystem owner;
+
+            public PlaceTowerState(TowerPlaceSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+                owner.PlaceTower();
+            }
+
+            public void Execute()
+            {
+            }
+
+            public void Exit()
+            {
+
+            }
+        }
+
+        protected class DeleteTowerState : IState
+        {
+            TowerPlaceSystem owner;
+
+            public DeleteTowerState(TowerPlaceSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+                owner.DeleteTower();
+            }
+
+            public void Execute()
+            {
+            }
+
+            public void Exit()
+            {
+
+            }
+        }
+    }  
 }

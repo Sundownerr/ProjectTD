@@ -10,13 +10,13 @@ namespace Game.TowerCells
     {
         public CellExpandSystem(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
         {
-            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
+            for (int i = 0; i < GM.Instance.CellList.Count; i++)
             {
-                if (cell != GameManager.Instance.CellList[i])
+                if (cell != GM.Instance.CellList[i])
                 {
-                    if (cell.transform.position == GameManager.Instance.CellList[i].transform.position)
+                    if (cell.transform.position == GM.Instance.CellList[i].transform.position)
                     {
-                        Debug.Log(cell.transform + " = " + GameManager.Instance.CellList[i].transform);
+                        Debug.Log(cell.transform + " = " + GM.Instance.CellList[i].transform);
                     }
                 }
             }
@@ -57,8 +57,8 @@ namespace Game.TowerCells
             }
             else
             {
-                GameManager.Instance.CellList.Remove(cell);
-                GameManager.Instance.CellStateList.Remove(cell.GetComponent<Cell>());
+                GM.Instance.CellList.Remove(cell);
+                GM.Instance.CellStateList.Remove(cell.GetComponent<Cell>());
                 Object.Destroy(cell);
             }
         }

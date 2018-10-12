@@ -77,7 +77,7 @@ namespace Game.Tower
             {
                 if (targetTransform != null)
                 {
-                    distance = GameManager.CalcDistance(bulletList[i].transform.position, targetLastPos);
+                    distance = GM.CalcDistance(bulletList[i].transform.position, targetLastPos);
                     targetLastPos = targetTransform.position + new Vector3(Random.Range(-15, 15), targetScaleY + Random.Range(-5, 5), Random.Range(-15, 15));
                 }
                 else

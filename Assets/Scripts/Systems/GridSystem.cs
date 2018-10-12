@@ -22,7 +22,7 @@ namespace Game.System
             }
 
             StartCoroutine(BuildTimer());
-            GameManager.Instance.GridSystem = this;
+            GM.Instance.GridSystem = this;
 
             redColor = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             greenColor = new Color(0.1f, 0.3f, 0.1f, 0.5f);
@@ -33,9 +33,9 @@ namespace Game.System
         {
             if (IsGridBuilded)
             {
-                var lastCell = GameManager.Instance.CellList[GameManager.Instance.CellList.Count - 1];
+                var lastCell = GM.Instance.CellList[GM.Instance.CellList.Count - 1];
 
-                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE == GM.PLAYERSTATE_PLACINGTOWER)
                 {
                     if (!lastCell.activeSelf)
                     {
@@ -45,7 +45,7 @@ namespace Game.System
                     SetCellsColors();
                 }
 
-                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE != GM.PLAYERSTATE_PLACINGTOWER)
                 {
                     if (lastCell.activeSelf)
                     {
@@ -57,7 +57,7 @@ namespace Game.System
 
         private IEnumerator BuildTimer()
         {
-            CreateGrid(GameManager.Instance.TowerCellAreaList.Length);
+            CreateGrid(GM.Instance.TowerCellAreaList.Length);
 
             yield return new WaitForSeconds(1f);
 
@@ -68,29 +68,29 @@ namespace Game.System
         {
             for (var i = 0; i < count; i++)
             {
-                var ray = new Ray(GameManager.Instance.TowerCellAreaList[i].transform.position, Vector3.up);
+                var ray = new Ray(GM.Instance.TowerCellAreaList[i].transform.position, Vector3.up);
 
                 if (!Physics.Raycast(ray, 100, LayerMask))
                 {
-                    var spawnPos = GameManager.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GameManager.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
-                    Instantiate(GameManager.Instance.CellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));            
+                    var spawnPos = GM.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GM.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
+                    Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));            
                 }
             }
         }
 
         private void SetCellsActive(bool active)
         {
-            for (int i = 0; i < GameManager.Instance.CellList.Count; i++)
+            for (int i = 0; i < GM.Instance.CellList.Count; i++)
             {
-                GameManager.Instance.CellList[i].SetActive(active);
+                GM.Instance.CellList[i].SetActive(active);
             }
         }
 
         private void SetCellsColors()
         {
-            for (int i = 0; i < GameManager.Instance.CellStateList.Count; i++)
+            for (int i = 0; i < GM.Instance.CellStateList.Count; i++)
             {
-                var cell = GameManager.Instance.CellStateList[i];
+                var cell = GM.Instance.CellStateList[i];
 
                 if (cell.IsBusy)
                 {

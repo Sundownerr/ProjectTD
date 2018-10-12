@@ -90,7 +90,7 @@ namespace Game.Data.Effect
             IsSet = true;
             IsEnded = false;
 
-            GameManager.Instance.StartCoroutine(SetEffect(1f));
+            GM.Instance.StartCoroutine(SetEffect(1f));
         }
 
         public override void ContinueEffect()
@@ -99,7 +99,7 @@ namespace Game.Data.Effect
             {
                 if (AffectedCreepData == null)
                 {
-                    GameManager.Instance.StopCoroutine(SetEffect(1f));
+                    GM.Instance.StopCoroutine(SetEffect(1f));
                     EndEffect();
                 }
             }

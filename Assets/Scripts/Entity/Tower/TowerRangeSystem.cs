@@ -31,9 +31,9 @@ namespace Game.Tower
 
         private void OnTriggerEnter(Collider other)
         {
-            for (int i = 0; i < GameManager.Instance.CreepList.Count; i++)
+            for (int i = 0; i < GM.Instance.CreepList.Count; i++)
             {
-                if (other.gameObject == GameManager.Instance.CreepList[i])
+                if (other.gameObject == GM.Instance.CreepList[i])
                 {
                     CreepInRangeSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
                     CreepInRangeList.Add(other.gameObject);                    

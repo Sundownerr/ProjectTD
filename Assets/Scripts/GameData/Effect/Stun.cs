@@ -49,7 +49,7 @@ namespace Game.Data.Effect
                 IsSet = true;
                 IsEnded = false;
 
-                GameManager.Instance.StartCoroutine(SetEffect(Duration));
+                GM.Instance.StartCoroutine(SetEffect(Duration));
             }
         }
 
@@ -59,7 +59,7 @@ namespace Game.Data.Effect
             {
                 if (AffectedCreepData == null)
                 {
-                    GameManager.Instance.StopCoroutine(SetEffect(Duration));
+                    GM.Instance.StopCoroutine(SetEffect(Duration));
                     EndEffect();
                 }
             }

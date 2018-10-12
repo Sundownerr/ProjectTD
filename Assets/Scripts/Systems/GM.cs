@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.System
 {
 
-    public class GameManager : ExtendedMonoBehaviour
+    public class GM : ExtendedMonoBehaviour
     {
         public GameObject[]  WaypointList, TowerCellAreaList;
         public List<GameObject> TowerList, CreepList, CellList;
@@ -20,7 +20,7 @@ namespace Game.System
         public TowerUISystem TowerUISystem;
         public Canvas UICanvas;
 
-        public static GameManager Instance;
+        public static GM Instance;
         public static int PLAYERSTATE, PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_CHOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
 
         protected override void Awake()

@@ -44,7 +44,7 @@ namespace Game.Tower
             combatSystem = GetComponent<TowerBulletSystem>();
             abilitySystem = GetComponent<TowerAbilitySystem>();
 
-            Range = Instantiate(GameManager.Instance.RangePrefab, transform);
+            Range = Instantiate(GM.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
             Range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
 
@@ -82,8 +82,8 @@ namespace Game.Tower
         private void SetRangeShow()
         {
             var isChoosedTower = 
-                GameManager.Instance.TowerUISystem.gameObject.activeSelf && 
-                GameManager.Instance.PlayerInputSystem.ChoosedTower == gameObject;
+                GM.Instance.TowerUISystem.gameObject.activeSelf && 
+                GM.Instance.PlayerInputSystem.ChoosedTower == gameObject;
 
             if (isChoosedTower && !isRangeShowed)
             {
@@ -108,14 +108,14 @@ namespace Game.Tower
 
         private void StartPlacing()
         {
-            SetTowerColor(GameManager.Instance.TowerPlaceSystem.GhostedTowerColor);
+            SetTowerColor(GM.Instance.TowerPlaceSystem.GhostedTowerColor);
 
-            transform.position = GameManager.Instance.TowerPlaceSystem.GhostedTowerPos;
+            transform.position = GM.Instance.TowerPlaceSystem.GhostedTowerPos;
         }
 
         private void EndPlacing()
         {
-            OcuppiedCell = GameManager.Instance.TowerPlaceSystem.NewBusyCell;
+            OcuppiedCell = GM.Instance.TowerPlaceSystem.NewBusyCell;
 
             if (transform.position != OcuppiedCell.transform.position)
             {
@@ -145,7 +145,7 @@ namespace Game.Tower
         public void Sell()
         {
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
-            GameManager.Instance.TowerList.Remove(gameObject);
+            GM.Instance.TowerList.Remove(gameObject);
             Destroy(gameObject);
         }    
 
@@ -164,7 +164,7 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (GameManager.PLAYERSTATE == GameManager.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE == GM.PLAYERSTATE_PLACINGTOWER)
                 {
                     owner.StartPlacing();
                 }

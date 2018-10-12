@@ -167,7 +167,7 @@ namespace Game.Data
 
             public void Exit()
             {               
-                GameManager.Instance.StartCoroutine(owner.AbilityCooldown(owner.Cooldown));
+                GM.Instance.StartCoroutine(owner.AbilityCooldown(owner.Cooldown));
             }
         }
 
@@ -182,7 +182,7 @@ namespace Game.Data
 
             public void Enter()
             {             
-                GameManager.Instance.StartCoroutine(owner.NextEffect(owner.EffectList[owner.EffectCount].NextEffectInterval));
+                GM.Instance.StartCoroutine(owner.NextEffect(owner.EffectList[owner.EffectCount].NextEffectInterval));
             }
 
             public void Execute()

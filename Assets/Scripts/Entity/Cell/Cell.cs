@@ -19,14 +19,14 @@ namespace Game.TowerCells
                 CachedTransform = transform;
             }
 
-            GameManager.Instance.CellList.Add(gameObject);
-            GameManager.Instance.CellStateList.Add(this);
-            transform.parent = GameManager.Instance.CellParent;
+            GM.Instance.CellList.Add(gameObject);
+            GM.Instance.CellStateList.Add(this);
+            transform.parent = GM.Instance.CellParent;
 
             CellRenderer = GetComponent<Renderer>();
             CellRenderer.material.color = new Color(0, 0, 0, 0);        
 
-            new CellExpandSystem(gameObject, GameManager.Instance.CellPrefab, GameManager.Instance.TowerCellAreaList);
+            new CellExpandSystem(gameObject, GM.Instance.CellPrefab, GM.Instance.TowerCellAreaList);
         }
     }
 }

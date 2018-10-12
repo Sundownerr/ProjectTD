@@ -15,12 +15,12 @@ namespace Game.System
                 CachedTransform = transform;
             }
 
-            GameManager.Instance.WaveSystem = this;
+            GM.Instance.WaveSystem = this;
         }
 
         private void LateUpdate()
         {
-            if (GameManager.Instance.BaseUISystem.IsWaveStarted)
+            if (GM.Instance.BaseUISystem.IsWaveStarted)
             {
                 if (!isCreepSpawning)
                 {
@@ -29,12 +29,12 @@ namespace Game.System
 
                 if (isCreepsSpawned)
                 {
-                    if (GameManager.Instance.CreepList.Count == 0)
+                    if (GM.Instance.CreepList.Count == 0)
                     {
                         isCreepsSpawned = false;
                         isCreepSpawning = false;
-                        GameManager.Instance.BaseUISystem.IsWaveStarted = false;
-                        GameManager.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
+                        GM.Instance.BaseUISystem.IsWaveStarted = false;
+                        GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
                     }
                 }
             }
@@ -46,7 +46,7 @@ namespace Game.System
 
             while (spawnedCreepCount < needToSpawnCount)
             {
-                Instantiate(GameManager.Instance.CreepPrefab);
+                Instantiate(GM.Instance.CreepPrefab);
                 
                 isCreepSpawning = true;
 

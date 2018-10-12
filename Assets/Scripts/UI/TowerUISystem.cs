@@ -24,14 +24,14 @@ namespace Game.System
                 CachedTransform = transform;
             } 
 
-            GameManager.Instance.TowerUISystem = this;
+            GM.Instance.TowerUISystem = this;
             gameObject.SetActive(false);
             SellButton.onClick.AddListener(SellTower);
         }
 
         private void OnEnable()
         {
-            choosedTower = GameManager.Instance.PlayerInputSystem.ChoosedTower;
+            choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;
             var choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
             var choosedTowerStats = choosedTowerBaseSystem.Stats;         
 
