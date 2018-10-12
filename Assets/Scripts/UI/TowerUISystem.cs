@@ -1,13 +1,12 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Game.Tower;
-#pragma warning disable CS1591 
+
 namespace Game.System
 {
-    public class TowerUISystem : MonoBehaviour
+    public class TowerUISystem : ExtendedMonoBehaviour
     {
 
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
@@ -18,8 +17,13 @@ namespace Game.System
 
         private GameObject choosedTower;
 
-        private void Awake()
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            } 
+
             GameManager.Instance.TowerUISystem = this;
             gameObject.SetActive(false);
             SellButton.onClick.AddListener(SellTower);

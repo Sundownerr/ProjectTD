@@ -20,6 +20,7 @@ namespace Game.Creep
         private int waypointIndex;
         private StateMachine state;
         private Coroutine stunCoroutine;
+        private float stunDuration;
 
         protected override void Awake()
         {
@@ -79,14 +80,18 @@ namespace Game.Creep
 
         public void GetStunned(float duration)
         {
-            state.ChangeState(new StunnedState(this, duration));
-
+            if(duration > stunDuration)
+            {
+                stunDuration = duration;
+            }
+          
             if (stunCoroutine != null)
             {
-                StopCoroutine(RemoveStunnedState(duration));
+                StopCoroutine(stunCoroutine);
             }
 
-            stunCoroutine = StartCoroutine(RemoveStunnedState(duration));
+            state.ChangeState(new StunnedState(this));
+            stunCoroutine = StartCoroutine(RemoveStunnedState(stunDuration));
         }
 
         private IEnumerator RemoveStunnedState(float delay)
@@ -96,7 +101,6 @@ namespace Game.Creep
             if(isStunned)
             {
                 isStunned = false;
-                
             }
 
             stunCoroutine = null;
@@ -148,18 +152,15 @@ namespace Game.Creep
         public class StunnedState : IState
         {
             private CreepSystem owner;
-            private float duration;
 
-            public StunnedState(CreepSystem owner, float duration)
+            public StunnedState(CreepSystem owner)
             {
                 this.owner = owner;
-                this.duration = duration;
             }
 
             public void Enter()
             {
-                owner.isStunned = true;
-               
+                owner.isStunned = true;               
             }
 
             public void Execute()

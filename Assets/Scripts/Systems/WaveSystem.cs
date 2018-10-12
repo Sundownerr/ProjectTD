@@ -4,12 +4,17 @@ using UnityEngine;
 #pragma warning disable CS1591 
 namespace Game.System
 {
-    public class WaveSystem : MonoBehaviour
+    public class WaveSystem : ExtendedMonoBehaviour
     {
         private bool isCreepSpawning, isCreepsSpawned;
 
-        private void Start()
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             GameManager.Instance.WaveSystem = this;
         }
 

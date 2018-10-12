@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-#pragma warning disable CS1591 
+
 namespace Game.System
 {
-    public class PlayerInputSystem : MonoBehaviour
+    public class PlayerInputSystem : ExtendedMonoBehaviour
     {
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
@@ -19,9 +19,14 @@ namespace Game.System
         private RaycastHit hit;
         private Ray WorldRay;
         private bool isHitUI;
-        
-        private void Awake()
+
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             GameManager.Instance.PlayerInputSystem = this;
             results = new List<RaycastResult>();
 
@@ -34,7 +39,7 @@ namespace Game.System
             state.Update();
         }
 
-        public class GetInputState : IState
+        protected class GetInputState : IState
         {
             private readonly PlayerInputSystem owner;
 
@@ -107,7 +112,7 @@ namespace Game.System
             }
         }
 
-        public class MouseOnTowerState : IState
+        protected class MouseOnTowerState : IState
         {
             private readonly PlayerInputSystem owner;
 
@@ -118,21 +123,20 @@ namespace Game.System
 
             public void Enter()
             {
-                if (owner.ChoosedTower != owner.hit.transform.gameObject)
+                var towerUI = GameManager.Instance.TowerUISystem;
+
+                owner.ChoosedTower = owner.hit.transform.gameObject;
+
+                if (!towerUI.gameObject.activeSelf)
                 {
-                    owner.ChoosedTower = owner.hit.transform.gameObject;
+                    towerUI.gameObject.SetActive(true);
+                }
 
-                    if (!GameManager.Instance.TowerUISystem.gameObject.activeSelf)
-                    {
-                        GameManager.Instance.TowerUISystem.gameObject.SetActive(true);
-                    }
+                owner.StartCoroutine(towerUI.RefreshUI());
 
-                    owner.StartCoroutine(GameManager.Instance.TowerUISystem.RefreshUI());
-
-                    if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
-                    {
-                        GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_CHOOSEDTOWER;
-                    }
+                if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
+                {
+                    GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_CHOOSEDTOWER;
                 }
 
                 owner.state.ChangeState(new GetInputState(owner));
@@ -147,7 +151,7 @@ namespace Game.System
             }
         }
 
-        public class MouseNotOnUIState : IState
+        protected class MouseNotOnUIState : IState
         {
             private readonly PlayerInputSystem owner;
 
@@ -158,9 +162,11 @@ namespace Game.System
 
             public void Enter()
             {
-                if (GameManager.Instance.TowerUISystem.gameObject.activeSelf)
+                var towerUI = GameManager.Instance.TowerUISystem;
+
+                if (towerUI.gameObject.activeSelf)
                 {
-                    GameManager.Instance.TowerUISystem.gameObject.SetActive(false);
+                    towerUI.gameObject.SetActive(false);
                 }
 
                 if (GameManager.PLAYERSTATE != GameManager.PLAYERSTATE_PLACINGTOWER)
@@ -180,7 +186,7 @@ namespace Game.System
             }
         }
 
-        public class SellingTowerState : IState
+        protected class SellingTowerState : IState
         {
             private readonly PlayerInputSystem owner;
 

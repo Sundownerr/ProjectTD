@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
-#pragma warning disable CS1591 
+
 namespace Game.Tower
 {
-
     public class TowerRangeSystem : ExtendedMonoBehaviour
     {
         public List<GameObject> CreepInRangeList;

@@ -8,7 +8,7 @@ public interface IState
 
 public class StateMachine
 {
-    public IState currentState;
+    private IState currentState;
 
     public void ChangeState(IState newState)
     {

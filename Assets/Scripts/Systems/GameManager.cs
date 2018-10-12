@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.System
 {
 
-    public class GameManager : MonoBehaviour
+    public class GameManager : ExtendedMonoBehaviour
     {
         public GameObject[]  WaypointList, TowerCellAreaList;
         public List<GameObject> TowerList, CreepList, CellList;
@@ -23,8 +23,13 @@ namespace Game.System
         public static GameManager Instance;
         public static int PLAYERSTATE, PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_CHOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
 
-        void Awake()
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             if (Instance == null)
             {
                 Instance = this;
@@ -44,6 +49,8 @@ namespace Game.System
             Application.targetFrameRate = 70;
            
             QualitySettings.vSyncCount = 0;
+
+            Cursor.lockState = CursorLockMode.Confined;
         }
 
         public static float CalcDistance(Vector3 pos1, Vector3 pos2)

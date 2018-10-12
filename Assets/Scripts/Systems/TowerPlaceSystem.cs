@@ -1,9 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Game.TowerCells;
 
-#pragma warning disable CS1591 
 namespace Game.System
 {
     public class TowerPlaceSystem : ExtendedMonoBehaviour
@@ -24,7 +21,6 @@ namespace Game.System
         private Camera mainCam;
         private StateMachine state;
         private Vector3 towerPos;
-        
        
         protected override void Awake()
         {
@@ -51,9 +47,10 @@ namespace Game.System
         private IEnumerator Refresh()
         {
             GameManager.PLAYERSTATE = GameManager.PLAYERSTATE_IDLE;
+
             yield return new WaitForFixedUpdate();
-            state.ChangeState(new CreateTowerState(this));
-            
+
+            state.ChangeState(new CreateTowerState(this));            
         }
 
         private void CreateGhostedTower()
@@ -96,8 +93,7 @@ namespace Game.System
 
                             if (Input.GetKey(KeyCode.LeftShift))
                             {
-                                StartCoroutine(Refresh());
-                                
+                                StartCoroutine(Refresh());                                
                             }
                             else
                             {

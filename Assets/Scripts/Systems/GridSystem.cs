@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 #pragma warning disable CS1591 
 namespace Game.System
 {
-    public class GridSystem : MonoBehaviour
+    public class GridSystem : ExtendedMonoBehaviour
     {
         [HideInInspector]
         public bool IsGridBuilded;
@@ -14,8 +14,13 @@ namespace Game.System
 
         private Color blueColor, redColor, greenColor;
 
-        private void Start()
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             StartCoroutine(BuildTimer());
             GameManager.Instance.GridSystem = this;
 

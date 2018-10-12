@@ -1,21 +1,21 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Collections;
-#pragma warning disable CS1591 
+﻿using UnityEngine.UI;
+
 namespace Game.System
 {
-    public class BaseUISystem : MonoBehaviour
+    public class BaseUISystem : ExtendedMonoBehaviour
     {
         public Button StartWaveButton, BuildModeButton, ReadyButton;
         public bool IsWaveStarted, IsPlayerReady;
         public int WaveTimer;
 
-
-        private void Start()
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             GameManager.Instance.BaseUISystem = this;
-            Cursor.lockState = CursorLockMode.Confined;
 
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
@@ -44,6 +44,5 @@ namespace Game.System
             IsPlayerReady = true;
             Destroy(ReadyButton.gameObject);
         }      
-
     }
 }

@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-#pragma warning disable CS1591 
-public class MainMenuScript : MonoBehaviour
+
+public class MainMenuScript : ExtendedMonoBehaviour
 {
     public Button QuitButton, NewGameButton;
-    
-	void Start ()
+
+    protected override void Awake()
     {
+        if ((object)CachedTransform == null)
+        {
+            CachedTransform = transform;
+        }
+
         QuitButton.onClick.AddListener(QuitClick);
         NewGameButton.onClick.AddListener(NewGameClick);
     }

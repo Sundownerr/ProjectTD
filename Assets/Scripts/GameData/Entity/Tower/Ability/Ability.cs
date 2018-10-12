@@ -141,7 +141,7 @@ namespace Game.Data
             }
         }
 
-        public class ChoseEffectState : IState
+        protected class ChoseEffectState : IState
         {
             private Ability owner;
 
@@ -171,7 +171,7 @@ namespace Game.Data
             }
         }
 
-        public class SetEffectState : IState
+        protected class SetEffectState : IState
         {
             private Ability owner;
 

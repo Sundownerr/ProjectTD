@@ -26,7 +26,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
         state.ChangeState(new LookForCreepState(this));
     }
 
-    public class LookForCreepState : IState
+    protected class LookForCreepState : IState
     {
         TowerAbilitySystem owner;
 
@@ -59,7 +59,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
         }
     }
 
-    public class CreateStackAbilityState : IState
+    protected class CreateStackAbilityState : IState
     {
         TowerAbilitySystem owner;
 
@@ -88,7 +88,7 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
     }
 
 
-    public class CombatState: IState
+    protected class CombatState: IState
     {
         TowerAbilitySystem owner;
 
@@ -200,9 +200,9 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
         }
     }
 
-    
 
-    public class ContinueEffectState : IState
+
+    protected class ContinueEffectState : IState
     {
         TowerAbilitySystem owner;
 
@@ -263,5 +263,4 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
         {
         }
     }
-
 }
