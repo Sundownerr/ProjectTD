@@ -11,6 +11,8 @@ namespace Game.Data.Effect
 
         private GameObject effectPrefab;
 
+       
+
         public override void InitEffect()
         {
             if (!IsSet)

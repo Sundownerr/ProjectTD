@@ -14,6 +14,8 @@ namespace Game.Data.Effect
         private GameObject effectPrefab;
         private ParticleSystem[] psList;
 
+      
+
         private void Show(bool enabled)
         {
             for (int i = 0; i < psList.Length; i++)
@@ -71,7 +73,7 @@ namespace Game.Data.Effect
                 if (AffectedCreepData != null)
                 {
                     effectPrefab = Instantiate(EffectPrefab,
-                        AffectedCreepData.transform.position + Vector3.up * AffectedCreepData.transform.GetChild(0).lossyScale.x / 2,
+                        AffectedCreepData.transform.position + Vector3.up * AffectedCreepData.transform.GetChild(0).lossyScale.y / 2,
                         Quaternion.identity, 
                         AffectedCreepData.transform);
 

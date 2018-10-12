@@ -58,11 +58,12 @@ namespace Game.TowerCells
             else
             {
                 GameManager.Instance.CellList.Remove(cell);
+                GameManager.Instance.CellStateList.Remove(cell.GetComponent<Cell>());
                 Object.Destroy(cell);
             }
         }
 
-        private bool FillSide(Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
+        private void FillSide(Vector3 spawnDirection, int checkMode, GameObject cell, GameObject cellPrefab, float rayDistance, int layerMask, float spacing)
         {
             var direction1 = new Vector3();
             var direction2 = new Vector3();
@@ -85,10 +86,7 @@ namespace Game.TowerCells
             if (!sideRayHit)
             {
                 Object.Instantiate(cellPrefab, cell.transform.position + spawnDirection * spacing, cell.transform.rotation).name = cell.transform.name;
-                return true;
             }
-
-            return false;
         }
     }
 }

@@ -18,7 +18,12 @@ namespace Game.Tower
         private ParticleSystem.EmissionModule emissionModule;
 
         protected override void Awake()
-        {         
+        {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);
             BulletLifetime = ParticleSystemList[0].main.startLifetime.constant;

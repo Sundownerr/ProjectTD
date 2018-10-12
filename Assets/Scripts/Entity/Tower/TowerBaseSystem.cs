@@ -17,13 +17,10 @@ namespace Game.Tower
         public GameObject OcuppiedCell, Range;        
 
         [HideInInspector]
-        public TowerRangeSystem RangeSystem;
-       
-        [HideInInspector]
-        public TowerStats Stats;
+        public TowerRangeSystem RangeSystem;     
 
-        public TowerStats BaseStats;
-        public GameObject Bullet, TowerPlaceEffect, Target;
+        public TowerStats Stats;
+        public GameObject Bullet, TowerPlaceEffect;
 
         protected List<Renderer> rendererList;
 
@@ -32,12 +29,17 @@ namespace Game.Tower
         private StateMachine state;
         private bool isRangeShowed, isTowerPlaced;    
 
-        private void Start()
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
 
-            Stats = Instantiate(BaseStats);
+            Stats = Instantiate(Stats);
 
             combatSystem = GetComponent<TowerBulletSystem>();
             abilitySystem = GetComponent<TowerAbilitySystem>();
@@ -127,7 +129,7 @@ namespace Game.Tower
 
             gameObject.layer = 14;
             RangeSystem.Show(false);
-
+            isTowerPlaced = true;
         }
 
         private void RotateAtCreep()
@@ -167,15 +169,15 @@ namespace Game.Tower
                     owner.StartPlacing();
                 }
                 else
-                {                  
+                {
+                    Debug.Log("rterea");
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
             }
 
             public void Exit()
             {
-                owner.EndPlacing();
-                owner.isTowerPlaced = true;
+                owner.EndPlacing();                
             }
         }
 
@@ -236,7 +238,6 @@ namespace Game.Tower
                 }
                 else if (owner.RangeSystem.CreepInRangeList[0] != null)
                 {                 
-                    owner.Target = owner.RangeSystem.CreepInRangeList[0];
                     owner.RotateAtCreep();
                     owner.combatSystem.Shoot(owner.Stats.AttackSpeed);                                     
                 }

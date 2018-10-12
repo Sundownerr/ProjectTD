@@ -16,7 +16,7 @@ namespace Game.Data.Effect
         public Creep.CreepSystem AffectedCreepData;
 
         [HideInInspector]
-        public bool IsEnded;
+        public bool IsEnded, IsLastInList;
 
         protected bool IsSet;
 

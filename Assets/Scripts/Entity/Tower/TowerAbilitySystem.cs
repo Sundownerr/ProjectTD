@@ -68,24 +68,8 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
             var tower = owner.towerBaseSystem;
             var abilityList = tower.Stats.AbilityList;
 
-            Debug.Log("CreateStackAbilityState");
-            var ability = Instantiate(abilityList[owner.abilityStackRequiredIndex]);
-            owner.stackedAbilityList.Add(ability);
-            owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].StackReset();
+
             
-
-
-            for (int i = 0; i < owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList.Count; i++)
-            {
-                owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList[i] = 
-                    Instantiate(owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList[i]);
-
-                owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].EffectList[i].StackReset();
-            }
-
-            owner.isStackRequired = false;
-
-            Debug.Log(owner.stackedAbilityList.Count);
             owner.state.ChangeState(new CombatState(owner));
         }
 
@@ -118,108 +102,89 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
             var tower = owner.towerBaseSystem;
             var abilityList = owner.towerBaseSystem.Stats.AbilityList;
 
-            var isCreepInRange = 
-                tower.RangeSystem.CreepInRangeList.Count > 0 && 
+            var isCreepInRange =
+                tower.RangeSystem.CreepInRangeList.Count > 0 &&
                 tower.RangeSystem.CreepInRangeList[0] != null;
 
             if (isCreepInRange)
             {
-               
+
                 for (int i = 0; i < abilityList.Count; i++)
                 {
                     abilityList[i].SetTarget(tower.RangeSystem.CreepInRangeSystemList);
 
                     abilityList[i].InitAbility();
-                   
-                    if (!abilityList[i].IsAbilityOnCooldown && abilityList[i].IsStackable)
-                    {
-                        if (abilityList[i].EffectCount < abilityList[i].EffectList.Count - 1)
-                        {
-                            owner.abilityStackRequiredIndex = i;
-                            owner.state.ChangeState(new CreateStackAbilityState(owner));
-                        }
 
-                        for (int j = 0; j < abilityList[i].EffectList.Count; j++)
+                    if (abilityList[i].IsStackable && !owner.isStackRequired)
+                    {
+                        if (!abilityList[i].IsAbilityOnCooldown && !abilityList[i].CheckAllEffectsEnded())
                         {
-                            if (!abilityList[i].EffectList[j].IsEnded)
+                            Debug.Log("Combat Ssastate");
+                            if (owner.stackedAbilityList.Count > 0)
+                            {
+                                if (!owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].CheckAllEffectsEnded())
+                                {
+                                    owner.abilityStackRequiredIndex = i;
+                                    owner.isStackRequired = true;
+                                }
+                            }
+                            else
                             {
                                 owner.abilityStackRequiredIndex = i;
-                                owner.state.ChangeState(new CreateStackAbilityState(owner));
-                                
+                                owner.isStackRequired = true;
                             }
                         }
-
-                       
                     }
-                   
-                    //Debug.Log("Processing abiltiy;");
                 }
-
+                 
                 if (owner.isStackRequired)
                 {
-                    
-                    //Debug.Log("Stacking ability..");
-
+                    owner.stackedAbilityList.Add(Instantiate(abilityList[owner.abilityStackRequiredIndex]));
+                    owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].StackReset();                  
+                    owner.isStackRequired = false;
+                    //Debug.Log("Stacked: " + owner.stackedAbilityList.Count);
                 }
 
                 if (owner.stackedAbilityList.Count > 0)
                 {
+                    Debug.Log("Stacked: " + owner.stackedAbilityList.Count);
+
                     for (int i = 0; i < owner.stackedAbilityList.Count; i++)
                     {
                         owner.stackedAbilityList[i].SetTarget(tower.RangeSystem.CreepInRangeSystemList);
 
                         owner.stackedAbilityList[i].InitAbility();
 
-                        for (int j = 0; j < owner.stackedAbilityList[i].EffectList.Count; j++)
+                        if (owner.stackedAbilityList[i].CheckAllEffectsEnded())
                         {
-                            owner.isAllStackedEffectsEnded = true;
-
-                            if (!owner.stackedAbilityList[i].EffectList[j].IsEnded)
-                            {
-                                owner.isAllStackedEffectsEnded = false;
-                            }
-                            else
-                            {
-                                //Destroy(owner.stackedAbilityList[i].EffectList[j]);
-                                //owner.stackedAbilityList[i].EffectList.RemoveAt(j);
-                            }
-                        }
-                        if (owner.isAllStackedEffectsEnded)
-                        {
+                           // Debug.Log("Destroyed: " + owner.stackedAbilityList[i]);
                             Destroy(owner.stackedAbilityList[i]);
                             owner.stackedAbilityList.RemoveAt(i);
                         }
-
-                    }                   
+                    }
                 }
             }
             else
-            {
-                Debug.Log("No creep in range");
+            {          
                 for (int i = 0; i < abilityList.Count; i++)
                 {
-                    for (int j = 0; j < abilityList[i].EffectList.Count; j++)
+                    if (!abilityList[i].CheckAllEffectsEnded())
                     {
-                        if (!abilityList[i].EffectList[j].IsEnded)
-                        {
-                            owner.state.ChangeState(new ContinueEffectState(owner));
-                        }
-                    }
+                        owner.state.ChangeState(new ContinueEffectState(owner));
+                    }                       
                 }
 
                 if (owner.stackedAbilityList.Count > 0)
                 {
                     for (int i = 0; i < owner.stackedAbilityList.Count; i++)
                     {
-                        for (int j = 0; j < owner.stackedAbilityList[i].EffectList.Count; j++)
+                        if (!owner.stackedAbilityList[i].CheckAllEffectsEnded())
                         {
-                            if (!owner.stackedAbilityList[i].EffectList[j].IsEnded)
-                            {
-                                owner.state.ChangeState(new ContinueEffectState(owner));
-                            }
+                            owner.state.ChangeState(new ContinueEffectState(owner));
                         }
                     }
                 }
+
                 Debug.Log("Going to Look For Creep State");
                 owner.state.ChangeState(new LookForCreepState(owner));
             }
@@ -261,20 +226,15 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
             }
             else
             {
+                owner.isAllEffectsEnded = true;
+
                 for (int i = 0; i < abilityList.Count; i++)
                 {
                     abilityList[i].InitAbility();
 
-                    for (int j = 0; j < abilityList[i].EffectList.Count; j++)
-                    {
-                        owner.isAllEffectsEnded = true;
-
-                        if (!abilityList[i].EffectList[j].IsEnded)
-                        {
-                            owner.isAllEffectsEnded = false;
-                        }
-                    }
+                    owner.isAllEffectsEnded = abilityList[i].CheckAllEffectsEnded();
                 }
+
 
                 if (owner.stackedAbilityList.Count > 0)
                 {
@@ -282,20 +242,8 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
                     {
                         owner.stackedAbilityList[i].InitAbility();
 
-                        for (int j = 0; j < owner.stackedAbilityList[i].EffectList.Count; j++)
-                        {
-                            owner.isAllStackedEffectsEnded = true;
+                        owner.isAllStackedEffectsEnded = owner.stackedAbilityList[i].CheckAllEffectsEnded();
 
-                            if (!owner.stackedAbilityList[i].EffectList[j].IsEnded)
-                            {
-                                owner.isAllStackedEffectsEnded = false;
-                            }
-                            else
-                            {
-                                Destroy(owner.stackedAbilityList[i].EffectList[j]);
-                                owner.stackedAbilityList[i].EffectList.RemoveAt(j);
-                            }
-                        }
                         if (owner.isAllStackedEffectsEnded)
                         {
                             Destroy(owner.stackedAbilityList[i]);

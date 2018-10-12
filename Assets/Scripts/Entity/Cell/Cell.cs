@@ -15,6 +15,7 @@ namespace Game.TowerCells
         private void Start()
         {            
             GameManager.Instance.CellList.Add(gameObject);
+            GameManager.Instance.CellStateList.Add(this);
             transform.parent = GameManager.Instance.CellParent;
 
             cellRenderer = GetComponent<Renderer>();

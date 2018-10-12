@@ -14,8 +14,13 @@ namespace Game.Tower
         private Renderer rend;
         private Color transparent, notTransparent;
 
-        private void Start()
+        protected override void Awake()
         {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             CreepInRangeList = new List<GameObject>();
             CreepInRangeSystemList = new List<Creep.CreepSystem>();
             transform.position += new Vector3(0, -5, 0);
