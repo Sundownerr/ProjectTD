@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 using Game.Data.Entity.Tower;
-using Game.Data.Effect;
 
 namespace Game.Tower
 {
-
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
         [HideInInspector]
@@ -24,7 +22,7 @@ namespace Game.Tower
 
         protected List<Renderer> rendererList;
 
-        private TowerBulletSystem combatSystem;
+        private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
         private bool isRangeShowed, isTowerPlaced;    
@@ -41,7 +39,7 @@ namespace Game.Tower
 
             Stats = Instantiate(Stats);
 
-            combatSystem = GetComponent<TowerBulletSystem>();
+            combatSystem = GetComponent<TowerCombatSystem>();
             abilitySystem = GetComponent<TowerAbilitySystem>();
 
             Range = Instantiate(GM.Instance.RangePrefab, transform);
@@ -114,14 +112,9 @@ namespace Game.Tower
         }
 
         private void EndPlacing()
-        {
-            OcuppiedCell = GM.Instance.TowerPlaceSystem.NewBusyCell;
+        {          
+            transform.position = OcuppiedCell.transform.position;
 
-            if (transform.position != OcuppiedCell.transform.position)
-            {
-                transform.position = OcuppiedCell.transform.position;
-            }
-            
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
             var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));

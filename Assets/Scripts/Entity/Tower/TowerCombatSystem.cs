@@ -2,10 +2,11 @@
 using System.Collections;
 using UnityEngine;
 using Game.System;
-
+#pragma warning disable CS1591 
 namespace Game.Tower
-{    
-    public class TowerBulletSystem : ExtendedMonoBehaviour
+{
+    
+    public class TowerCombatSystem : ExtendedMonoBehaviour
     {
         public bool IsAllBulletsInactive;
 

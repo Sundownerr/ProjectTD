@@ -16,7 +16,8 @@ namespace Game.System
 
         public LayerMask LayerMask;
         
-        private Color transparentRed, transparentGreen, towerColor;     
+        private Color transparentRed, transparentGreen, towerColor;
+        private GameObject lastTower;
         private RaycastHit hit;
         private Camera mainCam;
         private StateMachine state;
@@ -58,6 +59,7 @@ namespace Game.System
         {
             GM.PLAYERSTATE = GM.PLAYERSTATE_PLACINGTOWER;
             GM.Instance.TowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero, Quaternion.identity, GM.Instance.TowerParent));
+            lastTower = GM.Instance.TowerList[GM.Instance.TowerList.Count - 1];
             state.ChangeState(new MoveTowerState(this)); 
         }
 
@@ -112,7 +114,7 @@ namespace Game.System
 
         private void PlaceTower()
         {
-            NewBusyCell = chosenCellState.gameObject;
+            lastTower.GetComponent<Tower.TowerBaseSystem>().OcuppiedCell = chosenCellState.gameObject;
             chosenCellState.IsBusy = true;
 
             if (Input.GetKey(KeyCode.LeftShift))

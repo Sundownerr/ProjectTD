@@ -16,7 +16,7 @@ namespace Game.Data
         public List<Creep.CreepSystem> creepDataList;
 
         [HideInInspector]
-        public bool IsStackable, IsStacked, IsAbilityOnCooldown;
+        public bool IsStackable, IsStacked, IsNeedStack, IsAbilityOnCooldown;
 
         [HideInInspector]
         public int EffectCount;
@@ -99,14 +99,15 @@ namespace Game.Data
         {
             IsStacked = true;
             EffectCount = 0;
-            IsAbilityOnCooldown = false;
-            state.ChangeState(new ChoseEffectState(this));
+            IsAbilityOnCooldown = false;          
 
             for (int i = 0; i < EffectList.Count; i++)
             {
                 EffectList[i] = Instantiate(EffectList[i]);
                 EffectList[i].StackReset();
             }
+
+            state.ChangeState(new ChoseEffectState(this));
         }
 
         private IEnumerator NextEffect(float delay)
@@ -130,10 +131,21 @@ namespace Game.Data
 
         private IEnumerator AbilityCooldown(float delay)
         {
-
             IsAbilityOnCooldown = true;
 
             yield return new WaitForSeconds(delay);
+
+            if (IsStackable)
+            {
+                if (!CheckAllEffectsEnded())
+                {
+                    IsNeedStack = true;
+                }
+                else
+                {
+                    IsNeedStack = false;
+                }
+            }
 
             if (!IsStacked)
             {
@@ -166,8 +178,9 @@ namespace Game.Data
             }          
 
             public void Exit()
-            {               
+            {
                 GM.Instance.StartCoroutine(owner.AbilityCooldown(owner.Cooldown));
+                
             }
         }
 
