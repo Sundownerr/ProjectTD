@@ -170,7 +170,6 @@ namespace Game.Tower
                 }
                 else
                 {
-                    Debug.Log("rterea");
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
             }

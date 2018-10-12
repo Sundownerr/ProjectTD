@@ -12,9 +12,7 @@ namespace Game.Tower
         public bool IsReachedTarget;
         public float BulletLifetime;
         public GameObject Target;
-        public float Speed;
-
-                          
+        public float Speed;                          
         private ParticleSystem.EmissionModule emissionModule;
 
         protected override void Awake()
@@ -38,8 +36,7 @@ namespace Game.Tower
         private void OnDisable()
         {
             Show(false);
-            IsReachedTarget = true;
-            
+            IsReachedTarget = true;            
         }
 
         public void Show(bool enabled)

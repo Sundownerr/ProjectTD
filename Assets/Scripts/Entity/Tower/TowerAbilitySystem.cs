@@ -12,13 +12,18 @@ public class TowerAbilitySystem : ExtendedMonoBehaviour
     private bool isAllEffectsEnded, isAllStackedEffectsEnded, isStackRequired;
     private int abilityStackRequiredIndex, stackCounter;
 
-    private void Start()
+    protected override void Awake()
     {
-        state = new StateMachine();
-        state.ChangeState(new LookForCreepState(this));
+        if ((object)CachedTransform == null)
+        {
+            CachedTransform = transform;
+        }       
 
         towerBaseSystem = GetComponent<TowerBaseSystem>();
         stackedAbilityList = new List<Game.Data.Ability>();
+
+        state = new StateMachine();
+        state.ChangeState(new LookForCreepState(this));
     }
 
     public class LookForCreepState : IState

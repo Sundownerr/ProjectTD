@@ -33,13 +33,13 @@ namespace Game.Creep
 
             creepRenderer = transform.GetChild(0).GetComponent<Renderer>();
 
-            Stats = Instantiate(Stats);
-
-            state = new StateMachine();
-            state.ChangeState(new WalkState(this));
+            Stats = Instantiate(Stats);           
 
             GameManager.Instance.CreepList.Add(gameObject);
             transform.parent = GameManager.Instance.CreepParent;
+
+            state = new StateMachine();
+            state.ChangeState(new WalkState(this));
         }
 
         private void Update()
