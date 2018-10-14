@@ -73,10 +73,10 @@ namespace Game.Tower
             {
                 var tower = owner.towerBaseSystem;
                 var abilityList = tower.Stats.AbilityList;
+                var stackList = owner.stackedAbilityList;
 
-                owner.stackedAbilityList.Add(Instantiate(abilityList[owner.abilityStackRequiredIndex]));
-                owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].StackReset();
-                owner.isStackRequired = false;
+                stackList.Add(Instantiate(abilityList[owner.abilityStackRequiredIndex]));
+                stackList[stackList.Count - 1].StackReset();
 
                 Debug.Log("Stacked: " + owner.stackedAbilityList.Count);
 
@@ -104,13 +104,13 @@ namespace Game.Tower
 
             public void Enter()
             {
-                Debug.Log("Combat State");
             }
 
             public void Execute()
             {
                 var tower = owner.towerBaseSystem;
                 var abilityList = owner.towerBaseSystem.Stats.AbilityList;
+                var stackList = owner.stackedAbilityList;
 
                 var isCreepInRange =
                     tower.RangeSystem.CreepInRangeList.Count > 0 &&
@@ -124,63 +124,56 @@ namespace Game.Tower
 
                         abilityList[i].InitAbility();
 
-                        if (abilityList[i].IsNeedStack && !owner.isStackRequired)
+                        if (abilityList[i].IsNeedStack)
                         {
-                            //Debug.Log("ON cd: " + !abilityList[i].IsAbilityOnCooldown + ", \n all ended: " + !abilityList[i].CheckAllEffectsEnded());                         
-
-                            if (owner.stackedAbilityList.Count > 0)
-                            {
-                                if (owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].IsNeedStack)
-                                {
-                                    owner.abilityStackRequiredIndex = i;
-                                    owner.state.ChangeState(new CreateStackAbilityState(owner));
-                                    owner.stackedAbilityList[owner.stackedAbilityList.Count - 1].IsNeedStack = false;
-                                }
-                            }
-                            else
-                            {
-                                owner.abilityStackRequiredIndex = i;
-                                owner.state.ChangeState(new CreateStackAbilityState(owner));
-                                abilityList[i].IsNeedStack = false;
-                            }
+                            owner.abilityStackRequiredIndex = i;
+                            owner.state.ChangeState(new CreateStackAbilityState(owner));
+                            abilityList[i].IsNeedStack = false;
                         }
                     }                 
 
-                    if (owner.stackedAbilityList.Count > 0)
-                    {                      
-                        for (int i = 0; i < owner.stackedAbilityList.Count; i++)
+                    if (stackList.Count > 0)
+                    {
+                        if (stackList[stackList.Count - 1].IsNeedStack)
+                        {                          
+                            owner.state.ChangeState(new CreateStackAbilityState(owner));
+                            stackList[stackList.Count - 1].IsNeedStack = false;
+                        }
+
+                        for (int i = 0; i < stackList.Count; i++)
                         {
-                            owner.stackedAbilityList[i].SetTarget(tower.RangeSystem.CreepInRangeSystemList);
+                            stackList[i].SetTarget(tower.RangeSystem.CreepInRangeSystemList);
 
-                            owner.stackedAbilityList[i].InitAbility();
+                            stackList[i].InitAbility();
 
-                            if (owner.stackedAbilityList[i].CheckAllEffectsEnded())
+                            if (stackList[i].CheckEffectsEnded())
                             {
-                                // Debug.Log("Destroyed: " + owner.stackedAbilityList[i]);
-                                Destroy(owner.stackedAbilityList[i]);
-                                owner.stackedAbilityList.RemoveAt(i);
+                                Debug.Log($"Destroy{i}");
+                                Destroy(stackList[i]);
+                                stackList.RemoveAt(i);
                             }
                         }
                     }
-                }
-            
+                }           
                 else
                 {
                     for (int i = 0; i < abilityList.Count; i++)
                     {
-                        if (!abilityList[i].CheckAllEffectsEnded())
+                        if (!abilityList[i].CheckEffectsEnded() || !abilityList[i].CheckIntervalsEnded())
                         {
                             owner.state.ChangeState(new ContinueEffectState(owner));
+                            owner.isAllEffectsEnded = false;
                         }
                     }
 
-                    if (owner.stackedAbilityList.Count > 0)
+                    if (stackList.Count > 0)
                     {
-                        for (int i = 0; i < owner.stackedAbilityList.Count; i++)
+                        for (int i = 0; i < stackList.Count; i++)
                         {
-                            if (!owner.stackedAbilityList[i].CheckAllEffectsEnded())
+                            if (!stackList[i].CheckEffectsEnded() || !stackList[i].CheckIntervalsEnded())
                             {
                                 owner.state.ChangeState(new ContinueEffectState(owner));
+                                owner.isAllStackedEffectsEnded = false;
                             }
                         }
                     }
@@ -215,6 +208,7 @@ namespace Game.Tower
             {
                 var tower = owner.towerBaseSystem;
                 var abilityList = tower.Stats.AbilityList;
+                var stackList = owner.stackedAbilityList;
 
                 var isCreepInRange =
                     tower.RangeSystem.CreepInRangeList.Count > 0 &&
@@ -232,31 +226,30 @@ namespace Game.Tower
                     {
                         abilityList[i].InitAbility();
 
-                        if (!abilityList[i].CheckAllEffectsEnded())
+                        if (!abilityList[i].CheckEffectsEnded())
                         {
                             owner.isAllEffectsEnded = false;
                         }
                     }
 
 
-                    if (owner.stackedAbilityList.Count > 0)
+                    if (stackList.Count > 0)
                     {
                         owner.isAllStackedEffectsEnded = true;
 
-                        for (int i = 0; i < owner.stackedAbilityList.Count; i++)
+                        for (int i = 0; i < stackList.Count; i++)
                         {
-                            owner.stackedAbilityList[i].InitAbility();
+                            stackList[i].InitAbility();
 
-                            if (!owner.stackedAbilityList[i].CheckAllEffectsEnded())
+                            if (!stackList[i].CheckEffectsEnded())
                             {
                                 owner.isAllStackedEffectsEnded = false;
                             }
-
-                            if (owner.isAllStackedEffectsEnded)
+                            else
                             {
-                                Destroy(owner.stackedAbilityList[i]);
-                                owner.stackedAbilityList.RemoveAt(i);
-                            }
+                                Destroy(stackList[i]);
+                                stackList.RemoveAt(i);
+                            }                        
                         }
                     }
                 }
@@ -264,8 +257,7 @@ namespace Game.Tower
 
             public void Exit()
             {
-                owner.isAllStackedEffectsEnded = false;
-                owner.isAllEffectsEnded = false;
+                
             }
         }
     }

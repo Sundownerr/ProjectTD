@@ -102,7 +102,7 @@ namespace Game.Tower
 
                         if (bulletDataList[i].Target != null)
                         {
-                            bulletDataList[i].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.Stats.Damage);
+                            bulletDataList[i].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.Stats.Damage, towerData);
                         }
                     }
                 }

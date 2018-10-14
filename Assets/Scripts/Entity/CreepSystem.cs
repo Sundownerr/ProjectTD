@@ -10,7 +10,7 @@ namespace Game.Creep
         [HideInInspector]
         public bool ReachedLastWaypoint;
 
-        public CreepStats Stats;
+        public CreepType Stats;
 
         [HideInInspector]
         public Renderer creepRenderer;
@@ -21,6 +21,7 @@ namespace Game.Creep
         private StateMachine state;
         private Coroutine stunCoroutine;
         private float stunDuration;
+        private Tower.TowerBaseSystem lastDamageDealer;
 
         protected override void Awake()
         {
@@ -68,7 +69,7 @@ namespace Game.Creep
             creepTransform.localRotation = rotation;
         }
 
-        public void GetDamage(int damage)
+        public void GetDamage(int damage, Tower.TowerBaseSystem damageDealer)
         {
             Stats.Health -= damage;
 
@@ -106,7 +107,7 @@ namespace Game.Creep
             stunCoroutine = null;
         }
 
-        public class WalkState : IState
+        protected class WalkState : IState
         {
             private CreepSystem owner;
 
@@ -149,7 +150,7 @@ namespace Game.Creep
             }
         }
 
-        public class StunnedState : IState
+        protected class StunnedState : IState
         {
             private CreepSystem owner;
 
@@ -176,32 +177,35 @@ namespace Game.Creep
 
             }
         }
-    }
 
-    public class DestroyState : IState
-    {
-        private CreepSystem owner;
-
-        public DestroyState(CreepSystem owner)
+        protected class DestroyState : IState
         {
-            this.owner = owner;
+            private CreepSystem owner;
+
+            public DestroyState(CreepSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+                owner.lastDamageDealer.AddExp(1);    
+
+                Destroy(owner.Stats);
+                GM.Instance.CreepList.Remove(owner.gameObject);
+                Destroy(owner.gameObject);
+            }
+
+            public void Execute()
+            {
+
+            }
+
+            public void Exit()
+            {
+
+            }
         }
 
-        public void Enter()
-        {
-            Object.Destroy(owner.Stats);
-            GM.Instance.CreepList.Remove(owner.gameObject);
-            Object.Destroy(owner.gameObject);
-        }
-
-        public void Execute()
-        {
-
-        }
-
-        public void Exit()
-        {
-
-        }
-    }
+    }   
 }

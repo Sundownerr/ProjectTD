@@ -57,6 +57,8 @@ namespace Game.Tower
                 {
                     Stats.AbilityList[i].EffectList[j] = Instantiate(Stats.AbilityList[i].EffectList[j]); ;
                 }
+
+                Stats.AbilityList[i].SetOwnerTower(this);
             }
 
             rendererList = new List<Renderer>();
@@ -142,6 +144,16 @@ namespace Game.Tower
             Destroy(gameObject);
         }    
 
+        public void AddExp(int amount)
+        {
+            Stats.Exp += amount;
+
+            if(Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1])
+            {
+                state.ChangeState(new LevelUpState(this));
+            }
+        }
+
         protected class SpawnState : IState
         {
             private readonly TowerBaseSystem owner;
@@ -208,7 +220,7 @@ namespace Game.Tower
             {
                 this.owner = owner;
             }
-
+            
             public void Enter()
             {
             }
@@ -263,6 +275,34 @@ namespace Game.Tower
                 {
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
+            }
+
+            public void Exit()
+            {
+            }
+        }
+
+        protected class LevelUpState : IState
+        {
+            private readonly TowerBaseSystem owner;
+
+            public LevelUpState(TowerBaseSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+                if (owner.Stats.Level < 25)
+                {
+                    owner.Stats.Level++;
+                    owner.state.ChangeState(new CombatState(owner));
+                }
+            }
+
+            public void Execute()
+            {
+               
             }
 
             public void Exit()

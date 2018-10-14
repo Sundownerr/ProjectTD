@@ -12,7 +12,7 @@ namespace Game.System
 
         public LayerMask LayerMask;
 
-        private Color blueColor, redColor, greenColor;
+        private Color blue, red, green;
 
         protected override void Awake()
         {
@@ -24,9 +24,9 @@ namespace Game.System
             StartCoroutine(BuildTimer());
             GM.Instance.GridSystem = this;
 
-            redColor = new Color(0.3f, 0.1f, 0.1f, 0.6f);
-            greenColor = new Color(0.1f, 0.3f, 0.1f, 0.5f);
-            blueColor = new Color(0.1f, 0.1f, 0.3f, 0.4f);
+            red = new Color(0.3f, 0.1f, 0.1f, 0.6f);
+            green = new Color(0.1f, 0.3f, 0.1f, 0.5f);
+            blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);
         }
 
         private void Update()
@@ -73,7 +73,7 @@ namespace Game.System
                 if (!Physics.Raycast(ray, 100, LayerMask))
                 {
                     var spawnPos = GM.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GM.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
-                    Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.Euler(0, 0, 0));            
+                    Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);            
                 }
             }
         }
@@ -94,15 +94,15 @@ namespace Game.System
 
                 if (cell.IsBusy)
                 {
-                    cell.CellRenderer.material.color = redColor;
+                    cell.CellRenderer.material.color = red;
                 }
                 else if (cell.IsChosen)
                 {
-                    cell.CellRenderer.material.color = greenColor;
+                    cell.CellRenderer.material.color = green;
                 }
                 else
                 {
-                    cell.CellRenderer.material.color = blueColor;
+                    cell.CellRenderer.material.color = blue;
                 }
             }
         }

@@ -19,9 +19,10 @@ namespace Game.System
         public BaseUISystem BaseUISystem;
         public TowerUISystem TowerUISystem;
         public Canvas UICanvas;
-
+       
         public static GM Instance;
         public static int PLAYERSTATE, PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_CHOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
+        public static int[] ExpToLevelUp;
 
         protected override void Awake()
         {
@@ -51,6 +52,8 @@ namespace Game.System
             QualitySettings.vSyncCount = 0;
 
             Cursor.lockState = CursorLockMode.Confined;
+
+            ExpToLevelUp = new int[]{12, 24, 37, 51, 66, 82, 99, 117, 136, 156, 177, 199, 223, 248, 275, 303, 333, 365, 399, 435, 473, 513, 556, 601, 649 };
         }
 
         public static float CalcDistance(Vector3 pos1, Vector3 pos2)

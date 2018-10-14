@@ -52,7 +52,7 @@ namespace Game.Data.Effect
 
                 if (AffectedCreepData != null)
                 {
-                    AffectedCreepData.GetDamage(DamagePerTick);
+                    AffectedCreepData.GetDamage(DamagePerTick, ownerTower);
                 }
                 else
                 {
@@ -110,18 +110,18 @@ namespace Game.Data.Effect
             if (AffectedCreepData != null)
             {
                 AffectedCreepData.creepRenderer.material.color = Color.white;
-
-                Destroy(effectPrefab);
             }
 
+            Destroy(effectPrefab);
             damageTick = 0;
 
-            IsSet = false;
+           
             IsEnded = true;
         }
 
         public override void StackReset()
         {
+            IsSet = false;
             EndEffect();
             StartEffect();
         }

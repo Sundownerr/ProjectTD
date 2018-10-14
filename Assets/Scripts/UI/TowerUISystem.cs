@@ -35,7 +35,7 @@ namespace Game.System
             var choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
             var choosedTowerStats = choosedTowerBaseSystem.Stats;         
 
-            TowerName.text = choosedTowerStats.entityName;
+            TowerName.text = choosedTowerStats.EntityName;
             Damage.text = KiloFormat(choosedTowerStats.Damage);
             Range.text = KiloFormat(choosedTowerStats.Range);
             Mana.text = KiloFormat(choosedTowerStats.Mana);

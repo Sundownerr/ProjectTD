@@ -18,7 +18,11 @@ namespace Game.Data.Effect
         [HideInInspector]
         public bool IsEnded, IsLastInList;
 
+        [HideInInspector]
+        public Tower.TowerBaseSystem ownerTower;
+
         protected bool IsSet;
+        
 
         public virtual void InitEffect() { }
         public virtual void StartEffect() { }

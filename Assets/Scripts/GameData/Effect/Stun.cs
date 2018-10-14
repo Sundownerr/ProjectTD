@@ -9,9 +9,7 @@ namespace Game.Data.Effect
     {
         public GameObject EffectPrefab;
 
-        private GameObject effectPrefab;
-
-       
+        private GameObject effectPrefab;    
 
         public override void InitEffect()
         {
@@ -69,12 +67,13 @@ namespace Game.Data.Effect
         {
             Destroy(effectPrefab);
 
-            IsSet = false;
+           
             IsEnded = true;
         }
 
         public override void StackReset()
         {
+            IsSet = false;
             EndEffect();
             StartEffect();
         }
