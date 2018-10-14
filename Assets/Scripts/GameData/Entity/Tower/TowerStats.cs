@@ -22,5 +22,10 @@ namespace Game.Data.Entity.Tower
 
         public List<float> GradeCostList;
         public List<float> DamageToArmorList;
+
+        private void Awake()
+        {
+            Level = 1;
+        }
     }
 }

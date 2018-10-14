@@ -71,6 +71,7 @@ namespace Game.Creep
 
         public void GetDamage(int damage, Tower.TowerBaseSystem damageDealer)
         {
+            lastDamageDealer = damageDealer;
             Stats.Health -= damage;
 
             if (Stats.Health <= 0)
@@ -189,7 +190,7 @@ namespace Game.Creep
 
             public void Enter()
             {
-                owner.lastDamageDealer.AddExp(1);    
+                owner.lastDamageDealer.AddExp(owner.Stats.Exp);    
 
                 Destroy(owner.Stats);
                 GM.Instance.CreepList.Remove(owner.gameObject);

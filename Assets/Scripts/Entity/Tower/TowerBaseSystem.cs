@@ -147,8 +147,9 @@ namespace Game.Tower
         public void AddExp(int amount)
         {
             Stats.Exp += amount;
+            Debug.Log($"Added {amount} exp");
 
-            if(Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1])
+            if(Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
             {
                 state.ChangeState(new LevelUpState(this));
             }
@@ -293,11 +294,18 @@ namespace Game.Tower
 
             public void Enter()
             {
-                if (owner.Stats.Level < 25)
+                var stats = owner.Stats;
+
+                for (int i = stats.Level; i < 25; i++)
                 {
-                    owner.Stats.Level++;
-                    owner.state.ChangeState(new CombatState(owner));
+                    if (stats.Exp >= GM.ExpToLevelUp[stats.Level - 1] && stats.Level < 25)
+                    {
+                        Debug.Log($"LevelUp from {stats.Level} to {stats.Level + 1}");
+                        stats.Level++;
+                    }
                 }
+                
+                owner.state.ChangeState(new CombatState(owner));
             }
 
             public void Execute()

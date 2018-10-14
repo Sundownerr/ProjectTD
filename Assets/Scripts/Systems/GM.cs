@@ -53,7 +53,32 @@ namespace Game.System
 
             Cursor.lockState = CursorLockMode.Confined;
 
-            ExpToLevelUp = new int[]{12, 24, 37, 51, 66, 82, 99, 117, 136, 156, 177, 199, 223, 248, 275, 303, 333, 365, 399, 435, 473, 513, 556, 601, 649 };
+            ExpToLevelUp = new int[25];
+            ExpToLevelUp[0] = 12;
+            ExpToLevelUp[1] = 24;
+            ExpToLevelUp[2] = 37;
+            ExpToLevelUp[3] = 51;
+            ExpToLevelUp[4] = 66;
+            ExpToLevelUp[5] = 82;
+            ExpToLevelUp[6] = 99;
+            ExpToLevelUp[7] = 117;
+            ExpToLevelUp[8] = 136;
+            ExpToLevelUp[9] = 156;
+            ExpToLevelUp[10] = 177;
+            ExpToLevelUp[11] = 199;
+            ExpToLevelUp[12] = 223;
+            ExpToLevelUp[13] = 248;
+            ExpToLevelUp[14] = 275;
+            ExpToLevelUp[15] = 303;
+            ExpToLevelUp[16] = 333;
+            ExpToLevelUp[17] = 365;
+            ExpToLevelUp[18] = 399;
+            ExpToLevelUp[19] = 435;
+            ExpToLevelUp[20] = 473;
+            ExpToLevelUp[21] = 513;
+            ExpToLevelUp[22] = 556;
+            ExpToLevelUp[23] = 601;
+            ExpToLevelUp[24] = 649;
         }
 
         public static float CalcDistance(Vector3 pos1, Vector3 pos2)
