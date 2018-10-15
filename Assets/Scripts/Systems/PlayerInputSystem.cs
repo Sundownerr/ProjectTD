@@ -134,9 +134,9 @@ namespace Game.System
 
                 owner.StartCoroutine(towerUI.RefreshUI());
 
-                if (GM.PLAYERSTATE != GM.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
                 {
-                    GM.PLAYERSTATE = GM.PLAYERSTATE_CHOOSEDTOWER;
+                    GM.PLAYERSTATE = GM.CHOOSED_TOWER;
                 }
 
                 owner.state.ChangeState(new GetInputState(owner));
@@ -169,9 +169,9 @@ namespace Game.System
                     towerUI.gameObject.SetActive(false);
                 }
 
-                if (GM.PLAYERSTATE != GM.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
                 {
-                    GM.PLAYERSTATE = GM.PLAYERSTATE_IDLE;
+                    GM.PLAYERSTATE = GM.IDLE;
                 }
 
                 owner.state.ChangeState(new GetInputState(owner));

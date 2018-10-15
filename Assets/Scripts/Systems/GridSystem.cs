@@ -35,7 +35,7 @@ namespace Game.System
             {
                 var lastCell = GM.Instance.CellList[GM.Instance.CellList.Count - 1];
 
-                if (GM.PLAYERSTATE == GM.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE == GM.PLACING_TOWER)
                 {
                     if (!lastCell.activeSelf)
                     {
@@ -45,7 +45,7 @@ namespace Game.System
                     SetCellsColors();
                 }
 
-                if (GM.PLAYERSTATE != GM.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
                 {
                     if (lastCell.activeSelf)
                     {

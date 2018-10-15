@@ -15,6 +15,7 @@ namespace Game.System
         public GameObject NewBusyCell;
 
         public LayerMask LayerMask;
+        public bool IsTowerLimitOk;
         
         private Color transparentRed, transparentGreen, towerColor;
         private GameObject lastTower;
@@ -23,6 +24,7 @@ namespace Game.System
         private StateMachine state;
         private Vector3 towerPos;
         private TowerCells.Cell chosenCellState;
+        private int newTowerLimit;
        
         protected override void Awake()
         {
@@ -48,7 +50,7 @@ namespace Game.System
 
         private IEnumerator Refresh()
         {
-            GM.PLAYERSTATE = GM.PLAYERSTATE_IDLE;
+            GM.PLAYERSTATE = GM.IDLE;
 
             yield return new WaitForFixedUpdate();
 
@@ -57,10 +59,21 @@ namespace Game.System
 
         private void CreateTower()
         {
-            GM.PLAYERSTATE = GM.PLAYERSTATE_PLACINGTOWER;
-            GM.Instance.TowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero, Quaternion.identity, GM.Instance.TowerParent));
-            lastTower = GM.Instance.TowerList[GM.Instance.TowerList.Count - 1];
-            state.ChangeState(new MoveTowerState(this)); 
+            if (GM.Instance.PlayerDataSystem.CheckTowerLimit(newTowerLimit))
+            {
+                GM.PLAYERSTATE = GM.PLACING_TOWER;
+
+                GM.Instance.TowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero, Quaternion.identity, GM.Instance.TowerParent));
+                lastTower = GM.Instance.TowerList[GM.Instance.TowerList.Count - 1];
+
+                GM.Instance.PlayerDataSystem.AddTowerLimit(lastTower.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit);
+
+                state.ChangeState(new MoveTowerState(this));
+            }
+            else
+            {
+                state.ChangeState(new GetInputState(this));
+            }
         }
 
         private void SetTowerColorAndPosition(Vector3 pos, Color color)
@@ -132,6 +145,8 @@ namespace Game.System
             var towerList = GM.Instance.TowerList;
             var lastTowerIndex = towerList.Count - 1;
 
+            GM.Instance.PlayerDataSystem.AddTowerLimit(-lastTower.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit);
+
             Destroy(towerList[lastTowerIndex]);
             towerList.RemoveAt(lastTowerIndex);
 
@@ -177,14 +192,23 @@ namespace Game.System
 
             public void Enter()
             {
-                GM.PLAYERSTATE = GM.PLAYERSTATE_IDLE;
+                GM.PLAYERSTATE = GM.IDLE;
             }
 
             public void Execute()
-            {
-                if (GM.PLAYERSTATE == GM.PLAYERSTATE_PLACINGTOWER)
+            {                
+                if (GM.PLAYERSTATE == GM.PREPARE_PLACING_TOWER)
                 {
-                    owner.state.ChangeState(new CreateTowerState(owner));                   
+                    owner.newTowerLimit = GM.Instance.TowerPrefab.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit;
+
+                    if (GM.Instance.PlayerDataSystem.CheckTowerLimit(owner.newTowerLimit))
+                    {
+                        owner.state.ChangeState(new CreateTowerState(owner));
+                    }
+                    else
+                    {
+                        owner.state.ChangeState(new GetInputState(owner));
+                    }
                 }
             }
 

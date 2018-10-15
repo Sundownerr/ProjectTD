@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using UnityEngine;
-#pragma warning disable CS1591 
+
 namespace Game.System
 {
 
@@ -18,10 +18,12 @@ namespace Game.System
         public PlayerInputSystem PlayerInputSystem;
         public BaseUISystem BaseUISystem;
         public TowerUISystem TowerUISystem;
+        public PlayerDataSystem PlayerDataSystem;
+        public Data.PlayerData PlayerData;
         public Canvas UICanvas;
        
         public static GM Instance;
-        public static int PLAYERSTATE, PLAYERSTATE_IDLE, PLAYERSTATE_PLACINGTOWER, PLAYERSTATE_CHOOSEDCREEP, PLAYERSTATE_CHOOSEDTOWER;
+        public static int PLAYERSTATE, IDLE, PLACING_TOWER, CHOOSED_CREEP, CHOOSED_TOWER, PREPARE_PLACING_TOWER;
         public static int[] ExpToLevelUp;
 
         protected override void Awake()
@@ -40,12 +42,13 @@ namespace Game.System
                 Debug.Log("Warning: multiple " + this + " in scene!");
             }
 
-            PLAYERSTATE_IDLE = 0;
-            PLAYERSTATE_CHOOSEDCREEP = 1;
-            PLAYERSTATE_CHOOSEDTOWER = 2;
-            PLAYERSTATE_PLACINGTOWER = 3;
+            IDLE = 0;
+            CHOOSED_CREEP = 1;
+            CHOOSED_TOWER = 2;
+            PLACING_TOWER = 3;
+            PREPARE_PLACING_TOWER = 4;
 
-            PLAYERSTATE = PLAYERSTATE_IDLE;
+            PLAYERSTATE = IDLE;
 
             Application.targetFrameRate = 70;
            
@@ -95,6 +98,26 @@ namespace Game.System
             distance = Mathf.Sqrt(distanceSquared);
 
             return distance;
+        }
+
+        public static string KiloFormat(float num)
+        {
+            if (num >= 1000000000)
+                return (num / 1000000000).ToString("#.0" + "B");
+
+            if (num >= 1000000)
+                return (num / 1000000).ToString("#" + "M");
+
+            if (num >= 100000)
+                return (num / 1000).ToString("#.0" + "K");
+
+            if (num >= 10000)
+                return (num / 1000).ToString("0.#" + "K");
+
+            if (num >= 1000)
+                return (num / 1000).ToString("0.#" + "K");
+
+            return num.ToString("0.#");
         }
     }
 }

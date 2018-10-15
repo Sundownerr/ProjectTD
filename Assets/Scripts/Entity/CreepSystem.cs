@@ -190,7 +190,8 @@ namespace Game.Creep
 
             public void Enter()
             {
-                owner.lastDamageDealer.AddExp(owner.Stats.Exp);    
+                owner.lastDamageDealer.AddExp(owner.Stats.Exp);
+                GM.Instance.PlayerDataSystem.AddGold(owner.Stats.Gold);
 
                 Destroy(owner.Stats);
                 GM.Instance.CreepList.Remove(owner.gameObject);

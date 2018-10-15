@@ -9,6 +9,7 @@ namespace Game.Data.Entity.Creep
         {
             MoveSpeed = DefaultMoveSpeed;
             Exp = 4;
+            Gold = 4;
         }
     }
 }

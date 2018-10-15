@@ -139,6 +139,8 @@ namespace Game.Tower
 
         public void Sell()
         {
+            GM.Instance.PlayerDataSystem.AddTowerLimit(-Stats.TowerLimit);
+            
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
             GM.Instance.TowerList.Remove(gameObject);
             Destroy(gameObject);
@@ -147,7 +149,6 @@ namespace Game.Tower
         public void AddExp(int amount)
         {
             Stats.Exp += amount;
-            Debug.Log($"Added {amount} exp");
 
             if(Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
             {
@@ -170,7 +171,7 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (GM.PLAYERSTATE == GM.PLAYERSTATE_PLACINGTOWER)
+                if (GM.PLAYERSTATE == GM.PLACING_TOWER)
                 {
                     owner.StartPlacing();
                 }
@@ -300,7 +301,6 @@ namespace Game.Tower
                 {
                     if (stats.Exp >= GM.ExpToLevelUp[stats.Level - 1] && stats.Level < 25)
                     {
-                        Debug.Log($"LevelUp from {stats.Level} to {stats.Level + 1}");
                         stats.Level++;
                     }
                 }

@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#pragma warning disable CS1591 
+
 namespace Game.Data.Entity.Tower
 {
     [CreateAssetMenu(fileName = "New Tower", menuName = "Base Tower")]
     public class TowerStats : Entity
     {        
-        public int Id, Exp, Level;
+        public int Id, Exp, Level, TowerLimit, MagicCrystalsRequirement, ElementId, RarityId;
         public int Damage, Range, CritMultiplier, SpellCritMultiplier, Mana,  MulticritCount;
         public float AttackSpeed, TriggerChance, CritChance, ManaRegen;
         public float SpellDamage, SpellCritChance;

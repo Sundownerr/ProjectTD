@@ -36,14 +36,14 @@ namespace Game.System
             var choosedTowerStats = choosedTowerBaseSystem.Stats;         
 
             TowerName.text = choosedTowerStats.EntityName;
-            Damage.text = KiloFormat(choosedTowerStats.Damage);
-            Range.text = KiloFormat(choosedTowerStats.Range);
-            Mana.text = KiloFormat(choosedTowerStats.Mana);
-            AttackSpeed.text = KiloFormat(choosedTowerStats.AttackSpeed);
-            TriggerChance.text = KiloFormat(choosedTowerStats.TriggerChance) + "%";
-            SpellCritChance.text = KiloFormat(choosedTowerStats.SpellCritChance) + "%";
-            SpellDamage.text = KiloFormat(choosedTowerStats.SpellDamage) + "%";           
-            CritChance.text = KiloFormat(choosedTowerStats.CritChance) + "%";
+            Damage.text = GM.KiloFormat(choosedTowerStats.Damage);
+            Range.text = GM.KiloFormat(choosedTowerStats.Range);
+            Mana.text = GM.KiloFormat(choosedTowerStats.Mana);
+            AttackSpeed.text = GM.KiloFormat(choosedTowerStats.AttackSpeed);
+            TriggerChance.text = GM.KiloFormat(choosedTowerStats.TriggerChance) + "%";
+            SpellCritChance.text = GM.KiloFormat(choosedTowerStats.SpellCritChance) + "%";
+            SpellDamage.text = GM.KiloFormat(choosedTowerStats.SpellDamage) + "%";           
+            CritChance.text = GM.KiloFormat(choosedTowerStats.CritChance) + "%";
         }
 
         public IEnumerator RefreshUI()
@@ -58,25 +58,7 @@ namespace Game.System
             IsSelligTower = true;
         }
 
-        private string KiloFormat(float num)
-        {
-            if (num >= 1000000000)
-                return (num / 1000000000).ToString("#.0" + "B");
-
-            if (num >= 1000000)
-                return (num / 1000000).ToString("#" + "M");
-
-            if (num >= 100000)
-                return (num / 1000).ToString("#.0" + "K");
-
-            if (num >= 10000)
-                return (num / 1000).ToString("0.#" + "K");
-
-            if (num >= 1000)
-                return (num / 1000).ToString("0.#" + "K");
-
-            return num.ToString("0.#");
-        }
+        
     }
 }
 
