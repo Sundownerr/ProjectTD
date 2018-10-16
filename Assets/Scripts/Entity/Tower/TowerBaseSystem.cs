@@ -17,7 +17,7 @@ namespace Game.Tower
         [HideInInspector]
         public TowerRangeSystem RangeSystem;     
 
-        public TowerStats Stats;
+        public TowerData Stats;
         public GameObject Bullet, TowerPlaceEffect;
 
         protected List<Renderer> rendererList;
@@ -77,6 +77,15 @@ namespace Game.Tower
             }
 
             SetRangeShow();
+        }
+        
+        private void IncreaseStats()
+        {
+            Stats.Damage += (Stats.Damage / 100) * 4;
+            Stats.AttackSpeed += (Stats.AttackSpeed / 100) * 1.2f;
+            Stats.CritChance += (Stats.CritChance / 100) * 0.5f;
+            Stats.SpellCritChance += (Stats.SpellCritChance / 100) * 0.5f;
+
         }
 
         private void SetRangeShow()
@@ -301,6 +310,7 @@ namespace Game.Tower
                 {
                     if (stats.Exp >= GM.ExpToLevelUp[stats.Level - 1] && stats.Level < 25)
                     {
+                        owner.IncreaseStats();
                         stats.Level++;
                     }
                 }

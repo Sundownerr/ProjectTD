@@ -3,7 +3,7 @@ namespace Game.Data.Entity.Creep
 {
     [UnityEngine.CreateAssetMenu(fileName = "Small", menuName = "Creep/Small")]
 
-    public class Small : CreepType
+    public class Small : CreepData
     {
         private void Awake()
         {

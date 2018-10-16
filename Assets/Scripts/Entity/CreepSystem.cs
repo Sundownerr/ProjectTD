@@ -10,7 +10,7 @@ namespace Game.Creep
         [HideInInspector]
         public bool ReachedLastWaypoint;
 
-        public CreepType Stats;
+        public CreepData Stats;
 
         [HideInInspector]
         public Renderer creepRenderer;
