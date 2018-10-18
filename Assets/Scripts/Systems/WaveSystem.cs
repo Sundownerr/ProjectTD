@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#pragma warning disable CS1591 
+
 namespace Game.System
 {
     public class WaveSystem : ExtendedMonoBehaviour
     {
-        private bool isCreepSpawning, isCreepsSpawned;
+        public int WaveCount;
+
         private StateMachine state;
+        private List<List<GameObject>> waveCreepList;
 
         protected override void Awake()
         {
@@ -16,8 +18,12 @@ namespace Game.System
                 CachedTransform = transform;
             }
 
+            waveCreepList = new List<List<GameObject>>();
+
             state = new StateMachine();
             state.ChangeState(new GetInputState(this));
+
+
 
             GM.Instance.WaveSystem = this;
         }
@@ -25,17 +31,43 @@ namespace Game.System
         private void Update()
         {
             state.Update();
+
+            if (waveCreepList.Count > 0)
+            {
+                for (int i = 0; i < waveCreepList.Count; i++)
+                {
+                    if (waveCreepList[i].Count > 0)
+                    {
+                        for (int j = 0; j < waveCreepList[i].Count; j++)
+                        {
+                            if (waveCreepList[i][j] == null)
+                            {
+                                waveCreepList[i].RemoveAt(j);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        GM.Instance.ResourceSystem.AddMagicCrystal(5);
+                        waveCreepList.RemoveAt(i);
+                    }
+                }
+            }
         }
 
         private IEnumerator SpawnCreeps(int needToSpawnCount, float spawnDelay)
         {
             state.ChangeState(new SpawnCreepsState(this));
 
+            waveCreepList.Add(new List<GameObject>());
+
             var spawnedCreepCount = 0;         
 
             while (spawnedCreepCount < needToSpawnCount)
             {
-                Instantiate(GM.Instance.CreepPrefab);
+                var creep = Instantiate(GM.Instance.CreepPrefab);
+
+                waveCreepList[waveCreepList.Count - 1].Add(creep);
 
                 spawnedCreepCount++;
 
@@ -68,6 +100,7 @@ namespace Game.System
             {
                 GM.Instance.BaseUISystem.IsWaveStarted = false;
                 GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
+                owner.WaveCount++;
             }
         }
 

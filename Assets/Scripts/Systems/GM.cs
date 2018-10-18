@@ -20,6 +20,7 @@ namespace Game.System
         public TowerUISystem TowerUISystem;
         public ResourceSystem ResourceSystem;
         public ForceSystem ForceSystem;
+        public ForceUISystem ForceUISystem;
         public Data.PlayerData PlayerData;
         public Canvas UICanvas;
 

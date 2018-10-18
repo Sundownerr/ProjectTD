@@ -24,6 +24,11 @@ namespace Game.System
             Nature.onClick.AddListener(LearnNature);
             Fire.onClick.AddListener(LearnFire);
 
+           
+
+            GM.Instance.ForceUISystem = this;
+
+            ShowElementButtons(false);
         }
 
         public void ShowElementButtons(bool show)
@@ -39,37 +44,37 @@ namespace Game.System
 
         private void LearnAstral()
         {
-
+            GM.Instance.ForceSystem.LearnAstral();
         }
 
         private void LearnDarkness()
         {
-
+            GM.Instance.ForceSystem.LearnDarkness();
         }
 
         private void LearnIce()
         {
-
+            GM.Instance.ForceSystem.LearnIce();
         }
 
         private void LearnIron()
         {
-
+            GM.Instance.ForceSystem.LearnIron();
         }
 
         private void LearnStorm()
         {
-
+            GM.Instance.ForceSystem.LearnStorm();
         }
 
         private void LearnNature()
         {
-
+            GM.Instance.ForceSystem.LearnNature();
         }
 
         private void LearnFire()
         {
-
+            GM.Instance.ForceSystem.LearnFire();
         }
     }
 }

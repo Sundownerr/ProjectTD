@@ -10,7 +10,7 @@ namespace Game.System
         public int WaveTimer;
 
         public TextMeshProUGUI Gold, MagicCrystals, TowerLimit;
-        
+        private bool isForceMenuShowed;
 
         protected override void Awake()
         {
@@ -23,7 +23,7 @@ namespace Game.System
             
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
-            BuildModeButton.onClick.AddListener(LearnForce);
+            LearnForceButton.onClick.AddListener(LearnForce);
 
             UpdateResourceValues();
         }
@@ -42,7 +42,16 @@ namespace Game.System
 
         private void LearnForce()
         {
-            IsWaveStarted = true;
+            if (!isForceMenuShowed)
+            {
+                GM.Instance.ForceUISystem.ShowElementButtons(true);
+                isForceMenuShowed = true;
+            }
+            else
+            {
+                GM.Instance.ForceUISystem.ShowElementButtons(false);
+                isForceMenuShowed = false;
+            }        
         }
 
         private void BuildTower()
@@ -52,6 +61,12 @@ namespace Game.System
                 if (GM.PLAYERSTATE != GM.PLACING_TOWER)
                 {
                     GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+
+                    if (isForceMenuShowed)
+                    {
+                        GM.Instance.ForceUISystem.ShowElementButtons(false);
+                        isForceMenuShowed = false;
+                    }
                 }
             }
         }
