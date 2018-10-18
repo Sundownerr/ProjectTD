@@ -34,9 +34,6 @@ namespace Game.Tower
                 CachedTransform = transform;
             }
 
-            state = new StateMachine();
-            state.ChangeState(new SpawnState(this));
-
             Stats = Instantiate(Stats);
 
             combatSystem = GetComponent<TowerCombatSystem>();
@@ -65,6 +62,9 @@ namespace Game.Tower
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
 
             isRangeShowed = true;
+
+            state = new StateMachine();
+            state.ChangeState(new SpawnState(this));
         }
 
         private void Update()
@@ -80,12 +80,11 @@ namespace Game.Tower
         }
         
         private void IncreaseStats()
-        {
-            Stats.Damage += (Stats.Damage / 100) * 4;
-            Stats.AttackSpeed += (Stats.AttackSpeed / 100) * 1.2f;
-            Stats.CritChance += (Stats.CritChance / 100) * 0.5f;
-            Stats.SpellCritChance += (Stats.SpellCritChance / 100) * 0.5f;
-
+        {           
+            Stats.Damage += Mathf.FloorToInt(GM.GetPercentOfValue(4f, Stats.Damage));
+            Stats.AttackSpeed += GM.GetPercentOfValue(1.2f, Stats.Damage);
+            Stats.CritChance += GM.GetPercentOfValue(0.2f, Stats.Damage);
+            Stats.SpellCritChance += GM.GetPercentOfValue(0.2f, Stats.Damage);
         }
 
         private void SetRangeShow()
@@ -153,15 +152,19 @@ namespace Game.Tower
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
             GM.Instance.TowerList.Remove(gameObject);
             Destroy(gameObject);
-        }    
+        }
 
         public void AddExp(int amount)
         {
             Stats.Exp += amount;
 
-            if(Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
+            if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
             {
-                state.ChangeState(new LevelUpState(this));
+                for (int i = Stats.Level; i < 25; i++)
+                {
+                    IncreaseStats();
+                    Stats.Level++;
+                }
             }
         }
 
@@ -234,32 +237,40 @@ namespace Game.Tower
             
             public void Enter()
             {
+
+                    owner.combatSystem.SetStartState();
+                
+                Debug.Log("Enter combat");
             }
 
             public void Execute()
             {
-                for (int i = 0; i < owner.RangeSystem.CreepInRangeList.Count; i++)
+                if (owner.RangeSystem.CreepInRangeList.Count > 0)
                 {
-                    if (owner.RangeSystem.CreepInRangeList[i] == null)
+                    if (owner.RangeSystem.CreepInRangeList[0] != null)
                     {
-                        owner.RangeSystem.CreepInRangeList.RemoveAt(i);
-                        owner.RangeSystem.CreepInRangeSystemList.RemoveAt(i);
-                    }                 
-                }
+                        owner.RotateAtCreep();
+                        owner.combatSystem.State.Update();
+                    }
 
-                if (owner.RangeSystem.CreepInRangeList.Count <= 0)
+                    for (int i = 0; i < owner.RangeSystem.CreepInRangeList.Count; i++)
+                    {
+                        if (owner.RangeSystem.CreepInRangeList[i] == null)
+                        {
+                            owner.RangeSystem.CreepInRangeList.RemoveAt(i);
+                            owner.RangeSystem.CreepInRangeSystemList.RemoveAt(i);
+                        }
+                    }                                 
+                }
+                else
                 {
                     owner.state.ChangeState(new MoveRemainingBulletState(owner));
-                }
-                else if (owner.RangeSystem.CreepInRangeList[0] != null)
-                {                 
-                    owner.RotateAtCreep();
-                    owner.combatSystem.Shoot(owner.Stats.AttackSpeed);                                     
                 }
             }
 
             public void Exit()
             {
+                Debug.Log("Exit combat");
             }
         }
 
@@ -278,49 +289,21 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (!owner.combatSystem.CheckAllBulletInactive())
+                if (!(owner.RangeSystem.CreepInRangeList.Count > 0))
                 {
-                    owner.combatSystem.MoveBulletOutOfRange();
+                    if (!owner.combatSystem.CheckAllBulletInactive())
+                    {
+                        owner.combatSystem.MoveBullet();
+                    }
+                    else
+                    {
+                        owner.state.ChangeState(new LookForCreepState(owner));
+                    }
                 }
                 else
                 {
-                    owner.state.ChangeState(new LookForCreepState(owner));
+                    owner.state.ChangeState(new CombatState(owner));
                 }
-            }
-
-            public void Exit()
-            {
-            }
-        }
-
-        protected class LevelUpState : IState
-        {
-            private readonly TowerBaseSystem owner;
-
-            public LevelUpState(TowerBaseSystem owner)
-            {
-                this.owner = owner;
-            }
-
-            public void Enter()
-            {
-                var stats = owner.Stats;
-
-                for (int i = stats.Level; i < 25; i++)
-                {
-                    if (stats.Exp >= GM.ExpToLevelUp[stats.Level - 1] && stats.Level < 25)
-                    {
-                        owner.IncreaseStats();
-                        stats.Level++;
-                    }
-                }
-                
-                owner.state.ChangeState(new CombatState(owner));
-            }
-
-            public void Execute()
-            {
-               
             }
 
             public void Exit()

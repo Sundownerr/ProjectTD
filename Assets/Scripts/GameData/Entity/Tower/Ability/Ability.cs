@@ -212,7 +212,7 @@ namespace Game.Data
 
             public void Enter()
             {
-                Debug.Log(owner.EffectList[owner.EffectCount].NextEffectInterval + " \n count: " + owner.EffectCount);
+                //Debug.Log(owner.EffectList[owner.EffectCount].NextEffectInterval + " \n count: " + owner.EffectCount);
            
                 GM.Instance.StartCoroutine(owner.NextEffect(owner.EffectList[owner.EffectCount].NextEffectInterval));
                 

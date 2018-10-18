@@ -76,7 +76,7 @@ namespace Game.Creep
 
             if (Stats.Health <= 0)
             {
-                state.ChangeState(new DestroyState(this));
+                state.ChangeState(new GiveRecourcesState(this));
             }         
         }
 
@@ -179,6 +179,34 @@ namespace Game.Creep
             }
         }
 
+        protected class GiveRecourcesState : IState
+        {
+            private CreepSystem owner;
+
+            public GiveRecourcesState(CreepSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+                owner.lastDamageDealer.AddExp(owner.Stats.Exp);
+                GM.Instance.PlayerDataSystem.AddGold(owner.Stats.Gold);
+
+                owner.state.ChangeState(new DestroyState(owner));
+            }
+
+            public void Execute()
+            {
+
+            }
+
+            public void Exit()
+            {
+
+            }
+        }
+
         protected class DestroyState : IState
         {
             private CreepSystem owner;
@@ -189,10 +217,7 @@ namespace Game.Creep
             }
 
             public void Enter()
-            {
-                owner.lastDamageDealer.AddExp(owner.Stats.Exp);
-                GM.Instance.PlayerDataSystem.AddGold(owner.Stats.Gold);
-
+            {             
                 Destroy(owner.Stats);
                 GM.Instance.CreepList.Remove(owner.gameObject);
                 Destroy(owner.gameObject);

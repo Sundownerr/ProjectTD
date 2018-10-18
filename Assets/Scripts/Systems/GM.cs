@@ -7,7 +7,7 @@ namespace Game.System
 
     public class GM : ExtendedMonoBehaviour
     {
-        public GameObject[]  WaypointList, TowerCellAreaList;
+        public GameObject[] WaypointList, TowerCellAreaList;
         public List<GameObject> TowerList, CreepList, CellList;
         public List<TowerCells.Cell> CellStateList;
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint;
@@ -21,7 +21,7 @@ namespace Game.System
         public PlayerDataSystem PlayerDataSystem;
         public Data.PlayerData PlayerData;
         public Canvas UICanvas;
-       
+
         public static GM Instance;
         public static int PLAYERSTATE, IDLE, PLACING_TOWER, CHOOSED_CREEP, CHOOSED_TOWER, PREPARE_PLACING_TOWER;
         public static int[] ExpToLevelUp;
@@ -51,7 +51,7 @@ namespace Game.System
             PLAYERSTATE = IDLE;
 
             Application.targetFrameRate = 70;
-           
+
             QualitySettings.vSyncCount = 0;
 
             Cursor.lockState = CursorLockMode.Confined;
@@ -98,6 +98,11 @@ namespace Game.System
             distance = Mathf.Sqrt(distanceSquared);
 
             return distance;
+        }
+
+        public static float GetPercentOfValue(float desiredPercent, float value)
+        {
+            return value / 100 * desiredPercent;
         }
 
         public static string KiloFormat(float num)

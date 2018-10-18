@@ -88,7 +88,7 @@ namespace Game.System
             {
                 if (GM.Instance.BaseUISystem.IsWaveStarted)
                 {
-                    owner.StartCoroutine(owner.SpawnCreeps(21, 0.2f));                   
+                    owner.StartCoroutine(owner.SpawnCreeps(21, 0.5f));                   
                 }
             }
 

@@ -38,7 +38,7 @@ namespace Game.Tower
 
             public void Enter()
             {
-                Debug.Log("Look For Creep State");
+                //Debug.Log("Look For Creep State");
             }
 
             public void Execute()
@@ -78,7 +78,7 @@ namespace Game.Tower
                 stackList.Add(Instantiate(abilityList[owner.abilityStackRequiredIndex]));
                 stackList[stackList.Count - 1].StackReset();
 
-                Debug.Log("Stacked: " + owner.stackedAbilityList.Count);
+                //Debug.Log("Stacked: " + owner.stackedAbilityList.Count);
 
                 owner.state.ChangeState(new CombatState(owner));
             }
@@ -148,7 +148,7 @@ namespace Game.Tower
 
                             if (stackList[i].CheckEffectsEnded())
                             {
-                                Debug.Log($"Destroy{i}");
+                                //Debug.Log($"Destroy{i}");
                                 Destroy(stackList[i]);
                                 stackList.RemoveAt(i);
                             }
@@ -178,7 +178,7 @@ namespace Game.Tower
                         }
                     }
 
-                    Debug.Log("Going to Look For Creep State");
+                    //Debug.Log("Going to Look For Creep State");
                     owner.state.ChangeState(new LookForCreepState(owner));
                 }
             }
@@ -201,7 +201,7 @@ namespace Game.Tower
 
             public void Enter()
             {
-                Debug.Log("Continu Effect State");
+                //Debug.Log("Continu Effect State");
             }
 
             public void Execute()

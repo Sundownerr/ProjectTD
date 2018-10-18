@@ -43,7 +43,10 @@ namespace Game.System
         {
             if (GM.Instance.GridSystem.IsGridBuilded)
             {
-                GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
+                {
+                    GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+                }
             }
         }
     }

@@ -49,7 +49,19 @@ namespace Game.Tower
                 CreepInRangeList.Remove(other.gameObject);
             }
         }
-   
+
+        private void OnTriggerStay(Collider other)
+        {
+            for (int i = 0; i < CreepInRangeList.Count; i++)
+            {
+                if (CreepInRangeList[i] == null)
+                {
+                    CreepInRangeList.RemoveAt(i);
+                    CreepInRangeSystemList.RemoveAt(i);
+                }
+            }
+        }
+
         public void Show(bool show)
         {
             if (show)
