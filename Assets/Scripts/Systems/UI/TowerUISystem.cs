@@ -10,7 +10,7 @@ namespace Game.System
     {
 
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
-        public TextMeshProUGUI TowerName, CritChance;
+        public TextMeshProUGUI TowerName, CritChance, Level;
         public bool IsSelligTower;
 
         public Button SellButton, UpgradeButton;
@@ -31,19 +31,7 @@ namespace Game.System
 
         private void OnEnable()
         {
-            choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;
-            var choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
-            var choosedTowerStats = choosedTowerBaseSystem.Stats;         
-
-            TowerName.text = choosedTowerStats.EntityName;
-            Damage.text = GM.KiloFormat(choosedTowerStats.Damage);
-            Range.text = GM.KiloFormat(choosedTowerStats.Range);
-            Mana.text = GM.KiloFormat(choosedTowerStats.Mana);
-            AttackSpeed.text = GM.KiloFormat(choosedTowerStats.AttackSpeed);
-            TriggerChance.text = GM.KiloFormat(choosedTowerStats.TriggerChance) + "%";
-            SpellCritChance.text = GM.KiloFormat(choosedTowerStats.SpellCritChance) + "%";
-            SpellDamage.text = GM.KiloFormat(choosedTowerStats.SpellDamage) + "%";           
-            CritChance.text = GM.KiloFormat(choosedTowerStats.CritChance) + "%";
+            UpdateValues();
         }
 
         public IEnumerator RefreshUI()
@@ -58,7 +46,23 @@ namespace Game.System
             IsSelligTower = true;
         }
 
-        
+        public void UpdateValues()
+        {
+            choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;
+            var choosedTowerBaseSystem = choosedTower.GetComponent<TowerBaseSystem>();
+            var choosedTowerStats = choosedTowerBaseSystem.Stats;
+
+            TowerName.text = choosedTowerStats.EntityName;
+            Level.text = GM.KiloFormat(choosedTowerStats.Level);
+            Damage.text = GM.KiloFormat(choosedTowerStats.Damage);
+            Range.text = GM.KiloFormat(choosedTowerStats.Range);
+            Mana.text = GM.KiloFormat(choosedTowerStats.Mana);
+            AttackSpeed.text = GM.KiloFormat(choosedTowerStats.AttackSpeed);
+            TriggerChance.text = GM.KiloFormat(choosedTowerStats.TriggerChance) + "%";
+            SpellCritChance.text = GM.KiloFormat(choosedTowerStats.SpellCritChance) + "%";
+            SpellDamage.text = GM.KiloFormat(choosedTowerStats.SpellDamage) + "%";
+            CritChance.text = GM.KiloFormat(choosedTowerStats.CritChance) + "%";
+        }       
     }
 }
 

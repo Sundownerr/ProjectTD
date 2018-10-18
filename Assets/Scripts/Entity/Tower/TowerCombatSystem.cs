@@ -134,9 +134,8 @@ namespace Game.Tower
                         }
                     }
                     else
-                    {
-                        
-                        //bulletList[i].transform.Translate(Vector3.forward * Random.Range(1, bulletSpeed), Space.Self);
+                    {                       
+                        bulletList[i].transform.Translate(Vector3.forward * Random.Range(1, bulletSpeed), Space.Self);
                         SetTargetReached(bulletDataList[i]);
                     }
                 }

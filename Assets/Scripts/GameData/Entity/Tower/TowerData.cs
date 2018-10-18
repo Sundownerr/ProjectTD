@@ -7,7 +7,7 @@ namespace Game.Data.Entity.Tower
     [CreateAssetMenu(fileName = "New Tower", menuName = "Base Tower")]
     public class TowerData : Entity
     {        
-        public int Id, Exp, Level, TowerLimit, MagicCrystalsRequirement, ElementId, RarityId, DamageTypeId;
+        public int Id, Exp, Level, TowerLimit, MagicCrystalsRequirement, GoldCost, ElementId, RarityId, DamageTypeId;
         public int Damage, Range, CritMultiplier, SpellCritMultiplier, Mana,  MulticritCount;
         public float AttackSpeed, TriggerChance, CritChance, ManaRegen;
         public float SpellDamage, SpellCritChance;

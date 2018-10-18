@@ -18,7 +18,7 @@ namespace Game.Tower
         public TowerRangeSystem RangeSystem;     
 
         public TowerData Stats;
-        public GameObject Bullet, TowerPlaceEffect;
+        public GameObject Bullet, TowerPlaceEffect, LevelUpEffect;
 
         protected List<Renderer> rendererList;
 
@@ -82,9 +82,18 @@ namespace Game.Tower
         private void IncreaseStats()
         {           
             Stats.Damage += Mathf.FloorToInt(GM.GetPercentOfValue(4f, Stats.Damage));
-            Stats.AttackSpeed += GM.GetPercentOfValue(1.2f, Stats.Damage);
-            Stats.CritChance += GM.GetPercentOfValue(0.2f, Stats.Damage);
-            Stats.SpellCritChance += GM.GetPercentOfValue(0.2f, Stats.Damage);
+            Stats.AttackSpeed += GM.GetPercentOfValue(1.2f, Stats.AttackSpeed);
+            Stats.CritChance += GM.GetPercentOfValue(0.2f, Stats.CritChance);
+            Stats.SpellCritChance += GM.GetPercentOfValue(0.2f, Stats.SpellCritChance);
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            if (GM.Instance.PlayerInputSystem.ChoosedTower == gameObject)
+            {
+                GM.Instance.TowerUISystem.UpdateValues();
+            }
         }
 
         private void SetRangeShow()
@@ -148,24 +157,33 @@ namespace Game.Tower
         public void Sell()
         {
             GM.Instance.PlayerDataSystem.AddTowerLimit(-Stats.TowerLimit);
-            
+            GM.Instance.PlayerDataSystem.AddGold(Stats.GoldCost);
+
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
             GM.Instance.TowerList.Remove(gameObject);
             Destroy(gameObject);
+        }
+
+        public void Upgrade()
+        {
+            
         }
 
         public void AddExp(int amount)
         {
             Stats.Exp += amount;
 
-            if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
+            for (int i = Stats.Level; i < 25; i++)
             {
-                for (int i = Stats.Level; i < 25; i++)
+                if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
                 {
                     IncreaseStats();
                     Stats.Level++;
+                    var effect = Instantiate(GM.Instance.LevelUpEffect, transform.position, Quaternion.identity);
+                    Destroy(effect, 2f);
                 }
             }
+            UpdateUI();
         }
 
         protected class SpawnState : IState
@@ -234,13 +252,10 @@ namespace Game.Tower
             {
                 this.owner = owner;
             }
-            
+
             public void Enter()
             {
-
-                    owner.combatSystem.SetStartState();
-                
-                Debug.Log("Enter combat");
+                owner.combatSystem.SetStartState();
             }
 
             public void Execute()
@@ -270,7 +285,6 @@ namespace Game.Tower
 
             public void Exit()
             {
-                Debug.Log("Exit combat");
             }
         }
 
