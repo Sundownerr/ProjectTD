@@ -5,7 +5,7 @@ namespace Game.System
 {
     public class BaseUISystem : ExtendedMonoBehaviour
     {
-        public Button StartWaveButton, BuildModeButton;
+        public Button StartWaveButton, BuildModeButton, LearnForceButton;
         public bool IsWaveStarted, IsPlayerReady;
         public int WaveTimer;
 
@@ -23,6 +23,7 @@ namespace Game.System
             
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
+            BuildModeButton.onClick.AddListener(LearnForce);
 
             UpdateResourceValues();
         }
@@ -35,6 +36,11 @@ namespace Game.System
         }
 
         private void StartWave()
+        {
+            IsWaveStarted = true;
+        }
+
+        private void LearnForce()
         {
             IsWaveStarted = true;
         }

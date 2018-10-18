@@ -9,6 +9,9 @@ namespace Game.Data
     public class PlayerData : ScriptableObject
     {
         public int MagicCrystals, Gold, CurrentTowerLimit, MaxTowerLimit;
+        public int AstralLevel, DarknessLevel, IceLevel, IronLevel, StormLevel, NatureLevel, FireLevel;
+
+        private int baseLearnCost;
 
         private void Awake()
         {
@@ -16,6 +19,7 @@ namespace Game.Data
             Gold = 1;
             CurrentTowerLimit = 0;
             MaxTowerLimit = 30;
+            baseLearnCost = 15;
         }
     }
 }

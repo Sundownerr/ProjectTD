@@ -39,5 +39,40 @@ namespace Game.System
         {
             return (GM.Instance.PlayerData.CurrentTowerLimit + amount) <= GM.Instance.PlayerData.MaxTowerLimit;
         }
+
+        private void LearnAstral()
+        {
+
+        }
+
+        private void LearnDarkness()
+        {
+
+        }
+
+        private void LearnIce()
+        {
+
+        }
+
+        private void LearnIron()
+        {
+
+        }
+
+        private void LearnStorm()
+        {
+
+        }
+
+        private void LearnNature()
+        {
+
+        }
+
+        private void LearnFire()
+        {
+
+        }
     }
 }
