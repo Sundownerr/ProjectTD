@@ -59,14 +59,14 @@ namespace Game.System
 
         private void CreateTower()
         {
-            if (GM.Instance.PlayerDataSystem.CheckTowerLimit(newTowerLimit))
+            if (GM.Instance.ResourceSystem.CheckTowerLimit(newTowerLimit))
             {
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
                 GM.Instance.TowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero, Quaternion.identity, GM.Instance.TowerParent));
                 lastTower = GM.Instance.TowerList[GM.Instance.TowerList.Count - 1];
 
-                GM.Instance.PlayerDataSystem.AddTowerLimit(lastTower.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit);
+                GM.Instance.ResourceSystem.AddTowerLimit(lastTower.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit);
 
                 state.ChangeState(new MoveTowerState(this));
             }
@@ -145,7 +145,7 @@ namespace Game.System
             var towerList = GM.Instance.TowerList;
             var lastTowerIndex = towerList.Count - 1;
 
-            GM.Instance.PlayerDataSystem.AddTowerLimit(-lastTower.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit);
+            GM.Instance.ResourceSystem.AddTowerLimit(-lastTower.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit);
 
             Destroy(towerList[lastTowerIndex]);
             towerList.RemoveAt(lastTowerIndex);
@@ -201,7 +201,7 @@ namespace Game.System
                 {
                     owner.newTowerLimit = GM.Instance.TowerPrefab.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit;
 
-                    if (GM.Instance.PlayerDataSystem.CheckTowerLimit(owner.newTowerLimit))
+                    if (GM.Instance.ResourceSystem.CheckTowerLimit(owner.newTowerLimit))
                     {
                         owner.state.ChangeState(new CreateTowerState(owner));
                     }

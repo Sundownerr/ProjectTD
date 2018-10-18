@@ -2,15 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ForceSystem : MonoBehaviour {
+namespace Game.System
+{
+    public class ForceSystem : ExtendedMonoBehaviour
+    {
+        protected override void Awake()
+        {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+            GM.Instance.ForceSystem = this;
+        }
+
+        private void LearnAstral()
+        {
+
+        }
+
+        private void LearnDarkness()
+        {
+
+        }
+
+        private void LearnIce()
+        {
+
+        }
+
+        private void LearnIron()
+        {
+
+        }
+
+        private void LearnStorm()
+        {
+
+        }
+
+        private void LearnNature()
+        {
+
+        }
+
+        private void LearnFire()
+        {
+
+        }
+    }
+
 }

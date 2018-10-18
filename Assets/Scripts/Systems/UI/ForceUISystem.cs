@@ -9,8 +9,6 @@ namespace Game.System
     {
         public Button Astral, Darkness, Ice, Iron, Storm, Nature, Fire;
 
-       
-
         protected override void Awake()
         {
             if ((object)CachedTransform == null)

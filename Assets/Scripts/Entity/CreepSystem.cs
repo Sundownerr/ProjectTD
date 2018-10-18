@@ -191,7 +191,7 @@ namespace Game.Creep
             public void Enter()
             {
                 owner.lastDamageDealer.AddExp(owner.Stats.Exp);
-                GM.Instance.PlayerDataSystem.AddGold(owner.Stats.Gold);
+                GM.Instance.ResourceSystem.AddGold(owner.Stats.Gold);
 
                 owner.state.ChangeState(new DestroyState(owner));
             }

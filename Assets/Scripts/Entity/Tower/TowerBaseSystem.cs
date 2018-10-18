@@ -156,8 +156,8 @@ namespace Game.Tower
 
         public void Sell()
         {
-            GM.Instance.PlayerDataSystem.AddTowerLimit(-Stats.TowerLimit);
-            GM.Instance.PlayerDataSystem.AddGold(Stats.GoldCost);
+            GM.Instance.ResourceSystem.AddTowerLimit(-Stats.TowerLimit);
+            GM.Instance.ResourceSystem.AddGold(Stats.GoldCost);
 
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
             GM.Instance.TowerList.Remove(gameObject);

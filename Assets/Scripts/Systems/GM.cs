@@ -18,7 +18,8 @@ namespace Game.System
         public PlayerInputSystem PlayerInputSystem;
         public BaseUISystem BaseUISystem;
         public TowerUISystem TowerUISystem;
-        public PlayerDataSystem PlayerDataSystem;
+        public ResourceSystem ResourceSystem;
+        public ForceSystem ForceSystem;
         public Data.PlayerData PlayerData;
         public Canvas UICanvas;
 
