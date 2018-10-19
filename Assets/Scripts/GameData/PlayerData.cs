@@ -13,7 +13,7 @@ namespace Game.Data
 
         private void Awake()
         {
-            MaxTowerLimit = 30;
+            MaxTowerLimit = 500;
         }
     }
 }

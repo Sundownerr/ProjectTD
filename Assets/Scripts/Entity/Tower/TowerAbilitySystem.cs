@@ -46,8 +46,8 @@ namespace Game.Tower
                 var tower = owner.towerBaseSystem;
 
                 var isCreepInRange =
-                    tower.RangeSystem.CreepInRangeList.Count > 0 &&
-                    tower.RangeSystem.CreepInRangeList[0] != null;
+                    tower.RangeSystem.CreepList.Count > 0 &&
+                    tower.RangeSystem.CreepList[0] != null;
 
                 if (isCreepInRange)
                 {
@@ -113,14 +113,14 @@ namespace Game.Tower
                 var stackList = owner.stackedAbilityList;
 
                 var isCreepInRange =
-                    tower.RangeSystem.CreepInRangeList.Count > 0 &&
-                    tower.RangeSystem.CreepInRangeList[0] != null;
+                    tower.RangeSystem.CreepList.Count > 0 &&
+                    tower.RangeSystem.CreepList[0] != null;
 
                 if (isCreepInRange)
                 {
                     for (int i = 0; i < abilityList.Count; i++)
                     {
-                        abilityList[i].SetTarget(tower.RangeSystem.CreepInRangeSystemList);
+                        abilityList[i].SetTarget(tower.RangeSystem.CreepSystemList);
 
                         abilityList[i].InitAbility();
 
@@ -142,7 +142,7 @@ namespace Game.Tower
 
                         for (int i = 0; i < stackList.Count; i++)
                         {
-                            stackList[i].SetTarget(tower.RangeSystem.CreepInRangeSystemList);
+                            stackList[i].SetTarget(tower.RangeSystem.CreepSystemList);
 
                             stackList[i].InitAbility();
 
@@ -211,8 +211,8 @@ namespace Game.Tower
                 var stackList = owner.stackedAbilityList;
 
                 var isCreepInRange =
-                    tower.RangeSystem.CreepInRangeList.Count > 0 &&
-                    tower.RangeSystem.CreepInRangeList[0] != null;
+                    tower.RangeSystem.CreepList.Count > 0 &&
+                    tower.RangeSystem.CreepList[0] != null;
 
                 if ((owner.isAllEffectsEnded && owner.isAllStackedEffectsEnded) || isCreepInRange)
                 {

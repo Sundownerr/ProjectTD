@@ -81,10 +81,10 @@ namespace Game.Tower
         
         private void IncreaseStats()
         {           
-            Stats.Damage += Mathf.FloorToInt(GM.GetPercentOfValue(4f, Stats.Damage));
-            Stats.AttackSpeed += GM.GetPercentOfValue(1.2f, Stats.AttackSpeed);
-            Stats.CritChance += GM.GetPercentOfValue(0.2f, Stats.CritChance);
-            Stats.SpellCritChance += GM.GetPercentOfValue(0.2f, Stats.SpellCritChance);
+            Stats.Damage += Mathf.FloorToInt(GetPercentOfValue(4f, Stats.Damage));
+            Stats.AttackSpeed += GetPercentOfValue(1.2f, Stats.AttackSpeed);
+            Stats.CritChance += GetPercentOfValue(0.2f, Stats.CritChance);
+            Stats.SpellCritChance += GetPercentOfValue(0.2f, Stats.SpellCritChance);
             UpdateUI();
         }
 
@@ -146,7 +146,7 @@ namespace Game.Tower
 
         private void RotateAtCreep()
         {
-            var offset = RangeSystem.CreepInRangeList[0].transform.position - transform.position;
+            var offset = RangeSystem.CreepList[0].transform.position - transform.position;
             offset.y = 0;
 
             var towerRotation = Quaternion.LookRotation(offset);
@@ -179,6 +179,7 @@ namespace Game.Tower
                 {
                     IncreaseStats();
                     Stats.Level++;
+
                     var effect = Instantiate(GM.Instance.LevelUpEffect, transform.position, Quaternion.identity);
                     Destroy(effect, 2f);
                 }
@@ -233,7 +234,7 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (owner.RangeSystem.CreepInRangeList.Count > 0)
+                if (owner.RangeSystem.CreepList.Count > 0)
                 {
                     owner.state.ChangeState(new CombatState(owner));                  
                 }
@@ -260,20 +261,20 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (owner.RangeSystem.CreepInRangeList.Count > 0)
+                if (owner.RangeSystem.CreepList.Count > 0)
                 {
-                    if (owner.RangeSystem.CreepInRangeList[0] != null)
+                    if (owner.RangeSystem.CreepList[0] != null)
                     {
                         owner.RotateAtCreep();
                         owner.combatSystem.State.Update();
                     }
 
-                    for (int i = 0; i < owner.RangeSystem.CreepInRangeList.Count; i++)
+                    for (int i = 0; i < owner.RangeSystem.CreepList.Count; i++)
                     {
-                        if (owner.RangeSystem.CreepInRangeList[i] == null)
+                        if (owner.RangeSystem.CreepList[i] == null)
                         {
-                            owner.RangeSystem.CreepInRangeList.RemoveAt(i);
-                            owner.RangeSystem.CreepInRangeSystemList.RemoveAt(i);
+                            owner.RangeSystem.CreepList.RemoveAt(i);
+                            owner.RangeSystem.CreepSystemList.RemoveAt(i);
                         }
                     }                                 
                 }
@@ -303,7 +304,7 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (!(owner.RangeSystem.CreepInRangeList.Count > 0))
+                if (!(owner.RangeSystem.CreepList.Count > 0))
                 {
                     if (!owner.combatSystem.CheckAllBulletInactive())
                     {

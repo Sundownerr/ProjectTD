@@ -23,8 +23,6 @@ namespace Game.System
             state = new StateMachine();
             state.ChangeState(new GetInputState(this));
 
-
-
             GM.Instance.WaveSystem = this;
         }
 
@@ -32,6 +30,11 @@ namespace Game.System
         {
             state.Update();
 
+            AddMagicCrystalAfterWaveEnd();
+        }
+        
+        private void AddMagicCrystalAfterWaveEnd()
+        {
             if (waveCreepList.Count > 0)
             {
                 for (int i = 0; i < waveCreepList.Count; i++)

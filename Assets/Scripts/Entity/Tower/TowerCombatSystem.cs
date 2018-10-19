@@ -48,31 +48,24 @@ namespace Game.Tower
 
         private IEnumerator CreateBullet(float cooldown)
         {
+
+            bulletList.Add(bulletPool.GetObject());
+            var last = bulletList.Count - 1;
+
+            bulletDataList.Add(bulletList[last].GetComponent<BulletSystem>());
+            SetBulletData(last);
+
+            bulletDataList[last].Target = towerData.RangeSystem.CreepList[0];
+            GetTargetData(last);
+
+            bulletList[last].SetActive(true);
+
+            yield return new WaitForSeconds(cooldown);
+
             
-                var isCreepInRange =
-                    towerData.RangeSystem.CreepInRangeList.Count > 0 &&
-                    towerData.RangeSystem.CreepInRangeList[0] != null;
 
-                if (isCreepInRange)
-                {
-                    bulletList.Add(bulletPool.GetObject());
-                    var last = bulletList.Count - 1;
+            State.ChangeState(new ShootState(this));
 
-                    bulletDataList.Add(bulletList[last].GetComponent<BulletSystem>());
-                    SetBulletData(last);
-
-                    bulletDataList[last].Target = towerData.RangeSystem.CreepInRangeList[0];
-                    GetTargetData(last);
-
-                    bulletList[last].SetActive(true);
-
-                    yield return new WaitForSeconds(cooldown);
-
-                    bulletCoroutine = null;
-
-                    State.ChangeState(new ShootState(this));
-                }
-            
         }
 
         private void SetBulletData(int index)
@@ -111,11 +104,11 @@ namespace Game.Tower
             {
                 if (bulletList[i].activeSelf)
                 {
-                    if (targetTransform != null)
+                    if (bulletDataList[i].Target != null)
                     {
                         var offset = new Vector3(Random.Range(-15, 15), targetScaleY + Random.Range(-5, 5), Random.Range(-15, 15));
 
-                        distance = GM.CalcDistance(bulletList[i].transform.position, targetLastPos);
+                        distance = CalcDistance(bulletList[i].transform.position, targetLastPos);
                         targetLastPos = targetTransform.position + offset;
 
                         if (!bulletDataList[i].IsReachedTarget)
@@ -168,10 +161,12 @@ namespace Game.Tower
 
         public void SetStartState()
         {
-            if (bulletCoroutine == null)
-            {
-                State.ChangeState(new ShootState(this));
-            }
+            
+                if (bulletCoroutine == null)
+                {
+                    State.ChangeState(new ShootState(this));
+                }
+            
         }
 
         protected class ShootState : IState
@@ -185,7 +180,14 @@ namespace Game.Tower
 
             public void Enter()
             {
-                owner.bulletCoroutine = owner.StartCoroutine(owner.CreateBullet(owner.attackCooldown));
+                var isCreepInRange =
+                   owner.towerData.RangeSystem.CreepList.Count > 0 &&
+                   owner.towerData.RangeSystem.CreepList[0] != null;
+
+                if (isCreepInRange)
+                {
+                    owner.bulletCoroutine = owner.StartCoroutine(owner.CreateBullet(owner.attackCooldown));
+                }
             }
 
             public void Execute()
@@ -195,7 +197,7 @@ namespace Game.Tower
 
             public void Exit()
             {
-  
+                owner.bulletCoroutine = null;
             }
         }
 

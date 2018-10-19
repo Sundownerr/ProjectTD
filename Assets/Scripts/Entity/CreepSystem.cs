@@ -124,7 +124,7 @@ namespace Game.Creep
 
             public void Execute()
             {
-                owner.waypointReached = GM.CalcDistance(
+                owner.waypointReached = owner.CalcDistance(
                         owner.creepTransform.position, 
                         GM.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
 

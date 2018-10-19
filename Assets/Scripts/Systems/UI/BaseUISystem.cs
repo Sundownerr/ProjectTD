@@ -17,22 +17,22 @@ namespace Game.System
             if ((object)CachedTransform == null)
             {
                 CachedTransform = transform;
-            }
-
-            GM.Instance.BaseUISystem = this;
+            }         
             
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
             LearnForceButton.onClick.AddListener(LearnForce);
 
             UpdateResourceValues();
+
+            GM.Instance.BaseUISystem = this;
         }
 
         public void UpdateResourceValues()
         {
-            Gold.text = GM.KiloFormat(GM.Instance.PlayerData.Gold);
-            MagicCrystals.text = GM.KiloFormat(GM.Instance.PlayerData.MagicCrystals);
-            TowerLimit.text = GM.KiloFormat(GM.Instance.PlayerData.CurrentTowerLimit) + "/" + GM.Instance.PlayerData.MaxTowerLimit;
+            Gold.text = KiloFormat(GM.Instance.PlayerData.Gold);
+            MagicCrystals.text = KiloFormat(GM.Instance.PlayerData.MagicCrystals);
+            TowerLimit.text = GM.Instance.PlayerData.CurrentTowerLimit + "/" + GM.Instance.PlayerData.MaxTowerLimit;
         }
 
         private void StartWave()

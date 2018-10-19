@@ -53,15 +53,15 @@ namespace Game.System
             var choosedTowerStats = choosedTowerBaseSystem.Stats;
 
             TowerName.text = choosedTowerStats.EntityName;
-            Level.text = GM.KiloFormat(choosedTowerStats.Level);
-            Damage.text = GM.KiloFormat(choosedTowerStats.Damage);
-            Range.text = GM.KiloFormat(choosedTowerStats.Range);
-            Mana.text = GM.KiloFormat(choosedTowerStats.Mana);
-            AttackSpeed.text = GM.KiloFormat(choosedTowerStats.AttackSpeed);
-            TriggerChance.text = GM.KiloFormat(choosedTowerStats.TriggerChance) + "%";
-            SpellCritChance.text = GM.KiloFormat(choosedTowerStats.SpellCritChance) + "%";
-            SpellDamage.text = GM.KiloFormat(choosedTowerStats.SpellDamage) + "%";
-            CritChance.text = GM.KiloFormat(choosedTowerStats.CritChance) + "%";
+            Level.text = KiloFormat(choosedTowerStats.Level);
+            Damage.text = KiloFormat(choosedTowerStats.Damage);
+            Range.text = KiloFormat(choosedTowerStats.Range);
+            Mana.text = KiloFormat(choosedTowerStats.Mana);
+            AttackSpeed.text = KiloFormat(choosedTowerStats.AttackSpeed);
+            TriggerChance.text = KiloFormat(choosedTowerStats.TriggerChance) + "%";
+            SpellCritChance.text = KiloFormat(choosedTowerStats.SpellCritChance) + "%";
+            SpellDamage.text = KiloFormat(choosedTowerStats.SpellDamage) + "%";
+            CritChance.text = KiloFormat(choosedTowerStats.CritChance) + "%";
         }       
     }
 }

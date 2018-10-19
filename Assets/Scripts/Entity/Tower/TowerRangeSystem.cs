@@ -7,8 +7,8 @@ namespace Game.Tower
 {
     public class TowerRangeSystem : ExtendedMonoBehaviour
     {
-        public List<GameObject> CreepInRangeList;
-        public List<Creep.CreepSystem> CreepInRangeSystemList;
+        public List<GameObject> CreepList;
+        public List<Creep.CreepSystem> CreepSystemList;
 
         private Renderer rend;
         private Color transparent, notTransparent;
@@ -20,8 +20,8 @@ namespace Game.Tower
                 CachedTransform = transform;
             }
 
-            CreepInRangeList = new List<GameObject>();
-            CreepInRangeSystemList = new List<Creep.CreepSystem>();
+            CreepList = new List<GameObject>();
+            CreepSystemList = new List<Creep.CreepSystem>();
             transform.position += new Vector3(0, -5, 0);
             rend = GetComponent<Renderer>();
 
@@ -35,29 +35,29 @@ namespace Game.Tower
             {
                 if (other.gameObject == GM.Instance.CreepList[i])
                 {
-                    CreepInRangeSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
-                    CreepInRangeList.Add(other.gameObject);                    
+                    CreepSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
+                    CreepList.Add(other.gameObject);                    
                 }
             }                     
         }    
 
         private void OnTriggerExit(Collider other)
         {
-            if (CreepInRangeList.Count > 0)
+            if (CreepList.Count > 0)
             {
-                CreepInRangeSystemList.Remove(other.gameObject.GetComponent<Creep.CreepSystem>());
-                CreepInRangeList.Remove(other.gameObject);
+                CreepSystemList.Remove(other.gameObject.GetComponent<Creep.CreepSystem>());
+                CreepList.Remove(other.gameObject);
             }
         }
 
         private void OnTriggerStay(Collider other)
         {
-            for (int i = 0; i < CreepInRangeList.Count; i++)
+            for (int i = 0; i < CreepList.Count; i++)
             {
-                if (CreepInRangeList[i] == null)
+                if (CreepList[i] == null)
                 {
-                    CreepInRangeList.RemoveAt(i);
-                    CreepInRangeSystemList.RemoveAt(i);
+                    CreepList.RemoveAt(i);
+                    CreepSystemList.RemoveAt(i);
                 }
             }
         }
