@@ -48,8 +48,7 @@ namespace Game.Tower
 
         private IEnumerator CreateBullet(float cooldown)
         {
-            if (bulletCoroutine == null)
-            {
+            
                 var isCreepInRange =
                     towerData.RangeSystem.CreepInRangeList.Count > 0 &&
                     towerData.RangeSystem.CreepInRangeList[0] != null;
@@ -73,7 +72,7 @@ namespace Game.Tower
 
                     State.ChangeState(new ShootState(this));
                 }
-            }
+            
         }
 
         private void SetBulletData(int index)
@@ -168,8 +167,11 @@ namespace Game.Tower
         }
 
         public void SetStartState()
-        {           
-            State.ChangeState(new ShootState(this));
+        {
+            if (bulletCoroutine == null)
+            {
+                State.ChangeState(new ShootState(this));
+            }
         }
 
         protected class ShootState : IState
@@ -197,6 +199,6 @@ namespace Game.Tower
             }
         }
 
-
+        
     }
 }
