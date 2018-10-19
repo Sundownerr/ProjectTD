@@ -10,35 +10,41 @@ namespace Game.Tower
     {
         public StateMachine State;
 
-        private float bulletSpeed, bulletLifetime, distance, targetScaleX, targetScaleY;
+        private float bulletSpeed, bulletLifetime, distance, targetScaleX, targetScaleY, attackCooldown;
         private List<BulletSystem> bulletDataList;
         private List<GameObject> bulletList;
         private Transform targetTransform;
         private TowerBaseSystem towerData;
         private Vector3 targetLastPos;
-        private ObjectPool bulletPool;     
-        private bool isCooldown;
-        private float attackCooldown;
+        private ObjectPool bulletPool;
+        private int AOEShotRange, chainshotTargetCount, multishotCount;
         private Coroutine bulletCoroutine;
-       
 
-        private void Start()
-        {         
+        protected override void Awake()
+        {
+            if ((object)CachedTransform == null)
+            {
+                CachedTransform = transform;
+            }
+
             towerData = gameObject.GetComponent<TowerBaseSystem>();
+            attackCooldown = towerData.Stats.AttackSpeed;
+
             bulletList = new List<GameObject>();
             bulletDataList = new List<BulletSystem>();
 
-            bulletPool = new ObjectPool
-            {
-                poolObject = towerData.Bullet,
-                parent = transform
-            };
-
+            bulletPool = new ObjectPool();
+            bulletPool.poolObject = towerData.Bullet;
+            bulletPool.parent = transform;          
             bulletPool.Initialize();
-            attackCooldown = towerData.Stats.AttackSpeed;
 
-            State = new StateMachine();
             bulletCoroutine = null;
+
+            AOEShotRange = towerData.Stats.AOEShotRange;
+            chainshotTargetCount = towerData.Stats.ChainshotTargetsCount;
+            multishotCount = towerData.Stats.MultishotCount + 1;
+
+            State = new StateMachine();                  
         }
 
         private void OnDestroy()
@@ -46,26 +52,36 @@ namespace Game.Tower
             bulletPool.DestroyPool();
         }
 
-        private IEnumerator CreateBullet(float cooldown)
+        public void SetStartState()
         {
+            if (bulletCoroutine == null)
+            {
+                State.ChangeState(new ShootState(this));
+            }
+        }
 
+        private IEnumerator AttackCooldown(float cooldown)
+        {
+            yield return new WaitForSeconds(cooldown);
+
+            State.ChangeState(new ShootState(this));
+        }
+
+        private void CreateBullet()
+        {
             bulletList.Add(bulletPool.GetObject());
             var last = bulletList.Count - 1;
 
             bulletDataList.Add(bulletList[last].GetComponent<BulletSystem>());
             SetBulletData(last);
 
-            bulletDataList[last].Target = towerData.RangeSystem.CreepList[0];
-            GetTargetData(last);
-
             bulletList[last].SetActive(true);
+        }
 
-            yield return new WaitForSeconds(cooldown);
-
-            
-
-            State.ChangeState(new ShootState(this));
-
+        private void SetLastBulletTarget(GameObject target)
+        {
+            bulletDataList[bulletList.Count - 1].Target = target;
+            GetTargetData(bulletList.Count - 1);
         }
 
         private void SetBulletData(int index)
@@ -79,12 +95,9 @@ namespace Game.Tower
 
         private void GetTargetData(int index)
         {
-            if (bulletDataList[index].Target != null)
-            {
-                targetTransform = bulletDataList[index].Target.transform;
-                targetScaleX = targetTransform.GetChild(0).lossyScale.x - 2;
-                targetScaleY = targetTransform.GetChild(0).lossyScale.y;
-            }
+            targetTransform = bulletDataList[index].Target.transform;
+            targetScaleX = targetTransform.GetChild(0).lossyScale.x - 2;
+            targetScaleY = targetTransform.GetChild(0).lossyScale.y;
         }
 
         private void SetTargetReached(BulletSystem bullet)
@@ -105,14 +118,14 @@ namespace Game.Tower
                 if (bulletList[i].activeSelf)
                 {
                     if (bulletDataList[i].Target != null)
-                    {
-                        var offset = new Vector3(Random.Range(-15, 15), targetScaleY + Random.Range(-5, 5), Random.Range(-15, 15));
-
-                        distance = CalcDistance(bulletList[i].transform.position, targetLastPos);
-                        targetLastPos = targetTransform.position + offset;
-
+                    {                                    
                         if (!bulletDataList[i].IsReachedTarget)
                         {
+                            var offset = new Vector3(Random.Range(-15, 15), targetScaleY + Random.Range(-5, 5), Random.Range(-15, 15));
+
+                            distance = CalcDistance(bulletList[i].transform.position, targetLastPos);
+                            targetLastPos = targetTransform.position + offset;
+
                             if (distance > targetScaleX)
                             {
                                 bulletList[i].transform.LookAt(targetLastPos);
@@ -143,7 +156,6 @@ namespace Game.Tower
                     return false;
                 }
             }
-
             return true;
         }
 
@@ -159,16 +171,30 @@ namespace Game.Tower
             }
         }
 
-        public void SetStartState()
+        private void ShotBullet()
         {
-            
-                if (bulletCoroutine == null)
-                {
-                    State.ChangeState(new ShootState(this));
-                }
-            
-        }
+            var shotCount = 0;
+            var count = 0;
 
+            if (towerData.RangeSystem.CreepList.Count >= multishotCount)
+            {
+                shotCount = multishotCount;              
+            }
+            else
+            {
+                shotCount = towerData.RangeSystem.CreepList.Count;
+            }
+
+            while (count < shotCount)
+            {              
+                bulletCoroutine = StartCoroutine(AttackCooldown(attackCooldown));
+                CreateBullet();
+                SetLastBulletTarget(towerData.RangeSystem.CreepList[count]);
+
+                count++;
+            }  
+        }
+      
         protected class ShootState : IState
         {
             private TowerCombatSystem owner;
@@ -180,13 +206,15 @@ namespace Game.Tower
 
             public void Enter()
             {
+                Debug.Log("enterr combatstate");
+
                 var isCreepInRange =
                    owner.towerData.RangeSystem.CreepList.Count > 0 &&
                    owner.towerData.RangeSystem.CreepList[0] != null;
 
                 if (isCreepInRange)
                 {
-                    owner.bulletCoroutine = owner.StartCoroutine(owner.CreateBullet(owner.attackCooldown));
+                    owner.ShotBullet();
                 }
             }
 

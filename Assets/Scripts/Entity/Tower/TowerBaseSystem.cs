@@ -256,6 +256,7 @@ namespace Game.Tower
 
             public void Enter()
             {
+                
                 owner.combatSystem.SetStartState();
             }
 

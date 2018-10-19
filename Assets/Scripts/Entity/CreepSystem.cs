@@ -22,6 +22,7 @@ namespace Game.Creep
         private Coroutine stunCoroutine;
         private float stunDuration;
         private Tower.TowerBaseSystem lastDamageDealer;
+        private bool isKilled;
 
         protected override void Awake()
         {
@@ -71,13 +72,17 @@ namespace Game.Creep
 
         public void GetDamage(int damage, Tower.TowerBaseSystem damageDealer)
         {
-            lastDamageDealer = damageDealer;
-            Stats.Health -= damage;
-
-            if (Stats.Health <= 0)
+            if (!isKilled)
             {
-                state.ChangeState(new GiveRecourcesState(this));
-            }         
+                lastDamageDealer = damageDealer;
+                Stats.Health -= damage;
+
+                if (Stats.Health <= 0)
+                {
+                    isKilled = true;
+                    state.ChangeState(new GiveRecourcesState(this));
+                }
+            }
         }
 
         public void GetStunned(float duration)
