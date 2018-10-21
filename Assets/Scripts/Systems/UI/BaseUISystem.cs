@@ -42,15 +42,13 @@ namespace Game.System
 
         private void LearnForce()
         {
-            if (!isForceMenuShowed)
+            if (!GM.Instance.ForceUISystem.gameObject.activeSelf)
             {
-                GM.Instance.ForceUISystem.ShowElementButtons(true);
-                isForceMenuShowed = true;
+                GM.Instance.ForceUISystem.gameObject.SetActive(true);
             }
             else
             {
-                GM.Instance.ForceUISystem.ShowElementButtons(false);
-                isForceMenuShowed = false;
+                GM.Instance.ForceUISystem.gameObject.SetActive(false);
             }        
         }
 
@@ -62,10 +60,9 @@ namespace Game.System
                 {
                     GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
 
-                    if (isForceMenuShowed)
+                    if (GM.Instance.ForceUISystem.gameObject.activeSelf)
                     {
-                        GM.Instance.ForceUISystem.ShowElementButtons(false);
-                        isForceMenuShowed = false;
+                        GM.Instance.ForceUISystem.gameObject.SetActive(false);
                     }
                 }
             }

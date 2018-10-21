@@ -24,11 +24,12 @@ namespace Game.System
             Iron.onClick.AddListener(LearnIron);
             Storm.onClick.AddListener(LearnStorm);
             Nature.onClick.AddListener(LearnNature);
-            Fire.onClick.AddListener(LearnFire);          
+            Fire.onClick.AddListener(LearnFire);
 
             GM.Instance.ForceUISystem = this;
 
-            ShowElementButtons(false);
+            gameObject.SetActive(false);
+
             UpdateValues();
         }
 
@@ -41,17 +42,6 @@ namespace Game.System
             StormLevel.text = GM.Instance.PlayerData.StormLevel.ToString();
             NatureLevel.text = GM.Instance.PlayerData.NatureLevel.ToString();
             FireLevel.text = GM.Instance.PlayerData.FireLevel.ToString();
-        }
-
-        public void ShowElementButtons(bool show)
-        {
-            Astral.gameObject.SetActive(show);
-            Darkness.gameObject.SetActive(show);
-            Ice.gameObject.SetActive(show);
-            Iron.gameObject.SetActive(show);
-            Storm.gameObject.SetActive(show);
-            Nature.gameObject.SetActive(show);
-            Fire.gameObject.SetActive(show);
         }
 
         private void LearnAstral()

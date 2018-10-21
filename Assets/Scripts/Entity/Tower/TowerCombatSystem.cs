@@ -91,9 +91,7 @@ namespace Game.Tower
                 StartCoroutine(RemoveBullet(bulletLifetime));
             }          
         }
-
-        
-
+      
         public void MoveBullet()
         {
             for (int i = 0; i < bulletList.Count; i++)
@@ -119,9 +117,7 @@ namespace Game.Tower
                                 bulletList[i].transform.Translate(Vector3.forward * bulletSpeed, Space.Self);
                             }
                             else
-                            {
-                                
-
+                            {                               
                                 HitTarget(i);
                             }                   
                         }
@@ -175,7 +171,6 @@ namespace Game.Tower
 
         private void SetChainTarget(BulletSystem bulletData, int chainCount)
         {
-            var creepList = towerData.RangeSystem.CreepList;
             var hitTargets = new Collider[20];
             var count = Physics.OverlapSphereNonAlloc(bulletData.transform.position, 150, hitTargets, CreepLayer);
 
@@ -219,16 +214,18 @@ namespace Game.Tower
                 bulletDataList[bulletIndex].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.Stats.Damage, towerData);
             }
 
-            if (towerData.Stats.ChainshotCount > 0 && bulletDataList[bulletIndex].chainCount > 0)
+            var isChainShot =
+                towerData.Stats.ChainshotCount > 0 &&
+                bulletDataList[bulletIndex].chainCount > 0;
+
+            if (isChainShot)
             {
                 SetChainTarget(bulletDataList[bulletIndex], towerData.Stats.ChainshotCount);
             }
             else
             {
                 SetTargetReached(bulletDataList[bulletIndex]);
-            }
-
-                
+            }               
         }
 
         private void ShotBullet()

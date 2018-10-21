@@ -37,9 +37,10 @@ namespace Game.Creep
             creepRenderer = transform.GetChild(0).GetComponent<Renderer>();
 
             Stats = Instantiate(Stats);           
+            
+            transform.parent = GM.Instance.CreepParent;
 
             GM.Instance.CreepList.Add(gameObject);
-            transform.parent = GM.Instance.CreepParent;
 
             state = new StateMachine();
             state.ChangeState(new WalkState(this));

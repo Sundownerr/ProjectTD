@@ -42,7 +42,6 @@ namespace Game.System
             if (CheckCanLearn(GM.Instance.PlayerData.AstralLevel))
             {
                 GM.Instance.PlayerData.AstralLevel++;
-               // GM.Instance.ForceUISystem.UpdateValues();
             }
         }
 
@@ -51,7 +50,6 @@ namespace Game.System
             if (CheckCanLearn(GM.Instance.PlayerData.DarknessLevel))
             {
                 GM.Instance.PlayerData.DarknessLevel++;
-               // GM.Instance.ForceUISystem.UpdateValues();
             }
         }
 
@@ -60,7 +58,6 @@ namespace Game.System
             if (CheckCanLearn(GM.Instance.PlayerData.IceLevel))
             {
                 GM.Instance.PlayerData.IceLevel++;
-               // GM.Instance.ForceUISystem.UpdateValues();
             }
         }
 
@@ -69,7 +66,6 @@ namespace Game.System
             if (CheckCanLearn(GM.Instance.PlayerData.IronLevel))
             {
                 GM.Instance.PlayerData.IronLevel++;
-              //  GM.Instance.ForceUISystem.UpdateValues();
             }
         }
 
@@ -78,7 +74,6 @@ namespace Game.System
             if (CheckCanLearn(GM.Instance.PlayerData.StormLevel))
             {
                 GM.Instance.PlayerData.StormLevel++;
-               // GM.Instance.ForceUISystem.UpdateValues();
             }
         }
 
@@ -87,7 +82,6 @@ namespace Game.System
             if (CheckCanLearn(GM.Instance.PlayerData.NatureLevel))
             {
                 GM.Instance.PlayerData.NatureLevel++;
-                //GM.Instance.ForceUISystem.UpdateValues();
             }
         }
 
@@ -96,7 +90,6 @@ namespace Game.System
             if (CheckCanLearn(GM.Instance.PlayerData.FireLevel))
             {
                 GM.Instance.PlayerData.FireLevel++;
-               // GM.Instance.ForceUISystem.UpdateValues();
             }
         }
     }
