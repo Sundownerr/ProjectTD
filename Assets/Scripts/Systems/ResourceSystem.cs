@@ -34,9 +34,13 @@ namespace Game.System
             GM.Instance.BaseUISystem.UpdateResourceValues();
         }
 
-        public bool CheckTowerLimit(int amount)
+        public bool CheckHaveResources(int towerLimitCost, int goldCost, int magicCrystalCost)
         {
-            return (GM.Instance.PlayerData.CurrentTowerLimit + amount) <= GM.Instance.PlayerData.MaxTowerLimit;
+            var isTowerLimitOk = (GM.Instance.PlayerData.CurrentTowerLimit + towerLimitCost) <= GM.Instance.PlayerData.MaxTowerLimit;
+            var isGoldCostOk = goldCost <= GM.Instance.PlayerData.Gold;
+            var isMagicCrystalCostOk = magicCrystalCost <= GM.Instance.PlayerData.MagicCrystals; 
+
+            return isTowerLimitOk && isGoldCostOk && isMagicCrystalCostOk;
         }
     }
 }

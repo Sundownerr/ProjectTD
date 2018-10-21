@@ -25,10 +25,10 @@ namespace Game.System
             if ((object)CachedTransform == null)
             {
                 CachedTransform = transform;
-            }
+            }            
+            results = new List<RaycastResult>();
 
             GM.Instance.PlayerInputSystem = this;
-            results = new List<RaycastResult>();
 
             state = new StateMachine();
             state.ChangeState(new GetInputState(this));
@@ -54,10 +54,11 @@ namespace Game.System
 
             public void Execute()
             {
-                owner.pointerEventData = new PointerEventData(owner.EventSystem)
-                {
-                    position = Input.mousePosition
-                };
+                owner.WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                var isRayHit = Physics.Raycast(owner.WorldRay, out owner.hit, 10000, owner.LayerMask);
+
+                owner.pointerEventData = new PointerEventData(owner.EventSystem);
+                owner.pointerEventData.position = Input.mousePosition;
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -67,22 +68,17 @@ namespace Game.System
                     {
                         owner.isHitUI = true;
                     }
-                }
 
-                owner.WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(owner.WorldRay, out owner.hit, 10000, owner.LayerMask))
-                {
-                    var isMouseOnTower = 
-                        !owner.isHitUI && 
-                        owner.hit.transform.gameObject.layer == 14;
-
-                    var isMouseNotOnUI = 
-                        !owner.isHitUI && 
-                        owner.hit.transform.gameObject.layer == 9;
-
-                    if (Input.GetMouseButtonDown(0))
+                    if (isRayHit)
                     {
+                        var isMouseOnTower =
+                            !owner.isHitUI &&
+                            owner.hit.transform.gameObject.layer == 14;
+
+                        var isMouseNotOnUI =
+                            !owner.isHitUI &&
+                            owner.hit.transform.gameObject.layer == 9;
+
                         if (isMouseOnTower && !Input.GetKey(KeyCode.LeftShift))
                         {
                             owner.state.ChangeState(new MouseOnTowerState(owner));
