@@ -15,7 +15,7 @@ namespace Game.Data.Entity.Tower
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio;
         public float BuffDuration, DebuffDuration;
 
-        public int MultishotCount, ChainshotTargetsCount, AOEShotRange;
+        public int MultishotCount, ChainshotCount, AOEShotRange;
         
         public List<TowerGradeStats> GradeStatList;
 

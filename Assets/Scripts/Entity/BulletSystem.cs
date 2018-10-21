@@ -6,9 +6,10 @@ namespace Game.Tower
     {
         public ParticleSystem[] ParticleSystemList;
         public bool IsReachedTarget;
-        public float BulletLifetime;
+        public float Lifetime, Speed;
+        public int chainCount;
         public GameObject Target;
-        public float Speed;                          
+                        
         private ParticleSystem.EmissionModule emissionModule;
 
         protected override void Awake()
@@ -20,7 +21,7 @@ namespace Game.Tower
 
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);
-            BulletLifetime = ParticleSystemList[0].main.startLifetime.constant;
+            Lifetime = ParticleSystemList[0].main.startLifetime.constant;
         }
 
         private void OnEnable()
