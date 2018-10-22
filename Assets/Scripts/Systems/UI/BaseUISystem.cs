@@ -5,12 +5,10 @@ namespace Game.System
 {
     public class BaseUISystem : ExtendedMonoBehaviour
     {
-        public Button StartWaveButton, BuildModeButton, LearnForceButton;
+        public Button StartWaveButton, BuildModeButton, LearnForceButton, GetTowerButton;
         public bool IsWaveStarted, IsPlayerReady;
         public int WaveTimer;
-
         public TextMeshProUGUI Gold, MagicCrystals, TowerLimit;
-        private bool isForceMenuShowed;
 
         protected override void Awake()
         {
@@ -22,6 +20,7 @@ namespace Game.System
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
             LearnForceButton.onClick.AddListener(LearnForce);
+            GetTowerButton.onClick.AddListener(GetTower);
 
             UpdateResourceValues();
 
@@ -50,6 +49,11 @@ namespace Game.System
             {
                 GM.Instance.ForceUISystem.gameObject.SetActive(false);
             }        
+        }
+
+        private void GetTower()
+        {
+            GM.Instance.PlayerData.StartTowerRerollCount--;
         }
 
         private void BuildTower()

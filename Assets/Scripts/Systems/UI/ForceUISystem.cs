@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using TMPro;
 
 namespace Game.System
@@ -29,60 +26,63 @@ namespace Game.System
             GM.Instance.ForceUISystem = this;
 
             gameObject.SetActive(false);
+        }
 
+        private void Start()
+        {
             UpdateValues();
         }
 
         public void UpdateValues()
         {
-            AstralLevel.text = GM.Instance.PlayerData.AstralLevel.ToString();
-            DarknessLevel.text = GM.Instance.PlayerData.DarknessLevel.ToString();
-            IceLevel.text = GM.Instance.PlayerData.IceLevel.ToString();
-            IronLevel.text = GM.Instance.PlayerData.IronLevel.ToString();
-            StormLevel.text = GM.Instance.PlayerData.StormLevel.ToString();
-            NatureLevel.text = GM.Instance.PlayerData.NatureLevel.ToString();
-            FireLevel.text = GM.Instance.PlayerData.FireLevel.ToString();
+            AstralLevel.text = GM.Instance.PlayerData.ElementLevelList["Astral"].ToString();
+            DarknessLevel.text = GM.Instance.PlayerData.ElementLevelList["Darkness"].ToString();
+            IceLevel.text = GM.Instance.PlayerData.ElementLevelList["Ice"].ToString();
+            IronLevel.text = GM.Instance.PlayerData.ElementLevelList["Iron"].ToString();
+            StormLevel.text = GM.Instance.PlayerData.ElementLevelList["Storm"].ToString();
+            NatureLevel.text = GM.Instance.PlayerData.ElementLevelList["Nature"].ToString();
+            FireLevel.text = GM.Instance.PlayerData.ElementLevelList["Fire"].ToString();
         }
 
         private void LearnAstral()
         {
-            GM.Instance.ForceSystem.LearnAstral();
+            GM.Instance.ForceSystem.LearnElement("Astral");
             UpdateValues();
         }
 
         private void LearnDarkness()
         {
-            GM.Instance.ForceSystem.LearnDarkness();
+            GM.Instance.ForceSystem.LearnElement("Darkness");
             UpdateValues();
         }
 
         private void LearnIce()
         {
-            GM.Instance.ForceSystem.LearnIce();
+            GM.Instance.ForceSystem.LearnElement("Ice");
             UpdateValues();
         }
 
         private void LearnIron()
         {
-            GM.Instance.ForceSystem.LearnIron();
+            GM.Instance.ForceSystem.LearnElement("Iron");
             UpdateValues();
         }
 
         private void LearnStorm()
         {
-            GM.Instance.ForceSystem.LearnStorm();
+            GM.Instance.ForceSystem.LearnElement("Storm");
             UpdateValues();
         }
 
         private void LearnNature()
         {
-            GM.Instance.ForceSystem.LearnNature();
+            GM.Instance.ForceSystem.LearnElement("Nature");
             UpdateValues();
         }
 
         private void LearnFire()
         {
-            GM.Instance.ForceSystem.LearnFire();
+            GM.Instance.ForceSystem.LearnElement("Fire");
             UpdateValues();
         }
     }

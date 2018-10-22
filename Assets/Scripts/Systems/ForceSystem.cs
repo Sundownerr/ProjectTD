@@ -6,7 +6,7 @@ namespace Game.System
 {
     public class ForceSystem : ExtendedMonoBehaviour
     {
-
+        public bool isFirstElementLearned;
         private int baseLearnCost;
 
         protected override void Awake()
@@ -28,6 +28,16 @@ namespace Game.System
             if (learnCost <= GM.Instance.PlayerData.MagicCrystals)
             {
                 GM.Instance.ResourceSystem.AddMagicCrystal(-learnCost);
+
+                var isButtonOk =
+                    GM.Instance.BaseUISystem.GetTowerButton != null &&
+                    !GM.Instance.BaseUISystem.GetTowerButton.gameObject.activeSelf;
+
+                if (isButtonOk)
+                {
+                    GM.Instance.BaseUISystem.GetTowerButton.gameObject.SetActive(true);
+                }
+                
                 return true;
             }
             else
@@ -37,61 +47,13 @@ namespace Game.System
             }         
         }
 
-        public void LearnAstral()
+        public void LearnElement(string elementName)
         {
-            if (CheckCanLearn(GM.Instance.PlayerData.AstralLevel))
+            if (CheckCanLearn(GM.Instance.PlayerData.ElementLevelList[elementName]))
             {
-                GM.Instance.PlayerData.AstralLevel++;
+                GM.Instance.PlayerData.ElementLevelList[elementName]++;
             }
-        }
-
-        public void LearnDarkness()
-        {
-            if (CheckCanLearn(GM.Instance.PlayerData.DarknessLevel))
-            {
-                GM.Instance.PlayerData.DarknessLevel++;
-            }
-        }
-
-        public void LearnIce()
-        {
-            if (CheckCanLearn(GM.Instance.PlayerData.IceLevel))
-            {
-                GM.Instance.PlayerData.IceLevel++;
-            }
-        }
-
-        public void LearnIron()
-        {
-            if (CheckCanLearn(GM.Instance.PlayerData.IronLevel))
-            {
-                GM.Instance.PlayerData.IronLevel++;
-            }
-        }
-
-        public void LearnStorm()
-        {
-            if (CheckCanLearn(GM.Instance.PlayerData.StormLevel))
-            {
-                GM.Instance.PlayerData.StormLevel++;
-            }
-        }
-
-        public void LearnNature()
-        {
-            if (CheckCanLearn(GM.Instance.PlayerData.NatureLevel))
-            {
-                GM.Instance.PlayerData.NatureLevel++;
-            }
-        }
-
-        public void LearnFire()
-        {
-            if (CheckCanLearn(GM.Instance.PlayerData.FireLevel))
-            {
-                GM.Instance.PlayerData.FireLevel++;
-            }
-        }
+        }    
     }
 
 }

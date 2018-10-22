@@ -15,13 +15,15 @@ namespace Game.System
         public TowerPlaceSystem TowerPlaceSystem;
         public GridSystem GridSystem;
         public WaveSystem WaveSystem;
+        public Data.PlayerData PlayerData;
         public PlayerInputSystem PlayerInputSystem;
         public BaseUISystem BaseUISystem;
         public TowerUISystem TowerUISystem;
         public ResourceSystem ResourceSystem;
         public ForceSystem ForceSystem;
         public ForceUISystem ForceUISystem;
-        public Data.PlayerData PlayerData;
+        public TowerCreatingSystem TowerCreatingSystem;
+       
         public Canvas UICanvas;
 
         public static GM Instance;
