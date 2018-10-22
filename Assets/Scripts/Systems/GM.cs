@@ -20,8 +20,8 @@ namespace Game.System
         public BaseUISystem BaseUISystem;
         public TowerUISystem TowerUISystem;
         public ResourceSystem ResourceSystem;
-        public ForceSystem ForceSystem;
-        public ForceUISystem ForceUISystem;
+        public ElementSystem ElementSystem;
+        public ElementUISystem ElementUISystem;
         public TowerCreatingSystem TowerCreatingSystem;
        
         public Canvas UICanvas;
@@ -87,7 +87,5 @@ namespace Game.System
             ExpToLevelUp[23] = 601;
             ExpToLevelUp[24] = 649;
         }
-
-       
     }
 }

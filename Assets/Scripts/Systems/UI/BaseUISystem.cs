@@ -41,18 +41,19 @@ namespace Game.System
 
         private void LearnForce()
         {
-            if (!GM.Instance.ForceUISystem.gameObject.activeSelf)
+            if (!GM.Instance.ElementUISystem.gameObject.activeSelf)
             {
-                GM.Instance.ForceUISystem.gameObject.SetActive(true);
+                GM.Instance.ElementUISystem.gameObject.SetActive(true);
             }
             else
             {
-                GM.Instance.ForceUISystem.gameObject.SetActive(false);
+                GM.Instance.ElementUISystem.gameObject.SetActive(false);
             }        
         }
 
         private void GetTower()
         {
+            GM.Instance.TowerCreatingSystem.CreateRandomTower();
             GM.Instance.PlayerData.StartTowerRerollCount--;
         }
 
@@ -64,9 +65,9 @@ namespace Game.System
                 {
                     GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
 
-                    if (GM.Instance.ForceUISystem.gameObject.activeSelf)
+                    if (GM.Instance.ElementUISystem.gameObject.activeSelf)
                     {
-                        GM.Instance.ForceUISystem.gameObject.SetActive(false);
+                        GM.Instance.ElementUISystem.gameObject.SetActive(false);
                     }
                 }
             }

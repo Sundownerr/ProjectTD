@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.System
 {
-    public class ForceSystem : ExtendedMonoBehaviour
+    public class ElementSystem : ExtendedMonoBehaviour
     {
         public bool isFirstElementLearned;
         private int baseLearnCost;
@@ -18,7 +18,9 @@ namespace Game.System
 
             baseLearnCost = 20;
 
-            GM.Instance.ForceSystem = this;
+           
+
+            GM.Instance.ElementSystem = this;
         }
 
         private bool CheckCanLearn(int elementLevel)
@@ -47,11 +49,11 @@ namespace Game.System
             }         
         }
 
-        public void LearnElement(string elementName)
+        public void LearnElement(int elementId)
         {
-            if (CheckCanLearn(GM.Instance.PlayerData.ElementLevelList[elementName]))
+            if (CheckCanLearn(GM.Instance.PlayerData.ElementLevelList[elementId]))
             {
-                GM.Instance.PlayerData.ElementLevelList[elementName]++;
+                GM.Instance.PlayerData.ElementLevelList[elementId]++;
             }
         }    
     }

@@ -1,9 +1,10 @@
 ﻿using UnityEngine.UI;
+using UnityEngine;
 using TMPro;
 
 namespace Game.System
 {
-    public class ForceUISystem : ExtendedMonoBehaviour
+    public class ElementUISystem : ExtendedMonoBehaviour
     {
         public Button Astral, Darkness, Ice, Iron, Storm, Nature, Fire;
         public TextMeshProUGUI AstralLevel, DarknessLevel, IceLevel, IronLevel, StormLevel, NatureLevel, FireLevel;
@@ -23,66 +24,66 @@ namespace Game.System
             Nature.onClick.AddListener(LearnNature);
             Fire.onClick.AddListener(LearnFire);
 
-            GM.Instance.ForceUISystem = this;
+            GM.Instance.ElementUISystem = this;
 
             gameObject.SetActive(false);
         }
 
-        private void Start()
+        private void OnEnable()
         {
             UpdateValues();
         }
 
         public void UpdateValues()
         {
-            AstralLevel.text = GM.Instance.PlayerData.ElementLevelList["Astral"].ToString();
-            DarknessLevel.text = GM.Instance.PlayerData.ElementLevelList["Darkness"].ToString();
-            IceLevel.text = GM.Instance.PlayerData.ElementLevelList["Ice"].ToString();
-            IronLevel.text = GM.Instance.PlayerData.ElementLevelList["Iron"].ToString();
-            StormLevel.text = GM.Instance.PlayerData.ElementLevelList["Storm"].ToString();
-            NatureLevel.text = GM.Instance.PlayerData.ElementLevelList["Nature"].ToString();
-            FireLevel.text = GM.Instance.PlayerData.ElementLevelList["Fire"].ToString();
+            AstralLevel.text = GM.Instance.PlayerData.ElementLevelList[0].ToString();
+            DarknessLevel.text = GM.Instance.PlayerData.ElementLevelList[1].ToString();
+            IceLevel.text = GM.Instance.PlayerData.ElementLevelList[2].ToString();
+            IronLevel.text = GM.Instance.PlayerData.ElementLevelList[3].ToString();
+            StormLevel.text = GM.Instance.PlayerData.ElementLevelList[4].ToString();
+            NatureLevel.text = GM.Instance.PlayerData.ElementLevelList[5].ToString();
+            FireLevel.text = GM.Instance.PlayerData.ElementLevelList[6].ToString();
         }
 
         private void LearnAstral()
         {
-            GM.Instance.ForceSystem.LearnElement("Astral");
+            GM.Instance.ElementSystem.LearnElement(0);
             UpdateValues();
         }
 
         private void LearnDarkness()
         {
-            GM.Instance.ForceSystem.LearnElement("Darkness");
+            GM.Instance.ElementSystem.LearnElement(1);
             UpdateValues();
         }
 
         private void LearnIce()
         {
-            GM.Instance.ForceSystem.LearnElement("Ice");
+            GM.Instance.ElementSystem.LearnElement(2);
             UpdateValues();
         }
 
         private void LearnIron()
         {
-            GM.Instance.ForceSystem.LearnElement("Iron");
+            GM.Instance.ElementSystem.LearnElement(3);
             UpdateValues();
         }
 
         private void LearnStorm()
         {
-            GM.Instance.ForceSystem.LearnElement("Storm");
+            GM.Instance.ElementSystem.LearnElement(4);
             UpdateValues();
         }
 
         private void LearnNature()
         {
-            GM.Instance.ForceSystem.LearnElement("Nature");
+            GM.Instance.ElementSystem.LearnElement(5);
             UpdateValues();
         }
 
         private void LearnFire()
         {
-            GM.Instance.ForceSystem.LearnElement("Fire");
+            GM.Instance.ElementSystem.LearnElement(6);
             UpdateValues();
         }
     }
