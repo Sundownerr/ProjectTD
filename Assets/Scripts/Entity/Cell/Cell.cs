@@ -26,7 +26,7 @@ namespace Game.TowerCells
             CellRenderer = GetComponent<Renderer>();
             CellRenderer.material.color = new Color(0, 0, 0, 0);        
 
-            new CellExpandSystem(gameObject, GM.Instance.CellPrefab, GM.Instance.TowerCellAreaList);
+            new CellExpandSystem(gameObject, GM.Instance.CellPrefab, GM.Instance.CellAreaList);
         }
     }
 }

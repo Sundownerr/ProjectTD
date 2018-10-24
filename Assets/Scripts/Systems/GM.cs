@@ -7,22 +7,60 @@ namespace Game.System
 
     public class GM : ExtendedMonoBehaviour
     {
-        public GameObject[] WaypointList, TowerCellAreaList;
-        public List<GameObject> TowerList, CreepList, CellList;
+        [NaughtyAttributes.BoxGroup("List")]
+        public GameObject[] WaypointList, CellAreaList;
+
+        [NaughtyAttributes.BoxGroup("List")]
+        public List<GameObject> CreepList, CellList, PlacedTowerList;
+
+        [NaughtyAttributes.BoxGroup("List")]
+        public List<Data.Entity.Tower.TowerData> AvailableTowerList;
+
+        [NaughtyAttributes.BoxGroup("List")]
         public List<TowerCells.Cell> CellStateList;
+
+        [NaughtyAttributes.BoxGroup("Prefab")]
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint, LevelUpEffect;
+
+        [NaughtyAttributes.BoxGroup("Parent")]
         public Transform CellParent, BulletParent, TowerParent, CreepParent;
+
+        [HideInInspector]
         public TowerPlaceSystem TowerPlaceSystem;
+
+        [HideInInspector]
         public GridSystem GridSystem;
+
+        [HideInInspector]
         public WaveSystem WaveSystem;
+
+        [NaughtyAttributes.BoxGroup("Data")]
         public Data.PlayerData PlayerData;
+        [NaughtyAttributes.BoxGroup("Data")]
+        public Data.AllTowerData AllTowerData;
+
+        [HideInInspector]
         public PlayerInputSystem PlayerInputSystem;
+
+        [HideInInspector]
         public BaseUISystem BaseUISystem;
+
+        [HideInInspector]
         public TowerUISystem TowerUISystem;
+
+        [HideInInspector]
         public ResourceSystem ResourceSystem;
+
+        [HideInInspector]
         public ElementSystem ElementSystem;
+
+        [HideInInspector]
         public ElementUISystem ElementUISystem;
+
+        [HideInInspector]
         public TowerCreatingSystem TowerCreatingSystem;
+
+        
        
         public Canvas UICanvas;
 

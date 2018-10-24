@@ -22,6 +22,7 @@ namespace Game.Tower
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);
             Lifetime = ParticleSystemList[0].main.startLifetime.constant;
+            gameObject.SetActive(false);
         }
 
         private void OnEnable()

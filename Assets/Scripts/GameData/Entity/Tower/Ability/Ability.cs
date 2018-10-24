@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
+using System;
 
 namespace Game.Data
 {
     [CreateAssetMenu(fileName = "New Ability", menuName = "Base Ability")]
-    
-    public class Ability : ScriptableObject
-    {
-        [Expandable]
-        public List<Effect.Effect> EffectList;
 
+    [Serializable]
+    public class Ability : ScriptableObject
+    {       
         [HideInInspector]
         public List<Creep.CreepSystem> creepDataList;
 
@@ -23,8 +22,11 @@ namespace Game.Data
 
         public string AbilityName, AbilityDescription;
         public float Cooldown, TriggerChance;
-        public int ManaCost;       
-        
+        public int ManaCost;
+
+        [Expandable]
+        public List<Effect.Effect> EffectList;
+
         private StateMachine state;
         private Tower.TowerBaseSystem ownerTower;
 

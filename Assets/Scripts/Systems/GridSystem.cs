@@ -57,7 +57,7 @@ namespace Game.System
 
         private IEnumerator BuildTimer()
         {
-            CreateGrid(GM.Instance.TowerCellAreaList.Length);
+            CreateGrid(GM.Instance.CellAreaList.Length);
 
             yield return new WaitForSeconds(1f);
 
@@ -68,11 +68,11 @@ namespace Game.System
         {
             for (var i = 0; i < count; i++)
             {
-                var ray = new Ray(GM.Instance.TowerCellAreaList[i].transform.position, Vector3.up);
+                var ray = new Ray(GM.Instance.CellAreaList[i].transform.position, Vector3.up);
 
                 if (!Physics.Raycast(ray, 100, LayerMask))
                 {
-                    var spawnPos = GM.Instance.TowerCellAreaList[i].transform.position + new Vector3(0, GM.Instance.TowerCellAreaList[i].transform.localScale.y / 1.9f, 0);
+                    var spawnPos = GM.Instance.CellAreaList[i].transform.position + new Vector3(0, GM.Instance.CellAreaList[i].transform.localScale.y / 1.9f, 0);
                     Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);            
                 }
             }

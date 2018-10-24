@@ -26,8 +26,9 @@ namespace Game.System
         private bool CheckCanLearn(int elementLevel)
         {
             var learnCost = elementLevel + baseLearnCost;
+            var isCanLearn = elementLevel < 15;
 
-            if (learnCost <= GM.Instance.PlayerData.MagicCrystals)
+            if (learnCost <= GM.Instance.PlayerData.MagicCrystals && isCanLearn)
             {
                 GM.Instance.ResourceSystem.AddMagicCrystal(-learnCost);
 
@@ -44,7 +45,7 @@ namespace Game.System
             }
             else
             {
-                Debug.Log("not enough mc");
+                Debug.Log("not enough mc or level is 15");
                 return false;
             }         
         }

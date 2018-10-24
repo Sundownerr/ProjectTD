@@ -298,3 +298,5 @@ __pycache__/
 /Assets/Prefabs/Towers/Ice/Common
 /Assets/Scripts/Attribute
 /Assets/Scripts/Editor
+/Assets/OneLine
+/Assets/Plugins/NaughtyAttributes

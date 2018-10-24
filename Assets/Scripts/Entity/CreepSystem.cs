@@ -71,7 +71,7 @@ namespace Game.Creep
             creepTransform.localRotation = rotation;
         }
 
-        public void GetDamage(int damage, Tower.TowerBaseSystem damageDealer)
+        public void GetDamage(float damage, Tower.TowerBaseSystem damageDealer)
         {
             if (!isKilled)
             {

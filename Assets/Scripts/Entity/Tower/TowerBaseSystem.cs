@@ -12,13 +12,13 @@ namespace Game.Tower
         public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
 
         [HideInInspector]
-        public GameObject OcuppiedCell, Range;        
+        public GameObject OcuppiedCell, Bullet, Range;        
 
         [HideInInspector]
         public TowerRangeSystem RangeSystem;     
 
         public TowerData Stats;
-        public GameObject Bullet, TowerPlaceEffect, LevelUpEffect;
+        public GameObject TowerPlaceEffect;
 
         protected List<Renderer> rendererList;
 
@@ -45,6 +45,7 @@ namespace Game.Tower
 
             MovingPartTransform = transform.GetChild(0);
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
+            Bullet = transform.GetChild(2).gameObject;
 
             for (int i = 0; i < Stats.AbilityList.Count; i++)
             {
@@ -136,8 +137,8 @@ namespace Game.Tower
 
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
-            var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.Euler(90, 0, 0));
-            Destroy(placeEffect, 1f);
+            var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.identity);
+            Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.startLifetime.constant);
 
             gameObject.layer = 14;
             RangeSystem.Show(false);
@@ -160,7 +161,7 @@ namespace Game.Tower
             GM.Instance.ResourceSystem.AddGold(Stats.GoldCost);
 
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
-            GM.Instance.TowerList.Remove(gameObject);
+            GM.Instance.PlacedTowerList.Remove(gameObject);
             Destroy(gameObject);
         }
 
@@ -181,7 +182,7 @@ namespace Game.Tower
                     Stats.Level++;
 
                     var effect = Instantiate(GM.Instance.LevelUpEffect, transform.position, Quaternion.identity);
-                    Destroy(effect, 2f);
+                    Destroy(effect, effect.GetComponent<ParticleSystem>().main.startLifetime.constant);
                 }
             }
             UpdateUI();

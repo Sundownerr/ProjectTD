@@ -63,12 +63,12 @@ namespace Game.System
             {
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
-                GM.Instance.TowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent));
+                GM.Instance.PlacedTowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent));
 
                 GM.Instance.ResourceSystem.AddTowerLimit(newTowerLimit);
                 GM.Instance.ResourceSystem.AddGold(-newGoldCost);
 
-                lastTower = GM.Instance.TowerList[GM.Instance.TowerList.Count - 1];
+                lastTower = GM.Instance.PlacedTowerList[GM.Instance.PlacedTowerList.Count - 1];
             
                 state.ChangeState(new MoveTowerState(this));
             }
@@ -144,7 +144,7 @@ namespace Game.System
 
         private void DeleteTower()
         {
-            var towerList = GM.Instance.TowerList;
+            var towerList = GM.Instance.PlacedTowerList;
             var lastTowerIndex = towerList.Count - 1;
 
             GM.Instance.ResourceSystem.AddTowerLimit(-newTowerLimit);
