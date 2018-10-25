@@ -6,14 +6,26 @@ using System;
 [Serializable]
 public class Element 
 {
-    public List<Rarity> Rarities;
+    [SerializeField]
+    public List<Rarity> RarityList;
+
+    [SerializeField]
     public string Name;
 }
 
 [Serializable]
 public class Rarity
 {
+    [SerializeField]
+    public List<TowerData> TowerList;
     
-    public List<TowerData> Towers;
+    [SerializeField]
     public string Name;
+}
+
+[Serializable]
+public class ElementList
+{
+    [SerializeField]
+    public List<Element> ElementsList;
 }

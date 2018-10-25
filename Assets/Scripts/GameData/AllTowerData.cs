@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEditor;
 
 namespace Game.Data
 {
@@ -11,17 +12,22 @@ namespace Game.Data
     [Serializable]
     public class AllTowerData : ScriptableObject
     {     
-    
-        public List<Element> AllTowerList;
+        [SerializeField]
+        public ElementList AllTowerList;
 
         private string[] elementNameList;
 
+
         private void Awake()
         {
-            AllTowerList = new List<Element>();
+            var towerData = Resources.Load("All Tower Data");
 
-            elementNameList = new string[]
+            if (towerData == null)
             {
+                AllTowerList.ElementsList = new List<Element>();
+
+                elementNameList = new string[]
+                {
                 "Astral",
                 "Darkness",
                 "Ice",
@@ -29,43 +35,44 @@ namespace Game.Data
                 "Storm",
                 "Nature",
                 "Fire"
-            };
+                };
 
-            for (int i = 0; i < 7; i++)
-            {
-                AllTowerList.Add(new Element()
+                for (int i = 0; i < 7; i++)
                 {
-                    Name = elementNameList[i],
+                    AllTowerList.ElementsList.Add(new Element()
+                    {
+                        Name = elementNameList[i],
 
-                    Rarities = new List<Rarity>
+                        RarityList = new List<Rarity>
                     {
                         new Rarity()
                         {
                             Name = "Common",
-                            Towers = new List<TowerData>()
+                            TowerList = new List<TowerData>()
                         },
 
                         new Rarity()
                         {
                             Name = "Uncommon",
-                            Towers = new List<TowerData>()
+                            TowerList = new List<TowerData>()
                         },
 
                          new Rarity()
                         {
                             Name = "Rare",
-                            Towers = new List<TowerData>()
+                            TowerList = new List<TowerData>()
                         },
 
                         new Rarity()
                         {
                             Name = "Unique",
-                            Towers = new List<TowerData>()
+                            TowerList = new List<TowerData>()
                         }
                     }
+                    }
+                    );
                 }
-                );                  
-            }               
+            }
         }
     }
 }

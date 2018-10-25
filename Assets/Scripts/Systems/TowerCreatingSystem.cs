@@ -7,7 +7,7 @@ namespace Game.System
 {
     public class TowerCreatingSystem : ExtendedMonoBehaviour
     {
-        private List<int> LeveledElementList;
+        private List<int> leveledElementList;
 
         protected override void Awake()
         {
@@ -18,12 +18,18 @@ namespace Game.System
 
             GM.Instance.TowerCreatingSystem = this;
 
-            LeveledElementList = new List<int>();
+            leveledElementList = new List<int>();
         }
         
         public void CreateRandomTower()
         {
-            LeveledElementList.Clear();
+            if (GM.Instance.PlayerData.StartTowerRerollCount > 0)
+            {
+                GM.Instance.AvailableTowerList.Clear();
+                GM.Instance.PlayerData.StartTowerRerollCount--;
+            }
+
+            leveledElementList.Clear();
 
             var elementLevelList = GM.Instance.PlayerData.ElementLevelList;
 
@@ -31,41 +37,47 @@ namespace Game.System
             {
                 if (elementLevelList[i] > 0)
                 {
-                    LeveledElementList.Add(i);                 
+                    leveledElementList.Add(i);                 
                 }
             }
 
-            for (int i = 0; i < LeveledElementList.Count; i++)
+            for (int i = 0; i < leveledElementList.Count; i++)
             {
-                for (int j = 0; j < GM.Instance.AllTowerData.AllTowerList.Count; j++)
+                for (int j = 0; j < GM.Instance.AllTowerData.AllTowerList.ElementsList.Count; j++)
                 {
                     if (j == i)
                     {
-                        var random = Random.Range(0, 1);
-
+                        var random = Random.Range(0, 2);
+                        Debug.Log(random);
                         if (random == 1)
                         {
-                            GetTower(j);
-                        }                      
+                            GetTower(leveledElementList[i]);
+                        }
+                        
                     }
                 }
             }
         }
 
-        private void GetTower(int elementId)
+        private void GetTower(int Id)
         {
             var allTowerList = GM.Instance.AllTowerData.AllTowerList;
 
-            for (int i = 0; i < allTowerList[elementId].Rarities.Count; i++)
+           
+
+            for (int i = 0; i < allTowerList.ElementsList[Id].RarityList.Count; i++)
             {
-                for (int j = 0; j < allTowerList[elementId].Rarities[i].Towers.Count; j++)
+                for (int j = 0; j < allTowerList.ElementsList[Id].RarityList[i].TowerList.Count; j++)
                 {
-                    if (allTowerList[elementId].Rarities[i].Towers[j].Wave >= GM.Instance.WaveSystem.WaveCount)
+                    if (allTowerList.ElementsList[Id].RarityList[i].TowerList[j].Wave >= GM.Instance.WaveSystem.WaveCount)
                     {
-                        GM.Instance.AvailableTowerList.Add(allTowerList[elementId].Rarities[i].Towers[j]);
+                        GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[Id].RarityList[i].TowerList[j]);
+                        GM.Instance.BuildUISystem.UpdateAvailableElement();
                     }
                 }
             }
         }
+
+        
     }
 }

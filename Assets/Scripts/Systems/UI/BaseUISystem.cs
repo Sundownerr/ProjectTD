@@ -44,6 +44,8 @@ namespace Game.System
             if (!GM.Instance.ElementUISystem.gameObject.activeSelf)
             {
                 GM.Instance.ElementUISystem.gameObject.SetActive(true);
+
+                GM.Instance.BuildUISystem.gameObject.SetActive(false);
             }
             else
             {
@@ -54,23 +56,33 @@ namespace Game.System
         private void GetTower()
         {
             GM.Instance.TowerCreatingSystem.CreateRandomTower();
-            GM.Instance.PlayerData.StartTowerRerollCount--;
+        
         }
 
         private void BuildTower()
         {
-            if (GM.Instance.GridSystem.IsGridBuilded)
+            if (!GM.Instance.BuildUISystem.gameObject.activeSelf)
             {
-                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
-                {
-                    GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+                GM.Instance.BuildUISystem.gameObject.SetActive(true);
 
-                    if (GM.Instance.ElementUISystem.gameObject.activeSelf)
-                    {
-                        GM.Instance.ElementUISystem.gameObject.SetActive(false);
-                    }
-                }
+                GM.Instance.ElementUISystem.gameObject.SetActive(false);
             }
+            else
+            {
+                GM.Instance.BuildUISystem.gameObject.SetActive(false);
+            }
+            //if (GM.Instance.GridSystem.IsGridBuilded)
+            //{
+            //    if (GM.PLAYERSTATE != GM.PLACING_TOWER)
+            //    {
+            //        GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+
+            //        if (GM.Instance.ElementUISystem.gameObject.activeSelf)
+            //        {
+            //            GM.Instance.ElementUISystem.gameObject.SetActive(false);
+            //        }
+            //    }
+            //}
         }
     }
 }

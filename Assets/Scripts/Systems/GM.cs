@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Game.System
@@ -60,8 +61,10 @@ namespace Game.System
         [HideInInspector]
         public TowerCreatingSystem TowerCreatingSystem;
 
-        
-       
+        [HideInInspector]
+        public BuildUISystem BuildUISystem;
+
+
         public Canvas UICanvas;
 
         public static GM Instance;
@@ -124,6 +127,8 @@ namespace Game.System
             ExpToLevelUp[22] = 556;
             ExpToLevelUp[23] = 601;
             ExpToLevelUp[24] = 649;
+
+
         }
     }
 }
