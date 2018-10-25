@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using UnityEngine.UI;
 
 namespace Game.Data.Entity.Tower
 {
@@ -15,6 +16,8 @@ namespace Game.Data.Entity.Tower
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
+
+        public Sprite Image;
 
         [BoxGroup("Main Info")]
         public int Wave, TowerLimit, MagicCrystalRequirement, GoldCost;
