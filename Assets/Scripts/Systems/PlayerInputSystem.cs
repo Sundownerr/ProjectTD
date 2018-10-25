@@ -79,7 +79,7 @@ namespace Game.System
                             !owner.isHitUI &&
                             owner.hit.transform.gameObject.layer == 9;
 
-                        if (isMouseOnTower && !Input.GetKey(KeyCode.LeftShift))
+                        if (isMouseOnTower)
                         {
                             owner.state.ChangeState(new MouseOnTowerState(owner));
                         }
@@ -101,6 +101,8 @@ namespace Game.System
                 {
                     owner.state.ChangeState(new SellingTowerState(owner));
                 }
+
+               
             }
 
             public void Exit()
@@ -130,7 +132,7 @@ namespace Game.System
 
                 owner.StartCoroutine(towerUI.RefreshUI());
 
-                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
+                if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
                 {
                     GM.PLAYERSTATE = GM.CHOOSED_TOWER;
                 }
@@ -164,8 +166,8 @@ namespace Game.System
                 {
                     towerUI.gameObject.SetActive(false);
                 }
-
-                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
+                
+                if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
                 {
                     GM.PLAYERSTATE = GM.IDLE;
                 }

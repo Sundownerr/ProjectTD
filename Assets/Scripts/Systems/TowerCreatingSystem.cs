@@ -59,25 +59,24 @@ namespace Game.System
             }
         }
 
-        private void GetTower(int Id)
+        private void GetTower(int id)
         {
-            var allTowerList = GM.Instance.AllTowerData.AllTowerList;
+            var allTowerList = GM.Instance.AllTowerData.AllTowerList;        
 
-           
-
-            for (int i = 0; i < allTowerList.ElementsList[Id].RarityList.Count; i++)
+            for (int i = 0; i < allTowerList.ElementsList[id].RarityList.Count; i++)
             {
-                for (int j = 0; j < allTowerList.ElementsList[Id].RarityList[i].TowerList.Count; j++)
+                for (int j = 0; j < allTowerList.ElementsList[id].RarityList[i].TowerList.Count; j++)
                 {
-                    if (allTowerList.ElementsList[Id].RarityList[i].TowerList[j].Wave >= GM.Instance.WaveSystem.WaveCount)
+                    if (allTowerList.ElementsList[id].RarityList[i].TowerList[j].Wave >= GM.Instance.WaveSystem.WaveCount)
                     {
-                        GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[Id].RarityList[i].TowerList[j]);
+                        GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);
                         GM.Instance.BuildUISystem.UpdateAvailableElement();
+                        
                     }
                 }
             }
-        }
 
-        
+            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.BuildUISystem.ChoosedElementId);
+        }
     }
 }

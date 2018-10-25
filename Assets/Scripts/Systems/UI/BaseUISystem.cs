@@ -71,18 +71,7 @@ namespace Game.System
             {
                 GM.Instance.BuildUISystem.gameObject.SetActive(false);
             }
-            //if (GM.Instance.GridSystem.IsGridBuilded)
-            //{
-            //    if (GM.PLAYERSTATE != GM.PLACING_TOWER)
-            //    {
-            //        GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
-
-            //        if (GM.Instance.ElementUISystem.gameObject.activeSelf)
-            //        {
-            //            GM.Instance.ElementUISystem.gameObject.SetActive(false);
-            //        }
-            //    }
-            //}
+           
         }
     }
 }

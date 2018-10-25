@@ -37,8 +37,12 @@ namespace Game.System
 
         [NaughtyAttributes.BoxGroup("Data")]
         public Data.PlayerData PlayerData;
+
         [NaughtyAttributes.BoxGroup("Data")]
         public Data.AllTowerData AllTowerData;
+
+        [HideInInspector]
+        public Data.Entity.Tower.TowerData ChoosedTowerData;
 
         [HideInInspector]
         public PlayerInputSystem PlayerInputSystem;

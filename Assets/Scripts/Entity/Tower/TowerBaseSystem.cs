@@ -26,7 +26,7 @@ namespace Game.Tower
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
         private bool isRangeShowed, isTowerPlaced;    
-
+        
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
@@ -134,7 +134,7 @@ namespace Game.Tower
         private void EndPlacing()
         {          
             transform.position = OcuppiedCell.transform.position;
-
+            
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
             var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.identity);
@@ -142,6 +142,11 @@ namespace Game.Tower
 
             gameObject.layer = 14;
             RangeSystem.Show(false);
+
+            GM.Instance.BuildUISystem.UpdateAvailableElement();
+            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
+            GM.Instance.ChoosedTowerData = null;           
+
             isTowerPlaced = true;
         }
 
@@ -256,8 +261,7 @@ namespace Game.Tower
             }
 
             public void Enter()
-            {
-                
+            {            
                 owner.combatSystem.SetStartState();
             }
 

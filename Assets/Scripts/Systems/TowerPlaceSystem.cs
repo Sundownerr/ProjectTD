@@ -63,13 +63,16 @@ namespace Game.System
             {
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
-                GM.Instance.PlacedTowerList.Add(Instantiate(GM.Instance.TowerPrefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent));
+                GM.Instance.PlacedTowerList.Add(Instantiate(GM.Instance.ChoosedTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent));
 
                 GM.Instance.ResourceSystem.AddTowerLimit(newTowerLimit);
                 GM.Instance.ResourceSystem.AddGold(-newGoldCost);
 
                 lastTower = GM.Instance.PlacedTowerList[GM.Instance.PlacedTowerList.Count - 1];
-            
+
+                GM.Instance.BuildUISystem.UpdateAvailableElement();
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
+
                 state.ChangeState(new MoveTowerState(this));
             }
             else
@@ -131,27 +134,23 @@ namespace Game.System
         {
             lastTower.GetComponent<Tower.TowerBaseSystem>().OcuppiedCell = chosenCellState.gameObject;
             chosenCellState.IsBusy = true;
-
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                StartCoroutine(Refresh());
-            }
-            else
-            {
-                state.ChangeState(new GetInputState(this));
-            }
+        
+            state.ChangeState(new GetInputState(this));            
         }
 
         private void DeleteTower()
-        {
-            var towerList = GM.Instance.PlacedTowerList;
-            var lastTowerIndex = towerList.Count - 1;
+        {         
+            var lastTowerIndex = GM.Instance.PlacedTowerList.Count - 1;
 
             GM.Instance.ResourceSystem.AddTowerLimit(-newTowerLimit);
             GM.Instance.ResourceSystem.AddGold(newGoldCost);
 
-            Destroy(towerList[lastTowerIndex]);
-            towerList.RemoveAt(lastTowerIndex);
+            Destroy(GM.Instance.PlacedTowerList[lastTowerIndex]);
+            GM.Instance.PlacedTowerList.RemoveAt(lastTowerIndex);
+
+            GM.Instance.AvailableTowerList.Add(GM.Instance.ChoosedTowerData);
+            GM.Instance.BuildUISystem.UpdateAvailableElement();
+            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
 
             state.ChangeState(new GetInputState(this));
         }
@@ -202,9 +201,9 @@ namespace Game.System
             {                
                 if (GM.PLAYERSTATE == GM.PREPARE_PLACING_TOWER)
                 {
-                    owner.newTowerLimit = GM.Instance.TowerPrefab.GetComponent<Tower.TowerBaseSystem>().Stats.TowerLimit;
-                    owner.newGoldCost = GM.Instance.TowerPrefab.GetComponent<Tower.TowerBaseSystem>().Stats.GoldCost;
-                    owner.newMagicCrystalCost = GM.Instance.TowerPrefab.GetComponent<Tower.TowerBaseSystem>().Stats.MagicCrystalRequirement;
+                    owner.newTowerLimit = GM.Instance.ChoosedTowerData.TowerLimit;
+                    owner.newGoldCost = GM.Instance.ChoosedTowerData.GoldCost;
+                    owner.newMagicCrystalCost = GM.Instance.ChoosedTowerData.MagicCrystalRequirement;
 
                     if (GM.Instance.ResourceSystem.CheckHaveResources(owner.newTowerLimit, owner.newGoldCost, owner.newMagicCrystalCost))
                     {

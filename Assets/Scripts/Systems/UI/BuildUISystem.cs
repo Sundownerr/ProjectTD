@@ -10,11 +10,12 @@ namespace Game.System
         public List<Button> ElementButtonList, RarityButtonList;
         public GameObject TowerButtonPrefab;
         public Button Tower;
-
+        public StateMachine State;
+        public int ChoosedElementId;
         public GameObject Rarity;
 
-        private int choosedElementId;
-        private List<GameObject> towerButtonList;
+       
+        private List<GameObject> towerButtonList;     
 
         protected override void Awake()
         {
@@ -35,32 +36,35 @@ namespace Game.System
 
             UpdateAvailableElement();
 
-            GM.Instance.BuildUISystem = this;
-
             gameObject.SetActive(false);
             Rarity.gameObject.SetActive(false);
             TowerButtonPrefab.SetActive(false);
+
+            GM.Instance.BuildUISystem = this;          
+        }
+
+        private List<Button> DisableButtonList(List<Button> list)
+        {
+            var tempList = list;
+
+            for (int i = 0; i < tempList.Count; i++)
+            {
+                tempList[i].interactable = false;
+            }
+
+            return tempList;
         }
 
         public void UpdateAvailableElement()
         {
             var availableTowerList = GM.Instance.AvailableTowerList;
 
-            for (int i = 0; i < ElementButtonList.Count; i++)
-            {
-                ElementButtonList[i].interactable = false;
-            }
+            DisableButtonList(ElementButtonList);
 
             for (int i = 0; i < availableTowerList.Count; i++)
             {
-                ShowAvailableElement(availableTowerList[i].ElementId);
+                ElementButtonList[availableTowerList[i].ElementId].interactable = true;
             }
-        }
-
-        public void ShowAvailableElement(int id)
-        {
-            ElementButtonList[id].interactable = true;
-           
         }
 
         public void ShowRarity(Button elementButton)
@@ -73,9 +77,9 @@ namespace Game.System
 
             for (int i = 0; i < availableTowerList.Count; i++)
             {
-                if (availableTowerList[i].ElementId == choosedElementId)
+                if (availableTowerList[i].ElementId == ChoosedElementId)
                 {
-                    UpdateRarity(choosedElementId);
+                    UpdateRarity(ChoosedElementId);
                 }
             }
         }
@@ -83,12 +87,7 @@ namespace Game.System
         public void UpdateRarity(int elementId)
         {
             var availableTowerList = GM.Instance.AvailableTowerList;
-            var towerCount = 0;
-
-            for (int i = 0; i < RarityButtonList.Count; i++)
-            {
-                RarityButtonList[i].interactable = false;
-            }
+            var towerCount = 0;         
 
             for (int i = 0; i < towerButtonList.Count; i++)
             {
@@ -97,66 +96,67 @@ namespace Game.System
 
             towerButtonList.Clear();
 
+            DisableButtonList(RarityButtonList);
 
             for (int i = 0; i < availableTowerList.Count; i++)
             {
                 if (availableTowerList[i].ElementId == elementId)
                 {
-                   
                     RarityButtonList[availableTowerList[i].RarityId].interactable = true;
 
-                    towerButtonList.Add(Instantiate(TowerButtonPrefab, RarityButtonList[availableTowerList[i].RarityId].GetComponent<RectTransform>()));               
+                    towerButtonList.Add(Instantiate(TowerButtonPrefab, RarityButtonList[availableTowerList[i].RarityId].GetComponent<RectTransform>()));
 
+                    towerButtonList[towerButtonList.Count - 1].GetComponent<TowerButtonSystem>().TowerData = availableTowerList[i];
                     towerButtonList[towerButtonList.Count - 1].GetComponent<RectTransform>().localPosition = new Vector2(0, 40 * (1 + towerCount));
                     towerButtonList[towerButtonList.Count - 1].transform.GetChild(0).GetComponent<Image>().sprite = availableTowerList[i].Image;
+
                     towerButtonList[towerButtonList.Count - 1].SetActive(true);
 
                     towerCount++;
-                    Debug.Log(towerCount);
                 }
             }
         }
 
         public void ShowAstral()
         {
-            choosedElementId = 0;
-            ShowRarity(ElementButtonList[choosedElementId]);
+            ChoosedElementId = 0;
+            ShowRarity(ElementButtonList[ChoosedElementId]);
         }
 
         public void ShowDarkness()
         {
-            choosedElementId = 1;
-            ShowRarity(ElementButtonList[choosedElementId]);            
+            ChoosedElementId = 1;
+            ShowRarity(ElementButtonList[ChoosedElementId]);            
         }
 
         public void ShowIce()
         {
-            choosedElementId = 2;
-            ShowRarity(ElementButtonList[choosedElementId]);        
+            ChoosedElementId = 2;
+            ShowRarity(ElementButtonList[ChoosedElementId]);        
         }
 
         public void ShowIron()
         {
-            choosedElementId = 3;
-            ShowRarity(ElementButtonList[choosedElementId]);         
+            ChoosedElementId = 3;
+            ShowRarity(ElementButtonList[ChoosedElementId]);         
         }
 
         public void ShowStorm()
         {
-            choosedElementId = 4;
-            ShowRarity(ElementButtonList[choosedElementId]);       
+            ChoosedElementId = 4;
+            ShowRarity(ElementButtonList[ChoosedElementId]);       
         }
 
         public void ShowNature()
         {
-            choosedElementId = 5;
-            ShowRarity(ElementButtonList[choosedElementId]);        
+            ChoosedElementId = 5;
+            ShowRarity(ElementButtonList[ChoosedElementId]);        
         }
 
         public void ShowFire()
         {
-            choosedElementId = 6;
-            ShowRarity(ElementButtonList[choosedElementId]);          
+            ChoosedElementId = 6;
+            ShowRarity(ElementButtonList[ChoosedElementId]);          
         }
     }
 }
