@@ -69,8 +69,8 @@ namespace Game.System
             CritChance.text = KiloFormat(choosedTowerStats.CritChance) + "%";
 
             var isHaveUpgrade =
-              choosedTowerStats.GradeList.Count > 0 &&
-              choosedTowerStats.GradeCount < choosedTowerStats.GradeList.Count;
+              choosedTowerStats.GradeList.Count > 0;
+            
 
             if (isHaveUpgrade)
             {

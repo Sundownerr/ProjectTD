@@ -53,7 +53,6 @@ namespace Game.Tower
                 IncreaseStatsPerLevel();
             }
 
-            Stats.GradeCount++;
             BaseStats = Instantiate(newBase);
         }
 

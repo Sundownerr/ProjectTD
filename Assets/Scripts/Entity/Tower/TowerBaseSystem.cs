@@ -120,7 +120,6 @@ namespace Game.Tower
 
             gameObject.layer = 14;
             RangeSystem.Show(false);
-
           
             GM.Instance.ChoosedTowerData = null;           
 
