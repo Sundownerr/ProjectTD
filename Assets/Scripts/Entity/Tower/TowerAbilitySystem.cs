@@ -72,7 +72,7 @@ namespace Game.Tower
             public void Enter()
             {
                 var tower = owner.towerBaseSystem;
-                var abilityList = tower.Stats.AbilityList;
+                var abilityList = tower.StatsSystem.Stats.AbilityList;
                 var stackList = owner.stackedAbilityList;
 
                 stackList.Add(Instantiate(abilityList[owner.abilityStackRequiredIndex]));
@@ -109,7 +109,7 @@ namespace Game.Tower
             public void Execute()
             {
                 var tower = owner.towerBaseSystem;
-                var abilityList = owner.towerBaseSystem.Stats.AbilityList;
+                var abilityList = owner.towerBaseSystem.StatsSystem.Stats.AbilityList;
                 var stackList = owner.stackedAbilityList;
 
                 var isCreepInRange =
@@ -207,7 +207,7 @@ namespace Game.Tower
             public void Execute()
             {
                 var tower = owner.towerBaseSystem;
-                var abilityList = tower.Stats.AbilityList;
+                var abilityList = tower.StatsSystem.Stats.AbilityList;
                 var stackList = owner.stackedAbilityList;
 
                 var isCreepInRange =

@@ -11,7 +11,7 @@ namespace Game.Tower
         public TowerData Stats;
 
         private TowerBaseSystem ownerTower;
-        private TowerData baseStats;
+        public TowerData BaseStats;
         private List<TowerData> gradeList;
         private int gradeCount;
         private StateMachine state;
@@ -24,8 +24,8 @@ namespace Game.Tower
             }
 
             Stats = Instantiate(Stats);
-            baseStats = Instantiate(Stats);
-            gradeList = baseStats.GradeList;
+            BaseStats = Instantiate(Stats);
+            gradeList = BaseStats.GradeList;
 
             ownerTower = GetComponent<TowerBaseSystem>();
 
@@ -44,53 +44,41 @@ namespace Game.Tower
 
         private void IncreaseStatsPerLevel()
         {
-            Stats.Damage = baseStats.Damage + Mathf.FloorToInt(GetPercentOfValue(4f, baseStats.Damage));
-            Stats.AttackSpeed = baseStats.AttackSpeed - GetPercentOfValue(1.2f, baseStats.AttackSpeed);
-            Stats.CritChance = baseStats.CritChance + GetPercentOfValue(0.2f, baseStats.CritChance);
-            Stats.SpellCritChance = baseStats.SpellCritChance + GetPercentOfValue(0.2f, baseStats.SpellCritChance);
+            Stats.Damage = BaseStats.Damage + Mathf.FloorToInt(GetPercentOfValue(4f, BaseStats.Damage));
+            Stats.AttackSpeed = BaseStats.AttackSpeed - GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
+            Stats.CritChance = BaseStats.CritChance + GetPercentOfValue(0.2f, BaseStats.CritChance);
+            Stats.SpellCritChance = BaseStats.SpellCritChance + GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
 
             UpdateUI();
         }
 
-        public void Upgrade()
+        public void Upgrade(TowerData currentBase, TowerData newBase)
         {
-            if (gradeCount < gradeList.Count)
-            {           
-                var newBaseStats = Instantiate(gradeList[gradeCount]);
+            Stats.EntityName = newBase.EntityName;
+            Stats.Image = newBase.Image;
+            Stats.EntityDescription = newBase.EntityDescription;
+            Stats.Damage = newBase.Damage + (Stats.Damage - currentBase.Damage);
+            Stats.Range = newBase.Range;
+            Stats.AttackSpeed = newBase.AttackSpeed - (Stats.AttackSpeed - currentBase.AttackSpeed);
+            Stats.CritChance = newBase.CritChance + (Stats.CritChance - currentBase.CritChance);
+            Stats.CritMultiplier = newBase.CritMultiplier + (Stats.CritMultiplier - currentBase.CritMultiplier);
+            Stats.MulticritCount = newBase.MulticritCount + (Stats.MulticritCount - currentBase.MulticritCount);
+            Stats.Mana = newBase.Mana + (Stats.Mana - currentBase.Mana);
+            Stats.ManaRegen = newBase.ManaRegen + (Stats.ManaRegen - currentBase.ManaRegen);
+            Stats.SpellDamage = newBase.SpellDamage + (Stats.SpellDamage - currentBase.SpellDamage);
+            Stats.SpellCritChance = newBase.SpellCritChance + (Stats.SpellCritChance - currentBase.SpellCritChance);
+            Stats.TriggerChance = newBase.TriggerChance + (Stats.TriggerChance - currentBase.TriggerChance);
+            Stats.BuffDuration = newBase.BuffDuration + (Stats.BuffDuration - currentBase.BuffDuration);
+            Stats.DebuffDuration = newBase.DebuffDuration + (Stats.DebuffDuration - currentBase.DebuffDuration);
+            Stats.ExpRatio = newBase.ExpRatio + (Stats.ExpRatio - currentBase.ExpRatio);
+            Stats.ItemDropRatio = newBase.ItemDropRatio + (Stats.ItemDropRatio - currentBase.ItemDropRatio);
+            Stats.ItemQuialityRatio = newBase.ItemQuialityRatio + (Stats.ItemQuialityRatio - currentBase.ItemQuialityRatio);
+            Stats.GoldRatio = newBase.GoldRatio + (Stats.GoldRatio - currentBase.GoldRatio);
+    
 
-                UpgradeStats(baseStats, newBaseStats);
-
-                baseStats = newBaseStats;
-
-                UpdateUI();
-
-                gradeCount++;
-            }
+            BaseStats = newBase;
         }
 
-        private void UpgradeStats(TowerData currentBase, TowerData newBase)
-        {
-            Stats.EntityName        = newBase.EntityName;
-            Stats.Image             = newBase.Image;
-            Stats.EntityDescription = newBase.EntityDescription;
-            Stats.Damage            = newBase.Damage + (Stats.Damage - currentBase.Damage);
-            Stats.Range             = newBase.Range;
-            Stats.AttackSpeed       = newBase.AttackSpeed - (Stats.AttackSpeed - currentBase.AttackSpeed);
-            Stats.CritChance        = newBase.CritChance + (Stats.CritChance - currentBase.CritChance);
-            Stats.CritMultiplier    = newBase.CritMultiplier + (Stats.CritMultiplier - currentBase.CritMultiplier);
-            Stats.MulticritCount    = newBase.MulticritCount + (Stats.MulticritCount - currentBase.MulticritCount);
-            Stats.Mana              = newBase.Mana + (Stats.Mana - currentBase.Mana);
-            Stats.ManaRegen         = newBase.ManaRegen + (Stats.ManaRegen - currentBase.ManaRegen);
-            Stats.SpellDamage       = newBase.SpellDamage + (Stats.SpellDamage - currentBase.SpellDamage);
-            Stats.SpellCritChance   = newBase.SpellCritChance + (Stats.SpellCritChance - currentBase.SpellCritChance);
-            Stats.TriggerChance     = newBase.TriggerChance + (Stats.TriggerChance - currentBase.TriggerChance);
-            Stats.BuffDuration      = newBase.BuffDuration + (Stats.BuffDuration - currentBase.BuffDuration);
-            Stats.DebuffDuration    = newBase.DebuffDuration + (Stats.DebuffDuration - currentBase.DebuffDuration);
-            Stats.ExpRatio          = newBase.ExpRatio + (Stats.ExpRatio - currentBase.ExpRatio);
-            Stats.ItemDropRatio     = newBase.ItemDropRatio + (Stats.ItemDropRatio - currentBase.ItemDropRatio);
-            Stats.ItemQuialityRatio = newBase.ItemQuialityRatio + (Stats.ItemQuialityRatio - currentBase.ItemQuialityRatio);
-            Stats.GoldRatio         = newBase.GoldRatio + (Stats.GoldRatio - currentBase.GoldRatio);          
-        } 
 
         public void AddExp(int amount)
         {
@@ -111,7 +99,7 @@ namespace Game.Tower
         }
 
 
-        private void UpdateUI()
+        public void UpdateUI()
         {
             if (GM.Instance.PlayerInputSystem.ChoosedTower == gameObject)
             {

@@ -15,17 +15,20 @@ namespace Game.Tower
         public GameObject OcuppiedCell, Bullet, Range;        
 
         [HideInInspector]
-        public TowerRangeSystem RangeSystem;     
-     
+        public TowerRangeSystem RangeSystem;
+
+        [HideInInspector]
+        public TowerStatsSystem StatsSystem;
+
         public GameObject TowerPlaceEffect;
 
         protected List<Renderer> rendererList;
 
-        private TowerStatsSystem statsSystem;
+       
         private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
-        private bool isRangeShowed, isTowerPlaced;      
+        private bool isRangeShowed, isTowerPlaced;
 
         protected override void Awake()
         {
@@ -36,24 +39,27 @@ namespace Game.Tower
 
             combatSystem = GetComponent<TowerCombatSystem>();
             abilitySystem = GetComponent<TowerAbilitySystem>();
-            statsSystem = GetComponent<TowerStatsSystem>();
-
-            Range = Instantiate(GM.Instance.RangePrefab, transform);
-            RangeSystem = Range.GetComponent<TowerRangeSystem>();
-            Range.transform.localScale = new Vector3(statsSystem.Stats.Range, 0.001f, statsSystem.Stats.Range);
+            StatsSystem = GetComponent<TowerStatsSystem>();        
 
             MovingPartTransform = transform.GetChild(0);
             StaticPartTransform = transform.GetChild(1);
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             Bullet = transform.GetChild(2).gameObject;
+         
+            state = new StateMachine();
+            state.ChangeState(new SpawnState(this));
+        }
+
+        private void Start()
+        {
+            Range = Instantiate(GM.Instance.RangePrefab, transform);
+            RangeSystem = Range.GetComponent<TowerRangeSystem>();
+            Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
 
             rendererList = new List<Renderer>();
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
 
             isRangeShowed = true;
-
-            state = new StateMachine();
-            state.ChangeState(new SpawnState(this));
         }
 
         private void Update()
@@ -114,8 +120,7 @@ namespace Game.Tower
             gameObject.layer = 14;
             RangeSystem.Show(false);
 
-            GM.Instance.BuildUISystem.UpdateAvailableElement();
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
+          
             GM.Instance.ChoosedTowerData = null;           
 
             isTowerPlaced = true;
@@ -131,10 +136,26 @@ namespace Game.Tower
             MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }
 
+        public void Upgrade()
+        {
+            if (StatsSystem.Stats.GradeList.Count > 0)
+            {
+                var upgradedTower = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
+                var upgradedTowerBaseSystem = upgradedTower.GetComponent<TowerBaseSystem>();
+              
+                upgradedTowerBaseSystem.StatsSystem.Upgrade(upgradedTowerBaseSystem.StatsSystem.BaseStats, StatsSystem.Stats.GradeList[0]);
+                upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
+
+                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTower;
+                
+                Destroy(gameObject);
+            }
+        }
+
         public void Sell()
         {
-            GM.Instance.ResourceSystem.AddTowerLimit(-statsSystem.Stats.TowerLimit);
-            GM.Instance.ResourceSystem.AddGold(statsSystem.Stats.GoldCost);
+            GM.Instance.ResourceSystem.AddTowerLimit(-StatsSystem.Stats.TowerLimit);
+            GM.Instance.ResourceSystem.AddGold(StatsSystem.Stats.GoldCost);
 
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
             GM.Instance.PlacedTowerList.Remove(gameObject);
@@ -168,7 +189,9 @@ namespace Game.Tower
 
             public void Exit()
             {
-                owner.EndPlacing();                
+                owner.EndPlacing();
+
+                owner.StatsSystem.UpdateUI();
             }
         }
 

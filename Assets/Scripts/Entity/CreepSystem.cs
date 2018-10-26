@@ -196,7 +196,7 @@ namespace Game.Creep
 
             public void Enter()
             {
-                owner.lastDamageDealer.AddExp(owner.Stats.Exp);
+                owner.lastDamageDealer.GetComponent<Tower.TowerStatsSystem>().AddExp(owner.Stats.Exp);
                 GM.Instance.ResourceSystem.AddGold(owner.Stats.Gold);
 
                 owner.state.ChangeState(new DestroyState(owner));

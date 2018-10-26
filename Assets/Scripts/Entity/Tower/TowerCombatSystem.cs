@@ -77,7 +77,7 @@ namespace Game.Tower
         {
             bulletList[index].transform.position = towerData.ShootPointTransform.position;
             bulletList[index].transform.rotation = towerData.MovingPartTransform.rotation;
-            bulletDataList[index].chainCount = towerData.Stats.ChainshotCount;
+            bulletDataList[index].chainCount = towerData.StatsSystem.Stats.ChainshotCount;
             bulletLifetime = bulletDataList[index].Lifetime;
             bulletSpeed = bulletDataList[index].Speed;
         }
@@ -159,9 +159,9 @@ namespace Game.Tower
         {
             var creepList = towerData.RangeSystem.CreepList;
 
-            if (creepList.Count >= 1 + towerData.Stats.MultishotCount)
+            if (creepList.Count >= 1 + towerData.StatsSystem.Stats.MultishotCount)
             {
-                return 1 + towerData.Stats.MultishotCount;
+                return 1 + towerData.StatsSystem.Stats.MultishotCount;
             }
             else
             {
@@ -199,28 +199,28 @@ namespace Game.Tower
 
             for (int i = 0; i < count; i++)
             {
-                hitTargets[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(towerData.Stats.Damage, towerData);
+                hitTargets[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(towerData.StatsSystem.Stats.Damage, towerData);
             }
         }
 
         private void HitTarget(int bulletIndex)
         {
-            if (towerData.Stats.AOEShotRange > 0)
+            if (towerData.StatsSystem.Stats.AOEShotRange > 0)
             {
-                DamageInAOE(bulletList[bulletIndex], towerData.Stats.AOEShotRange);
+                DamageInAOE(bulletList[bulletIndex], towerData.StatsSystem.Stats.AOEShotRange);
             }
             else
             {
-                bulletDataList[bulletIndex].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.Stats.Damage, towerData);
+                bulletDataList[bulletIndex].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.StatsSystem.Stats.Damage, towerData);
             }
 
             var isChainShot =
-                towerData.Stats.ChainshotCount > 0 &&
+                towerData.StatsSystem.Stats.ChainshotCount > 0 &&
                 bulletDataList[bulletIndex].chainCount > 0;
 
             if (isChainShot)
             {
-                SetChainTarget(bulletDataList[bulletIndex], towerData.Stats.ChainshotCount);
+                SetChainTarget(bulletDataList[bulletIndex], towerData.StatsSystem.Stats.ChainshotCount);
             }
             else
             {
@@ -237,7 +237,7 @@ namespace Game.Tower
                 CreateBullet(towerData.RangeSystem.CreepList[i]);
             }
 
-            bulletCoroutine = StartCoroutine(AttackCooldown(towerData.Stats.AttackSpeed));
+            bulletCoroutine = StartCoroutine(AttackCooldown(towerData.StatsSystem.Stats.AttackSpeed));
         }
       
         protected class ShootState : IState

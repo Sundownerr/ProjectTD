@@ -285,6 +285,8 @@ namespace Game.System
             public void Enter()
             {
                 owner.PlaceTower();
+                GM.Instance.BuildUISystem.UpdateAvailableElement();
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
             }
 
             public void Execute()
