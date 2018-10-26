@@ -42,16 +42,7 @@ namespace Game.Tower
             }
         }
 
-        private void IncreaseStatsPerLevel()
-        {
-            Stats.Damage = BaseStats.Damage + Mathf.FloorToInt(GetPercentOfValue(4f, BaseStats.Damage));
-            Stats.AttackSpeed = BaseStats.AttackSpeed - GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
-            Stats.CritChance = BaseStats.CritChance + GetPercentOfValue(0.2f, BaseStats.CritChance);
-            Stats.SpellCritChance = BaseStats.SpellCritChance + GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
-
-            UpdateUI();
-        }
-
+      
         public void Upgrade(TowerData currentBase, TowerData newBase)
         {
             Stats.EntityName = newBase.EntityName;
@@ -74,11 +65,20 @@ namespace Game.Tower
             Stats.ItemDropRatio = newBase.ItemDropRatio + (Stats.ItemDropRatio - currentBase.ItemDropRatio);
             Stats.ItemQuialityRatio = newBase.ItemQuialityRatio + (Stats.ItemQuialityRatio - currentBase.ItemQuialityRatio);
             Stats.GoldRatio = newBase.GoldRatio + (Stats.GoldRatio - currentBase.GoldRatio);
-    
 
+            Stats.GradeCount++;
             BaseStats = newBase;
         }
 
+        private void IncreaseStatsPerLevel()
+        {
+            Stats.Damage += Mathf.FloorToInt(GetPercentOfValue(4f, BaseStats.Damage));
+            Stats.AttackSpeed -= GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
+            Stats.CritChance += GetPercentOfValue(0.2f, BaseStats.CritChance);
+            Stats.SpellCritChance += GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
+
+            UpdateUI();
+        }
 
         public void AddExp(int amount)
         {
@@ -88,6 +88,7 @@ namespace Game.Tower
             {
                 if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
                 {
+                    Debug.Log("das");
                     IncreaseStatsPerLevel();
                     Stats.Level++;
 

@@ -23,8 +23,7 @@ namespace Game.Tower
         public GameObject TowerPlaceEffect;
 
         protected List<Renderer> rendererList;
-
-       
+    
         private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
@@ -60,6 +59,8 @@ namespace Game.Tower
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
 
             isRangeShowed = true;
+
+            StatsSystem.UpdateUI();
         }
 
         private void Update()
@@ -138,12 +139,15 @@ namespace Game.Tower
 
         public void Upgrade()
         {
-            if (StatsSystem.Stats.GradeList.Count > 0)
+            if (StatsSystem.Stats.GradeList.Count > 0 && StatsSystem.Stats.GradeCount < StatsSystem.Stats.GradeList.Count)
             {
                 var upgradedTower = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
                 var upgradedTowerBaseSystem = upgradedTower.GetComponent<TowerBaseSystem>();
               
                 upgradedTowerBaseSystem.StatsSystem.Upgrade(upgradedTowerBaseSystem.StatsSystem.BaseStats, StatsSystem.Stats.GradeList[0]);
+                upgradedTowerBaseSystem.StatsSystem.Stats.Level = StatsSystem.Stats.Level;
+                upgradedTowerBaseSystem.StatsSystem.Stats.Exp = StatsSystem.Stats.Exp;
+
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTower;
