@@ -25,8 +25,7 @@ namespace Game.Tower
         private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
-        private bool isRangeShowed, isTowerPlaced;
-       
+        private bool isRangeShowed, isTowerPlaced;      
 
         protected override void Awake()
         {

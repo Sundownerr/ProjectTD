@@ -42,28 +42,55 @@ namespace Game.Tower
             }
         }
 
-        private void IncreaseStats()
+        private void IncreaseStatsPerLevel()
         {
             Stats.Damage = baseStats.Damage + Mathf.FloorToInt(GetPercentOfValue(4f, baseStats.Damage));
-            Stats.AttackSpeed = baseStats.AttackSpeed + GetPercentOfValue(1.2f, baseStats.AttackSpeed);
+            Stats.AttackSpeed = baseStats.AttackSpeed - GetPercentOfValue(1.2f, baseStats.AttackSpeed);
             Stats.CritChance = baseStats.CritChance + GetPercentOfValue(0.2f, baseStats.CritChance);
             Stats.SpellCritChance = baseStats.SpellCritChance + GetPercentOfValue(0.2f, baseStats.SpellCritChance);
 
             UpdateUI();
         }
 
-
         public void Upgrade()
         {
             if (gradeCount < gradeList.Count)
-            {
-                baseStats = Instantiate(gradeList[gradeCount]);
+            {           
+                var newBaseStats = Instantiate(gradeList[gradeCount]);
+
+                UpgradeStats(baseStats, newBaseStats);
+
+                baseStats = newBaseStats;
 
                 UpdateUI();
 
                 gradeCount++;
             }
         }
+
+        private void UpgradeStats(TowerData currentBase, TowerData newBase)
+        {
+            Stats.EntityName        = newBase.EntityName;
+            Stats.Image             = newBase.Image;
+            Stats.EntityDescription = newBase.EntityDescription;
+            Stats.Damage            = newBase.Damage + (Stats.Damage - currentBase.Damage);
+            Stats.Range             = newBase.Range;
+            Stats.AttackSpeed       = newBase.AttackSpeed - (Stats.AttackSpeed - currentBase.AttackSpeed);
+            Stats.CritChance        = newBase.CritChance + (Stats.CritChance - currentBase.CritChance);
+            Stats.CritMultiplier    = newBase.CritMultiplier + (Stats.CritMultiplier - currentBase.CritMultiplier);
+            Stats.MulticritCount    = newBase.MulticritCount + (Stats.MulticritCount - currentBase.MulticritCount);
+            Stats.Mana              = newBase.Mana + (Stats.Mana - currentBase.Mana);
+            Stats.ManaRegen         = newBase.ManaRegen + (Stats.ManaRegen - currentBase.ManaRegen);
+            Stats.SpellDamage       = newBase.SpellDamage + (Stats.SpellDamage - currentBase.SpellDamage);
+            Stats.SpellCritChance   = newBase.SpellCritChance + (Stats.SpellCritChance - currentBase.SpellCritChance);
+            Stats.TriggerChance     = newBase.TriggerChance + (Stats.TriggerChance - currentBase.TriggerChance);
+            Stats.BuffDuration      = newBase.BuffDuration + (Stats.BuffDuration - currentBase.BuffDuration);
+            Stats.DebuffDuration    = newBase.DebuffDuration + (Stats.DebuffDuration - currentBase.DebuffDuration);
+            Stats.ExpRatio          = newBase.ExpRatio + (Stats.ExpRatio - currentBase.ExpRatio);
+            Stats.ItemDropRatio     = newBase.ItemDropRatio + (Stats.ItemDropRatio - currentBase.ItemDropRatio);
+            Stats.ItemQuialityRatio = newBase.ItemQuialityRatio + (Stats.ItemQuialityRatio - currentBase.ItemQuialityRatio);
+            Stats.GoldRatio         = newBase.GoldRatio + (Stats.GoldRatio - currentBase.GoldRatio);          
+        } 
 
         public void AddExp(int amount)
         {
@@ -73,7 +100,7 @@ namespace Game.Tower
             {
                 if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
                 {
-                    IncreaseStats();
+                    IncreaseStatsPerLevel();
                     Stats.Level++;
 
                     var effect = Instantiate(GM.Instance.LevelUpEffect, transform.position, Quaternion.identity);
