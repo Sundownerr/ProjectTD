@@ -116,7 +116,7 @@ namespace Game.Tower
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
             var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.identity);
-            Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.startLifetime.constant);
+            Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
 
             gameObject.layer = 14;
             RangeSystem.Show(false);
@@ -144,10 +144,8 @@ namespace Game.Tower
                 var upgradedTower = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
                 var upgradedTowerBaseSystem = upgradedTower.GetComponent<TowerBaseSystem>();
               
-                upgradedTowerBaseSystem.StatsSystem.Upgrade(upgradedTowerBaseSystem.StatsSystem.BaseStats, StatsSystem.Stats.GradeList[0]);
-                upgradedTowerBaseSystem.StatsSystem.Stats.Level = StatsSystem.Stats.Level;
-                upgradedTowerBaseSystem.StatsSystem.Stats.Exp = StatsSystem.Stats.Exp;
-
+                upgradedTowerBaseSystem.StatsSystem.Upgrade(upgradedTowerBaseSystem.StatsSystem.BaseStats, StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
+              
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTower;

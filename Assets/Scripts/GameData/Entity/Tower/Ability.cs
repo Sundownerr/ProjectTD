@@ -30,7 +30,7 @@ namespace Game.Data
         private StateMachine state;
         private Tower.TowerBaseSystem ownerTower;
 
-        private void Awake()
+        private void OnEnable()
         {
             state = new StateMachine();
             state.ChangeState(new ChoseEffectState(this));
@@ -51,8 +51,8 @@ namespace Game.Data
             else
             {
                 IsStackable = false;
-            }        
-        }      
+            }
+        }
 
         public void InitAbility()
         {
