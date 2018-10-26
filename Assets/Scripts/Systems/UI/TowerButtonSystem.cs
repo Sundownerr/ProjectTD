@@ -42,7 +42,7 @@ namespace Game.System
                 GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
 
                 Destroy(gameObject);
-            }                  
+            }           
         }
     }
 }

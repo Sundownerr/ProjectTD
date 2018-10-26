@@ -67,7 +67,7 @@ namespace Game.System
             {
                 for (int j = 0; j < allTowerList.ElementsList[id].RarityList[i].TowerList.Count; j++)
                 {
-                    if (allTowerList.ElementsList[id].RarityList[i].TowerList[j].Wave >= GM.Instance.WaveSystem.WaveCount)
+                    if (allTowerList.ElementsList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveCount)
                     {
                         GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);
                         GM.Instance.BuildUISystem.UpdateAvailableElement();

@@ -11,7 +11,7 @@ namespace Game.System
 
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
         public TextMeshProUGUI TowerName, CritChance, Level;
-        public bool IsSelligTower;
+        public bool IsSellig, IsUpgrading;
 
         public Button SellButton, UpgradeButton;
 
@@ -26,7 +26,8 @@ namespace Game.System
 
             GM.Instance.TowerUISystem = this;
             gameObject.SetActive(false);
-            SellButton.onClick.AddListener(SellTower);
+            SellButton.onClick.AddListener(Sell);
+            UpgradeButton.onClick.AddListener(Upgrade);
         }
 
         private void OnEnable()
@@ -41,9 +42,14 @@ namespace Game.System
             gameObject.SetActive(true);
         }
 
-        private void SellTower()
+        private void Sell()
         {
-            IsSelligTower = true;
+            IsSellig = true;
+        }
+
+        private void Upgrade()
+        {
+            IsUpgrading = true;
         }
 
         public void UpdateValues()

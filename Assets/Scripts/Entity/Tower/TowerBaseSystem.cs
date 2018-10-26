@@ -9,55 +9,44 @@ namespace Game.Tower
     public class TowerBaseSystem : ExtendedMonoBehaviour
     {
         [HideInInspector]
-        public Transform RangeTransform, MovingPartTransform, ShootPointTransform;
+        public Transform RangeTransform, MovingPartTransform, StaticPartTransform, ShootPointTransform;
 
         [HideInInspector]
         public GameObject OcuppiedCell, Bullet, Range;        
 
         [HideInInspector]
         public TowerRangeSystem RangeSystem;     
-
-        public TowerData Stats;
+     
         public GameObject TowerPlaceEffect;
 
         protected List<Renderer> rendererList;
 
+        private TowerStatsSystem statsSystem;
         private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
-        private bool isRangeShowed, isTowerPlaced;    
-        
+        private bool isRangeShowed, isTowerPlaced;
+       
+
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
             {
                 CachedTransform = transform;
-            }
-
-            Stats = Instantiate(Stats);
+            }        
 
             combatSystem = GetComponent<TowerCombatSystem>();
             abilitySystem = GetComponent<TowerAbilitySystem>();
+            statsSystem = GetComponent<TowerStatsSystem>();
 
             Range = Instantiate(GM.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
-            Range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
+            Range.transform.localScale = new Vector3(statsSystem.Stats.Range, 0.001f, statsSystem.Stats.Range);
 
             MovingPartTransform = transform.GetChild(0);
+            StaticPartTransform = transform.GetChild(1);
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             Bullet = transform.GetChild(2).gameObject;
-
-            for (int i = 0; i < Stats.AbilityList.Count; i++)
-            {
-                Stats.AbilityList[i] = Instantiate(Stats.AbilityList[i]);
-
-                for (int j = 0; j < Stats.AbilityList[i].EffectList.Count; j++)
-                {
-                    Stats.AbilityList[i].EffectList[j] = Instantiate(Stats.AbilityList[i].EffectList[j]); ;
-                }
-
-                Stats.AbilityList[i].SetOwnerTower(this);
-            }
 
             rendererList = new List<Renderer>();
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
@@ -78,23 +67,6 @@ namespace Game.Tower
             }
 
             SetRangeShow();
-        }
-        
-        private void IncreaseStats()
-        {           
-            Stats.Damage += Mathf.FloorToInt(GetPercentOfValue(4f, Stats.Damage));
-            Stats.AttackSpeed += GetPercentOfValue(1.2f, Stats.AttackSpeed);
-            Stats.CritChance += GetPercentOfValue(0.2f, Stats.CritChance);
-            Stats.SpellCritChance += GetPercentOfValue(0.2f, Stats.SpellCritChance);
-            UpdateUI();
-        }
-
-        private void UpdateUI()
-        {
-            if (GM.Instance.PlayerInputSystem.ChoosedTower == gameObject)
-            {
-                GM.Instance.TowerUISystem.UpdateValues();
-            }
         }
 
         private void SetRangeShow()
@@ -162,35 +134,12 @@ namespace Game.Tower
 
         public void Sell()
         {
-            GM.Instance.ResourceSystem.AddTowerLimit(-Stats.TowerLimit);
-            GM.Instance.ResourceSystem.AddGold(Stats.GoldCost);
+            GM.Instance.ResourceSystem.AddTowerLimit(-statsSystem.Stats.TowerLimit);
+            GM.Instance.ResourceSystem.AddGold(statsSystem.Stats.GoldCost);
 
             OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
             GM.Instance.PlacedTowerList.Remove(gameObject);
             Destroy(gameObject);
-        }
-
-        public void Upgrade()
-        {
-            
-        }
-
-        public void AddExp(int amount)
-        {
-            Stats.Exp += amount;
-
-            for (int i = Stats.Level; i < 25; i++)
-            {
-                if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
-                {
-                    IncreaseStats();
-                    Stats.Level++;
-
-                    var effect = Instantiate(GM.Instance.LevelUpEffect, transform.position, Quaternion.identity);
-                    Destroy(effect, effect.GetComponent<ParticleSystem>().main.startLifetime.constant);
-                }
-            }
-            UpdateUI();
         }
 
         protected class SpawnState : IState

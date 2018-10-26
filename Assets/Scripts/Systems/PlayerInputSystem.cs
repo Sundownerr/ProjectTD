@@ -97,14 +97,17 @@ namespace Game.System
                     owner.isHitUI = false;
                 }
 
-                if(GM.Instance.TowerUISystem.IsSelligTower)
+                if(GM.Instance.TowerUISystem.IsSellig)
                 {
-                    owner.state.ChangeState(new SellingTowerState(owner));
+                    owner.state.ChangeState(new SellTowerState(owner));
                 }
 
-               
+                if (GM.Instance.TowerUISystem.IsUpgrading)
+                {
+                    owner.state.ChangeState(new UpgradeTowerState(owner));
+                }
             }
-
+            
             public void Exit()
             {
             }
@@ -184,11 +187,11 @@ namespace Game.System
             }
         }
 
-        protected class SellingTowerState : IState
+        protected class SellTowerState : IState
         {
             private readonly PlayerInputSystem owner;
 
-            public SellingTowerState(PlayerInputSystem owner)
+            public SellTowerState(PlayerInputSystem owner)
             {
                 this.owner = owner;
             }
@@ -205,8 +208,33 @@ namespace Game.System
 
             public void Exit()
             {
-                GM.Instance.TowerUISystem.IsSelligTower = false;
+                GM.Instance.TowerUISystem.IsSellig = false;
                 GM.Instance.TowerUISystem.gameObject.SetActive(false);
+            }
+        }
+
+        protected class UpgradeTowerState : IState
+        {
+            private readonly PlayerInputSystem owner;
+
+            public UpgradeTowerState(PlayerInputSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {
+                owner.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Upgrade();
+                owner.state.ChangeState(new GetInputState(owner));
+            }
+
+            public void Execute()
+            {
+            }
+
+            public void Exit()
+            {
+                GM.Instance.TowerUISystem.IsUpgrading = false;                
             }
         }
     }

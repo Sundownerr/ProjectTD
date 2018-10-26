@@ -17,10 +17,11 @@ namespace Game.Data.Entity.Tower
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
 
+        [ShowAssetPreview(125, 125)]
         public Sprite Image;
 
         [BoxGroup("Main Info")]
-        public int Wave, TowerLimit, MagicCrystalRequirement, GoldCost;
+        public int WaveLevel, ElementLevel, TowerLimit, MagicCrystalReq, GoldCost;
      
         [BoxGroup("IDs")]
         public int RarityId, ElementId, DamageTypeId;
@@ -35,13 +36,11 @@ namespace Game.Data.Entity.Tower
         public int MultishotCount, ChainshotCount, AOEShotRange;
         
         [Space]
-        public List<TowerGradeStats> GradeStatList;
+        public List<TowerData> GradeList;
 
         [Expandable]
         public List<Ability> AbilityList;
-        public List<float> GradeCostList;
-        public List<float> DamageToArmorList;
-
+    
         private void Awake()
         {
             Level = 1;
