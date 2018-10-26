@@ -9,10 +9,11 @@ namespace Game.System
     {
         public List<Button> ElementButtonList, RarityButtonList;
         public GameObject TowerButtonPrefab;
-        public Button Tower;
         public StateMachine State;
         public int ChoosedElementId;
         public GameObject Rarity;
+
+        private List<Data.Entity.Tower.TowerData> availableTowerList;
 
        
         private List<GameObject> towerButtonList;     
@@ -25,6 +26,7 @@ namespace Game.System
             }
 
             towerButtonList = new List<GameObject>();
+            availableTowerList = new List<Data.Entity.Tower.TowerData>();
 
             ElementButtonList[0].onClick.AddListener(ShowAstral);
             ElementButtonList[1].onClick.AddListener(ShowDarkness);
@@ -40,6 +42,7 @@ namespace Game.System
             Rarity.gameObject.SetActive(false);
             TowerButtonPrefab.SetActive(false);
 
+            availableTowerList = GM.Instance.AvailableTowerList;
             GM.Instance.BuildUISystem = this;          
         }
 
@@ -56,9 +59,7 @@ namespace Game.System
         }
 
         public void UpdateAvailableElement()
-        {
-            var availableTowerList = GM.Instance.AvailableTowerList;
-
+        {           
             DisableButtonList(ElementButtonList);
 
             for (int i = 0; i < availableTowerList.Count; i++)
@@ -69,8 +70,6 @@ namespace Game.System
 
         public void ShowRarity(Button elementButton)
         {
-            var availableTowerList = GM.Instance.AvailableTowerList;
-
             Rarity.gameObject.SetActive(true);
             Rarity.gameObject.GetComponent<RectTransform>().SetParent(elementButton.GetComponent<RectTransform>());
             Rarity.gameObject.GetComponent<RectTransform>().localPosition = Vector2.zero;
@@ -85,8 +84,7 @@ namespace Game.System
         }
 
         public void UpdateRarity(int elementId)
-        {
-            var availableTowerList = GM.Instance.AvailableTowerList;
+        {      
             var towerCount = 0;         
 
             for (int i = 0; i < towerButtonList.Count; i++)
@@ -104,17 +102,53 @@ namespace Game.System
                 {
                     RarityButtonList[availableTowerList[i].RarityId].interactable = true;
 
-                    towerButtonList.Add(Instantiate(TowerButtonPrefab, RarityButtonList[availableTowerList[i].RarityId].GetComponent<RectTransform>()));
+                    if(towerButtonList.Count > 0)
+                    {
+                        var lastTowerButton = towerButtonList[towerButtonList.Count - 1];
 
-                    towerButtonList[towerButtonList.Count - 1].GetComponent<TowerButtonSystem>().TowerData = availableTowerList[i];
-                    towerButtonList[towerButtonList.Count - 1].GetComponent<RectTransform>().localPosition = new Vector2(0, 40 * (1 + towerCount));
-                    towerButtonList[towerButtonList.Count - 1].transform.GetChild(0).GetComponent<Image>().sprite = availableTowerList[i].Image;
+                        var isSameTower =
+                            availableTowerList[i] == lastTowerButton.GetComponent<TowerButtonSystem>().TowerData;
 
-                    towerButtonList[towerButtonList.Count - 1].SetActive(true);
-
+                        if (isSameTower)
+                        {
+                            AddTowerCount();
+                        }
+                        else
+                        {
+                            CreateTowerButton(i, towerCount);
+                        }
+                    }
+                    else
+                    {
+                        CreateTowerButton(i, towerCount);
+                    }
+                   
                     towerCount++;
                 }
             }
+        }
+
+
+        private void AddTowerCount()
+        {
+            var lastTowerButton = towerButtonList[towerButtonList.Count - 1];
+            var sameTowerCount = lastTowerButton.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text;
+
+            lastTowerButton.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = (int.Parse(sameTowerCount) + 1).ToString();
+            lastTowerButton.GetComponent<TowerButtonSystem>().Count++;
+        }
+
+        private void CreateTowerButton(int index, int towerCount)
+        {
+            towerButtonList.Add(Instantiate(TowerButtonPrefab, RarityButtonList[availableTowerList[index].RarityId].GetComponent<RectTransform>()));
+            var lastTowerButton = towerButtonList[towerButtonList.Count - 1];
+
+            lastTowerButton.GetComponent<TowerButtonSystem>().TowerData = availableTowerList[index];
+            lastTowerButton.GetComponent<RectTransform>().localPosition = new Vector2(0, 40 * (1 + towerCount));
+            lastTowerButton.transform.GetChild(0).GetComponent<Image>().sprite = availableTowerList[index].Image;
+            lastTowerButton.GetComponent<TowerButtonSystem>().Count++;
+
+            lastTowerButton.SetActive(true);
         }
 
         public void ShowAstral()

@@ -7,7 +7,8 @@ namespace Game.System
 {
     public class TowerButtonSystem : ExtendedMonoBehaviour
     {
-        public Data.Entity.Tower.TowerData TowerData;       
+        public Data.Entity.Tower.TowerData TowerData;
+        public int Count;
 
         protected override void Awake()
         {
@@ -26,21 +27,22 @@ namespace Game.System
             if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
             {
                 GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
-            }
+                Count--;
 
-            for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
-            {
-                if (GM.Instance.AvailableTowerList[i] == TowerData)
+                for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
                 {
-                    GM.Instance.AvailableTowerList.RemoveAt(i);
-                    break;
+                    if (GM.Instance.AvailableTowerList[i] == TowerData)
+                    {
+                        GM.Instance.AvailableTowerList.RemoveAt(i);
+                        break;
+                    }
                 }
-            }
 
-            GM.Instance.BuildUISystem.UpdateAvailableElement();
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
+                GM.Instance.BuildUISystem.UpdateAvailableElement();
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
 
-            Destroy(gameObject);
+                Destroy(gameObject);
+            }                  
         }
     }
 }

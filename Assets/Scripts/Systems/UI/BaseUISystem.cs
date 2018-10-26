@@ -70,8 +70,7 @@ namespace Game.System
             else
             {
                 GM.Instance.BuildUISystem.gameObject.SetActive(false);
-            }
-           
+            }           
         }
     }
 }
