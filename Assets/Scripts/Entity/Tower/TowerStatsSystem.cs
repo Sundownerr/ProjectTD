@@ -42,7 +42,7 @@ namespace Game.Tower
             }
         }
 
-        public void Upgrade(TowerData currentBase, TowerData current, TowerData newBase)
+        public void Upgrade(TowerData current, TowerData newBase)
         {
             Stats = Instantiate(newBase);
             Stats.Level = current.Level;

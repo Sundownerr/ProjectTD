@@ -140,14 +140,14 @@ namespace Game.Tower
         {
             if (StatsSystem.Stats.GradeList.Count > 0 && StatsSystem.Stats.GradeCount < StatsSystem.Stats.GradeList.Count)
             {
-                var upgradedTower = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
-                var upgradedTowerBaseSystem = upgradedTower.GetComponent<TowerBaseSystem>();
-              
-                upgradedTowerBaseSystem.StatsSystem.Upgrade(upgradedTowerBaseSystem.StatsSystem.BaseStats, StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
-              
+                var upgradedTowerPrefab = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
+                var upgradedTowerStatsSystem = upgradedTowerPrefab.GetComponent<TowerStatsSystem>();
+                var upgradedTowerBaseSystem = upgradedTowerPrefab.GetComponent<TowerBaseSystem>();
+
+                upgradedTowerStatsSystem.Upgrade(StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
 
-                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTower;
+                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;
                 
                 Destroy(gameObject);
             }
