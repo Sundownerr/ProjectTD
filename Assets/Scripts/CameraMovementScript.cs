@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#pragma warning disable CS1591 
+
 public class CameraMovementScript : ExtendedMonoBehaviour
 {   
     private Rigidbody camRigidBody;

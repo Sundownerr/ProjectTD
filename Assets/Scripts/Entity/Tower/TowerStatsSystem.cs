@@ -36,6 +36,11 @@ namespace Game.Tower
 
                 Stats.AbilityList[i].SetOwnerTower(ownerTower);
             }
+
+            for (int i = 0; i < 5; i++)
+            {
+                Stats.DamageToRace.Add(100f);
+            }
         }      
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)

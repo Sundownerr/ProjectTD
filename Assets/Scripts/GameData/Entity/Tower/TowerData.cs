@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
-using UnityEngine.UI;
 
 namespace Game.Data.Entity.Tower
 {
@@ -12,7 +11,7 @@ namespace Game.Data.Entity.Tower
     public class TowerData : Entity
     {
         [HideInInspector]
-        public int Exp, Level;
+        public int Exp, Level, GradeCount;
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
@@ -33,13 +32,13 @@ namespace Game.Data.Entity.Tower
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio, BuffDuration, DebuffDuration;
 
         [BoxGroup("Special"), Expandable]
-        public List<Special> SpecialList;
-
-        [HideInInspector]
-        public int GradeCount;
+        public List<Special> SpecialList;     
 
         [Space, Expandable]
         public List<TowerData> GradeList;
+
+        [Space]
+        public List<float> DamageToRace;
 
         [Space, Expandable]
         public List<Ability> AbilityList;     

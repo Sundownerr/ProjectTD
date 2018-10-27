@@ -71,12 +71,19 @@ namespace Game.Creep
             creepTransform.localRotation = rotation;
         }
 
+        private float CalculateDamage(float rawDamage, Tower.TowerBaseSystem damageDealer)
+        {
+            var damage = GetPercentOfValue(damageDealer.StatsSystem.Stats.DamageToRace[Stats.RaceId], rawDamage);
+            // add armor modificator
+            return damage;
+        }
+
         public void GetDamage(float damage, Tower.TowerBaseSystem damageDealer)
         {
             if (!isKilled)
             {
                 lastDamageDealer = damageDealer;
-                Stats.Health -= damage;
+                Stats.Health -= CalculateDamage(damage, damageDealer);
 
                 if (Stats.Health <= 0)
                 {
