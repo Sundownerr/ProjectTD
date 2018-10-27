@@ -20,13 +20,18 @@ namespace Game.Tower
         [HideInInspector]
         public TowerStatsSystem StatsSystem;
 
+        [HideInInspector]
+        public TowerSpecialSystem specialSystem;
+
         public TowerData Stats;
 
         protected List<Renderer> rendererList;
     
         private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
+       
         private StateMachine state;
+        private GameObject Target;
         private bool isRangeShowed, isTowerPlaced;
 
         protected override void Awake()
@@ -41,9 +46,11 @@ namespace Game.Tower
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             Bullet = transform.GetChild(2).gameObject;
 
+            StatsSystem = new TowerStatsSystem(this);
+            specialSystem = new TowerSpecialSystem(this);
             combatSystem = new TowerCombatSystem(this);
             abilitySystem = new TowerAbilitySystem(this);
-            StatsSystem = new TowerStatsSystem(this);
+           
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
         }
@@ -53,12 +60,12 @@ namespace Game.Tower
             Range = Instantiate(GM.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
             Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
+            isRangeShowed = true;
 
             rendererList = new List<Renderer>();
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
 
-            isRangeShowed = true;
-
+            Bullet.SetActive(false);
             StatsSystem.UpdateUI();
         }
 
@@ -125,9 +132,9 @@ namespace Game.Tower
             isTowerPlaced = true;
         }
 
-        private void RotateAtCreep()
+        private void RotateAtCreep(GameObject target)
         {
-            var offset = RangeSystem.CreepList[0].transform.position - transform.position;
+            var offset = target.transform.position - transform.position;
             offset.y = 0;
 
             var towerRotation = Quaternion.LookRotation(offset);
@@ -235,33 +242,35 @@ namespace Game.Tower
             }
 
             public void Enter()
-            {            
-                owner.combatSystem.SetStartState();
+            {
             }
 
             public void Execute()
             {
-                if (owner.RangeSystem.CreepList.Count > 0)
-                {
-                    if (owner.RangeSystem.CreepList[0] != null)
-                    {
-                        owner.RotateAtCreep();
-                        owner.combatSystem.State.Update();
-                    }
+                owner.combatSystem.State.Update();
 
-                    for (int i = 0; i < owner.RangeSystem.CreepList.Count; i++)
+                for (int i = 0; i < owner.RangeSystem.CreepList.Count; i++)
+                {
+                    if (owner.RangeSystem.CreepList[i] == null)
                     {
-                        if (owner.RangeSystem.CreepList[i] == null)
-                        {
-                            owner.RangeSystem.CreepList.RemoveAt(i);
-                            owner.RangeSystem.CreepSystemList.RemoveAt(i);
-                        }
-                    }                                 
+                        owner.RangeSystem.CreepList.RemoveAt(i);
+                        owner.RangeSystem.CreepSystemList.RemoveAt(i);
+                    }
                 }
-                else
+
+                if (owner.RangeSystem.CreepList.Count < 1)
                 {
                     owner.state.ChangeState(new MoveRemainingBulletState(owner));
                 }
+                else
+                {
+                    owner.Target = owner.RangeSystem.CreepList[0];
+                }            
+                              
+                if (owner.Target != null)
+                {
+                    owner.RotateAtCreep(owner.Target);
+                }             
             }
 
             public void Exit()
@@ -280,26 +289,25 @@ namespace Game.Tower
 
             public void Enter()
             {
+              
             }
 
             public void Execute()
             {
-                if (!(owner.RangeSystem.CreepList.Count > 0))
-                {
-                    if (!owner.combatSystem.CheckAllBulletInactive())
-                    {
-                        owner.combatSystem.MoveBullet();
-                    }
-                    else
-                    {
-                        owner.state.ChangeState(new LookForCreepState(owner));
-                    }
-                }
-                else
+                if (owner.RangeSystem.CreepList.Count > 0)
                 {
                     owner.state.ChangeState(new CombatState(owner));
                 }
+                else if (!owner.combatSystem.CheckAllBulletInactive())
+                {
+                    owner.combatSystem.MoveBullet();
+                }
+                else
+                {
+                    owner.state.ChangeState(new LookForCreepState(owner));
+                }
             }
+            
 
             public void Exit()
             {

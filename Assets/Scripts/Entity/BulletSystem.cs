@@ -5,7 +5,7 @@ namespace Game.Tower
     public class BulletSystem : ExtendedMonoBehaviour
     {
         public ParticleSystem[] ParticleSystemList;
-        public bool IsReachedTarget;
+        public bool IsTargetReached;
         public float Lifetime, Speed;
         public int RemainingBounceCount, ChainshotCount, MultishotCount, AOEShotRange;
         public GameObject Target;
@@ -22,19 +22,24 @@ namespace Game.Tower
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);
             Lifetime = ParticleSystemList[0].main.startLifetime.constant;
-            gameObject.SetActive(false);
+
+           
         }
 
         private void OnEnable()
         {          
             Show(true);
-            IsReachedTarget = false;
+            IsTargetReached = false;
         }
 
         private void OnDisable()
         {
-            Show(false);
-            IsReachedTarget = true;            
+            if(ChainshotCount > 0)
+            {
+                RemainingBounceCount = ChainshotCount;
+            }
+
+            Show(false);           
         }
 
         public void Show(bool enabled)

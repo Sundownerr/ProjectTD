@@ -5,9 +5,17 @@ using UnityEngine;
 
 namespace Game.Data.Entity.Tower
 {
+    [CreateAssetMenu(fileName = "Chainshot", menuName = "Tower Special/Chainshot")]
+
     public class Chainshot : Special
     {
         public int BounceCount, DecreaseDamagePerBounce;
+
+        private void Awake()
+        {
+            SpecialName = "Chainshot";
+            SpecialDescription = $"Bounce between {BounceCount} targets";
+        }
 
         public override void InitSpecial(TowerBaseSystem ownerTower)
         {

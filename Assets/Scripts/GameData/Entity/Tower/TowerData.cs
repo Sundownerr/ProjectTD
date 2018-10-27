@@ -32,14 +32,11 @@ namespace Game.Data.Entity.Tower
         [BoxGroup("Ratio")]
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio, BuffDuration, DebuffDuration;
 
-        [BoxGroup("Special")]
-        public int MultishotCount, ChainshotCount, AOEShotRange;
+        [BoxGroup("Special"), Expandable]
+        public List<Special> SpecialList;
 
         [HideInInspector]
         public int GradeCount;
-
-        [Space, Expandable]
-        public List<Special> SpecialList;
 
         [Space, Expandable]
         public List<TowerData> GradeList;
