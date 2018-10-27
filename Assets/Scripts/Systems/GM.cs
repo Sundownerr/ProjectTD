@@ -9,7 +9,7 @@ namespace Game.System
     public class GM : ExtendedMonoBehaviour
     {
         [NaughtyAttributes.BoxGroup("List")]
-        public GameObject[] WaypointList, CellAreaList;
+        public GameObject[] WaypointList, CellAreaList, ElementPlaceEffectList;
 
         [NaughtyAttributes.BoxGroup("List")]
         public List<GameObject> CreepList, CellList, PlacedTowerList;

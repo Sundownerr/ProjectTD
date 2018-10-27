@@ -4,23 +4,18 @@ using UnityEngine;
 
 namespace Game.Tower
 {
-    public class TowerAbilitySystem : ExtendedMonoBehaviour
+    public class TowerAbilitySystem 
     {
         public StateMachine state;
 
-        private TowerBaseSystem towerBaseSystem;
+        private TowerBaseSystem ownerTower;
         private List<Data.Ability> stackedAbilityList;
         private bool isAllEffectsEnded, isAllStackedEffectsEnded, isStackRequired;
         private int abilityStackRequiredIndex, stackCounter;
 
-        protected override void Awake()
-        {
-            if ((object)CachedTransform == null)
-            {
-                CachedTransform = transform;
-            }
-
-            towerBaseSystem = GetComponent<TowerBaseSystem>();
+        public TowerAbilitySystem(TowerBaseSystem ownerTower)
+        {        
+            this.ownerTower = ownerTower;
             stackedAbilityList = new List<Game.Data.Ability>();
 
             state = new StateMachine();
@@ -43,7 +38,7 @@ namespace Game.Tower
 
             public void Execute()
             {
-                var tower = owner.towerBaseSystem;
+                var tower = owner.ownerTower;
 
                 var isCreepInRange =
                     tower.RangeSystem.CreepList.Count > 0 &&
@@ -71,11 +66,11 @@ namespace Game.Tower
 
             public void Enter()
             {
-                var tower = owner.towerBaseSystem;
+                var tower = owner.ownerTower;
                 var abilityList = tower.StatsSystem.Stats.AbilityList;
                 var stackList = owner.stackedAbilityList;
 
-                stackList.Add(Instantiate(abilityList[owner.abilityStackRequiredIndex]));
+                stackList.Add(Object.Instantiate(abilityList[owner.abilityStackRequiredIndex]));
                 stackList[stackList.Count - 1].StackReset();
 
                 //Debug.Log("Stacked: " + owner.stackedAbilityList.Count);
@@ -108,8 +103,8 @@ namespace Game.Tower
 
             public void Execute()
             {
-                var tower = owner.towerBaseSystem;
-                var abilityList = owner.towerBaseSystem.StatsSystem.Stats.AbilityList;
+                var tower = owner.ownerTower;
+                var abilityList = owner.ownerTower.StatsSystem.Stats.AbilityList;
                 var stackList = owner.stackedAbilityList;
 
                 var isCreepInRange =
@@ -149,7 +144,7 @@ namespace Game.Tower
                             if (stackList[i].CheckEffectsEnded())
                             {
                                 //Debug.Log($"Destroy{i}");
-                                Destroy(stackList[i]);
+                                Object.Destroy(stackList[i]);
                                 stackList.RemoveAt(i);
                             }
                         }
@@ -206,7 +201,7 @@ namespace Game.Tower
 
             public void Execute()
             {
-                var tower = owner.towerBaseSystem;
+                var tower = owner.ownerTower;
                 var abilityList = tower.StatsSystem.Stats.AbilityList;
                 var stackList = owner.stackedAbilityList;
 
@@ -247,7 +242,7 @@ namespace Game.Tower
                             }
                             else
                             {
-                                Destroy(stackList[i]);
+                                Object.Destroy(stackList[i]);
                                 stackList.RemoveAt(i);
                             }                        
                         }

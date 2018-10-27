@@ -25,7 +25,7 @@ public abstract class ExtendedMonoBehaviour : MonoBehaviour
         }
     }
 
-    protected float CalcDistance(Vector3 pos1, Vector3 pos2)
+    public static float CalcDistance(Vector3 pos1, Vector3 pos2)
     {
         Vector3 heading;
         float distanceSquared;
@@ -41,12 +41,12 @@ public abstract class ExtendedMonoBehaviour : MonoBehaviour
         return distance;
     }
 
-    protected float GetPercentOfValue(float desiredPercent, float value)
+    public static float GetPercentOfValue(float desiredPercent, float value)
     {
         return value / 100 * desiredPercent;
     }
 
-    protected string KiloFormat(float num)
+    public static string KiloFormat(float num)
     {
         if (num >= 1000000000)
             return (num / 1000000000).ToString("#.0" + "B");

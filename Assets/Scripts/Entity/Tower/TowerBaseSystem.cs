@@ -20,7 +20,7 @@ namespace Game.Tower
         [HideInInspector]
         public TowerStatsSystem StatsSystem;
 
-        public GameObject TowerPlaceEffect;
+        public TowerData Stats;
 
         protected List<Renderer> rendererList;
     
@@ -34,23 +34,22 @@ namespace Game.Tower
             if ((object)CachedTransform == null)
             {
                 CachedTransform = transform;
-            }        
-
-            combatSystem = GetComponent<TowerCombatSystem>();
-            abilitySystem = GetComponent<TowerAbilitySystem>();
-            StatsSystem = GetComponent<TowerStatsSystem>();        
+            }               
 
             MovingPartTransform = transform.GetChild(0);
             StaticPartTransform = transform.GetChild(1);
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             Bullet = transform.GetChild(2).gameObject;
-         
+
+            combatSystem = new TowerCombatSystem(this);
+            abilitySystem = new TowerAbilitySystem(this);
+            StatsSystem = new TowerStatsSystem(this);
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
         }
 
         private void Start()
-        {
+        {          
             Range = Instantiate(GM.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
             Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
@@ -115,7 +114,7 @@ namespace Game.Tower
             
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
-            var placeEffect = Instantiate(TowerPlaceEffect, transform.position + Vector3.up * 5, Quaternion.identity);
+            var placeEffect = Instantiate(GM.Instance.ElementPlaceEffectList[StatsSystem.Stats.ElementId], transform.position + Vector3.up * 5, Quaternion.identity);
             Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
 
             gameObject.layer = 14;
@@ -141,10 +140,9 @@ namespace Game.Tower
             if (StatsSystem.Stats.GradeList.Count > 0 && StatsSystem.Stats.GradeCount < StatsSystem.Stats.GradeList.Count)
             {
                 var upgradedTowerPrefab = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
-                var upgradedTowerStatsSystem = upgradedTowerPrefab.GetComponent<TowerStatsSystem>();
                 var upgradedTowerBaseSystem = upgradedTowerPrefab.GetComponent<TowerBaseSystem>();
-
-                upgradedTowerStatsSystem.Upgrade(StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
+               
+                upgradedTowerBaseSystem.StatsSystem.Upgrade(StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;

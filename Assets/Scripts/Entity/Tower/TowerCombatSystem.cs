@@ -5,37 +5,32 @@ using Game.System;
 
 namespace Game.Tower
 {   
-    public class TowerCombatSystem : ExtendedMonoBehaviour
+    public class TowerCombatSystem 
     {
         public StateMachine State;
-        public LayerMask CreepLayer;
+        
         public bool isHaveChainTargets;
 
         private float bulletSpeed, bulletLifetime;
         private List<BulletSystem> bulletDataList;
         private List<GameObject> bulletList;
-   
-        private TowerBaseSystem towerData;
+        private TowerBaseSystem ownerTower;
         private ObjectPool bulletPool;
         private Coroutine bulletCoroutine;
 
-        protected override void Awake()
-        {
-            if ((object)CachedTransform == null)
-            {
-                CachedTransform = transform;
-            }
 
-            towerData = GetComponent<TowerBaseSystem>();
+        public TowerCombatSystem(TowerBaseSystem ownerTower)
+        {          
+            this.ownerTower = ownerTower;
 
             bulletList = new List<GameObject>();
             bulletDataList = new List<BulletSystem>();
 
             bulletPool = new ObjectPool();
-            bulletPool.poolObject = towerData.Bullet;
-            bulletPool.parent = transform;          
+            bulletPool.poolObject = ownerTower.Bullet;
+            bulletPool.parent = ownerTower.transform;          
             bulletPool.Initialize();
-
+            
             bulletCoroutine = null;
             
             State = new StateMachine();                  
@@ -75,9 +70,9 @@ namespace Game.Tower
 
         private void SetBulletData(int index)
         {
-            bulletList[index].transform.position = towerData.ShootPointTransform.position;
-            bulletList[index].transform.rotation = towerData.MovingPartTransform.rotation;
-            bulletDataList[index].chainCount = towerData.StatsSystem.Stats.ChainshotCount;
+            bulletList[index].transform.position = ownerTower.ShootPointTransform.position;
+            bulletList[index].transform.rotation = ownerTower.MovingPartTransform.rotation;
+            bulletDataList[index].chainCount = ownerTower.StatsSystem.Stats.ChainshotCount;
             bulletLifetime = bulletDataList[index].Lifetime;
             bulletSpeed = bulletDataList[index].Speed;
         }
@@ -88,7 +83,7 @@ namespace Game.Tower
             {           
                 bullet.IsReachedTarget = true;
                 bullet.Show(false);
-                StartCoroutine(RemoveBullet(bulletLifetime));
+                ownerTower.StartCoroutine(RemoveBullet(bulletLifetime));
             }          
         }
       
@@ -106,7 +101,7 @@ namespace Game.Tower
                             var targetScaleX = targetTransform.GetChild(0).lossyScale.x - 2;
                             var targetScaleY = targetTransform.GetChild(0).lossyScale.y;                           
 
-                            var distance = CalcDistance(bulletList[i].transform.position, targetTransform.position);         
+                            var distance = ExtendedMonoBehaviour.CalcDistance(bulletList[i].transform.position, targetTransform.position);         
 
                             if (distance > targetScaleX)
                             {
@@ -157,11 +152,11 @@ namespace Game.Tower
 
         private int CalculateShotCount()
         {
-            var creepList = towerData.RangeSystem.CreepList;
+            var creepList = ownerTower.RangeSystem.CreepList;
 
-            if (creepList.Count >= 1 + towerData.StatsSystem.Stats.MultishotCount)
+            if (creepList.Count >= 1 + ownerTower.StatsSystem.Stats.MultishotCount)
             {
-                return 1 + towerData.StatsSystem.Stats.MultishotCount;
+                return 1 + ownerTower.StatsSystem.Stats.MultishotCount;
             }
             else
             {
@@ -172,7 +167,8 @@ namespace Game.Tower
         private void SetChainTarget(BulletSystem bulletData, int chainCount)
         {
             var hitTargets = new Collider[20];
-            var count = Physics.OverlapSphereNonAlloc(bulletData.transform.position, 150, hitTargets, CreepLayer);
+            var layer = 1 << 12; 
+            var count = Physics.OverlapSphereNonAlloc(bulletData.transform.position, 150, hitTargets, layer);
 
             if (count > 1)
             {
@@ -195,32 +191,33 @@ namespace Game.Tower
         private void DamageInAOE(GameObject bullet, int AOE)
         {
             var hitTargets = new Collider[40];
-            var count = Physics.OverlapSphereNonAlloc(bullet.transform.position, AOE, hitTargets, CreepLayer);
+            var layer = 1 << 12;
+            var count = Physics.OverlapSphereNonAlloc(bullet.transform.position, AOE, hitTargets, layer);
 
             for (int i = 0; i < count; i++)
             {
-                hitTargets[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(towerData.StatsSystem.Stats.Damage, towerData);
+                hitTargets[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);
             }
         }
 
         private void HitTarget(int bulletIndex)
         {
-            if (towerData.StatsSystem.Stats.AOEShotRange > 0)
+            if (ownerTower.StatsSystem.Stats.AOEShotRange > 0)
             {
-                DamageInAOE(bulletList[bulletIndex], towerData.StatsSystem.Stats.AOEShotRange);
+                DamageInAOE(bulletList[bulletIndex], ownerTower.StatsSystem.Stats.AOEShotRange);
             }
             else
             {
-                bulletDataList[bulletIndex].Target.GetComponent<Creep.CreepSystem>().GetDamage(towerData.StatsSystem.Stats.Damage, towerData);
+                bulletDataList[bulletIndex].Target.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);
             }
 
             var isChainShot =
-                towerData.StatsSystem.Stats.ChainshotCount > 0 &&
+                ownerTower.StatsSystem.Stats.ChainshotCount > 0 &&
                 bulletDataList[bulletIndex].chainCount > 0;
 
             if (isChainShot)
             {
-                SetChainTarget(bulletDataList[bulletIndex], towerData.StatsSystem.Stats.ChainshotCount);
+                SetChainTarget(bulletDataList[bulletIndex], ownerTower.StatsSystem.Stats.ChainshotCount);
             }
             else
             {
@@ -234,10 +231,10 @@ namespace Game.Tower
                     
             for (int i = 0; i < shotCount; i++)
             {
-                CreateBullet(towerData.RangeSystem.CreepList[i]);
+                CreateBullet(ownerTower.RangeSystem.CreepList[i]);
             }
 
-            bulletCoroutine = StartCoroutine(AttackCooldown(towerData.StatsSystem.Stats.AttackSpeed));
+            bulletCoroutine = ownerTower.StartCoroutine(AttackCooldown(ownerTower.StatsSystem.Stats.AttackSpeed));
         }
       
         protected class ShootState : IState
@@ -252,8 +249,8 @@ namespace Game.Tower
             public void Enter()
             {
                 var isCreepInRange =
-                   owner.towerData.RangeSystem.CreepList.Count > 0 &&
-                   owner.towerData.RangeSystem.CreepList[0] != null;
+                   owner.ownerTower.RangeSystem.CreepList.Count > 0 &&
+                   owner.ownerTower.RangeSystem.CreepList[0] != null;
 
                 if (isCreepInRange)
                 {

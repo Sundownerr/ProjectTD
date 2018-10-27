@@ -6,45 +6,39 @@ using Game.System;
 
 namespace Game.Tower
 {
-    public class TowerStatsSystem : ExtendedMonoBehaviour
+    public class TowerStatsSystem 
     {
-        public TowerData Stats;
-
-        private TowerBaseSystem ownerTower;
-        public TowerData BaseStats;
+        public TowerData Stats, BaseStats;
+ 
+        private TowerBaseSystem ownerTower;      
         private List<TowerData> gradeList;
         private int gradeCount;
         private StateMachine state;
 
-        protected override void Awake()
+        public TowerStatsSystem(TowerBaseSystem ownerTower)
         {
-            if ((object)CachedTransform == null)
-            {
-                CachedTransform = transform;
-            }
+            this.ownerTower = ownerTower;
 
-            Stats = Instantiate(Stats);
-            BaseStats = Instantiate(Stats);
-            gradeList = BaseStats.GradeList;
-
-            ownerTower = GetComponent<TowerBaseSystem>();
+            Stats = Object.Instantiate(ownerTower.Stats);      
+            BaseStats = Object.Instantiate(Stats);
+            gradeList = BaseStats.GradeList;       
 
             for (int i = 0; i < Stats.AbilityList.Count; i++)
             {
-                Stats.AbilityList[i] = Instantiate(Stats.AbilityList[i]);
+                Stats.AbilityList[i] = Object.Instantiate(Stats.AbilityList[i]);
 
                 for (int j = 0; j < Stats.AbilityList[i].EffectList.Count; j++)
                 {
-                    Stats.AbilityList[i].EffectList[j] = Instantiate(Stats.AbilityList[i].EffectList[j]);
+                    Stats.AbilityList[i].EffectList[j] = Object.Instantiate(Stats.AbilityList[i].EffectList[j]);
                 }
 
                 Stats.AbilityList[i].SetOwnerTower(ownerTower);
             }
-        }
+        }      
 
         public void Upgrade(TowerData current, TowerData newBase)
         {
-            Stats = Instantiate(newBase);
+            Stats = Object.Instantiate(newBase);
             Stats.Level = current.Level;
             Stats.Exp = current.Exp;
 
@@ -53,15 +47,15 @@ namespace Game.Tower
                 IncreaseStatsPerLevel();
             }
 
-            BaseStats = Instantiate(newBase);
+            BaseStats = Object.Instantiate(newBase);
         }
 
         private void IncreaseStatsPerLevel()
         {
-            Stats.Damage += Mathf.FloorToInt(GetPercentOfValue(4f, BaseStats.Damage));
-            Stats.AttackSpeed -= GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
-            Stats.CritChance += GetPercentOfValue(0.2f, BaseStats.CritChance);
-            Stats.SpellCritChance += GetPercentOfValue(0.2f, BaseStats.SpellCritChance);          
+            Stats.Damage += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage));
+            Stats.AttackSpeed -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
+            Stats.CritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
+            Stats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);          
         }
 
         public void AddExp(int amount)
@@ -75,8 +69,8 @@ namespace Game.Tower
                     IncreaseStatsPerLevel();
                     Stats.Level++;
 
-                    var effect = Instantiate(GM.Instance.LevelUpEffect, transform.position, Quaternion.identity);
-                    Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
+                    var effect = Object.Instantiate(GM.Instance.LevelUpEffect, ownerTower.transform.position, Quaternion.identity);
+                    Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }
             }
             UpdateUI();
@@ -85,7 +79,7 @@ namespace Game.Tower
 
         public void UpdateUI()
         {
-            if (GM.Instance.PlayerInputSystem.ChoosedTower == gameObject)
+            if (GM.Instance.PlayerInputSystem.ChoosedTower == ownerTower.gameObject)
             {
                 GM.Instance.TowerUISystem.UpdateValues();
             }

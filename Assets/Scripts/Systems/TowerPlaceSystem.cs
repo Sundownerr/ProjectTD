@@ -204,7 +204,7 @@ namespace Game.System
                     owner.newTowerLimit = GM.Instance.ChoosedTowerData.TowerLimit;
                     owner.newGoldCost = GM.Instance.ChoosedTowerData.GoldCost;
                     owner.newMagicCrystalCost = GM.Instance.ChoosedTowerData.MagicCrystalReq;
-
+                    
                     if (GM.Instance.ResourceSystem.CheckHaveResources(owner.newTowerLimit, owner.newGoldCost, owner.newMagicCrystalCost))
                     {
                         owner.state.ChangeState(new CreateTowerState(owner));

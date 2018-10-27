@@ -130,7 +130,7 @@ namespace Game.Creep
 
             public void Execute()
             {
-                owner.waypointReached = owner.CalcDistance(
+                owner.waypointReached = CalcDistance(
                         owner.creepTransform.position, 
                         GM.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
 
@@ -196,7 +196,7 @@ namespace Game.Creep
 
             public void Enter()
             {
-                owner.lastDamageDealer.GetComponent<Tower.TowerStatsSystem>().AddExp(owner.Stats.Exp);
+                owner.lastDamageDealer.StatsSystem.AddExp(owner.Stats.Exp);
                 GM.Instance.ResourceSystem.AddGold(owner.Stats.Gold);
 
                 owner.state.ChangeState(new DestroyState(owner));

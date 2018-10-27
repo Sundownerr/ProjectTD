@@ -42,11 +42,6 @@ namespace Game.Data.Entity.Tower
         public List<TowerData> GradeList;
 
         [Expandable]
-        public List<Ability> AbilityList;
-    
-        //private void Awake()
-        //{
-        //    Level = 1;
-        //}        
+        public List<Ability> AbilityList;     
     }
 }
