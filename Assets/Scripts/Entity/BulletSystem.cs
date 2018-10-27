@@ -7,7 +7,7 @@ namespace Game.Tower
         public ParticleSystem[] ParticleSystemList;
         public bool IsReachedTarget;
         public float Lifetime, Speed;
-        public int chainCount;
+        public int RemainingBounceCount, ChainshotCount, MultishotCount, AOEShotRange;
         public GameObject Target;
                         
         private ParticleSystem.EmissionModule emissionModule;

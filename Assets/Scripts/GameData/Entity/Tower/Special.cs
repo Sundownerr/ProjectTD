@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Game.Tower;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,6 @@ namespace Game.Data.Entity.Tower
         public string SpecialName, SpecialDescription;
 
         public virtual void IncreaseStatsPerLevel() { }
-        public virtual void InitSpecial() { }
+        public virtual void InitSpecial(TowerBaseSystem ownerTower) { }
     }
 }

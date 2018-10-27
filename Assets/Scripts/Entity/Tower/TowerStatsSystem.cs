@@ -34,6 +34,11 @@ namespace Game.Tower
 
                 Stats.AbilityList[i].SetOwnerTower(ownerTower);
             }
+
+            for (int i = 0; i < Stats.SpecialList.Count; i++)
+            {
+                Stats.SpecialList[i].InitSpecial(ownerTower);
+            }
         }      
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)

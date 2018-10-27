@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using Game.System;
+using Game.Data.Entity.Tower;
 
 namespace Game.Tower
 {   
@@ -17,7 +18,7 @@ namespace Game.Tower
         private TowerBaseSystem ownerTower;
         private ObjectPool bulletPool;
         private Coroutine bulletCoroutine;
-
+        private int multishotCount, chainshotCount, AOEShotRange;
 
         public TowerCombatSystem(TowerBaseSystem ownerTower)
         {          
@@ -72,11 +73,13 @@ namespace Game.Tower
         {
             bulletList[index].transform.position = ownerTower.ShootPointTransform.position;
             bulletList[index].transform.rotation = ownerTower.MovingPartTransform.rotation;
-            bulletDataList[index].chainCount = ownerTower.StatsSystem.Stats.ChainshotCount;
+
             bulletLifetime = bulletDataList[index].Lifetime;
             bulletSpeed = bulletDataList[index].Speed;
+
         }
 
+   
         private void SetTargetReached(BulletSystem bullet)
         {
             if (!bullet.IsReachedTarget)
@@ -153,10 +156,11 @@ namespace Game.Tower
         private int CalculateShotCount()
         {
             var creepList = ownerTower.RangeSystem.CreepList;
+            var requiredShotCount = 1 + ownerTower.Bullet.GetComponent<BulletSystem>().MultishotCount;
 
-            if (creepList.Count >= 1 + ownerTower.StatsSystem.Stats.MultishotCount)
+            if (creepList.Count >= requiredShotCount)
             {
-                return 1 + ownerTower.StatsSystem.Stats.MultishotCount;
+                return requiredShotCount;
             }
             else
             {
@@ -179,7 +183,7 @@ namespace Game.Tower
                 if (bulletData.Target != randomCreep)
                 {
                     bulletData.Target = randomCreep;
-                    bulletData.chainCount--;
+                    bulletData.RemainingBounceCount--;
                 }
             }
             else
@@ -202,9 +206,9 @@ namespace Game.Tower
 
         private void HitTarget(int bulletIndex)
         {
-            if (ownerTower.StatsSystem.Stats.AOEShotRange > 0)
+            if (bulletDataList[bulletIndex].AOEShotRange > 0)
             {
-                DamageInAOE(bulletList[bulletIndex], ownerTower.StatsSystem.Stats.AOEShotRange);
+                DamageInAOE(bulletList[bulletIndex], bulletDataList[bulletIndex].AOEShotRange);
             }
             else
             {
@@ -212,12 +216,12 @@ namespace Game.Tower
             }
 
             var isChainShot =
-                ownerTower.StatsSystem.Stats.ChainshotCount > 0 &&
-                bulletDataList[bulletIndex].chainCount > 0;
+                bulletDataList[bulletIndex].ChainshotCount > 0 &&
+                bulletDataList[bulletIndex].RemainingBounceCount > 0;
 
             if (isChainShot)
             {
-                SetChainTarget(bulletDataList[bulletIndex], ownerTower.StatsSystem.Stats.ChainshotCount);
+                SetChainTarget(bulletDataList[bulletIndex], bulletDataList[bulletIndex].ChainshotCount);
             }
             else
             {
