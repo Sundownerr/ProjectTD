@@ -16,7 +16,7 @@ namespace Game.Tower
         public TowerAbilitySystem(TowerBaseSystem ownerTower)
         {        
             this.ownerTower = ownerTower;
-            stackedAbilityList = new List<Game.Data.Ability>();
+            stackedAbilityList = new List<Data.Ability>();
 
             state = new StateMachine();
             state.ChangeState(new LookForCreepState(this));

@@ -137,7 +137,11 @@ namespace Game.Tower
 
         public void Upgrade()
         {
-            if (StatsSystem.Stats.GradeList.Count > 0 && StatsSystem.Stats.GradeCount < StatsSystem.Stats.GradeList.Count)
+            var isGradeCountOk =
+                StatsSystem.Stats.GradeList.Count > 0 &&
+                StatsSystem.Stats.GradeCount < StatsSystem.Stats.GradeList.Count;
+
+            if (isGradeCountOk)
             {
                 var upgradedTowerPrefab = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
                 var upgradedTowerBaseSystem = upgradedTowerPrefab.GetComponent<TowerBaseSystem>();

@@ -36,18 +36,18 @@ namespace Game.Tower
             }
         }      
 
-        public void Upgrade(TowerData current, TowerData newBase)
+        public void Upgrade(TowerData currentStats, TowerData newBaseStats)
         {
-            Stats = Object.Instantiate(newBase);
-            Stats.Level = current.Level;
-            Stats.Exp = current.Exp;
+            Stats = Object.Instantiate(newBaseStats);
+            Stats.Level = currentStats.Level;
+            Stats.Exp = currentStats.Exp;
 
             for (int i = 1; i < Stats.Level; i++)
             {
                 IncreaseStatsPerLevel();
             }
 
-            BaseStats = Object.Instantiate(newBase);
+            BaseStats = Object.Instantiate(newBaseStats);
         }
 
         private void IncreaseStatsPerLevel()
