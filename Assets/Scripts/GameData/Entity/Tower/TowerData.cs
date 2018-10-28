@@ -13,6 +13,9 @@ namespace Game.Data.Entity.Tower
         [HideInInspector]
         public int Exp, Level, GradeCount;
 
+        [HideInInspector]
+        public List<float> DamageToRace;
+
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
 
@@ -36,9 +39,6 @@ namespace Game.Data.Entity.Tower
 
         [Space, Expandable]
         public List<TowerData> GradeList;
-
-        [Space]
-        public List<float> DamageToRace;
 
         [Space, Expandable]
         public List<Ability> AbilityList;

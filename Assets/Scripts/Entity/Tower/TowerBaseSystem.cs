@@ -27,7 +27,6 @@ namespace Game.Tower
     
         private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
-       
         private StateMachine state;
         private GameObject Target;
         private bool isRangeShowed, isTowerPlaced;
@@ -78,31 +77,12 @@ namespace Game.Tower
 
             if (isTowerPlaced)
             {
-                abilitySystem.state.Update();
+                abilitySystem.State.Update();
             }
 
-            SetRangeShow();
+            RangeSystem.SetShow();
         }
-
-        private void SetRangeShow()
-        {
-            var isChoosedTower = 
-                GM.Instance.TowerUISystem.gameObject.activeSelf && 
-                GM.Instance.PlayerInputSystem.ChoosedTower == gameObject;
-
-            if (isChoosedTower && !isRangeShowed)
-            {
-                RangeSystem.Show(true);
-                isRangeShowed = true;
-            }
-            else
-            if (!isChoosedTower && isRangeShowed)
-            {
-                RangeSystem.Show(false);
-                isRangeShowed = false;
-            }
-        }
-
+       
         private void SetTowerColor(Color color)
         {
             for (int i = 0; i < rendererList.Count; i++)
@@ -128,9 +108,9 @@ namespace Game.Tower
             Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
 
             gameObject.layer = 14;
-            RangeSystem.Show(false);
+            RangeSystem.SetShow(false);
           
-            GM.Instance.ChoosedTowerData = null;           
+            GM.Instance.PlayerInputSystem.NewTowerData = null;           
 
             isTowerPlaced = true;
         }
@@ -160,7 +140,6 @@ namespace Game.Tower
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
                 upgradedTowerBaseSystem.SetSystem();
 
-
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;
                 
                 Destroy(gameObject);
@@ -172,7 +151,7 @@ namespace Game.Tower
             GM.Instance.ResourceSystem.AddTowerLimit(-StatsSystem.Stats.TowerLimit);
             GM.Instance.ResourceSystem.AddGold(StatsSystem.Stats.GoldCost);
 
-            OcuppiedCell.GetComponent<TowerCells.Cell>().IsBusy = false;
+            OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
             GM.Instance.PlacedTowerList.Remove(gameObject);
             Destroy(gameObject);
         }

@@ -12,6 +12,7 @@ namespace Game.Tower
 
         private Renderer rend;
         private Color transparent, notTransparent;
+        private bool isRangeShowed;
 
         protected override void Awake()
         {
@@ -27,6 +28,7 @@ namespace Game.Tower
 
             transparent = new Color(0f, 0f, 0f, 0f);
             notTransparent = new Color(0, 0.5f, 0, 0.2f);
+            isRangeShowed = true;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -62,7 +64,32 @@ namespace Game.Tower
             }
         }
 
-        public void Show(bool show)
+        public void SetShow()
+        {
+            var isChoosedTower =
+                GM.Instance.TowerUISystem.gameObject.activeSelf &&
+                GM.Instance.PlayerInputSystem.ChoosedTower == transform.parent.gameObject;
+
+            if (isChoosedTower && !isRangeShowed)
+            {
+                Show(true);
+                isRangeShowed = true;
+            }
+            else
+            if (!isChoosedTower && isRangeShowed)
+            {
+                Show(false);
+                isRangeShowed = false;
+            }
+        }
+
+        public void SetShow(bool show)
+        {
+            Show(show);
+        }
+
+
+        private void Show(bool show)
         {
             if (show)
             {

@@ -14,7 +14,6 @@ namespace Game.Tower
  
         private TowerBaseSystem ownerTower;      
 
-
         public TowerStatsSystem(TowerBaseSystem ownerTower)
         {
             this.ownerTower = ownerTower;       

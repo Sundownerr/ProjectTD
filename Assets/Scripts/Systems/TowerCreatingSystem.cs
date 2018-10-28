@@ -47,13 +47,12 @@ namespace Game.System
                 {
                     if (j == i)
                     {
-                        var random = Random.Range(0, 2);
+                     //   var random = Random.Range(0, 2);
 
-                        if (random == 1)
-                        {
+                     //   if (random == 1)
+                      //  {
                             GetTower(leveledElementList[i]);
-                        }
-                        
+                     //   }                    
                     }
                 }
             }

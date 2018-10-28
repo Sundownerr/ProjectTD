@@ -73,12 +73,15 @@ namespace Game.Tower
                     if (bulletDataList[i].Target != null)
                     {
                         if (!bulletDataList[i].IsTargetReached)
-                        {                                                     
-                            var distance = ExtendedMonoBehaviour.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position);
+                        {
+                            var scaleY = bulletDataList[i].Target.transform.lossyScale.y;
+                            var scaleX = bulletDataList[i].Target.transform.lossyScale.x;
+                            var offset = new Vector3(0, 40, 0);
+                            var distance = ExtendedMonoBehaviour.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position + offset);
                             
-                            if (distance > 40)
+                            if (distance > 30)
                             {
-                                bulletList[i].transform.LookAt(bulletDataList[i].Target.transform.position);
+                                bulletList[i].transform.LookAt(bulletDataList[i].Target.transform.position + offset);
                                 bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed, Space.Self);
                             }
                             else
@@ -110,6 +113,7 @@ namespace Game.Tower
         private IEnumerator RemoveBullet(BulletSystem bullet)
         {
             bullet.IsTargetReached = true;
+            bullet.Show(false);
 
             yield return new WaitForSeconds(bullet.Lifetime);
 

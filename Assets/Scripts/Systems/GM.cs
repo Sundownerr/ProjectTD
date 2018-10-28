@@ -1,6 +1,5 @@
 ﻿
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Game.System
@@ -18,7 +17,7 @@ namespace Game.System
         public List<Data.Entity.Tower.TowerData> AvailableTowerList;
 
         [NaughtyAttributes.BoxGroup("List")]
-        public List<TowerCells.Cell> CellStateList;
+        public List<Cells.Cell> CellStateList;
 
         [NaughtyAttributes.BoxGroup("Prefab")]
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint, LevelUpEffect;
@@ -40,9 +39,6 @@ namespace Game.System
 
         [NaughtyAttributes.BoxGroup("Data")]
         public Data.AllTowerData AllTowerData;
-
-        [HideInInspector]
-        public Data.Entity.Tower.TowerData ChoosedTowerData;
 
         [HideInInspector]
         public PlayerInputSystem PlayerInputSystem;

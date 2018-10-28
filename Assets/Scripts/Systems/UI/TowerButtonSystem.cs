@@ -24,21 +24,8 @@ namespace Game.System
         {          
             if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
             {
-                GM.Instance.ChoosedTowerData = TowerData;
-
-                GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
-               
-                for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
-                {
-                    if (GM.Instance.AvailableTowerList[i] == TowerData)
-                    {
-                        GM.Instance.AvailableTowerList.RemoveAt(i);
-                        break;
-                    }
-                }
-
-                GM.Instance.BuildUISystem.UpdateAvailableElement();
-                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
+                GM.Instance.BuildUISystem.IsChoosedNewTower = true;
+                GM.Instance.PlayerInputSystem.NewTowerData = TowerData;
 
                 Count--;
 

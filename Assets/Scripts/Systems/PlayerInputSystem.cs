@@ -8,11 +8,16 @@ namespace Game.System
 {
     public class PlayerInputSystem : ExtendedMonoBehaviour
     {
+        [HideInInspector]
+        public Data.Entity.Tower.TowerData NewTowerData;
+
+        [HideInInspector]
+        public GameObject ChoosedTower;
+
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
-        public GameObject ChoosedTower;     
         public LayerMask LayerMask;
-
+        
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
         private StateMachine state;
@@ -105,6 +110,11 @@ namespace Game.System
                 if (GM.Instance.TowerUISystem.IsUpgrading)
                 {
                     owner.state.ChangeState(new UpgradeTowerState(owner));
+                }
+
+                if (GM.Instance.BuildUISystem.IsChoosedNewTower)
+                {
+                    owner.state.ChangeState(new CreateNewTowerState(owner));
                 }
             }
             
@@ -235,6 +245,44 @@ namespace Game.System
             public void Exit()
             {
                 GM.Instance.TowerUISystem.IsUpgrading = false;                
+            }
+        }
+
+        protected class CreateNewTowerState : IState
+        {
+            private readonly PlayerInputSystem owner;
+
+            public CreateNewTowerState(PlayerInputSystem owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Enter()
+            {               
+                GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+
+                for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
+                {
+                    if (GM.Instance.AvailableTowerList[i] == owner.NewTowerData)
+                    {
+                        GM.Instance.AvailableTowerList.RemoveAt(i);
+                        break;
+                    }
+                }
+
+                GM.Instance.BuildUISystem.UpdateAvailableElement();
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
+
+                owner.state.ChangeState(new GetInputState(owner));
+            }
+
+            public void Execute()
+            {
+            }
+
+            public void Exit()
+            {
+                GM.Instance.BuildUISystem.IsChoosedNewTower = false;
             }
         }
     }

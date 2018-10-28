@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 #pragma warning disable CS1591 
-namespace Game.TowerCells
+namespace Game.Cells
 {
 
     public class CellExpandSystem

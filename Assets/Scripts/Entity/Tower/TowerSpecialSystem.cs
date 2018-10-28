@@ -13,8 +13,6 @@ namespace Game.Tower
         public TowerSpecialSystem(TowerBaseSystem ownerTower)
         {
             this.ownerTower = ownerTower;
-
-           
         }
 
         public void Set()
@@ -22,7 +20,6 @@ namespace Game.Tower
             for (int i = 0; i < ownerTower.StatsSystem.Stats.SpecialList.Count; i++)
             {
                 ownerTower.StatsSystem.Stats.SpecialList[i].InitSpecial(ownerTower);
-                Debug.Log("init;");
             }
         }
 

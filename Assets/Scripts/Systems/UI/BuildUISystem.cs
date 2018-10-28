@@ -12,6 +12,7 @@ namespace Game.System
         public StateMachine State;
         public int ChoosedElementId;
         public GameObject Rarity;
+        public bool IsChoosedNewTower;
 
         private List<Data.Entity.Tower.TowerData> availableTowerList;
 
