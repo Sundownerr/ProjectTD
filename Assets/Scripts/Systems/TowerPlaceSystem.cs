@@ -63,7 +63,12 @@ namespace Game.System
             {
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
-                GM.Instance.PlacedTowerList.Add(Instantiate(GM.Instance.ChoosedTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent));
+                var newTower = Instantiate(GM.Instance.ChoosedTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        
+                newTower.GetComponent<Tower.TowerBaseSystem>().StatsSystem.Stats = GM.Instance.ChoosedTowerData;
+                newTower.GetComponent<Tower.TowerBaseSystem>().SetSystem();
+
+                GM.Instance.PlacedTowerList.Add(newTower);
+               
 
                 GM.Instance.ResourceSystem.AddTowerLimit(newTowerLimit);
                 GM.Instance.ResourceSystem.AddGold(-newGoldCost);

@@ -83,7 +83,7 @@ namespace Game.Creep
             if (!isKilled)
             {
                 lastDamageDealer = damageDealer;
-                Stats.Health -= CalculateDamage(damage, damageDealer);
+                Stats.Health -= CalculateDamage(damage, lastDamageDealer);
 
                 if (Stats.Health <= 0)
                 {

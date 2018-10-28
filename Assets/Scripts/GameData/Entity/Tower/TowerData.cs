@@ -41,6 +41,14 @@ namespace Game.Data.Entity.Tower
         public List<float> DamageToRace;
 
         [Space, Expandable]
-        public List<Ability> AbilityList;     
+        public List<Ability> AbilityList;
+
+        private void Awake()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                DamageToRace.Add(100f);
+            }
+        }
     }
 }

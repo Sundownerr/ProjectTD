@@ -21,14 +21,13 @@ namespace Game.System
         }
 
         private void ClickTowerButton()
-        {
-            GM.Instance.ChoosedTowerData = TowerData;
-
+        {          
             if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
             {
-                GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
-                Count--;
+                GM.Instance.ChoosedTowerData = TowerData;
 
+                GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+               
                 for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
                 {
                     if (GM.Instance.AvailableTowerList[i] == TowerData)
@@ -40,6 +39,8 @@ namespace Game.System
 
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
                 GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.ChoosedTowerData.ElementId);
+
+                Count--;
 
                 Destroy(gameObject);
             }           

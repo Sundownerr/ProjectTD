@@ -23,8 +23,6 @@ namespace Game.Tower
         [HideInInspector]
         public TowerSpecialSystem specialSystem;
 
-        public TowerData Stats;
-
         protected List<Renderer> rendererList;
     
         private TowerCombatSystem combatSystem;
@@ -39,7 +37,7 @@ namespace Game.Tower
             if ((object)CachedTransform == null)
             {
                 CachedTransform = transform;
-            }               
+            }
 
             MovingPartTransform = transform.GetChild(0);
             StaticPartTransform = transform.GetChild(1);
@@ -50,13 +48,18 @@ namespace Game.Tower
             specialSystem = new TowerSpecialSystem(this);
             combatSystem = new TowerCombatSystem(this);
             abilitySystem = new TowerAbilitySystem(this);
-           
+
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
         }
 
-        private void Start()
-        {          
+        public void SetSystem()
+        {
+            StatsSystem.Set();
+            specialSystem.Set();
+            combatSystem.Set();
+            abilitySystem.Set();
+
             Range = Instantiate(GM.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
             Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
@@ -155,6 +158,8 @@ namespace Game.Tower
                
                 upgradedTowerBaseSystem.StatsSystem.Upgrade(StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
+                upgradedTowerBaseSystem.SetSystem();
+
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;
                 

@@ -14,9 +14,15 @@ namespace Game.Tower
         {
             this.ownerTower = ownerTower;
 
+           
+        }
+
+        public void Set()
+        {
             for (int i = 0; i < ownerTower.StatsSystem.Stats.SpecialList.Count; i++)
             {
                 ownerTower.StatsSystem.Stats.SpecialList[i].InitSpecial(ownerTower);
+                Debug.Log("init;");
             }
         }
 
@@ -65,6 +71,16 @@ namespace Game.Tower
             for (int i = 0; i < hitTargetCount; i++)
             {
                 hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);
+            }
+        }
+
+        public void IncreaseStatsPerLevel()
+        {
+            var specialList = ownerTower.StatsSystem.Stats.SpecialList;
+
+            for (int i = 0; i < specialList.Count; i++)
+            {
+                specialList[i].IncreaseStatsPerLevel();
             }
         }
     }

@@ -13,17 +13,16 @@ namespace Game.Tower
         public TowerData Stats, BaseStats;
  
         private TowerBaseSystem ownerTower;      
-        private List<TowerData> gradeList;
-        private int gradeCount;
-        private StateMachine state;
+
 
         public TowerStatsSystem(TowerBaseSystem ownerTower)
         {
-            this.ownerTower = ownerTower;
-            
-            Stats = UnityEngine.Object.Instantiate(ownerTower.Stats);      
-            BaseStats = UnityEngine.Object.Instantiate(Stats);
-            gradeList = BaseStats.GradeList;       
+            this.ownerTower = ownerTower;       
+        }
+
+        public void Set()
+        {
+            Stats = UnityEngine.Object.Instantiate(Stats);
 
             for (int i = 0; i < Stats.AbilityList.Count; i++)
             {
@@ -37,24 +36,32 @@ namespace Game.Tower
                 Stats.AbilityList[i].SetOwnerTower(ownerTower);
             }
 
-            for (int i = 0; i < 5; i++)
-            {
-                Stats.DamageToRace.Add(100f);
-            }
-        }      
+            BaseStats = UnityEngine.Object.Instantiate(Stats);
+        }
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)
         {
             Stats = UnityEngine.Object.Instantiate(newBaseStats);
+                       
             Stats.Level = currentStats.Level;
             Stats.Exp = currentStats.Exp;
+
+            UpgradeSpecial(newBaseStats);
+
+            BaseStats = UnityEngine.Object.Instantiate(newBaseStats);
 
             for (int i = 1; i < Stats.Level; i++)
             {
                 IncreaseStatsPerLevel();
             }
+        }
 
-            BaseStats = UnityEngine.Object.Instantiate(newBaseStats);
+        private void UpgradeSpecial(TowerData newBaseStats)
+        {          
+            for (int i = 0; i < newBaseStats.SpecialList.Count; i++)
+            {
+                Stats.SpecialList[i] = UnityEngine.Object.Instantiate(Stats.SpecialList[i]);
+            }
         }
 
         private void IncreaseStatsPerLevel()
@@ -74,6 +81,8 @@ namespace Game.Tower
                 if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
                 {
                     IncreaseStatsPerLevel();
+                    ownerTower.specialSystem.IncreaseStatsPerLevel();
+
                     Stats.Level++;
 
                     var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, ownerTower.transform.position, Quaternion.identity);

@@ -22,23 +22,26 @@ namespace Game.Tower
         public TowerCombatSystem(TowerBaseSystem ownerTower)
         {          
             this.ownerTower = ownerTower;
-
-            bulletList = new List<GameObject>();
-            bulletDataList = new List<BulletSystem>();
-
-            bulletPool = new ObjectPool();
-            bulletPool.poolObject = ownerTower.Bullet;
-            bulletPool.parent = ownerTower.transform;          
-            bulletPool.Initialize();           
-            
-            State = new StateMachine();
-            State.ChangeState(new ShootState(this));
-            timer = ownerTower.StatsSystem.Stats.AttackSpeed;
         }
 
         private void OnDestroy()
         {
             bulletPool.DestroyPool();
+        }
+
+        public void Set()
+        {
+            bulletList = new List<GameObject>();
+            bulletDataList = new List<BulletSystem>();
+
+            bulletPool = new ObjectPool();
+            bulletPool.poolObject = ownerTower.Bullet;
+            bulletPool.parent = ownerTower.transform;
+            bulletPool.Initialize();
+
+            State = new StateMachine();
+            State.ChangeState(new ShootState(this));
+            timer = ownerTower.StatsSystem.Stats.AttackSpeed;
         }
 
         private void CreateBullet(GameObject target)
