@@ -74,8 +74,6 @@ namespace Game.Tower
                     {
                         if (!bulletDataList[i].IsTargetReached)
                         {
-                            var scaleY = bulletDataList[i].Target.transform.lossyScale.y;
-                            var scaleX = bulletDataList[i].Target.transform.lossyScale.x;
                             var offset = new Vector3(0, 40, 0);
                             var distance = ExtendedMonoBehaviour.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position + offset);
                             

@@ -23,7 +23,7 @@ namespace Game.System
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint, LevelUpEffect;
 
         [NaughtyAttributes.BoxGroup("Parent")]
-        public Transform CellParent, BulletParent, TowerParent, CreepParent;
+        public Transform CellParent, TowerParent, CreepParent;
 
         [HideInInspector]
         public TowerPlaceSystem TowerPlaceSystem;

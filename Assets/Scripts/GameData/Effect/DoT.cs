@@ -12,9 +12,7 @@ namespace Game.Data.Effect
 
         private float damageTick;
         private GameObject effectPrefab;
-        private ParticleSystem[] psList;
-
-      
+        private ParticleSystem[] psList;    
 
         private void Show(bool enabled)
         {
@@ -26,7 +24,6 @@ namespace Game.Data.Effect
                 if (enabled)
                 {
                     psList[i].Play();
-
                 }
                 else
                 {
@@ -50,9 +47,9 @@ namespace Game.Data.Effect
             {
                 damageTick++;
 
-                if (AffectedCreepData != null)
+                if (LastCreep != null)
                 {
-                    AffectedCreepData.GetDamage(DamagePerTick, ownerTower);
+                    LastCreep.GetDamage(DamagePerTick, tower);
                 }
                 else
                 {
@@ -66,19 +63,21 @@ namespace Game.Data.Effect
 
         public override void StartEffect()
         {
-            if (CreepDataList.Count > 0)
+            if (CreepList.Count > 0)
             {
-                AffectedCreepData = CreepDataList[0];
+                AffectedCreepList.Add(CreepList[0]);
+                LastCreep = AffectedCreepList[AffectedCreepList.Count - 1];
 
-                if (AffectedCreepData != null)
+                if (LastCreep.gameObject != null)
                 {
                     effectPrefab = Instantiate(EffectPrefab,
-                        AffectedCreepData.transform.position + Vector3.up * AffectedCreepData.transform.GetChild(0).lossyScale.y / 2,
-                        Quaternion.identity, 
-                        AffectedCreepData.transform);
+                        LastCreep.gameObject.transform.position + Vector3.up * 20,
+                        Quaternion.identity,
+                        LastCreep.gameObject.transform);
 
                     psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-                    AffectedCreepData.creepRenderer.material.color = Color.green;
+                    LastCreep.creepRenderer.material.color = Color.green;
+
                     Show(true);
                 }
                 else
@@ -90,16 +89,16 @@ namespace Game.Data.Effect
             IsSet = true;
             IsEnded = false;
 
-            GM.Instance.StartCoroutine(SetEffect(1f));
+            EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(1f));
         }
 
         public override void ContinueEffect()
         {
             if (!IsEnded)
             {
-                if (AffectedCreepData == null)
+                if (LastCreep == null)
                 {
-                    GM.Instance.StopCoroutine(SetEffect(1f));
+                    GM.Instance.StopCoroutine(EffectCoroutine);
                     EndEffect();
                 }
             }
@@ -107,15 +106,14 @@ namespace Game.Data.Effect
 
         public override void EndEffect()
         {
-            if (AffectedCreepData != null)
+            if (LastCreep != null)
             {
-                AffectedCreepData.creepRenderer.material.color = Color.white;
+                LastCreep.creepRenderer.material.color = Color.white;
             }
 
+            AffectedCreepList.Remove(LastCreep);
             Destroy(effectPrefab);
             damageTick = 0;
-
-           
             IsEnded = true;
         }
 
@@ -125,5 +123,7 @@ namespace Game.Data.Effect
             EndEffect();
             StartEffect();
         }
+
+    
     }
 }

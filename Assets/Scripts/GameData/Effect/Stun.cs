@@ -29,15 +29,18 @@ namespace Game.Data.Effect
 
         public override void StartEffect()
         {
-            if (CreepDataList.Count > 0)
+            if (CreepList.Count > 0)
             {
-                AffectedCreepData = CreepDataList[0];               
+                AffectedCreepList.Add(CreepList[0]);
 
-                if (AffectedCreepData != null)
+                LastCreep = AffectedCreepList[AffectedCreepList.Count - 1];
+
+
+                if (LastCreep != null)
                 {
-                    effectPrefab = Instantiate(EffectPrefab, AffectedCreepData.transform.position, Quaternion.identity, AffectedCreepData.transform);
+                    effectPrefab = Instantiate(EffectPrefab, LastCreep.gameObject.transform.position, Quaternion.identity, LastCreep.gameObject.transform);
 
-                    AffectedCreepData.GetStunned(Duration);
+                    LastCreep.GetStunned(Duration);
                 }
                 else
                 {
@@ -47,7 +50,7 @@ namespace Game.Data.Effect
                 IsSet = true;
                 IsEnded = false;
 
-                GM.Instance.StartCoroutine(SetEffect(Duration));
+                EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
             }
         }
 
@@ -55,27 +58,25 @@ namespace Game.Data.Effect
         {
             if (!IsEnded)
             {
-                if (AffectedCreepData == null)
+                if (LastCreep == null)
                 {
-                    GM.Instance.StopCoroutine(SetEffect(Duration));
                     EndEffect();
+                    GM.Instance.StopCoroutine(EffectCoroutine);                   
                 }
             }
         }
 
         public override void EndEffect()
-        {
+        {           
             Destroy(effectPrefab);
-
-           
+            AffectedCreepList.Remove(LastCreep);
             IsEnded = true;
         }
 
         public override void StackReset()
         {
             IsSet = false;
-            EndEffect();
-            StartEffect();
-        }
+            IsEnded = false;
+        }       
     }
 }

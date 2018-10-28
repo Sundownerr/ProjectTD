@@ -29,7 +29,7 @@ namespace Game.Tower
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
         private GameObject Target;
-        private bool isRangeShowed, isTowerPlaced;
+        private bool isTowerPlaced;
 
         protected override void Awake()
         {
@@ -62,7 +62,6 @@ namespace Game.Tower
             Range = Instantiate(GM.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
             Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
-            isRangeShowed = true;
 
             rendererList = new List<Renderer>();
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
