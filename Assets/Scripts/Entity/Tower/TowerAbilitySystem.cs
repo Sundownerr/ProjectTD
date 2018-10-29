@@ -28,7 +28,7 @@ namespace Game.Tower
 
         protected class LookForCreepState : IState
         {
-            TowerAbilitySystem owner;
+            private TowerAbilitySystem owner;
 
             public LookForCreepState(TowerAbilitySystem owner) { this.owner = owner; }
 
@@ -41,8 +41,7 @@ namespace Game.Tower
                      owner.tower.RangeSystem.CreepList[0] != null;
 
                 if (isCreepInRange)
-                    owner.State.ChangeState(new CombatState(owner));
-                
+                    owner.State.ChangeState(new CombatState(owner));              
             }
 
             public void Exit() { }
@@ -50,7 +49,7 @@ namespace Game.Tower
 
         protected class CreateStackAbilityState : IState
         {
-            TowerAbilitySystem owner;
+            private TowerAbilitySystem owner;
 
             public CreateStackAbilityState(TowerAbilitySystem owner) { this.owner = owner; }
 
@@ -73,7 +72,7 @@ namespace Game.Tower
 
         protected class CombatState : IState
         {
-            TowerAbilitySystem owner;
+            private TowerAbilitySystem owner;
 
             public CombatState(TowerAbilitySystem owner) { this.owner = owner; }
 
@@ -152,7 +151,7 @@ namespace Game.Tower
 
         protected class ContinueEffectState : IState
         {
-            TowerAbilitySystem owner;
+            private TowerAbilitySystem owner;
 
             public ContinueEffectState(TowerAbilitySystem owner) { this.owner = owner; }
 
