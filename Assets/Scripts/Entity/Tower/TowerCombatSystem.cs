@@ -58,53 +58,38 @@ namespace Game.Tower
 
         private void SetTargetReached(BulletSystem bullet)
         {
-            if (!bullet.IsTargetReached)
-            {                    
+            if (!bullet.IsTargetReached)                  
                 bullet.StartCoroutine(RemoveBullet(bullet));
-            }
         }
 
         public void MoveBullet()
         {
             for (int i = 0; i < bulletList.Count; i++)
-            {
                 if (bulletList[i].activeSelf)
-                {
                     if (bulletDataList[i].Target != null)
-                    {
                         if (!bulletDataList[i].IsTargetReached)
                         {
                             var offset = new Vector3(0, 40, 0);
                             var distance = ExtendedMonoBehaviour.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position + offset);
-                            
+
                             if (distance > 30)
                             {
                                 bulletList[i].transform.LookAt(bulletDataList[i].Target.transform.position + offset);
                                 bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed, Space.Self);
                             }
                             else
-                            {
                                 HitTarget(bulletDataList[i]);
-                            }
-                        }                      
-                    }
-                    else
-                    {
-                        SetTargetReached(bulletDataList[i]);
-                    }
-                }
-            }
+                        }
+                        else
+                            SetTargetReached(bulletDataList[i]);
         }
 
         public bool CheckAllBulletInactive()
         {
             for (int i = 0; i < bulletList.Count; i++)
-            {
                 if (bulletList[i].activeSelf)
-                {
                     return false;
-                }
-            }
+                           
             return true;
         }
 
@@ -127,22 +112,14 @@ namespace Game.Tower
                 bullet.RemainingBounceCount > 0;
 
             if (bullet.AOEShotRange > 0)
-            {
                 ownerTower.specialSystem.DamageInAOE(bullet);
-            }
             else
-            {
-                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);
-            }
+                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);            
 
             if (isChainShot)
-            {
                 ownerTower.specialSystem.SetChainTarget(bullet);
-            }
-            else
-            {
-                SetTargetReached(bullet);
-            }
+            else           
+                SetTargetReached(bullet);          
         }
 
         private void ShotBullet()
@@ -150,23 +127,16 @@ namespace Game.Tower
             var shotCount = ownerTower.specialSystem.CalculateShotCount();
 
             for (int i = 0; i < shotCount; i++)
-            {
-                CreateBullet(ownerTower.RangeSystem.CreepList[i]);
-            }          
+                CreateBullet(ownerTower.RangeSystem.CreepList[i]);                    
         }
       
         protected class ShootState : IState
         {
-            private TowerCombatSystem owner;
+            private readonly TowerCombatSystem owner;
 
-            public ShootState(TowerCombatSystem owner)
-            {
-                this.owner = owner;
-            }
+            public ShootState(TowerCombatSystem owner) { this.owner = owner; }
 
-            public void Enter()
-            {                                   
-            }
+            public void Enter() { }
 
             public void Execute()
             {
@@ -180,10 +150,7 @@ namespace Game.Tower
                 }     
             }
 
-            public void Exit()
-            {
-               
-            }
+            public void Exit() { }
         }
     }
 }

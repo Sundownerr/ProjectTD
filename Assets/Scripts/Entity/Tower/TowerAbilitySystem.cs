@@ -28,7 +28,7 @@ namespace Game.Tower
 
         protected class LookForCreepState : IState
         {
-            private TowerAbilitySystem owner;
+            private readonly TowerAbilitySystem owner;
 
             public LookForCreepState(TowerAbilitySystem owner) { this.owner = owner; }
 
@@ -72,7 +72,7 @@ namespace Game.Tower
 
         protected class CombatState : IState
         {
-            private TowerAbilitySystem owner;
+            private readonly TowerAbilitySystem owner;
 
             public CombatState(TowerAbilitySystem owner) { this.owner = owner; }
 
@@ -151,7 +151,7 @@ namespace Game.Tower
 
         protected class ContinueEffectState : IState
         {
-            private TowerAbilitySystem owner;
+            private readonly TowerAbilitySystem owner;
 
             public ContinueEffectState(TowerAbilitySystem owner) { this.owner = owner; }
 

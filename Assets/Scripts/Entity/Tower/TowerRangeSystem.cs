@@ -17,9 +17,7 @@ namespace Game.Tower
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
-                CachedTransform = transform;
-            }
+                CachedTransform = transform;           
 
             CreepList = new List<GameObject>();
             CreepSystemList = new List<Creep.CreepSystem>();
@@ -34,13 +32,11 @@ namespace Game.Tower
         private void OnTriggerEnter(Collider other)
         {
             for (int i = 0; i < GM.Instance.CreepList.Count; i++)
-            {
                 if (other.gameObject == GM.Instance.CreepList[i])
                 {
                     CreepSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
                     CreepList.Add(other.gameObject);                    
-                }
-            }                     
+                }                               
         }    
 
         private void OnTriggerExit(Collider other)
@@ -55,13 +51,11 @@ namespace Game.Tower
         private void OnTriggerStay(Collider other)
         {
             for (int i = 0; i < CreepList.Count; i++)
-            {
                 if (CreepList[i] == null)
                 {
                     CreepList.RemoveAt(i);
                     CreepSystemList.RemoveAt(i);
                 }
-            }
         }
 
         public void SetShow()
@@ -88,23 +82,14 @@ namespace Game.Tower
             Show(show);
         }
 
-
         private void Show(bool show)
         {
             if (show)
-            {
                 if (rend.material.color != notTransparent)
-                {
                     rend.material.color = notTransparent;
-                }
-            }
-            else
-            {
+                else
                 if (rend.material.color != transparent)
-                {
                     rend.material.color = transparent;
-                }
-            }
-        }            
+        }       
     }
 }
