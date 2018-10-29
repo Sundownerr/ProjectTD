@@ -22,23 +22,10 @@ namespace Game.Data.Effect
                 emissionModule.enabled = enabled;
 
                 if (enabled)
-                {
                     psList[i].Play();
-                }
                 else
-                {
                     psList[i].Stop();
-                }
             }
-        }
-
-        public override void InitEffect()
-        {
-            if (!IsSet)
-            {
-                StartEffect();
-            }
-            ContinueEffect();
         }
 
         public IEnumerator SetEffect(float delay)
@@ -48,9 +35,7 @@ namespace Game.Data.Effect
                 damageTick++;
 
                 if (LastCreep != null)
-                {
                     LastCreep.GetDamage(DamagePerTick, tower);
-                }
                 else
                 {
                     EndEffect();
@@ -81,9 +66,7 @@ namespace Game.Data.Effect
                     Show(true);
                 }
                 else
-                {
                     EndEffect();
-                }
             }
 
             IsSet = true;
@@ -95,18 +78,16 @@ namespace Game.Data.Effect
         public override void ContinueEffect()
         {
             if (!IsEnded)
-            {
-                if (LastCreep == null)
+                if (LastCreep.gameObject == null)
                 {
                     GM.Instance.StopCoroutine(EffectCoroutine);
                     EndEffect();
-                }
-            }
+                }           
         }
 
         public override void EndEffect()
         {
-            if (LastCreep != null)
+            if (LastCreep.gameObject != null)
             {
                 LastCreep.creepRenderer.material.color = Color.white;
             }
@@ -115,15 +96,6 @@ namespace Game.Data.Effect
             Destroy(effectPrefab);
             damageTick = 0;
             IsEnded = true;
-        }
-
-        public override void StackReset()
-        {
-            IsSet = false;
-            EndEffect();
-            StartEffect();
-        }
-
-    
+        }    
     }
 }

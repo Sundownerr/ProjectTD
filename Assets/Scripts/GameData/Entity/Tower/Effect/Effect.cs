@@ -13,10 +13,7 @@ namespace Game.Data.Effect
         public List<Creep.CreepSystem> CreepList;
 
         [HideInInspector]
-        public List<Creep.CreepSystem> AffectedCreepList;   
-
-        [HideInInspector]
-        public bool IsEnded, IsLastInList;
+        protected bool IsEnded, IsLastInList;
 
         [HideInInspector]
         public Tower.TowerBaseSystem tower;
@@ -24,17 +21,24 @@ namespace Game.Data.Effect
         protected bool IsSet;
         protected Creep.CreepSystem LastCreep;
         protected Coroutine EffectCoroutine;
+        protected List<Creep.CreepSystem> AffectedCreepList;
 
-        public virtual void InitEffect() { }
         public virtual void StartEffect() { }
         public virtual void ContinueEffect() { }
         public virtual void EndEffect() { }
-        public virtual void StackReset() { }
-
+     
         public virtual void ResetEffect()
-        {
-            IsEnded = false;
+        {          
             IsSet = false;
+            IsEnded = false;
+        }
+
+        public virtual void InitEffect()
+        {
+            if (!IsSet)
+                StartEffect();
+
+            ContinueEffect();
         }
     }
 }

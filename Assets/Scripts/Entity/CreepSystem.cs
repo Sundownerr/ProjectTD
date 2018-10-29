@@ -27,9 +27,7 @@ namespace Game.Creep
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             creepTransform = transform;
             creepTransform.position = GM.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
@@ -96,14 +94,10 @@ namespace Game.Creep
         public void GetStunned(float duration)
         {
             if(duration > stunDuration)
-            {
                 stunDuration = duration;
-            }
           
             if (stunCoroutine != null)
-            {
-                StopCoroutine(stunCoroutine);
-            }
+                StopCoroutine(stunCoroutine);           
 
             state.ChangeState(new StunnedState(this));
             stunCoroutine = StartCoroutine(RemoveStunnedState(stunDuration));
@@ -114,10 +108,8 @@ namespace Game.Creep
             yield return new WaitForSeconds(delay);
 
             if(isStunned)
-            {
                 isStunned = false;
-            }
-
+            
             stunCoroutine = null;
         }
 
@@ -125,15 +117,9 @@ namespace Game.Creep
         {
             private CreepSystem owner;
 
-            public WalkState(CreepSystem owner)
-            {
-                this.owner = owner;
-            }
+            public WalkState(CreepSystem owner) { this.owner = owner; }
 
-            public void Enter()
-            {
-
-            }
+            public void Enter() { }
 
             public void Execute()
             {
@@ -142,36 +128,22 @@ namespace Game.Creep
                         GM.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
 
                 if (owner.waypointIndex < GM.Instance.WaypointList.Length - 1)
-                {
                     if (!owner.waypointReached)
-                    {
                         owner.MoveAndRotateCreep();                       
-                    }
                     else
-                    {
                         owner.waypointIndex++;
-                    }
-                }
                 else
-                {
                     owner.state.ChangeState(new DestroyState(owner));
-                }
             }
 
-            public void Exit()
-            {
-
-            }
+            public void Exit() { }
         }
 
         protected class StunnedState : IState
         {
             private CreepSystem owner;
 
-            public StunnedState(CreepSystem owner)
-            {
-                this.owner = owner;
-            }
+            public StunnedState(CreepSystem owner) { this.owner = owner; }
 
             public void Enter()
             {
@@ -181,25 +153,17 @@ namespace Game.Creep
             public void Execute()
             {                         
                 if(!owner.isStunned)
-                {
                     owner.state.ChangeState(new WalkState(owner));
-                }
             }
 
-            public void Exit()
-            {
-
-            }
+            public void Exit() { }
         }
 
         protected class GiveRecourcesState : IState
         {
             private CreepSystem owner;
 
-            public GiveRecourcesState(CreepSystem owner)
-            {
-                this.owner = owner;
-            }
+            public GiveRecourcesState(CreepSystem owner) { this.owner = owner; }
 
             public void Enter()
             {
@@ -209,25 +173,16 @@ namespace Game.Creep
                 owner.state.ChangeState(new DestroyState(owner));
             }
 
-            public void Execute()
-            {
+            public void Execute() { }
 
-            }
-
-            public void Exit()
-            {
-
-            }
+            public void Exit() { }
         }
 
         protected class DestroyState : IState
         {
             private CreepSystem owner;
 
-            public DestroyState(CreepSystem owner)
-            {
-                this.owner = owner;
-            }
+            public DestroyState(CreepSystem owner) { this.owner = owner; }
 
             public void Enter()
             {             
@@ -236,16 +191,9 @@ namespace Game.Creep
                 Destroy(owner.gameObject);
             }
 
-            public void Execute()
-            {
+            public void Execute() { }
 
-            }
-
-            public void Exit()
-            {
-
-            }
+            public void Exit() { }
         }
-
     }   
 }

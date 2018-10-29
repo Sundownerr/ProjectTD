@@ -71,7 +71,7 @@ namespace Game.Data
             for (int i = 0; i < EffectList.Count; i++)
             {
                 EffectList[i] = Instantiate(EffectList[i]);
-                EffectList[i].StackReset();
+                EffectList[i].ResetEffect();
             }
 
             state.ChangeState(new ChoseEffectState(this));

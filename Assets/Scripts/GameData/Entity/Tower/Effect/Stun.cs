@@ -11,15 +11,6 @@ namespace Game.Data.Effect
 
         private GameObject effectPrefab;    
 
-        public override void InitEffect()
-        {
-            if (!IsSet)
-            {
-                StartEffect();
-            }
-            ContinueEffect();
-        }
-
         public IEnumerator SetEffect(float delay)
         {
             yield return new WaitForSeconds(delay);
@@ -36,16 +27,15 @@ namespace Game.Data.Effect
                 LastCreep = AffectedCreepList[AffectedCreepList.Count - 1];
 
 
-                if (LastCreep != null)
+                if (LastCreep.gameObject != null)
                 {
                     effectPrefab = Instantiate(EffectPrefab, LastCreep.gameObject.transform.position, Quaternion.identity, LastCreep.gameObject.transform);
 
                     LastCreep.GetStunned(Duration);
                 }
                 else
-                {
                     EndEffect();
-                }
+                
 
                 IsSet = true;
                 IsEnded = false;
@@ -58,7 +48,7 @@ namespace Game.Data.Effect
         {
             if (!IsEnded)
             {
-                if (LastCreep == null)
+                if (LastCreep.gameObject == null)
                 {
                     EndEffect();
                     GM.Instance.StopCoroutine(EffectCoroutine);                   
@@ -72,11 +62,5 @@ namespace Game.Data.Effect
             AffectedCreepList.Remove(LastCreep);
             IsEnded = true;
         }
-
-        public override void StackReset()
-        {
-            IsSet = false;
-            IsEnded = false;
-        }       
     }
 }
