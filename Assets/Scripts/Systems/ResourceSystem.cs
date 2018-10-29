@@ -9,9 +9,7 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             GM.Instance.ResourceSystem = this;
         }

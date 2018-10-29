@@ -18,25 +18,17 @@ using System.Collections.Generic;
             }
 
             for (int i = 0; i < poolLenght; i++)
-            {
                 CreateObject(parent);
-            }
         }
 
         public GameObject GetObject()
         {
             for (int i = 0; i < poolList.Count; i++)
-            {
                 if (!poolList[i].activeSelf)
-                {
                     return poolList[i];
-                }
-            }
 
             if (poolObject == null)
-            {
                 return null;
-            }
 
             CreateObject(parent);
 
@@ -46,9 +38,7 @@ using System.Collections.Generic;
         public void DestroyPool()
         {
             for (int i = poolList.Count - 1; i > 0; i--)
-            {
                 Object.Destroy(poolList[i]);
-            }
 
             poolList.Clear();
         }
@@ -56,8 +46,6 @@ using System.Collections.Generic;
         protected void CreateObject(Transform parent)
         {
             poolList.Add(Object.Instantiate(poolObject, parent));
-
             poolList[poolList.Count - 1].SetActive(false);
         }
-
     }

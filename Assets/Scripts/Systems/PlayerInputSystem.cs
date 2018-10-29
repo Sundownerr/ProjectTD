@@ -28,9 +28,8 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }            
+           
             results = new List<RaycastResult>();
 
             GM.Instance.PlayerInputSystem = this;
@@ -48,14 +47,9 @@ namespace Game.System
         {
             private readonly PlayerInputSystem owner;
 
-            public GetInputState(PlayerInputSystem owner)
-            {
-                this.owner = owner;
-            }
+            public GetInputState(PlayerInputSystem owner) { this.owner = owner; }
 
-            public void Enter()
-            {
-            }
+            public void Enter() { }
 
             public void Execute()
             {
@@ -70,9 +64,7 @@ namespace Game.System
                     owner.GraphicRaycaster.Raycast(owner.pointerEventData, owner.results);
 
                     if (owner.results.Count > 0)
-                    {
                         owner.isHitUI = true;
-                    }
 
                     if (isRayHit)
                     {
@@ -85,14 +77,10 @@ namespace Game.System
                             owner.hit.transform.gameObject.layer == 9;
 
                         if (isMouseOnTower)
-                        {
                             owner.state.ChangeState(new MouseOnTowerState(owner));
-                        }
 
                         if (isMouseNotOnUI)
-                        {
                             owner.state.ChangeState(new MouseNotOnUIState(owner));
-                        }
                     }
                 }
 
@@ -103,34 +91,23 @@ namespace Game.System
                 }
 
                 if(GM.Instance.TowerUISystem.IsSellig)
-                {
                     owner.state.ChangeState(new SellTowerState(owner));
-                }
 
                 if (GM.Instance.TowerUISystem.IsUpgrading)
-                {
                     owner.state.ChangeState(new UpgradeTowerState(owner));
-                }
 
                 if (GM.Instance.BuildUISystem.IsChoosedNewTower)
-                {
                     owner.state.ChangeState(new CreateNewTowerState(owner));
-                }
             }
             
-            public void Exit()
-            {
-            }
+            public void Exit() { }
         }
 
         protected class MouseOnTowerState : IState
         {
             private readonly PlayerInputSystem owner;
 
-            public MouseOnTowerState(PlayerInputSystem owner)
-            {
-                this.owner = owner;
-            }
+            public MouseOnTowerState(PlayerInputSystem owner) { this.owner = owner; }
 
             public void Enter()
             {
@@ -139,72 +116,50 @@ namespace Game.System
                 owner.ChoosedTower = owner.hit.transform.gameObject;
 
                 if (!towerUI.gameObject.activeSelf)
-                {
                     towerUI.gameObject.SetActive(true);
-                }
 
                 owner.StartCoroutine(towerUI.RefreshUI());
 
                 if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
-                {
                     GM.PLAYERSTATE = GM.CHOOSED_TOWER;
-                }
 
                 owner.state.ChangeState(new GetInputState(owner));
             }
 
-            public void Execute()
-            {
-            }
+            public void Execute() { }
 
-            public void Exit()
-            {
-            }
+            public void Exit() { }
         }
 
         protected class MouseNotOnUIState : IState
         {
             private readonly PlayerInputSystem owner;
 
-            public MouseNotOnUIState(PlayerInputSystem owner)
-            {
-                this.owner = owner;
-            }
+            public MouseNotOnUIState(PlayerInputSystem owner) { this.owner = owner; }
 
             public void Enter()
             {
                 var towerUI = GM.Instance.TowerUISystem;
 
                 if (towerUI.gameObject.activeSelf)
-                {
                     towerUI.gameObject.SetActive(false);
-                }
                 
                 if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
-                {
                     GM.PLAYERSTATE = GM.IDLE;
-                }
 
                 owner.state.ChangeState(new GetInputState(owner));
             }
 
-            public void Execute()
-            {
-            }
+            public void Execute() { }
 
-            public void Exit()
-            {
-            }
+            public void Exit() { }
         }
 
         protected class SellTowerState : IState
         {
             private readonly PlayerInputSystem owner;
 
-            public SellTowerState(PlayerInputSystem owner)
-            {
-                this.owner = owner;
-            }
+            public SellTowerState(PlayerInputSystem owner) { this.owner = owner; }
 
             public void Enter()
             {
@@ -212,9 +167,7 @@ namespace Game.System
                 owner.state.ChangeState(new GetInputState(owner));
             }
 
-            public void Execute()
-            {
-            }
+            public void Execute() { }
 
             public void Exit()
             {
@@ -227,10 +180,7 @@ namespace Game.System
         {
             private readonly PlayerInputSystem owner;
 
-            public UpgradeTowerState(PlayerInputSystem owner)
-            {
-                this.owner = owner;
-            }
+            public UpgradeTowerState(PlayerInputSystem owner) { this.owner = owner; }
 
             public void Enter()
             {
@@ -238,9 +188,7 @@ namespace Game.System
                 owner.state.ChangeState(new GetInputState(owner));
             }
 
-            public void Execute()
-            {
-            }
+            public void Execute() { }
 
             public void Exit()
             {
@@ -252,10 +200,7 @@ namespace Game.System
         {
             private readonly PlayerInputSystem owner;
 
-            public CreateNewTowerState(PlayerInputSystem owner)
-            {
-                this.owner = owner;
-            }
+            public CreateNewTowerState(PlayerInputSystem owner) { this.owner = owner; }
 
             public void Enter()
             {               
@@ -276,9 +221,7 @@ namespace Game.System
                 owner.state.ChangeState(new GetInputState(owner));
             }
 
-            public void Execute()
-            {
-            }
+            public void Execute() { }
 
             public void Exit()
             {
