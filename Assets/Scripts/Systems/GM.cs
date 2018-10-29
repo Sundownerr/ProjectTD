@@ -67,7 +67,6 @@ namespace Game.System
         [HideInInspector]
         public BuildUISystem BuildUISystem;
 
-
         public Canvas UICanvas;
 
         public static GM Instance;
@@ -84,6 +83,13 @@ namespace Game.System
             else
                 Debug.Log("Warning: multiple " + this + " in scene!");
 
+            GridSystem = new GridSystem();
+            TowerPlaceSystem = new TowerPlaceSystem();
+            TowerCreatingSystem = new TowerCreatingSystem();
+            WaveSystem = new WaveSystem();
+            ElementSystem = new ElementSystem();
+            ResourceSystem = new ResourceSystem();
+
             IDLE = 0;
             CHOOSED_CREEP = 1;
             CHOOSED_TOWER = 2;
@@ -93,9 +99,7 @@ namespace Game.System
             PLAYERSTATE = IDLE;
 
             Application.targetFrameRate = 70;
-
             QualitySettings.vSyncCount = 0;
-
             Cursor.lockState = CursorLockMode.Confined;
 
             ElementNameList = new string[]
@@ -108,7 +112,6 @@ namespace Game.System
                 "Nature",
                 "Fire"
               };
-
 
             ExpToLevelUp = new int[25];
             ExpToLevelUp[0] = 12;
@@ -136,6 +139,13 @@ namespace Game.System
             ExpToLevelUp[22] = 556;
             ExpToLevelUp[23] = 601;
             ExpToLevelUp[24] = 649;
+        }
+
+        private void Update()
+        {
+            TowerPlaceSystem.Update();
+            GridSystem.Update();
+            WaveSystem.Update();
         }
     }
 }

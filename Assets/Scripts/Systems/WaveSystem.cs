@@ -4,18 +4,15 @@ using UnityEngine;
 
 namespace Game.System
 {
-    public class WaveSystem : ExtendedMonoBehaviour
+    public class WaveSystem 
     {
         public int WaveCount;
 
         private StateMachine state;
         private List<List<GameObject>> waveCreepList;
 
-        protected override void Awake()
+        public WaveSystem()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
-
             waveCreepList = new List<List<GameObject>>();
 
             state = new StateMachine();
@@ -24,7 +21,7 @@ namespace Game.System
             GM.Instance.WaveSystem = this;
         }
 
-        private void Update()
+        public void Update()
         {
             state.Update();
 
@@ -57,7 +54,7 @@ namespace Game.System
     
             while (spawnedCreepCount < needToSpawnCount)
             {
-                var creep = Instantiate(GM.Instance.CreepPrefab);
+                var creep = Object.Instantiate(GM.Instance.CreepPrefab);
 
                 waveCreepList[waveCreepList.Count - 1].Add(creep);
 
@@ -97,7 +94,7 @@ namespace Game.System
             public void Execute()
             {
                 if (GM.Instance.BaseUISystem.IsWaveStarted)
-                    owner.StartCoroutine(owner.SpawnCreeps(21, 0.5f));                   
+                    GM.Instance.StartCoroutine(owner.SpawnCreeps(21, 0.5f));                   
             }
 
             public void Exit()

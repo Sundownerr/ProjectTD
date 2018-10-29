@@ -60,6 +60,7 @@ namespace Game.Tower
             Range = Instantiate(GM.Instance.RangePrefab, transform);
             RangeSystem = Range.GetComponent<TowerRangeSystem>();
             Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
+            RangeSystem.SetShow();
 
             rendererList = new List<Renderer>();
             rendererList.AddRange(GetComponentsInChildren<Renderer>());
@@ -131,6 +132,7 @@ namespace Game.Tower
                 upgradedTowerBaseSystem.StatsSystem.Upgrade(StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
                 upgradedTowerBaseSystem.SetSystem();
+
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;
                 

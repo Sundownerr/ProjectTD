@@ -4,21 +4,15 @@ using UnityEngine;
 
 namespace Game.System
 {
-    public class GridSystem : ExtendedMonoBehaviour
+    public class GridSystem 
     {
-        [HideInInspector]
         public bool IsGridBuilded;
-
-        public LayerMask LayerMask;
 
         private Color blue, red, green;
 
-        protected override void Awake()
+        public GridSystem()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
-
-            StartCoroutine(BuildTimer());
+            GM.Instance.StartCoroutine(BuildTimer());
             GM.Instance.GridSystem = this;
 
             red = new Color(0.3f, 0.1f, 0.1f, 0.6f);
@@ -26,7 +20,7 @@ namespace Game.System
             blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);
         }
 
-        private void Update()
+        public void Update()
         {
             if (IsGridBuilded)
             {
@@ -59,13 +53,14 @@ namespace Game.System
             for (var i = 0; i < count; i++)
             {
                 var ray = new Ray(GM.Instance.CellAreaList[i].transform.position, Vector3.up);
+                var layerMask = 1 << 15;
 
-                if (!Physics.Raycast(ray, 100, LayerMask))
+                if (!Physics.Raycast(ray, 100, layerMask))
                 {
                     var spawnPos = GM.Instance.CellAreaList[i].transform.position + 
                         new Vector3(0, GM.Instance.CellAreaList[i].transform.localScale.y / 1.9f, 0);
 
-                    Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);            
+                    Object.Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);            
                 }
             }
         }

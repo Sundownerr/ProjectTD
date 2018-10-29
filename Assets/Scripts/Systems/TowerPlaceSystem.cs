@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.System
 {
-    public class TowerPlaceSystem : ExtendedMonoBehaviour
+    public class TowerPlaceSystem
     { 
         [HideInInspector]
         public Vector3 GhostedTowerPos;
@@ -16,7 +16,7 @@ namespace Game.System
 
         public LayerMask LayerMask;
         public bool IsTowerLimitOk;
-        
+      
         private Color transparentRed, transparentGreen, towerColor;
         private GameObject lastTower;
         private RaycastHit hit;
@@ -25,12 +25,9 @@ namespace Game.System
         private Vector3 towerPos;
         private Cells.Cell chosenCellState;
         private int newTowerLimit, newGoldCost, newMagicCrystalCost;
-       
-        protected override void Awake()
+              
+        public TowerPlaceSystem()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
-            
             mainCam = Camera.main;
 
             transparentRed = Color.red - new Color(0, 0, 0, 0.8f);
@@ -42,7 +39,7 @@ namespace Game.System
             state.ChangeState(new GetCellDataState(this));
         }
 
-        private void Update()
+        public void Update()
         {
             state.Update();
         }
@@ -66,7 +63,7 @@ namespace Game.System
             {
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
-                var newTower = Instantiate(GM.Instance.PlayerInputSystem.NewTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        
+                var newTower = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        
                 newTower.GetComponent<Tower.TowerBaseSystem>().StatsSystem.Stats = GM.Instance.PlayerInputSystem.NewTowerData;
                 newTower.GetComponent<Tower.TowerBaseSystem>().SetSystem();
 
@@ -96,8 +93,11 @@ namespace Game.System
             var ray = mainCam.ScreenPointToRay(Input.mousePosition);
             var cellStateList = GM.Instance.CellStateList;
             var cellList = GM.Instance.CellList;
+            var terrainLayer = 1 << 9;
+            var cellLayer = 1 << 15;
+            var layerMask = terrainLayer | cellLayer;
 
-            if (Physics.Raycast(ray, out hit, 5000, LayerMask))
+            if (Physics.Raycast(ray, out hit, 5000, layerMask))
             {              
                 towerPos = hit.point;
                 towerColor = transparentRed;
@@ -144,7 +144,7 @@ namespace Game.System
             GM.Instance.ResourceSystem.AddTowerLimit(-newTowerLimit);
             GM.Instance.ResourceSystem.AddGold(newGoldCost);
 
-            Destroy(GM.Instance.PlacedTowerList[lastTowerIndex]);
+            Object.Destroy(GM.Instance.PlacedTowerList[lastTowerIndex]);
             GM.Instance.PlacedTowerList.RemoveAt(lastTowerIndex);
 
             GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);

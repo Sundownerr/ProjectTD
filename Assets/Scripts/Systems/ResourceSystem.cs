@@ -1,16 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 namespace Game.System
 {
-    public class ResourceSystem : ExtendedMonoBehaviour
+    public class ResourceSystem
     {
-        protected override void Awake()
+        public ResourceSystem()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
-
             GM.Instance.ResourceSystem = this;
         }
 

@@ -16,7 +16,6 @@ namespace Game.System
 
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
-        public LayerMask LayerMask;
         
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
@@ -53,8 +52,13 @@ namespace Game.System
 
             public void Execute()
             {
+                var terrainLayer = 1 << 9;
+                var creepLayer = 1 << 12;
+                var towerLayer = 1 << 14;
+                var layerMask = terrainLayer | creepLayer | towerLayer;
+
                 owner.WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                var isRayHit = Physics.Raycast(owner.WorldRay, out owner.hit, 10000, owner.LayerMask);
+                var isRayHit = Physics.Raycast(owner.WorldRay, out owner.hit, 10000, layerMask);
 
                 owner.pointerEventData = new PointerEventData(owner.EventSystem);
                 owner.pointerEventData.position = Input.mousePosition;

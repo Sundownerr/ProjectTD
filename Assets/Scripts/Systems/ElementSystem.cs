@@ -1,19 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 namespace Game.System
 {
-    public class ElementSystem : ExtendedMonoBehaviour
+    public class ElementSystem
     {
         public bool isFirstElementLearned;
         private int baseLearnCost;
 
-        protected override void Awake()
+        public ElementSystem()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
-
             baseLearnCost = 20;
 
             GM.Instance.ElementSystem = this;

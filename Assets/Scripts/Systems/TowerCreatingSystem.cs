@@ -1,19 +1,13 @@
-﻿using Game.Data.Entity.Tower;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace Game.System
 {
-    public class TowerCreatingSystem : ExtendedMonoBehaviour
+    public class TowerCreatingSystem 
     {
         private List<int> leveledElementList;
 
-        protected override void Awake()
-        {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
-
+        public TowerCreatingSystem()
+        {           
             GM.Instance.TowerCreatingSystem = this;
 
             leveledElementList = new List<int>();

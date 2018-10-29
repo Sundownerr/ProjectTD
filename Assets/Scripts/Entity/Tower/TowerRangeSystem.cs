@@ -64,13 +64,16 @@ namespace Game.Tower
                 GM.Instance.TowerUISystem.gameObject.activeSelf &&
                 GM.Instance.PlayerInputSystem.ChoosedTower == transform.parent.gameObject;
 
-            if (isChoosedTower && !isRangeShowed)
+            if (isChoosedTower)
             {
-                Show(true);
-                isRangeShowed = true;
+                if (!isRangeShowed)
+                {
+                    Show(true);
+                    isRangeShowed = true;
+                }
             }
             else
-            if (!isChoosedTower && isRangeShowed)
+            if (isRangeShowed)
             {
                 Show(false);
                 isRangeShowed = false;
@@ -84,12 +87,7 @@ namespace Game.Tower
 
         private void Show(bool show)
         {
-            if (show)
-                if (rend.material.color != notTransparent)
-                    rend.material.color = notTransparent;
-                else
-                if (rend.material.color != transparent)
-                    rend.material.color = transparent;
-        }       
+            rend.material.color = show ? notTransparent : transparent;
+        }
     }
 }
