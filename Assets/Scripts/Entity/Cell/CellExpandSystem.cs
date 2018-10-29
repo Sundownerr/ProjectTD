@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
-#pragma warning disable CS1591 
+
 namespace Game.Cells
 {
 
@@ -10,17 +10,6 @@ namespace Game.Cells
     {
         public CellExpandSystem(GameObject cell, GameObject cellPrefab, GameObject[] buildingAreas)
         {
-            for (int i = 0; i < GM.Instance.CellList.Count; i++)
-            {
-                if (cell != GM.Instance.CellList[i])
-                {
-                    if (cell.transform.position == GM.Instance.CellList[i].transform.position)
-                    {
-                        Debug.Log(cell.transform + " = " + GM.Instance.CellList[i].transform);
-                    }
-                }
-            }
-
             var spacing = cell.transform.localScale.x + 1;
             var rayDistance = cell.transform.localScale.x;
 
@@ -40,9 +29,9 @@ namespace Game.Cells
             var lRay = new Ray(cell.transform.position + Vector3.left * 15, Vector3.down);
 
             var rayHit =
-                Physics.Raycast(fRay, out forwardRaycastHit, 5, buildLayerMask) |
-                Physics.Raycast(bRay, out backRaycastHit, 5, buildLayerMask) |
-                Physics.Raycast(rRay, out rightRaycastHit, 5, buildLayerMask) |
+                Physics.Raycast(fRay, out forwardRaycastHit, 5, buildLayerMask) ||
+                Physics.Raycast(bRay, out backRaycastHit, 5, buildLayerMask) ||
+                Physics.Raycast(rRay, out rightRaycastHit, 5, buildLayerMask) ||
                 Physics.Raycast(lRay, out leftRaycastHit, 5, buildLayerMask);
 
             if (rayHit)
@@ -80,13 +69,12 @@ namespace Game.Cells
             }
 
             var sideRayHit =
-                Physics.Raycast(cell.transform.position + direction1 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask) |
+                Physics.Raycast(cell.transform.position + direction1 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask) ||
                 Physics.Raycast(cell.transform.position + direction2 * cell.transform.lossyScale.x / 2, spawnDirection, rayDistance, layerMask);
 
             if (!sideRayHit)
-            {
                 Object.Instantiate(cellPrefab, cell.transform.position + spawnDirection * spacing, cell.transform.rotation).name = cell.transform.name;
-            }
+            
         }
     }
 }
