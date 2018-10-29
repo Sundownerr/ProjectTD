@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Game.System;
 
@@ -22,10 +23,12 @@ namespace Game.Data.Effect
         {
             if (CreepList.Count > 0)
             {
+                if (AffectedCreepList == null)
+                    AffectedCreepList = new List<Creep.CreepSystem>();
+
                 AffectedCreepList.Add(CreepList[0]);
 
                 LastCreep = AffectedCreepList[AffectedCreepList.Count - 1];
-
 
                 if (LastCreep.gameObject != null)
                 {
@@ -42,18 +45,17 @@ namespace Game.Data.Effect
 
                 EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
             }
+
         }
 
         public override void ContinueEffect()
         {
             if (!IsEnded)
-            {
-                if (LastCreep.gameObject == null)
+                if (LastCreep == null)
                 {
                     EndEffect();
-                    GM.Instance.StopCoroutine(EffectCoroutine);                   
+                    GM.Instance.StopCoroutine(EffectCoroutine);
                 }
-            }
         }
 
         public override void EndEffect()

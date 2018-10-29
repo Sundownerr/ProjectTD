@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 
 namespace Game.Data.Effect
-{
-    
+{   
     public abstract class Effect : ScriptableObject
     {
         public string EffectName, EffectDescription;
@@ -37,7 +36,7 @@ namespace Game.Data.Effect
         {
             if (!IsSet)
                 StartEffect();
-
+            
             ContinueEffect();
         }
     }
