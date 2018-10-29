@@ -20,9 +20,7 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            } 
 
             GM.Instance.TowerUISystem = this;
             gameObject.SetActive(false);
@@ -73,13 +71,9 @@ namespace Game.System
             
 
             if (isHaveUpgrade)
-            {
                 UpgradeButton.gameObject.SetActive(true);
-            }
             else
-            {
                 UpgradeButton.gameObject.SetActive(false);
-            }
         }       
     }
 }

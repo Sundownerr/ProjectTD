@@ -77,18 +77,12 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             if (Instance == null)
-            {
                 Instance = this;
-            }
             else
-            {
                 Debug.Log("Warning: multiple " + this + " in scene!");
-            }
 
             IDLE = 0;
             CHOOSED_CREEP = 1;
@@ -142,8 +136,6 @@ namespace Game.System
             ExpToLevelUp[22] = 556;
             ExpToLevelUp[23] = 601;
             ExpToLevelUp[24] = 649;
-
-
         }
     }
 }

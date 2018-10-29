@@ -13,9 +13,7 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             transform.GetChild(0).GetComponent<Button>().onClick.AddListener(ClickTowerButton);
         }

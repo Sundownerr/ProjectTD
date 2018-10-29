@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-#pragma warning disable CS1591 
+
 namespace Game.System
 {
     public class GridSystem : ExtendedMonoBehaviour
@@ -17,9 +16,7 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             StartCoroutine(BuildTimer());
             GM.Instance.GridSystem = this;
@@ -38,20 +35,13 @@ namespace Game.System
                 if (GM.PLAYERSTATE == GM.PLACING_TOWER)
                 {
                     if (!lastCell.activeSelf)
-                    {
                         SetCellsActive(true);
-                    }
 
                     SetCellsColors();
                 }
-
-                if (GM.PLAYERSTATE != GM.PLACING_TOWER)
-                {
+                else
                     if (lastCell.activeSelf)
-                    {
-                        SetCellsActive(false);
-                    }             
-                }
+                    SetCellsActive(false);
             }
         }
 
@@ -72,7 +62,9 @@ namespace Game.System
 
                 if (!Physics.Raycast(ray, 100, LayerMask))
                 {
-                    var spawnPos = GM.Instance.CellAreaList[i].transform.position + new Vector3(0, GM.Instance.CellAreaList[i].transform.localScale.y / 1.9f, 0);
+                    var spawnPos = GM.Instance.CellAreaList[i].transform.position + 
+                        new Vector3(0, GM.Instance.CellAreaList[i].transform.localScale.y / 1.9f, 0);
+
                     Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);            
                 }
             }
@@ -81,9 +73,7 @@ namespace Game.System
         private void SetCellsActive(bool active)
         {
             for (int i = 0; i < GM.Instance.CellList.Count; i++)
-            {
                 GM.Instance.CellList[i].SetActive(active);
-            }
         }
 
         private void SetCellsColors()
@@ -91,19 +81,7 @@ namespace Game.System
             for (int i = 0; i < GM.Instance.CellStateList.Count; i++)
             {
                 var cell = GM.Instance.CellStateList[i];
-
-                if (cell.IsBusy)
-                {
-                    cell.CellRenderer.material.color = red;
-                }
-                else if (cell.IsChosen)
-                {
-                    cell.CellRenderer.material.color = green;
-                }
-                else
-                {
-                    cell.CellRenderer.material.color = blue;
-                }
+                cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? green : blue;              
             }
         }
     }

@@ -9,9 +9,7 @@ public class MainMenuScript : ExtendedMonoBehaviour
     protected override void Awake()
     {
         if ((object)CachedTransform == null)
-        {
             CachedTransform = transform;
-        }
 
         QuitButton.onClick.AddListener(QuitClick);
         NewGameButton.onClick.AddListener(NewGameClick);

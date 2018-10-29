@@ -12,13 +12,9 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             baseLearnCost = 20;
-
-           
 
             GM.Instance.ElementSystem = this;
         }
@@ -37,26 +33,18 @@ namespace Game.System
                     !GM.Instance.BaseUISystem.GetTowerButton.gameObject.activeSelf;
 
                 if (isButtonOk)
-                {
                     GM.Instance.BaseUISystem.GetTowerButton.gameObject.SetActive(true);
-                }
                 
                 return true;
             }
             else
-            {
-                Debug.Log("not enough mc or level is 15");
-                return false;
-            }         
+                return false;     
         }
 
         public void LearnElement(int elementId)
         {
             if (CheckCanLearn(GM.Instance.PlayerData.ElementLevelList[elementId]))
-            {
                 GM.Instance.PlayerData.ElementLevelList[elementId]++;
-            }
         }    
     }
-
 }
