@@ -13,7 +13,7 @@ namespace Game.Data.Effect
         public List<Creep.CreepSystem> CreepList;
 
         [HideInInspector]
-        protected bool IsEnded, IsLastInList;
+        public bool IsEnded, IsLastInList;
 
         [HideInInspector]
         public Tower.TowerBaseSystem tower;
