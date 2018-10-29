@@ -18,9 +18,7 @@ namespace Game.Tower
         public void Set()
         {
             for (int i = 0; i < ownerTower.StatsSystem.Stats.SpecialList.Count; i++)
-            {
                 ownerTower.StatsSystem.Stats.SpecialList[i].InitSpecial(ownerTower);
-            }
         }
 
         public int CalculateShotCount()
@@ -28,14 +26,7 @@ namespace Game.Tower
             var creepList = ownerTower.RangeSystem.CreepList;
             var requiredShotCount = 1 + ownerTower.Bullet.GetComponent<BulletSystem>().MultishotCount;
 
-            if (creepList.Count >= requiredShotCount)
-            {
-                return requiredShotCount;
-            }
-            else
-            {
-                return creepList.Count;
-            }
+            return creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;         
         }
 
         public void SetChainTarget(BulletSystem bullet)
@@ -54,9 +45,7 @@ namespace Game.Tower
                 bullet.RemainingBounceCount--;
             }
             else
-            {
-                IsHaveChainTargets = false;
-            }
+                IsHaveChainTargets = false;            
         }
 
         public void DamageInAOE(BulletSystem bullet)
@@ -66,9 +55,7 @@ namespace Game.Tower
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, bullet.AOEShotRange, hitTargetList, layer);
 
             for (int i = 0; i < hitTargetCount; i++)
-            {
                 hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);
-            }
         }
 
         public void IncreaseStatsPerLevel()
@@ -76,9 +63,7 @@ namespace Game.Tower
             var specialList = ownerTower.StatsSystem.Stats.SpecialList;
 
             for (int i = 0; i < specialList.Count; i++)
-            {
-                specialList[i].IncreaseStatsPerLevel();
-            }
+                specialList[i].IncreaseStatsPerLevel();            
         }
     }
 }

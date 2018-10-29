@@ -15,15 +15,11 @@ namespace Game.Tower
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);
-            Lifetime = ParticleSystemList[0].main.startLifetime.constant;
-
-           
+            Lifetime = ParticleSystemList[0].main.startLifetime.constant;           
         }
 
         private void OnEnable()
@@ -34,11 +30,7 @@ namespace Game.Tower
 
         private void OnDisable()
         {
-            if(ChainshotCount > 0)
-            {
-                RemainingBounceCount = ChainshotCount;
-            }
-
+            RemainingBounceCount = ChainshotCount > 0 ? ChainshotCount : 0;
             Show(false);           
         }
 
@@ -48,15 +40,11 @@ namespace Game.Tower
             {
                 emissionModule = ParticleSystemList[i].emission;
                 emissionModule.enabled = enabled;
-
+               
                 if (enabled)
-                {
                     ParticleSystemList[i].Play();
-                }
                 else
-                {
                     ParticleSystemList[i].Stop();
-                }
             }
         }      
     }

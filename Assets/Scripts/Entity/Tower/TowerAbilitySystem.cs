@@ -171,7 +171,7 @@ namespace Game.Tower
                     owner.isAllStackedEffectsEnded;
 
                 if (allEffectsEnded || isCreepInRange)
-                    owner.State.ChangeState(new CombatState(owner));               
+                    owner.State.ChangeState(new CombatState(owner));
                 else
                 {
                     owner.isAllEffectsEnded = true;
@@ -181,25 +181,31 @@ namespace Game.Tower
                     {
                         abilityList[i].InitAbility();
 
-                        if (!abilityList[i].CheckEffectsEnded() && !abilityList[i].CheckIntervalsEnded())
+                        var isEffectsNotEnded =
+                            !abilityList[i].CheckEffectsEnded() &&
+                            !abilityList[i].CheckIntervalsEnded();
+
+                        if (isEffectsNotEnded)
                             owner.isAllEffectsEnded = false;
-                    }                   
+                    }
 
                     if (stackList.Count > 0)
-                    {                      
                         for (int i = 0; i < stackList.Count; i++)
                         {
                             stackList[i].InitAbility();
 
-                            if (!stackList[i].CheckEffectsEnded() && !stackList[i].CheckIntervalsEnded())
+                            var isEffectsNotEnded =
+                                !stackList[i].CheckEffectsEnded() &&
+                                !stackList[i].CheckIntervalsEnded();
+
+                            if (isEffectsNotEnded)
                                 owner.isAllStackedEffectsEnded = false;
                             else
                             {
                                 Object.Destroy(stackList[i]);
                                 stackList.RemoveAt(i);
-                            }                        
+                            }
                         }
-                    }
                 }
             }
 

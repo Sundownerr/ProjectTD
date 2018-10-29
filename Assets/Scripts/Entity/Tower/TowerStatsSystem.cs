@@ -28,9 +28,7 @@ namespace Game.Tower
                 Stats.AbilityList[i] = UnityEngine.Object.Instantiate(Stats.AbilityList[i]);
 
                 for (int j = 0; j < Stats.AbilityList[i].EffectList.Count; j++)
-                {
                     Stats.AbilityList[i].EffectList[j] = UnityEngine.Object.Instantiate(Stats.AbilityList[i].EffectList[j]);
-                }
 
                 Stats.AbilityList[i].SetOwnerTower(ownerTower);
             }
@@ -50,17 +48,13 @@ namespace Game.Tower
             BaseStats = UnityEngine.Object.Instantiate(newBaseStats);
 
             for (int i = 1; i < Stats.Level; i++)
-            {
                 IncreaseStatsPerLevel();
-            }
         }
 
         private void UpgradeSpecial(TowerData newBaseStats)
         {          
             for (int i = 0; i < newBaseStats.SpecialList.Count; i++)
-            {
                 Stats.SpecialList[i] = UnityEngine.Object.Instantiate(Stats.SpecialList[i]);
-            }
         }
 
         private void IncreaseStatsPerLevel()
@@ -76,7 +70,6 @@ namespace Game.Tower
             Stats.Exp += amount;
 
             for (int i = Stats.Level; i < 25; i++)
-            {
                 if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
                 {
                     IncreaseStatsPerLevel();
@@ -86,8 +79,7 @@ namespace Game.Tower
 
                     var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, ownerTower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
-                }
-            }
+                }           
             UpdateUI();
         }
 
@@ -95,9 +87,7 @@ namespace Game.Tower
         public void UpdateUI()
         {
             if (GM.Instance.PlayerInputSystem.ChoosedTower == ownerTower.gameObject)
-            {
-                GM.Instance.TowerUISystem.UpdateValues();
-            }
+                GM.Instance.TowerUISystem.UpdateValues();           
         }
     }
 }
