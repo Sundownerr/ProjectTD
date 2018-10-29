@@ -4,7 +4,7 @@ using Game.System;
 
 namespace Game.Data.Effect
 {
-    [CreateAssetMenu(fileName = "DoT", menuName = "Base DoT")]
+    [CreateAssetMenu(fileName = "DoT", menuName = "Data/Tower/Effect/DoT")]
     public class DoT : Effect
     {
         public int DamagePerTick;

@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "All Tower Data", menuName = "All Tower Data")]
+    [CreateAssetMenu(fileName = "All Tower Data", menuName = "Data/All Tower Data")]
 
     [Serializable]
     public class AllTowerData : ScriptableObject

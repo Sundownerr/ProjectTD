@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "Player Data", menuName = "PlayerData")]
+    [CreateAssetMenu(fileName = "Player Data", menuName = "Data/Player Data")]
     
     public class PlayerData : ScriptableObject
     {

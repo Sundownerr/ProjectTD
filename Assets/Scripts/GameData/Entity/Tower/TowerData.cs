@@ -6,7 +6,7 @@ using NaughtyAttributes;
 
 namespace Game.Data.Entity.Tower
 {
-    [CreateAssetMenu(fileName = "New Tower", menuName = "Base Tower")]
+    [CreateAssetMenu(fileName = "New Tower", menuName = "Data/Tower/Tower")]
     [Serializable]   
     public class TowerData : Entity
     {

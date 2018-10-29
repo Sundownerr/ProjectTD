@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Data.Entity.Tower
 {
-    [CreateAssetMenu(fileName = "Multishot", menuName = "Tower Special/Multishot")]
+    [CreateAssetMenu(fileName = "Multishot", menuName = "Data/Tower/Special/Multishot")]
 
     public class Multishot : Special
     {

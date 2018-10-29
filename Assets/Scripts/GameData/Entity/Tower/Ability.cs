@@ -6,7 +6,7 @@ using System;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "New Ability", menuName = "Base Ability")]
+    [CreateAssetMenu(fileName = "New Ability", menuName = "Data/Tower/Ability")]
 
     [Serializable]
     public class Ability : ScriptableObject
@@ -48,9 +48,7 @@ namespace Game.Data
             tower = ownerTower;
 
             for (int i = 0; i < EffectList.Count; i++)
-            {
                 EffectList[i].tower = ownerTower;
-            }
         }
 
         public void SetTarget(List<Creep.CreepSystem> creepList)
@@ -60,15 +58,12 @@ namespace Game.Data
                 CreepList = creepList;
 
                 for (int i = 0; i < EffectList.Count; i++)
-                {
                     EffectList[i].CreepList = creepList;
-                }
             }
         }
         
         public void StackReset()
-        {
-           
+        {      
             IsStacked = true;
             EffectCount = 0;
             IsOnCooldown = false;
@@ -94,25 +89,17 @@ namespace Game.Data
             }
 
             if ((allEffectsInterval > Cooldown) || (allEffectsDuration > Cooldown))
-            {
                 IsStackable = true;
-            }
             else
-            {
-                IsStackable = false;
-            }
+                IsStackable = false;      
         }
-
 
         public bool CheckEffectsEnded()
         {
             for (int i = 0; i < EffectList.Count; i++)
-            {
                 if (!EffectList[i].IsEnded)
-                {
                     return false;
-                }
-            }
+            
             return true;
         }
 
@@ -120,23 +107,16 @@ namespace Game.Data
         public bool CheckIntervalsEnded()
         {
             if (EffectCount >= EffectList.Count)
-            {
                 return true;
-            }
             else
-            {
                 return false;
-            }
         }
 
         private IEnumerator NextEffect(float delay)
         {
             yield return new WaitForSeconds(delay);
-  
 
             IsChangingEffect = false;
-
-           
 
             state.ChangeState(new SetEffectState(this));
         }
@@ -145,17 +125,10 @@ namespace Game.Data
         {         
             yield return new WaitForSeconds(delay);
 
-            if (IsStackable)
-            {
-                if (!CheckEffectsEnded())
-                {
-                    IsNeedStack = true;
-                }
-                else
-                {
-                    IsNeedStack = false;
-                }
-            }
+            if (IsStackable && !CheckEffectsEnded())
+                IsNeedStack = true;
+            else
+                IsNeedStack = false;
           
             if (!IsStacked)
             {
@@ -164,18 +137,15 @@ namespace Game.Data
                 if (CheckEffectsEnded())
                 {
                     for (int i = 0; i < EffectList.Count; i++)
-                    {
                         EffectList[i].ResetEffect();
-                    }
-                
+              
                     EffectCount = 0;
 
                     state.ChangeState(new ChoseEffectState(this));
                 }
                 else
-                {
                     state.ChangeState(new SetEffectState(this));
-                }
+                
             }
         }
 
@@ -183,47 +153,30 @@ namespace Game.Data
         {
             private Ability owner;
 
-            public ChoseEffectState(Ability owner)
-            {
-                this.owner = owner;
-            }
+            public ChoseEffectState(Ability owner) { this.owner = owner; }
 
-            public void Enter()
-            {
-               
-            }
+            public void Enter() { }
 
             public void Execute()
-            {               
-                if (!owner.IsOnCooldown)
-                {                  
-                    if (!owner.CheckIntervalsEnded())
-                    {
-                        GM.Instance.StartCoroutine(owner.StartCooldown(owner.Cooldown));
-                        owner.IsOnCooldown = true;
-                        owner.state.ChangeState(new SetEffectState(owner));
-                    }
+            {
+                if (!owner.IsOnCooldown && !owner.CheckIntervalsEnded())
+                {
+                    GM.Instance.StartCoroutine(owner.StartCooldown(owner.Cooldown));
+                    owner.IsOnCooldown = true;
+                    owner.state.ChangeState(new SetEffectState(owner));
                 }
             }
 
-            public void Exit()
-            {
-               
-            }
+            public void Exit() { }
         }
 
         protected class SetEffectState : IState
         {
             private Ability owner;
 
-            public SetEffectState(Ability owner)
-            {
-                this.owner = owner;
-            }
+            public SetEffectState(Ability owner) { this.owner = owner; }
 
-            public void Enter()
-            {
-            }
+            public void Enter() { }
 
             public void Execute()
             {
@@ -234,33 +187,23 @@ namespace Game.Data
                 }
 
                 if (owner.EffectCount == 0)
-                {
                     owner.EffectList[0].InitEffect();
-                }
                 else
-                {
-                    for (int i = 0; i < owner.EffectCount; i++)
-                    {                     
+                    for (int i = 0; i < owner.EffectCount; i++)                 
                         owner.EffectList[i].InitEffect();
-                    }
-                }
+                
                
                 if (owner.CheckEffectsEnded())
                 {
                     if (!owner.IsStacked)
-                    {
-                        owner.state.ChangeState(new ChoseEffectState(owner));
-                    }
-                }
-               
+                        owner.state.ChangeState(new ChoseEffectState(owner));                   
+                }               
             }
 
             public void Exit()
             {
                 if (!owner.CheckIntervalsEnded())
-                {
-                    owner.EffectCount++;
-                }
+                    owner.EffectCount++;              
             }
         }
         

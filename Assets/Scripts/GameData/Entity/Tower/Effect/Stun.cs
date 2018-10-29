@@ -4,7 +4,7 @@ using Game.System;
 
 namespace Game.Data.Effect
 {
-    [CreateAssetMenu(fileName = "Stun", menuName = "Stun")]
+    [CreateAssetMenu(fileName = "Stun", menuName = "Data/Tower/Effect/Stun")]
     public class Stun : Effect
     {
         public GameObject EffectPrefab;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Data.Entity.Tower
 {
-    [CreateAssetMenu(fileName = "Chainshot", menuName = "Tower Special/Chainshot")]
+    [CreateAssetMenu(fileName = "Chainshot", menuName = "Data/Tower/Special/Chainshot")]
 
     public class Chainshot : Special
     {

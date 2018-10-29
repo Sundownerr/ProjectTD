@@ -1,7 +1,7 @@
 ﻿
 namespace Game.Data.Entity.Creep
 {
-    [UnityEngine.CreateAssetMenu(fileName = "Normal", menuName = "Creep/Normal")]
+    [UnityEngine.CreateAssetMenu(fileName = "Normal", menuName = "Data/Creep/Normal")]
 
     public class Normal : CreepData
     {
