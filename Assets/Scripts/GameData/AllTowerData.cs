@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEditor;
+using Game.System;
 
 namespace Game.Data
 {
@@ -15,63 +16,29 @@ namespace Game.Data
         [SerializeField]
         public ElementList AllTowerList;
 
-        private string[] elementNameList;
-
-
         private void Awake()
         {
             var towerData = Resources.Load("All Tower Data");
 
             if (towerData == null)
             {
-                AllTowerList.ElementsList = new List<Element>();
-
-                elementNameList = new string[]
-                {
-                "Astral",
-                "Darkness",
-                "Ice",
-                "Iron",
-                "Storm",
-                "Nature",
-                "Fire"
-                };
+                AllTowerList.ElementsList = new List<Element>();          
 
                 for (int i = 0; i < 7; i++)
-                {
-                    AllTowerList.ElementsList.Add(new Element()
-                    {
-                        Name = elementNameList[i],
-
-                        RarityList = new List<Rarity>
-                    {
-                        new Rarity()
+                    AllTowerList.ElementsList.Add(
+                        new Element()
                         {
-                            Name = "Common",
-                            TowerList = new List<TowerData>()
-                        },
+                            Name = GM.Instance.ElementNameList[i],
 
-                        new Rarity()
-                        {
-                            Name = "Uncommon",
-                            TowerList = new List<TowerData>()
-                        },
-
-                         new Rarity()
-                        {
-                            Name = "Rare",
-                            TowerList = new List<TowerData>()
-                        },
-
-                        new Rarity()
-                        {
-                            Name = "Unique",
-                            TowerList = new List<TowerData>()
+                            RarityList = new List<Rarity>
+                            {
+                                new Rarity(new List<TowerData>(), "Common"),
+                                new Rarity(new List<TowerData>(), "Uncommon"),
+                                new Rarity(new List<TowerData>(), "Rare"),
+                                new Rarity(new List<TowerData>(), "Unique")
+                            }
                         }
-                    }
-                    }
                     );
-                }
             }
         }
     }

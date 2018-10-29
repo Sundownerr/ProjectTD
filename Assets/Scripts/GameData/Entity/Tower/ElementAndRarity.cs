@@ -10,17 +10,23 @@ public class Element
     public List<Rarity> RarityList;
 
     [SerializeField]
-    public string Name;
+    public string Name; 
 }
 
 [Serializable]
 public class Rarity
-{
+{ 
     [SerializeField]
     public List<TowerData> TowerList;
     
     [SerializeField]
     public string Name;
+
+    public Rarity(List<TowerData> towerList, string name)
+    {
+        TowerList = towerList;
+        Name = name;
+    }
 }
 
 [Serializable]

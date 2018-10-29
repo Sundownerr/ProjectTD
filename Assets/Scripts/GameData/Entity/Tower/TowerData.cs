@@ -46,9 +46,7 @@ namespace Game.Data.Entity.Tower
         private void Awake()
         {
             for (int i = 0; i < 5; i++)
-            {
                 DamageToRace.Add(100f);
-            }
         }
     }
 }

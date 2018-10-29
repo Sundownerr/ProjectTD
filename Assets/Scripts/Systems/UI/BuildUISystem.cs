@@ -14,17 +14,13 @@ namespace Game.System
         public GameObject Rarity;
         public bool IsChoosedNewTower;
 
-        private List<Data.Entity.Tower.TowerData> availableTowerList;
-
-       
+        private List<Data.Entity.Tower.TowerData> availableTowerList;      
         private List<GameObject> towerButtonList;     
 
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             towerButtonList = new List<GameObject>();
             availableTowerList = new List<Data.Entity.Tower.TowerData>();
@@ -52,9 +48,7 @@ namespace Game.System
             var tempList = list;
 
             for (int i = 0; i < tempList.Count; i++)
-            {
                 tempList[i].interactable = false;
-            }
 
             return tempList;
         }
@@ -64,9 +58,7 @@ namespace Game.System
             DisableButtonList(ElementButtonList);
 
             for (int i = 0; i < availableTowerList.Count; i++)
-            {
                 ElementButtonList[availableTowerList[i].ElementId].interactable = true;
-            }
         }
 
         public void ShowRarity(Button elementButton)
@@ -76,12 +68,8 @@ namespace Game.System
             Rarity.gameObject.GetComponent<RectTransform>().localPosition = Vector2.zero;
 
             for (int i = 0; i < availableTowerList.Count; i++)
-            {
                 if (availableTowerList[i].ElementId == ChoosedElementId)
-                {
                     UpdateRarity(ChoosedElementId);
-                }
-            }
         }
 
         public void UpdateRarity(int elementId)
@@ -89,9 +77,7 @@ namespace Game.System
             var towerCount = 0;         
 
             for (int i = 0; i < towerButtonList.Count; i++)
-            {
                 Destroy(towerButtonList[i]);           
-            }
 
             towerButtonList.Clear();
 
@@ -111,19 +97,13 @@ namespace Game.System
                             availableTowerList[i] == lastTowerButton.GetComponent<TowerButtonSystem>().TowerData;
 
                         if (isSameTower)
-                        {
                             AddTowerCount();
-                        }
                         else
-                        {
                             CreateTowerButton(i, towerCount);
-                        }
                     }
                     else
-                    {
                         CreateTowerButton(i, towerCount);
-                    }
-                   
+
                     towerCount++;
                 }
             }

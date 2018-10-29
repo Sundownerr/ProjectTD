@@ -19,6 +19,9 @@ namespace Game.System
         [NaughtyAttributes.BoxGroup("List")]
         public List<Cells.Cell> CellStateList;
 
+        [NaughtyAttributes.BoxGroup("List")]
+        public string[] ElementNameList;
+
         [NaughtyAttributes.BoxGroup("Prefab")]
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint, LevelUpEffect;
 
@@ -100,6 +103,18 @@ namespace Game.System
             QualitySettings.vSyncCount = 0;
 
             Cursor.lockState = CursorLockMode.Confined;
+
+            ElementNameList = new string[]
+              {
+                "Astral",
+                "Darkness",
+                "Ice",
+                "Iron",
+                "Storm",
+                "Nature",
+                "Fire"
+              };
+
 
             ExpToLevelUp = new int[25];
             ExpToLevelUp[0] = 12;

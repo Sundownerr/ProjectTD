@@ -13,9 +13,7 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
-                CachedTransform = transform;
-            }         
+                CachedTransform = transform;  
             
             StartWaveButton.onClick.AddListener(StartWave);
             BuildModeButton.onClick.AddListener(BuildTower);
@@ -44,19 +42,15 @@ namespace Game.System
             if (!GM.Instance.ElementUISystem.gameObject.activeSelf)
             {
                 GM.Instance.ElementUISystem.gameObject.SetActive(true);
-
                 GM.Instance.BuildUISystem.gameObject.SetActive(false);
             }
             else
-            {
-                GM.Instance.ElementUISystem.gameObject.SetActive(false);
-            }        
+                GM.Instance.ElementUISystem.gameObject.SetActive(false);   
         }
 
         private void GetTower()
         {
-            GM.Instance.TowerCreatingSystem.CreateRandomTower();
-        
+            GM.Instance.TowerCreatingSystem.CreateRandomTower();        
         }
 
         private void BuildTower()
@@ -64,13 +58,10 @@ namespace Game.System
             if (!GM.Instance.BuildUISystem.gameObject.activeSelf)
             {
                 GM.Instance.BuildUISystem.gameObject.SetActive(true);
-
                 GM.Instance.ElementUISystem.gameObject.SetActive(false);
             }
             else
-            {
-                GM.Instance.BuildUISystem.gameObject.SetActive(false);
-            }           
+                GM.Instance.BuildUISystem.gameObject.SetActive(false);  
         }
     }
 }

@@ -19,9 +19,7 @@ namespace Game.Data
             ElementLevelList = new List<int>();
 
             for (int i = 0; i < 7; i++)
-            {
-                ElementLevelList.Add(0);
-            }                
+                ElementLevelList.Add(0);          
 
             MaxTowerLimit = 500;
             StartTowerRerollCount = 3;
