@@ -57,7 +57,9 @@ namespace Game.Data.Effect
                 AffectedCreepList.Add(CreepList[0]);
                 LastCreep = AffectedCreepList[AffectedCreepList.Count - 1];
 
-                if (LastCreep.gameObject != null)
+                if (LastCreep.gameObject == null)
+                    EndEffect();
+                else
                 {
                     effectPrefab = Instantiate(EffectPrefab,
                         LastCreep.gameObject.transform.position + Vector3.up * 20,
@@ -68,11 +70,8 @@ namespace Game.Data.Effect
                     LastCreep.creepRenderer.material.color = Color.green;
 
                     Show(true);
-                }
-                else
-                    EndEffect();
+                }                   
             }
-
 
             IsSet = true;
             IsEnded = false;
@@ -93,9 +92,7 @@ namespace Game.Data.Effect
         public override void EndEffect()
         {
             if (LastCreep != null)
-            {
                 LastCreep.creepRenderer.material.color = Color.white;
-            }
 
             AffectedCreepList.Remove(LastCreep);
             Destroy(effectPrefab);

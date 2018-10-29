@@ -35,7 +35,9 @@ namespace Game.Tower
             var layer = 1 << 12;
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, 150, hitTargetList, layer);
 
-            if (hitTargetCount > 1)
+            if (hitTargetCount < 1)
+                IsHaveChainTargets = false;
+            else
             {
                 IsHaveChainTargets = true;
 
@@ -43,9 +45,7 @@ namespace Game.Tower
 
                 bullet.Target = randomCreep;
                 bullet.RemainingBounceCount--;
-            }
-            else
-                IsHaveChainTargets = false;            
+            }       
         }
 
         public void DamageInAOE(BulletSystem bullet)

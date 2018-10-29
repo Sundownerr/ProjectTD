@@ -133,7 +133,6 @@ namespace Game.Tower
                 upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
                 upgradedTowerBaseSystem.SetSystem();
 
-
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;
                 
                 Destroy(gameObject);
@@ -233,8 +232,8 @@ namespace Game.Tower
             {
                 if (owner.RangeSystem.CreepList.Count > 0)
                     owner.state.ChangeState(new CombatState(owner));
-
-                else if(!owner.combatSystem.CheckAllBulletInactive())
+                else 
+                if(!owner.combatSystem.CheckAllBulletInactive())
                     owner.combatSystem.MoveBullet();
                 else
                     owner.state.ChangeState(new LookForCreepState(owner));

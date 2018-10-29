@@ -104,7 +104,6 @@ namespace Game.Data
             return true;
         }
 
-
         public bool CheckIntervalsEnded()
         {
             return effectCount >= EffectList.Count ? true : false;         
@@ -129,7 +128,9 @@ namespace Game.Data
             {
                 isOnCooldown = false;
 
-                if (CheckEffectsEnded())
+                if (!CheckEffectsEnded())
+                    state.ChangeState(new SetEffectState(this));
+                else
                 {
                     for (int i = 0; i < EffectList.Count; i++)
                         EffectList[i].ResetEffect();
@@ -137,9 +138,7 @@ namespace Game.Data
                     effectCount = 0;
 
                     state.ChangeState(new ChoseEffectState(this));
-                }
-                else
-                    state.ChangeState(new SetEffectState(this));               
+                }              
             }
         }
 

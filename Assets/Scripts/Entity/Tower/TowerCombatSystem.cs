@@ -67,21 +67,21 @@ namespace Game.Tower
             for (int i = 0; i < bulletList.Count; i++)
                 if (bulletList[i].activeSelf)
                     if (bulletDataList[i].Target != null)
-                        if (!bulletDataList[i].IsTargetReached)
+                        if (bulletDataList[i].IsTargetReached)
+                            SetTargetReached(bulletDataList[i]);
+                        else
                         {
                             var offset = new Vector3(0, 40, 0);
                             var distance = ExtendedMonoBehaviour.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position + offset);
 
-                            if (distance > 30)
+                            if (distance < 30)
+                                HitTarget(bulletDataList[i]);
+                            else
                             {
                                 bulletList[i].transform.LookAt(bulletDataList[i].Target.transform.position + offset);
                                 bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed, Space.Self);
                             }
-                            else
-                                HitTarget(bulletDataList[i]);
                         }
-                        else
-                            SetTargetReached(bulletDataList[i]);
         }
 
         public bool CheckAllBulletInactive()

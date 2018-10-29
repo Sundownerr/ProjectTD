@@ -39,13 +39,13 @@ namespace Game.System
 
         private void LearnForce()
         {
-            if (!GM.Instance.ElementUISystem.gameObject.activeSelf)
+            if (GM.Instance.ElementUISystem.gameObject.activeSelf)
+                GM.Instance.ElementUISystem.gameObject.SetActive(false);
+            else
             {
                 GM.Instance.ElementUISystem.gameObject.SetActive(true);
                 GM.Instance.BuildUISystem.gameObject.SetActive(false);
-            }
-            else
-                GM.Instance.ElementUISystem.gameObject.SetActive(false);   
+            }         
         }
 
         private void GetTower()
@@ -55,13 +55,13 @@ namespace Game.System
 
         private void BuildTower()
         {
-            if (!GM.Instance.BuildUISystem.gameObject.activeSelf)
+            if (GM.Instance.BuildUISystem.gameObject.activeSelf)
+                GM.Instance.BuildUISystem.gameObject.SetActive(false);
+            else
             {
                 GM.Instance.BuildUISystem.gameObject.SetActive(true);
                 GM.Instance.ElementUISystem.gameObject.SetActive(false);
-            }
-            else
-                GM.Instance.BuildUISystem.gameObject.SetActive(false);  
+            }         
         }
     }
 }

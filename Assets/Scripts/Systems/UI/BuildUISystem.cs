@@ -78,7 +78,6 @@ namespace Game.System
 
             for (int i = 0; i < towerButtonList.Count; i++)
                 Destroy(towerButtonList[i]);           
-
             towerButtonList.Clear();
 
             DisableButtonList(RarityButtonList);
@@ -89,10 +88,11 @@ namespace Game.System
                 {
                     RarityButtonList[availableTowerList[i].RarityId].interactable = true;
 
-                    if(towerButtonList.Count > 0)
+                    if(towerButtonList.Count == 0)
+                        CreateTowerButton(i, towerCount);
+                    else
                     {
                         var lastTowerButton = towerButtonList[towerButtonList.Count - 1];
-
                         var isSameTower =
                             availableTowerList[i] == lastTowerButton.GetComponent<TowerButtonSystem>().TowerData;
 
@@ -101,8 +101,6 @@ namespace Game.System
                         else
                             CreateTowerButton(i, towerCount);
                     }
-                    else
-                        CreateTowerButton(i, towerCount);
 
                     towerCount++;
                 }

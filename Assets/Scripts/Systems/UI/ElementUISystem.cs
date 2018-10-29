@@ -12,9 +12,7 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             Astral.onClick.AddListener(LearnAstral);
             Darkness.onClick.AddListener(LearnDarkness);

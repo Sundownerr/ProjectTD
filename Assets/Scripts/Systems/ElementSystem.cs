@@ -17,8 +17,11 @@ namespace Game.System
         {
             var learnCost = elementLevel + baseLearnCost;
             var isCanLearn = elementLevel < 15;
+            var isLearnCostOk = learnCost <= GM.Instance.PlayerData.MagicCrystals;
 
-            if (learnCost <= GM.Instance.PlayerData.MagicCrystals && isCanLearn)
+            if (!(isLearnCostOk && isCanLearn))
+                return false;
+            else
             {
                 GM.Instance.ResourceSystem.AddMagicCrystal(-learnCost);
 
@@ -30,9 +33,7 @@ namespace Game.System
                     GM.Instance.BaseUISystem.GetTowerButton.gameObject.SetActive(true);
                 
                 return true;
-            }
-            else
-                return false;     
+            }              
         }
 
         public void LearnElement(int elementId)

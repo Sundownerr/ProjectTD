@@ -27,18 +27,16 @@ namespace Game.Data.Effect
                     AffectedCreepList = new List<Creep.CreepSystem>();
 
                 AffectedCreepList.Add(CreepList[0]);
-
                 LastCreep = AffectedCreepList[AffectedCreepList.Count - 1];
 
-                if (LastCreep.gameObject != null)
+                if (LastCreep.gameObject == null)
+                    EndEffect();
+                else
                 {
                     effectPrefab = Instantiate(EffectPrefab, LastCreep.gameObject.transform.position, Quaternion.identity, LastCreep.gameObject.transform);
 
                     LastCreep.GetStunned(Duration);
                 }
-                else
-                    EndEffect();
-                
 
                 IsSet = true;
                 IsEnded = false;
