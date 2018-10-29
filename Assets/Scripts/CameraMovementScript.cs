@@ -20,24 +20,20 @@ public class CameraMovementScript : ExtendedMonoBehaviour
     private void FixedUpdate()
     {
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
             if (rotationX > 33)
             {
                 rotationX -= 2;
                 camRigidBody.AddTorque(Vector3.left * 7);
                 camRigidBody.AddForce(Vector3.down * 2500);
             }
-        }
 
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
             if (rotationX < 82)
             {
                 rotationX += 2;
                 camRigidBody.AddTorque(Vector3.right * 7);
                 camRigidBody.AddForce(Vector3.up * 2500);
             }
-        }
 
         var onLeftEdge = Input.mousePosition.x > Screen.width - boundary;
         var onRightEdge = Input.mousePosition.x < 0 + boundary;
@@ -45,7 +41,7 @@ public class CameraMovementScript : ExtendedMonoBehaviour
         var onBottomEdge = Input.mousePosition.y < 0 + boundary;
 
         var vel = Vector3.zero;
-
+        
         if (transform.position.x < 240f & onLeftEdge)
             vel = Vector3.right * speed;
 

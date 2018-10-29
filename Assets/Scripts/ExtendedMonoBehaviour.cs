@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-#pragma warning disable CS1591 
+
 public abstract class ExtendedMonoBehaviour : MonoBehaviour
 {
     public new Transform transform
@@ -7,9 +7,8 @@ public abstract class ExtendedMonoBehaviour : MonoBehaviour
         get
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = base.transform;
-            }
+
             return CachedTransform;
         }
     }
@@ -20,9 +19,7 @@ public abstract class ExtendedMonoBehaviour : MonoBehaviour
     protected virtual void Awake()
     {
         if ((object)CachedTransform == null)
-        {
             CachedTransform = base.transform;
-        }
     }
 
     public static float CalcDistance(Vector3 pos1, Vector3 pos2)

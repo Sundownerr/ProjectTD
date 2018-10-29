@@ -14,9 +14,7 @@ namespace Game.System
         protected override void Awake()
         {
             if ((object)CachedTransform == null)
-            {
                 CachedTransform = transform;
-            }
 
             waveCreepList = new List<List<GameObject>>();
 
@@ -36,36 +34,27 @@ namespace Game.System
         private void AddMagicCrystalAfterWaveEnd()
         {
             if (waveCreepList.Count > 0)
-            {
-                for (int i = 0; i < waveCreepList.Count; i++)
-                {
+                for (int i = 0; i < waveCreepList.Count; i++)             
                     if (waveCreepList[i].Count > 0)
                     {
                         for (int j = 0; j < waveCreepList[i].Count; j++)
-                        {
                             if (waveCreepList[i][j] == null)
-                            {
                                 waveCreepList[i].RemoveAt(j);
-                            }
-                        }
                     }
                     else
                     {
                         GM.Instance.ResourceSystem.AddMagicCrystal(5);
                         waveCreepList.RemoveAt(i);
-                    }
-                }
-            }
+                    }                       
         }
 
         private IEnumerator SpawnCreeps(int needToSpawnCount, float spawnDelay)
         {
+            var spawnedCreepCount = 0;
             state.ChangeState(new SpawnCreepsState(this));
 
             waveCreepList.Add(new List<GameObject>());
-
-            var spawnedCreepCount = 0;         
-
+    
             while (spawnedCreepCount < needToSpawnCount)
             {
                 var creep = Instantiate(GM.Instance.CreepPrefab);
@@ -73,7 +62,6 @@ namespace Game.System
                 waveCreepList[waveCreepList.Count - 1].Add(creep);
 
                 spawnedCreepCount++;
-
                 yield return new WaitForSeconds(spawnDelay);
             }
 
@@ -82,22 +70,13 @@ namespace Game.System
 
         protected class SpawnCreepsState : IState
         {
-            private WaveSystem owner;
+            private readonly WaveSystem owner;
 
-            public SpawnCreepsState(WaveSystem owner)
-            {
-                this.owner = owner;
-            }
+            public SpawnCreepsState(WaveSystem owner) { this.owner = owner; }
 
-            public void Enter()
-            {
+            public void Enter() { }
 
-            }
-
-            public void Execute()
-            {
-
-            }
+            public void Execute() { }
 
             public void Exit()
             {
@@ -109,23 +88,16 @@ namespace Game.System
 
         protected class GetInputState : IState
         {
-            private WaveSystem owner;
+            private readonly WaveSystem owner;
 
-            public GetInputState(WaveSystem owner)
-            {
-                this.owner = owner;
-            }
+            public GetInputState(WaveSystem owner) { this.owner = owner; }
 
-            public void Enter()
-            {              
-            }
-            
+            public void Enter() { }
+
             public void Execute()
             {
                 if (GM.Instance.BaseUISystem.IsWaveStarted)
-                {
                     owner.StartCoroutine(owner.SpawnCreeps(21, 0.5f));                   
-                }
             }
 
             public void Exit()
