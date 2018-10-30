@@ -156,18 +156,16 @@ namespace Game.System
 
         protected class GetCellDataState : IState
         {
-            private readonly TowerPlaceSystem owner;
+            private readonly TowerPlaceSystem o;
 
-            public GetCellDataState(TowerPlaceSystem owner) { this.owner = owner; }
+            public GetCellDataState(TowerPlaceSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
                 if (GM.Instance.GridSystem.IsGridBuilded)
-                {
-                    owner.state.ChangeState(new GetInputState(owner));
-                }
+                    o.state.ChangeState(new GetInputState(o));
             }
 
             public void Exit() { }
@@ -175,9 +173,9 @@ namespace Game.System
 
         protected class GetInputState : IState
         {
-            private readonly TowerPlaceSystem owner;
+            private readonly TowerPlaceSystem o;
 
-            public GetInputState(TowerPlaceSystem owner) { this.owner = owner; }
+            public GetInputState(TowerPlaceSystem o) { this.o = o; }
 
             public void Enter()
             {
@@ -188,16 +186,16 @@ namespace Game.System
             {                
                 if (GM.PLAYERSTATE == GM.PREPARE_PLACING_TOWER)
                 {
-                    owner.newTowerLimit = GM.Instance.PlayerInputSystem.NewTowerData.TowerLimit;
-                    owner.newGoldCost = GM.Instance.PlayerInputSystem.NewTowerData.GoldCost;
-                    owner.newMagicCrystalCost = GM.Instance.PlayerInputSystem.NewTowerData.MagicCrystalReq;
+                    o.newTowerLimit = GM.Instance.PlayerInputSystem.NewTowerData.TowerLimit;
+                    o.newGoldCost = GM.Instance.PlayerInputSystem.NewTowerData.GoldCost;
+                    o.newMagicCrystalCost = GM.Instance.PlayerInputSystem.NewTowerData.MagicCrystalReq;
 
-                    var isHaveResources = GM.Instance.ResourceSystem.CheckHaveResources(owner.newTowerLimit, owner.newGoldCost, owner.newMagicCrystalCost);
+                    var isHaveResources = GM.Instance.ResourceSystem.CheckHaveResources(o.newTowerLimit, o.newGoldCost, o.newMagicCrystalCost);
                    
                     if (isHaveResources)
-                        owner.state.ChangeState(new CreateTowerState(owner));
+                        o.state.ChangeState(new CreateTowerState(o));
                     else
-                        owner.state.ChangeState(new GetInputState(owner));
+                        o.state.ChangeState(new GetInputState(o));
                 }
             }
 
@@ -206,13 +204,13 @@ namespace Game.System
 
         protected class CreateTowerState : IState
         {
-            private readonly TowerPlaceSystem owner;
+            private readonly TowerPlaceSystem o;
 
-            public CreateTowerState(TowerPlaceSystem owner) { this.owner = owner; }
+            public CreateTowerState(TowerPlaceSystem o) { this.o = o; }
 
             public void Enter()
             {
-                owner.CreateTower();      
+                o.CreateTower();      
             }
 
             public void Execute()
@@ -229,15 +227,15 @@ namespace Game.System
 
         protected class MoveTowerState : IState
         {
-            private readonly TowerPlaceSystem owner;
+            private readonly TowerPlaceSystem o;
 
-            public MoveTowerState(TowerPlaceSystem owner) { this.owner = owner; }
+            public MoveTowerState(TowerPlaceSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                owner.MoveTower();
+                o.MoveTower();
             }
 
             public void Exit() { }
@@ -245,13 +243,13 @@ namespace Game.System
 
         protected class PlaceTowerState : IState
         {
-            private readonly TowerPlaceSystem owner;
+            private readonly TowerPlaceSystem o;
 
-            public PlaceTowerState(TowerPlaceSystem owner) { this.owner = owner; }
+            public PlaceTowerState(TowerPlaceSystem o) { this.o = o; }
 
             public void Enter()
             {
-                owner.PlaceTower();
+                o.PlaceTower();
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
                 GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
             }
@@ -263,13 +261,13 @@ namespace Game.System
 
         protected class DeleteTowerState : IState
         {
-            private readonly TowerPlaceSystem owner;
+            private readonly TowerPlaceSystem o;
 
-            public DeleteTowerState(TowerPlaceSystem owner) { this.owner = owner; }
+            public DeleteTowerState(TowerPlaceSystem o) { this.o = o; }
 
             public void Enter()
             {
-                owner.DeleteTower();
+                o.DeleteTower();
             }
 
             public void Execute() { }

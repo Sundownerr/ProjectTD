@@ -44,9 +44,9 @@ namespace Game.System
 
         protected class GetInputState : IState
         {
-            private readonly PlayerInputSystem owner;
+            private readonly PlayerInputSystem o;
 
-            public GetInputState(PlayerInputSystem owner) { this.owner = owner; }
+            public GetInputState(PlayerInputSystem o) { this.o = o; }
 
             public void Enter() { }
 
@@ -57,51 +57,51 @@ namespace Game.System
                 var towerLayer = 1 << 14;
                 var layerMask = terrainLayer | creepLayer | towerLayer;
 
-                owner.WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                var isRayHit = Physics.Raycast(owner.WorldRay, out owner.hit, 10000, layerMask);
+                o.WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                var isRayHit = Physics.Raycast(o.WorldRay, out o.hit, 10000, layerMask);
 
-                owner.pointerEventData = new PointerEventData(owner.EventSystem);
-                owner.pointerEventData.position = Input.mousePosition;
+                o.pointerEventData = new PointerEventData(o.EventSystem);
+                o.pointerEventData.position = Input.mousePosition;
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    owner.GraphicRaycaster.Raycast(owner.pointerEventData, owner.results);
+                    o.GraphicRaycaster.Raycast(o.pointerEventData, o.results);
 
-                    if (owner.results.Count > 0)
-                        owner.isHitUI = true;
+                    if (o.results.Count > 0)
+                        o.isHitUI = true;
 
                     if (isRayHit)
                     {
                         var isMouseOnTower =
-                            !owner.isHitUI &&
-                            owner.hit.transform.gameObject.layer == 14;
+                            !o.isHitUI &&
+                            o.hit.transform.gameObject.layer == 14;
 
                         var isMouseNotOnUI =
-                            !owner.isHitUI &&
-                            owner.hit.transform.gameObject.layer == 9;
+                            !o.isHitUI &&
+                            o.hit.transform.gameObject.layer == 9;
 
                         if (isMouseOnTower)
-                            owner.state.ChangeState(new MouseOnTowerState(owner));
+                            o.state.ChangeState(new MouseOnTowerState(o));
 
                         if (isMouseNotOnUI)
-                            owner.state.ChangeState(new MouseNotOnUIState(owner));
+                            o.state.ChangeState(new MouseNotOnUIState(o));
                     }
                 }
 
-                if (owner.results.Count > 0)
+                if (o.results.Count > 0)
                 {
-                    owner.results.Clear();
-                    owner.isHitUI = false;
+                    o.results.Clear();
+                    o.isHitUI = false;
                 }
 
                 if(GM.Instance.TowerUISystem.IsSellig)
-                    owner.state.ChangeState(new SellTowerState(owner));
+                    o.state.ChangeState(new SellTowerState(o));
 
                 if (GM.Instance.TowerUISystem.IsUpgrading)
-                    owner.state.ChangeState(new UpgradeTowerState(owner));
+                    o.state.ChangeState(new UpgradeTowerState(o));
 
                 if (GM.Instance.BuildUISystem.IsChoosedNewTower)
-                    owner.state.ChangeState(new CreateNewTowerState(owner));
+                    o.state.ChangeState(new CreateNewTowerState(o));
             }
             
             public void Exit() { }
@@ -109,25 +109,25 @@ namespace Game.System
 
         protected class MouseOnTowerState : IState
         {
-            private readonly PlayerInputSystem owner;
+            private readonly PlayerInputSystem o;
 
-            public MouseOnTowerState(PlayerInputSystem owner) { this.owner = owner; }
+            public MouseOnTowerState(PlayerInputSystem o) { this.o = o; }
 
             public void Enter()
             {
                 var towerUI = GM.Instance.TowerUISystem;
 
-                owner.ChoosedTower = owner.hit.transform.gameObject;
+                o.ChoosedTower = o.hit.transform.gameObject;
 
                 if (!towerUI.gameObject.activeSelf)
                     towerUI.gameObject.SetActive(true);
 
-                owner.StartCoroutine(towerUI.RefreshUI());
+                o.StartCoroutine(towerUI.RefreshUI());
 
                 if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
                     GM.PLAYERSTATE = GM.CHOOSED_TOWER;
 
-                owner.state.ChangeState(new GetInputState(owner));
+                o.state.ChangeState(new GetInputState(o));
             }
 
             public void Execute() { }
@@ -137,21 +137,19 @@ namespace Game.System
 
         protected class MouseNotOnUIState : IState
         {
-            private readonly PlayerInputSystem owner;
+            private readonly PlayerInputSystem o;
 
-            public MouseNotOnUIState(PlayerInputSystem owner) { this.owner = owner; }
+            public MouseNotOnUIState(PlayerInputSystem o) { this.o = o; }
 
             public void Enter()
             {
-                var towerUI = GM.Instance.TowerUISystem;
-
-                if (towerUI.gameObject.activeSelf)
-                    towerUI.gameObject.SetActive(false);
+                if (GM.Instance.TowerUISystem.gameObject.activeSelf)
+                    GM.Instance.TowerUISystem.gameObject.SetActive(false);
                 
                 if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
                     GM.PLAYERSTATE = GM.IDLE;
 
-                owner.state.ChangeState(new GetInputState(owner));
+                o.state.ChangeState(new GetInputState(o));
             }
 
             public void Execute() { }
@@ -161,14 +159,14 @@ namespace Game.System
 
         protected class SellTowerState : IState
         {
-            private readonly PlayerInputSystem owner;
+            private readonly PlayerInputSystem o;
 
-            public SellTowerState(PlayerInputSystem owner) { this.owner = owner; }
+            public SellTowerState(PlayerInputSystem o) { this.o = o; }
 
             public void Enter()
             {
-                owner.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Sell();
-                owner.state.ChangeState(new GetInputState(owner));
+                o.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Sell();
+                o.state.ChangeState(new GetInputState(o));
             }
 
             public void Execute() { }
@@ -182,14 +180,14 @@ namespace Game.System
 
         protected class UpgradeTowerState : IState
         {
-            private readonly PlayerInputSystem owner;
+            private readonly PlayerInputSystem o;
 
-            public UpgradeTowerState(PlayerInputSystem owner) { this.owner = owner; }
+            public UpgradeTowerState(PlayerInputSystem o) { this.o = o; }
 
             public void Enter()
             {
-                owner.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Upgrade();
-                owner.state.ChangeState(new GetInputState(owner));
+                o.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Upgrade();
+                o.state.ChangeState(new GetInputState(o));
             }
 
             public void Execute() { }
@@ -202,9 +200,9 @@ namespace Game.System
 
         protected class CreateNewTowerState : IState
         {
-            private readonly PlayerInputSystem owner;
+            private readonly PlayerInputSystem o;
 
-            public CreateNewTowerState(PlayerInputSystem owner) { this.owner = owner; }
+            public CreateNewTowerState(PlayerInputSystem o) { this.o = o; }
 
             public void Enter()
             {               
@@ -212,7 +210,7 @@ namespace Game.System
 
                 for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
                 {
-                    if (GM.Instance.AvailableTowerList[i] == owner.NewTowerData)
+                    if (GM.Instance.AvailableTowerList[i] == o.NewTowerData)
                     {
                         GM.Instance.AvailableTowerList.RemoveAt(i);
                         break;
@@ -222,7 +220,7 @@ namespace Game.System
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
                 GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
 
-                owner.state.ChangeState(new GetInputState(owner));
+                o.state.ChangeState(new GetInputState(o));
             }
 
             public void Execute() { }

@@ -66,9 +66,9 @@ namespace Game.System
 
         protected class SpawnCreepsState : IState
         {
-            private readonly WaveSystem owner;
+            private readonly WaveSystem o;
 
-            public SpawnCreepsState(WaveSystem owner) { this.owner = owner; }
+            public SpawnCreepsState(WaveSystem o) { this.o = o; }
 
             public void Enter() { }
 
@@ -78,15 +78,15 @@ namespace Game.System
             {
                 GM.Instance.BaseUISystem.IsWaveStarted = false;
                 GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
-                owner.WaveCount++;
+                o.WaveCount++;
             }
         }
 
         protected class GetInputState : IState
         {
-            private readonly WaveSystem owner;
+            private readonly WaveSystem o;
 
-            public GetInputState(WaveSystem owner) { this.owner = owner; }
+            public GetInputState(WaveSystem o) { this.o = o; }
 
             public void Enter() { }
 
@@ -94,10 +94,10 @@ namespace Game.System
             {
                 if (GM.Instance.BaseUISystem.IsWaveStarted)
                 {
-                    owner.creepWaveList.Add(new List<GameObject>());
+                    o.creepWaveList.Add(new List<GameObject>());
 
-                    GM.Instance.StartCoroutine(owner.SpawnCreeps(21, 0.5f));
-                    owner.state.ChangeState(new SpawnCreepsState(owner));
+                    GM.Instance.StartCoroutine(o.SpawnCreeps(21, 0.5f));
+                    o.state.ChangeState(new SpawnCreepsState(o));
                 }
             }
 

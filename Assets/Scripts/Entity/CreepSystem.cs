@@ -115,25 +115,25 @@ namespace Game.Creep
 
         protected class WalkState : IState
         {
-            private CreepSystem owner;
+            private CreepSystem o;
 
-            public WalkState(CreepSystem owner) { this.owner = owner; }
+            public WalkState(CreepSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                owner.waypointReached = CalcDistance(
-                        owner.creepTransform.position, 
-                        GM.Instance.WaypointList[owner.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
+                o.waypointReached = CalcDistance(
+                        o.creepTransform.position, 
+                        GM.Instance.WaypointList[o.waypointIndex].transform.position) < (70 + Random.Range(-10, 10));
 
-                if (owner.waypointIndex < GM.Instance.WaypointList.Length - 1)
-                    if (!owner.waypointReached)
-                        owner.MoveAndRotateCreep();                       
+                if (o.waypointIndex < GM.Instance.WaypointList.Length - 1)
+                    if (!o.waypointReached)
+                        o.MoveAndRotateCreep();                       
                     else
-                        owner.waypointIndex++;
+                        o.waypointIndex++;
                 else
-                    owner.state.ChangeState(new DestroyState(owner));
+                    o.state.ChangeState(new DestroyState(o));
             }
 
             public void Exit() { }
@@ -141,19 +141,19 @@ namespace Game.Creep
 
         protected class StunnedState : IState
         {
-            private CreepSystem owner;
+            private CreepSystem o;
 
-            public StunnedState(CreepSystem owner) { this.owner = owner; }
+            public StunnedState(CreepSystem o) { this.o = o; }
 
             public void Enter()
             {
-                owner.isStunned = true;               
+                o.isStunned = true;               
             }
 
             public void Execute()
             {                         
-                if(!owner.isStunned)
-                    owner.state.ChangeState(new WalkState(owner));
+                if(!o.isStunned)
+                    o.state.ChangeState(new WalkState(o));
             }
 
             public void Exit() { }
@@ -161,16 +161,16 @@ namespace Game.Creep
 
         protected class GiveRecourcesState : IState
         {
-            private CreepSystem owner;
+            private CreepSystem o;
 
-            public GiveRecourcesState(CreepSystem owner) { this.owner = owner; }
+            public GiveRecourcesState(CreepSystem o) { this.o = o; }
 
             public void Enter()
             {
-                owner.lastDamageDealer.StatsSystem.AddExp(owner.Stats.Exp);
-                GM.Instance.ResourceSystem.AddGold(owner.Stats.Gold);
+                o.lastDamageDealer.StatsSystem.AddExp(o.Stats.Exp);
+                GM.Instance.ResourceSystem.AddGold(o.Stats.Gold);
 
-                owner.state.ChangeState(new DestroyState(owner));
+                o.state.ChangeState(new DestroyState(o));
             }
 
             public void Execute() { }
@@ -180,15 +180,15 @@ namespace Game.Creep
 
         protected class DestroyState : IState
         {
-            private CreepSystem owner;
+            private CreepSystem o;
 
-            public DestroyState(CreepSystem owner) { this.owner = owner; }
+            public DestroyState(CreepSystem o) { this.o = o; }
 
             public void Enter()
             {             
-                Destroy(owner.Stats);
-                GM.Instance.CreepList.Remove(owner.gameObject);
-                Destroy(owner.gameObject);
+                Destroy(o.Stats);
+                GM.Instance.CreepList.Remove(o.gameObject);
+                Destroy(o.gameObject);
             }
 
             public void Execute() { }

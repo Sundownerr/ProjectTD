@@ -151,39 +151,39 @@ namespace Game.Tower
 
         protected class SpawnState : IState
         {
-            private readonly TowerBaseSystem owner;
+            private readonly TowerBaseSystem o;
 
-            public SpawnState(TowerBaseSystem owner) { this.owner = owner; }
+            public SpawnState(TowerBaseSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
                 if (GM.PLAYERSTATE == GM.PLACING_TOWER)
-                    owner.StartPlacing();
+                    o.StartPlacing();
                 else
-                    owner.state.ChangeState(new LookForCreepState(owner));               
+                    o.state.ChangeState(new LookForCreepState(o));               
             }
 
             public void Exit()
             {
-                owner.EndPlacing();
-                owner.StatsSystem.UpdateUI();
+                o.EndPlacing();
+                o.StatsSystem.UpdateUI();
             }
         }
 
         protected class LookForCreepState : IState
         {
-            private readonly TowerBaseSystem owner;
+            private readonly TowerBaseSystem o;
 
-            public LookForCreepState(TowerBaseSystem owner) { this.owner = owner; }
+            public LookForCreepState(TowerBaseSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                if (owner.RangeSystem.CreepList.Count > 0)
-                    owner.state.ChangeState(new CombatState(owner));                  
+                if (o.RangeSystem.CreepList.Count > 0)
+                    o.state.ChangeState(new CombatState(o));                  
             }
 
             public void Exit() { }
@@ -191,30 +191,30 @@ namespace Game.Tower
 
         protected class CombatState : IState
         {
-            private readonly TowerBaseSystem owner;
+            private readonly TowerBaseSystem o;
 
-            public CombatState(TowerBaseSystem owner) { this.owner = owner; }
+            public CombatState(TowerBaseSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                owner.combatSystem.State.Update();
+                o.combatSystem.State.Update();
 
-                for (int i = 0; i < owner.RangeSystem.CreepList.Count; i++)
-                    if (owner.RangeSystem.CreepList[i] == null)
+                for (int i = 0; i < o.RangeSystem.CreepList.Count; i++)
+                    if (o.RangeSystem.CreepList[i] == null)
                     {
-                        owner.RangeSystem.CreepList.RemoveAt(i);
-                        owner.RangeSystem.CreepSystemList.RemoveAt(i);
+                        o.RangeSystem.CreepList.RemoveAt(i);
+                        o.RangeSystem.CreepSystemList.RemoveAt(i);
                     }
 
-                if (owner.RangeSystem.CreepList.Count < 1)
-                    owner.state.ChangeState(new MoveRemainingBulletState(owner));
+                if (o.RangeSystem.CreepList.Count < 1)
+                    o.state.ChangeState(new MoveRemainingBulletState(o));
                 else
-                    owner.Target = owner.RangeSystem.CreepList[0];         
+                    o.Target = o.RangeSystem.CreepList[0];         
                               
-                if (owner.Target != null)
-                    owner.RotateAtCreep(owner.Target);         
+                if (o.Target != null)
+                    o.RotateAtCreep(o.Target);         
             }
 
             public void Exit() { }
@@ -222,21 +222,21 @@ namespace Game.Tower
 
         protected class MoveRemainingBulletState : IState
         {
-            private readonly TowerBaseSystem owner;
+            private readonly TowerBaseSystem o;
 
-            public MoveRemainingBulletState(TowerBaseSystem owner) { this.owner = owner; }
+            public MoveRemainingBulletState(TowerBaseSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                if (owner.RangeSystem.CreepList.Count > 0)
-                    owner.state.ChangeState(new CombatState(owner));
+                if (o.RangeSystem.CreepList.Count > 0)
+                    o.state.ChangeState(new CombatState(o));
                 else 
-                if(!owner.combatSystem.CheckAllBulletInactive())
-                    owner.combatSystem.MoveBullet();
+                if(!o.combatSystem.CheckAllBulletInactive())
+                    o.combatSystem.MoveBullet();
                 else
-                    owner.state.ChangeState(new LookForCreepState(owner));
+                    o.state.ChangeState(new LookForCreepState(o));
             }         
 
             public void Exit() { }

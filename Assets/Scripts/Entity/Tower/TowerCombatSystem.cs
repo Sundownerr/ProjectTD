@@ -15,13 +15,13 @@ namespace Game.Tower
 
         private List<BulletSystem> bulletDataList;
         private List<GameObject> bulletList;
-        private TowerBaseSystem ownerTower;
+        private TowerBaseSystem tower;
         private ObjectPool bulletPool;
         private float timer;
 
         public TowerCombatSystem(TowerBaseSystem ownerTower)
         {          
-            this.ownerTower = ownerTower;
+            tower = ownerTower;
         }
 
         private void OnDestroy()
@@ -35,13 +35,13 @@ namespace Game.Tower
             bulletDataList = new List<BulletSystem>();
 
             bulletPool = new ObjectPool();
-            bulletPool.poolObject = ownerTower.Bullet;
-            bulletPool.parent = ownerTower.transform;
+            bulletPool.poolObject = tower.Bullet;
+            bulletPool.parent = tower.transform;
             bulletPool.Initialize();
 
             State = new StateMachine();
             State.ChangeState(new ShootState(this));
-            timer = ownerTower.StatsSystem.Stats.AttackSpeed;
+            timer = tower.StatsSystem.Stats.AttackSpeed;
         }
 
         private void CreateBullet(GameObject target)
@@ -50,8 +50,8 @@ namespace Game.Tower
             bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<BulletSystem>());
 
             bulletDataList[bulletDataList.Count - 1].Target = target;
-            bulletList[bulletList.Count - 1].transform.position = ownerTower.ShootPointTransform.position;
-            bulletList[bulletList.Count - 1].transform.rotation = ownerTower.MovingPartTransform.rotation;
+            bulletList[bulletList.Count - 1].transform.position = tower.ShootPointTransform.position;
+            bulletList[bulletList.Count - 1].transform.rotation = tower.MovingPartTransform.rotation;
 
             bulletList[bulletList.Count - 1].SetActive(true);
         }
@@ -112,41 +112,41 @@ namespace Game.Tower
                 bullet.RemainingBounceCount > 0;
 
             if (bullet.AOEShotRange > 0)
-                ownerTower.specialSystem.DamageInAOE(bullet);
+                tower.specialSystem.DamageInAOE(bullet);
             else
-                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);            
+                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(tower.StatsSystem.Stats.Damage, tower);            
 
             if (isChainShot)
-                ownerTower.specialSystem.SetChainTarget(bullet);
+                tower.specialSystem.SetChainTarget(bullet);
             else           
                 SetTargetReached(bullet);          
         }
 
         private void ShotBullet()
         {
-            var shotCount = ownerTower.specialSystem.CalculateShotCount();
+            var shotCount = tower.specialSystem.CalculateShotCount();
 
             for (int i = 0; i < shotCount; i++)
-                CreateBullet(ownerTower.RangeSystem.CreepList[i]);                    
+                CreateBullet(tower.RangeSystem.CreepList[i]);                    
         }
       
         protected class ShootState : IState
         {
-            private readonly TowerCombatSystem owner;
+            private readonly TowerCombatSystem o;
 
-            public ShootState(TowerCombatSystem owner) { this.owner = owner; }
+            public ShootState(TowerCombatSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                owner.timer += Time.deltaTime;
-                owner.MoveBullet();
+                o.timer += Time.deltaTime;
+                o.MoveBullet();
 
-                if (owner.timer > owner.ownerTower.StatsSystem.Stats.AttackSpeed)
+                if (o.timer > o.tower.StatsSystem.Stats.AttackSpeed)
                 {
-                    owner.ShotBullet();
-                    owner.timer = 0;
+                    o.ShotBullet();
+                    o.timer = 0;
                 }     
             }
 

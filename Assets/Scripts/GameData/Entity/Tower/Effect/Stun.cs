@@ -15,52 +15,28 @@ namespace Game.Data.Effect
         public IEnumerator SetEffect(float delay)
         {
             yield return new WaitForSeconds(delay);
-
-            EndEffect();
+       
+            End();
         }
 
-        public override void StartEffect()
+        public override void Start()
         {
-            if (CreepList.Count > 0)
+            if (Target != null)
             {
-                if (AffectedCreepList == null)
-                    AffectedCreepList = new List<Creep.CreepSystem>();
+                effectPrefab = Instantiate(EffectPrefab, Target.gameObject.transform.position, Quaternion.identity, Target.gameObject.transform);
 
-                AffectedCreepList.Add(CreepList[0]);
-                LastCreep = AffectedCreepList[AffectedCreepList.Count - 1];
-
-                if (LastCreep.gameObject == null)
-                    EndEffect();
-                else
-                {
-                    effectPrefab = Instantiate(EffectPrefab, LastCreep.gameObject.transform.position, Quaternion.identity, LastCreep.gameObject.transform);
-
-                    LastCreep.GetStunned(Duration);
-                }
-
-                IsSet = true;
-                IsEnded = false;
-
-                EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
+                Target.GetStunned(Duration);
             }
 
+            base.Start();
+            EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
         }
 
-        public override void ContinueEffect()
-        {
-            if (!IsEnded)
-                if (LastCreep == null)
-                {
-                    EndEffect();
-                    GM.Instance.StopCoroutine(EffectCoroutine);
-                }
-        }
-
-        public override void EndEffect()
-        {           
+        public override void End()
+        {      
             Destroy(effectPrefab);
-            AffectedCreepList.Remove(LastCreep);
-            IsEnded = true;
+
+            base.End();
         }
     }
 }
