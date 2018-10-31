@@ -28,29 +28,30 @@ namespace Game.Data.Effect
                     End();
                     break;
                 }
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSeconds(1f);
             }
+
             End();
         }
 
         public override void Start()
         {
             if (Target != null)
-            {               
+            {
                 effectPrefab = Instantiate(EffectPrefab,
-                    Target.gameObject.transform.position + Vector3.up * 20,
-                    Quaternion.identity,
-                    Target.gameObject.transform);
+                                Target.gameObject.transform.position + Vector3.up * 20,
+                                Quaternion.identity,
+                                Target.gameObject.transform);
 
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Target.creepRenderer.material.color = Color.green;
-                
+
                 Show(true);
             }
 
             base.Start();
 
-            EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(1f));
+            EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
         }
 
         public override void End()
@@ -63,7 +64,8 @@ namespace Game.Data.Effect
 
             base.End();
         }
-     
+
+
         private void Show(bool enabled)
         {
             for (int i = 0; i < psList.Length; i++)

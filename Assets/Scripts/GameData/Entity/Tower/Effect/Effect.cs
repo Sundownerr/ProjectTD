@@ -7,10 +7,15 @@ namespace Game.Data.Effect
     public abstract class Effect : ScriptableObject
     {
         public string EffectName, EffectDescription;
-        public float Duration, NextEffectInterval;
+        public float Duration, NextInterval;
+
+        [HideInInspector]
+        public float LeftDuration;
 
         [HideInInspector]
         public List<Creep.CreepSystem> TargetList;
+
+        [HideInInspector]
         public Creep.CreepSystem Target;
 
         [HideInInspector]
@@ -29,6 +34,7 @@ namespace Game.Data.Effect
             if (Target == null)
                 End();
 
+            LeftDuration = Duration;
             IsSet = true;
             IsEnded = false;
         }
@@ -41,11 +47,12 @@ namespace Game.Data.Effect
                     End();
                     GM.Instance.StopCoroutine(EffectCoroutine);
                 }
+                else if (LeftDuration < Duration)
+                    LeftDuration -= Time.deltaTime;                   
         }
 
         public virtual void End()
-        {
-            Target = null;
+        {   
             IsEnded = true;
         }
 
@@ -63,7 +70,9 @@ namespace Game.Data.Effect
             IsSet = false;
         }
 
-        public virtual void StackReset() { }
+        public virtual void StackReset(float leftDuration)
+        {
+        }
 
         public virtual void Init()
         {
@@ -74,9 +83,8 @@ namespace Game.Data.Effect
         }
 
         public virtual void SetTarget(Creep.CreepSystem target)
-        {
-            if (Target == null)
-                Target = target;
+        {          
+            Target = target;
         }
     }
 }

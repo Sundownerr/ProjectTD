@@ -45,12 +45,8 @@ namespace Game.Tower
 
             public void Execute()
             {
-
-                Debug.Log("look state");
-
                 var isCreepInRange =
-                     o.tower.RangeSystem.CreepList.Count > 0 &&
-                     o.tower.RangeSystem.CreepList[0] != null;
+                     o.tower.RangeSystem.CreepList.Count > 0;
 
                 if (isCreepInRange)
                     o.State.ChangeState(new CombatState(o));              
@@ -93,7 +89,6 @@ namespace Game.Tower
 
             public void Execute()
             {
-                Debug.Log("combat state");
                 var abilityList = o.tower.StatsSystem.Stats.AbilityList;
 
                 var isCreepInRange =
@@ -103,13 +98,13 @@ namespace Game.Tower
                 {
                     for (int i = 0; i < abilityList.Count; i++)
                     {
-                        abilityList[i].GetAvailableTargetList(o.tower.RangeSystem.CreepSystemList);
+                        abilityList[i].SetAvailableTargetList(o.tower.RangeSystem.CreepSystemList);
                         
                         if (abilityList[i].GetTarget() != null && o.CheckTargetInRange(abilityList[i].GetTarget()))
                             abilityList[i].Init();
                         else
-                            if (!abilityList[i].IsOnCooldown)
-                                abilityList[i].Reset();
+                            abilityList[i].SetTarget(o.tower.RangeSystem.CreepSystemList[0]);
+
 
                         if (abilityList[i].IsNeedStack)
                         {
@@ -120,7 +115,7 @@ namespace Game.Tower
 
                     if (o.stackList.Count > 0)
                         for (int i = 0; i < o.stackList.Count; i++)
-                            if (o.stackList[i].GetTarget() != null && !o.stackList[i].CheckEffectsEnded())
+                            if (o.stackList[i].GetTarget() != null && !o.stackList[i].CheckAllEffectsEnded())
                                 o.stackList[i].Init();
                             else
                             {
@@ -137,7 +132,7 @@ namespace Game.Tower
                     o.isAllStackedEffectsEnded = true;
 
                     for (int i = 0; i < abilityList.Count; i++)
-                        if (!abilityList[i].CheckEffectsEnded())
+                        if (!abilityList[i].CheckAllEffectsEnded())
                         {
                             o.isAllEffectsEnded = false;
                             o.State.ChangeState(new ContinueEffectState(o));
@@ -145,7 +140,7 @@ namespace Game.Tower
 
                     if (o.stackList.Count > 0)
                         for (int i = 0; i < o.stackList.Count; i++)
-                            if (!o.stackList[i].CheckEffectsEnded())
+                            if (!o.stackList[i].CheckAllEffectsEnded())
                             {
                                 o.isAllStackedEffectsEnded = false;
                                 o.State.ChangeState(new ContinueEffectState(o));
@@ -183,13 +178,13 @@ namespace Game.Tower
                     o.State.ChangeState(new CombatState(o));
                 else
                 {
-                    Debug.Log($"{o.isAllEffectsEnded} f ended \n { o.isAllStackedEffectsEnded} s ended");
-
                     o.isAllEffectsEnded = true;
                     o.isAllStackedEffectsEnded = true;
 
                     for (int i = 0; i < abilityList.Count; i++)
-                        if (!abilityList[i].CheckEffectsEnded())
+                        if (abilityList[i].CheckAllEffectsEnded())
+                            abilityList[i].Reset();
+                        else
                         {
                             abilityList[i].Init();
                             o.isAllEffectsEnded = false;
@@ -197,7 +192,7 @@ namespace Game.Tower
 
                     if (o.stackList.Count > 0)
                         for (int i = 0; i < o.stackList.Count; i++)
-                            if (!o.stackList[i].CheckEffectsEnded())
+                            if (!o.stackList[i].CheckAllEffectsEnded())
                             {
                                 o.stackList[i].Init();
                                 o.isAllStackedEffectsEnded = false;

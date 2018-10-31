@@ -32,7 +32,7 @@ namespace Game.Data
         private void OnEnable()
         {
             state = new StateMachine();
-            state.ChangeState(new ChoseEffectState(this));         
+            state.ChangeState(new SetEffectState(this));
         }
 
         public void Init()
@@ -47,7 +47,7 @@ namespace Game.Data
             for (int i = 0; i < EffectList.Count; i++)
                 EffectList[i].tower = oTower;
 
-            EffectList[EffectList.Count - 1].NextEffectInterval = 0.01f;
+            EffectList[EffectList.Count - 1].NextInterval = 0.01f;
 
             CheckStackable();
         }
@@ -55,22 +55,12 @@ namespace Game.Data
         public void SetTarget(Creep.CreepSystem target)
         {
             this.target = target;
-            SetEffectsTarget();
+            SetEffectsTarget(target);
         }
 
-        public void GetAvailableTargetList(List<Creep.CreepSystem> targetList)
+        public void SetAvailableTargetList(List<Creep.CreepSystem> targetList)
         {
-            var isTargetListOk = 
-                targetList.Count > 0 &&
-                this.targetList != targetList;
-
-            if (isTargetListOk)
-            {
-                this.targetList = targetList;
-
-                if (!IsOnCooldown)
-                    SetTarget(targetList[0]);
-            }
+            this.targetList = targetList;
         }
 
         public Creep.CreepSystem GetTarget()
@@ -78,7 +68,7 @@ namespace Game.Data
             return target;
         }
 
-        private void SetEffectsTarget()
+        private void SetEffectsTarget(Creep.CreepSystem target)
         {
             for (int i = 0; i < EffectList.Count; i++)
                 EffectList[i].SetTarget(target);
@@ -95,26 +85,16 @@ namespace Game.Data
             isStacked = true;
 
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i] = Instantiate(EffectList[i]);
-
-            state.ChangeState(new SetEffectState(this));
+                EffectList[i] = Instantiate(EffectList[i]);                    
         }
 
         public void Reset()
-        {         
+        {
             timer = 0;
-            effectCount = 0;
-            IsOnCooldown = false;
+            effectCount = 0;          
 
             for (int i = 0; i < EffectList.Count; i++)
                 EffectList[i].Reset();
-
-            if (targetList.Count > 0)
-                SetTarget(targetList[0]);
-            else
-                EndEffects();
-
-            state.ChangeState(new ChoseEffectState(this));
         }
 
         private void CheckStackable()
@@ -124,7 +104,7 @@ namespace Game.Data
 
             for (int i = 0; i < EffectList.Count; i++)
             {
-                allEffectsInterval += EffectList[i].NextEffectInterval;
+                allEffectsInterval += EffectList[i].NextInterval;
                 allEffectsDuration += EffectList[i].Duration;
             }
 
@@ -133,7 +113,7 @@ namespace Game.Data
                 allEffectsDuration > Cooldown ? true : false;
         }
 
-        public bool CheckEffectsEnded()
+        public bool CheckAllEffectsEnded()
         {
             for (int i = 0; i < EffectList.Count; i++)
                 if (!EffectList[i].IsEnded)
@@ -142,9 +122,14 @@ namespace Game.Data
             return true;
         }
 
-        public bool CheckIntervalsEnded()
+        public bool CheckAllEffectsSet()
         {
             return effectCount >= EffectList.Count - 1 ? true : false;         
+        }
+
+        public bool CheckNeedStack()
+        {
+            return (!CheckAllEffectsEnded() || !CheckAllEffectsSet()) && isStackable ? true : false;
         }
 
         private IEnumerator StartCooldown(float delay)
@@ -153,65 +138,39 @@ namespace Game.Data
 
             yield return new WaitForSeconds(delay);
 
+            IsNeedStack = CheckNeedStack();
+            Reset();
             IsOnCooldown = false;
-
-            if (isStackable)
-                IsNeedStack = !CheckEffectsEnded() ? true : false;
         }
-
-        protected class ChoseEffectState : IState
-        {
-            private readonly Ability o;
-
-            public ChoseEffectState(Ability o) { this.o = o; }
-
-            public void Enter() { }
-
-            public void Execute()
-            {
-                if (!o.IsOnCooldown)
-                {                         
-                    GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown));
-                    o.state.ChangeState(new SetEffectState(o));
-                }
-            }
-
-            public void Exit() { }
-        }
-
+     
         protected class SetEffectState : IState
         {
             private readonly Ability o;
 
             public SetEffectState(Ability o) { this.o = o; }
 
-            public void Enter() { }
+            public void Enter() {  }
 
             public void Execute()
             {
                 o.timer += Time.deltaTime;
 
                 for (int i = 0; i <= o.effectCount; i++)
-                    o.EffectList[i].Init();
+                    o.EffectList[i].Init();  
 
-                if (o.CheckIntervalsEnded())
-                {
-                    if (!o.isStacked)
-                        if (!o.IsOnCooldown)
-                            o.Reset();
-                        else if (o.isStackable)
-                            o.IsNeedStack = true;
-                }
-                else if (o.timer > o.EffectList[o.effectCount].NextEffectInterval)
-                {
-                    o.effectCount++;
-                    o.timer = 0;
-                }
+                if(!o.isStacked)
+                    if(!o.IsOnCooldown)
+                        GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
+
+                if (!o.CheckAllEffectsSet())
+                    if (o.timer > o.EffectList[o.effectCount].NextInterval)
+                    {
+                        o.effectCount++;
+                        o.timer = 0;
+                    }
             }
 
-            public void Exit()
-            {
-            }
+            public void Exit() { }
         }        
     }
 }
