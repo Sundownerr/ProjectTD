@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using Game.System;
 
 namespace Game.Data.Effect
-{   
+{
     public abstract class Effect : ScriptableObject
     {
         public string EffectName, EffectDescription;
         public float Duration, NextInterval;
+        public bool IsStackable;
 
         [HideInInspector]
         public float LeftDuration;
 
         [HideInInspector]
-        public List<Creep.CreepSystem> TargetList;
-
-        [HideInInspector]
-        public Creep.CreepSystem Target;
+        public List<Creep.CreepSystem> TargetList;           
 
         [HideInInspector]
         public bool IsEnded;
@@ -25,13 +23,13 @@ namespace Game.Data.Effect
         public Tower.TowerBaseSystem tower;
 
         protected bool IsSet;
-        
+        protected Creep.CreepSystem target;
         protected Coroutine EffectCoroutine;
         protected List<Creep.CreepSystem> AffectedCreepList;
-        
+
         public virtual void Start()
         {
-            if (Target == null)
+            if (GetTarget() == null)
                 End();
 
             LeftDuration = Duration;
@@ -42,22 +40,34 @@ namespace Game.Data.Effect
         public virtual void Continue()
         {
             if (!IsEnded)
-                if (Target == null)
+                if (GetTarget() == null)
                 {
                     End();
                     GM.Instance.StopCoroutine(EffectCoroutine);
                 }
                 else if (LeftDuration < Duration)
-                    LeftDuration -= Time.deltaTime;                   
+                    LeftDuration -= Time.deltaTime;
         }
 
         public virtual void End()
-        {   
+        {
             IsEnded = true;
         }
 
+        public virtual void ApplyReset()
+        {
+            if (IsStackable)
+            {
+                Reset();
+            }
+            else if (IsEnded)
+            {
+                Reset();
+            }
+        }
+
         public virtual void Reset()
-        {          
+        {
             if (AffectedCreepList != null)
                 AffectedCreepList.Clear();
 
@@ -68,7 +78,7 @@ namespace Game.Data.Effect
 
             IsEnded = false;
             IsSet = false;
-        }
+        }    
 
         public virtual void StackReset(float leftDuration)
         {
@@ -82,9 +92,14 @@ namespace Game.Data.Effect
             Continue();
         }
 
+        public virtual Creep.CreepSystem GetTarget()
+        {
+            return target;
+        }
+
         public virtual void SetTarget(Creep.CreepSystem target)
         {          
-            Target = target;
+            this.target = target;
         }
     }
 }

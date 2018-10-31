@@ -21,8 +21,8 @@ namespace Game.Data.Effect
             {
                 tick++;
 
-                if (Target != null)
-                    Target.GetDamage(DamagePerTick, tower);
+                if (target != null)
+                    target.GetDamage(DamagePerTick, tower);
                 else
                 {
                     End();
@@ -36,15 +36,16 @@ namespace Game.Data.Effect
 
         public override void Start()
         {
-            if (Target != null)
+          
+            if (target != null)
             {
                 effectPrefab = Instantiate(EffectPrefab,
-                                Target.gameObject.transform.position + Vector3.up * 20,
+                                target.gameObject.transform.position + Vector3.up * 20,
                                 Quaternion.identity,
-                                Target.gameObject.transform);
+                                target.gameObject.transform);
 
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-                Target.creepRenderer.material.color = Color.green;
+                target.creepRenderer.material.color = Color.green;
 
                 Show(true);
             }
@@ -56,15 +57,14 @@ namespace Game.Data.Effect
 
         public override void End()
         {
-            if (Target != null)
-                Target.creepRenderer.material.color = Color.white;
+            if (target != null)
+                target.creepRenderer.material.color = Color.white;
     
             Destroy(effectPrefab);
             tick = 0;
 
             base.End();
         }
-
 
         private void Show(bool enabled)
         {

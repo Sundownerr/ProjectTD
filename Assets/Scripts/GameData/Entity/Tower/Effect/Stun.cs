@@ -21,11 +21,11 @@ namespace Game.Data.Effect
 
         public override void Start()
         {
-            if (Target != null)
+            if (target != null)
             {
-                effectPrefab = Instantiate(EffectPrefab, Target.gameObject.transform.position, Quaternion.identity, Target.gameObject.transform);
+                effectPrefab = Instantiate(EffectPrefab, target.gameObject.transform.position, Quaternion.identity, target.gameObject.transform);
 
-                Target.GetStunned(Duration);
+                target.GetStunned(Duration);
             }
 
             base.Start();
