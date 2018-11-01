@@ -127,7 +127,7 @@ namespace Game.Tower.System
             var shotCount = tower.GetSpecial().CalculateShotCount();
 
             for (int i = 0; i < shotCount; i++)
-                CreateBullet(tower.GetCreepInRangeList().CreepSystemList[i]);                    
+                CreateBullet(tower.GetCreepInRangeList()[i]);                    
         }
       
         protected class ShootState : IState

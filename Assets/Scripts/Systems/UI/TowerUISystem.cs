@@ -53,7 +53,7 @@ namespace Game.System
         public void UpdateValues()
         {
             choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;
-            var choosedTowerStats = choosedTower.GetComponent<TowerSystem>().StatsSystem.CurrentStats;
+            var choosedTowerStats = choosedTower.GetComponent<TowerSystem>().GetStats();
 
             TowerName.text = choosedTowerStats.EntityName;
             Level.text = KiloFormat(choosedTowerStats.Level);

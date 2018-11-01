@@ -13,7 +13,7 @@ namespace Game.Data.Effect
 
         private float tick;
         private GameObject effectPrefab;
-        private ParticleSystem[] psList;    
+        private ParticleSystem[] psList;
 
         public IEnumerator SetEffect(float delay)
         {

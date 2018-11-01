@@ -118,6 +118,11 @@ namespace Game.Tower
             return StatsSystem.CurrentStats;
         }
 
+        public void SetStats(Data.Entity.Tower.TowerData stats)
+        {
+            StatsSystem.CurrentStats = stats;
+        }
+
         public List<Creep.CreepSystem> GetCreepInRangeList()
         {
             return rangeSystem.CreepSystemList;

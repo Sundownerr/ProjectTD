@@ -7,7 +7,7 @@ namespace Game.System
     public class EntitySystem : ExtendedMonoBehaviour
     {
         public bool IsVulnerable;
-        private bool isOn;
+        protected bool isOn;
 
         public virtual void ApplyEffect(Data.Effect.Effect effect) { }
 

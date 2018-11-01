@@ -269,14 +269,8 @@ __pycache__/
 /ProjectSettings
 /Temp
 /UnityPlayerStub
-/UnityCommon.props
-/ProjectTD.sln
 /NavMeshComponentsEditor.csproj
 /NavMeshComponents.csproj
-/Assembly-CSharp.csproj
-/Assembly-CSharp-firstpass.csproj
-/Assembly-CSharp-Editor.csproj
-/Assembly-CSharp-Editor-firstpass.csproj
 /ProjectTD
 /Assets/NavMeshComponents
 /Assets/PostProcessing
@@ -287,7 +281,6 @@ __pycache__/
 /Assets/Terrain.asset
 /Assets/Scripts/GameData/TowerStats/BaseTower.asset
 /Assets/New LightmapParameters.giparams
-*.csproj
 /Assets/ImportedAssets
 /Assets/Sprites
 *.asset

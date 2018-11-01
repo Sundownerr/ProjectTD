@@ -64,7 +64,7 @@ namespace Game.System
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
                 var newTower = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        
-                newTower.GetComponent<Tower.TowerSystem>().StatsSystem.CurrentStats = GM.Instance.PlayerInputSystem.NewTowerData;
+                newTower.GetComponent<Tower.TowerSystem>().SetStats(GM.Instance.PlayerInputSystem.NewTowerData);
                 newTower.GetComponent<Tower.TowerSystem>().SetSystem();
 
                 GM.Instance.PlacedTowerList.Add(newTower);
