@@ -193,7 +193,6 @@
      <Compile Include="Assets\Scripts\GameData\Entity\Creep\Type\Normal.cs" />
      <Compile Include="Assets\Scripts\GameData\Entity\Creep\Type\Small.cs" />
      <Compile Include="Assets\Scripts\GameData\Entity\Entity.cs" />
-     <Compile Include="Assets\Scripts\GameData\Entity\TemporaryEffect\TemporaryEffect.cs" />
      <Compile Include="Assets\Scripts\GameData\Entity\Tower\Ability.cs" />
      <Compile Include="Assets\Scripts\GameData\Entity\Tower\Effect\DoT.cs" />
      <Compile Include="Assets\Scripts\GameData\Entity\Tower\Effect\Effect.cs" />

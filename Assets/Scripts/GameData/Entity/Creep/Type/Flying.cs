@@ -1,5 +1,5 @@
 ﻿
-namespace Game.Data.Entity.Creep
+namespace Game.Creep
 {
     [UnityEngine.CreateAssetMenu(fileName = "Flying", menuName = "Data/Creep/Flying")]
 

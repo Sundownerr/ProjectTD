@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 using System;
-using Game.Tower;
 using Game.Creep;
+using Game.Data.Effect;
 
-namespace Game.Data.Entity.Tower
+namespace Game.Tower
 {
     [CreateAssetMenu(fileName = "New Ability", menuName = "Data/Tower/Ability")]
 
@@ -21,7 +21,7 @@ namespace Game.Data.Entity.Tower
         public int ManaCost;
 
         [Expandable]
-        public List<Effect.Effect> EffectList;
+        public List<Effect> EffectList;
 
         private bool isStackable, isStacked;
         private CreepSystem target;

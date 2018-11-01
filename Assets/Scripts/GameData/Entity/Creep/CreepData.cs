@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Game.Creep.Stats;
 
-namespace Game.Data.Entity.Creep
+namespace Game.Creep
 {  
     public abstract class CreepData : Entity
     {

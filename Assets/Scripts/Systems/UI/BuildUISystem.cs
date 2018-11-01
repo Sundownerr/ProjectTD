@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Game.Data.Entity.Tower;
-using Game.Data.Entity.Tower.Stats;
+using Game.Tower.Data.Stats;
+using Game.Tower.Data;
 
 namespace Game.System
 {

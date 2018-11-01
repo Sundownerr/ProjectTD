@@ -225,7 +225,6 @@ namespace Game.System
             }
         }
 
-
         protected class MoveTowerState : IState
         {
             private readonly TowerPlaceSystem o;

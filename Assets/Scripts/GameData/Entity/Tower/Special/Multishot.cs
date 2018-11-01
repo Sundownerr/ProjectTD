@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Game.Data.Entity.Tower
+namespace Game.Tower.Data.Stats.Specials
 {
     [CreateAssetMenu(fileName = "Multishot", menuName = "Data/Tower/Special/Multishot")]
 

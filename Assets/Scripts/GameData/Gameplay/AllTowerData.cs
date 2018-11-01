@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Game.System;
-using Game.Data.Entity.Tower;
-using Game.Data.Entity.Tower.Stats;
+using Game.Tower.Data;
+using Game.Tower.Data.Stats;
 
 namespace Game.Data
 {

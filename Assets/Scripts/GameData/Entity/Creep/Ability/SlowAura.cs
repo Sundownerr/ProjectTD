@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 
-namespace Game.Data.Entity.Creep.Abilities
+namespace Game.Creep.Data.Abilities
 {
     public class SlowAura : Ability
     {

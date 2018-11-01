@@ -9,7 +9,7 @@ namespace Game.System
     public class PlayerInputSystem : ExtendedMonoBehaviour
     {
         [HideInInspector]
-        public Data.Entity.Tower.TowerData NewTowerData;
+        public Tower.Data.TowerData NewTowerData;
 
         [HideInInspector]
         public GameObject ChoosedTower;

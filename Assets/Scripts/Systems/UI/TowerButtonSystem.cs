@@ -1,11 +1,11 @@
-﻿
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
+using Game.Tower.Data;
 
 namespace Game.System
 {
     public class TowerButtonSystem : ExtendedMonoBehaviour
     {
-        public Data.Entity.Tower.TowerData TowerData;
+        public TowerData TowerData;
         public int Count;
 
         protected override void Awake()

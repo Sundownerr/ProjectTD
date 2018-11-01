@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Data.Entity.Tower;
+using Game.Data.Effect;
 
 namespace Game.Tower.System
 {
@@ -11,7 +11,7 @@ namespace Game.Tower.System
 
         private TowerSystem tower;
         private List<Ability> abilityList, abilityStackList;
-        private List<Data.Effect.Effect> effectStackList;
+        private List<Effect> effectStackList;
         private bool isAllAbilitiesEnded, isAllAbilitiesStackEnded, isAllEffectsStackEnded;
         private int stackAbilityId, stackEffectId;
 
@@ -27,7 +27,7 @@ namespace Game.Tower.System
         {
             abilityList = tower.GetStats().AbilityList;
             abilityStackList = new List<Ability>();
-            effectStackList = new List<Data.Effect.Effect>();
+            effectStackList = new List<Effect>();
         }
 
         private bool CheckTargetInRange(Creep.CreepSystem target)

@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Data.Entity.Creep
+namespace Game.Creep.Data
 {
     public class Ability : ScriptableObject
     {
         public string AbilityName, AbilityDescription;
 
-        protected Game.Creep.CreepSystem ownerCreep;
+        protected CreepSystem ownerCreep;
         protected bool isSet;
 
         public virtual void Init() { }
 
-        public virtual void SetOwnerCreep(Game.Creep.CreepSystem creep)
+        public virtual void SetOwnerCreep(CreepSystem creep)
         {
             ownerCreep = creep;
         }

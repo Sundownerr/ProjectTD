@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Game.Data.Entity.Creep
+namespace Game.Creep.Stats
 {
     [Serializable]
     public struct Armor

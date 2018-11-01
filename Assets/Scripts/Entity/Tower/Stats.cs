@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Data.Entity.Tower;
 using Game.System;
 using System;
+using Game.Tower.Data;
 
 namespace Game.Tower.System
 {
@@ -63,6 +63,7 @@ namespace Game.Tower.System
             CurrentStats.AttackSpeed -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
             CurrentStats.CritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
             CurrentStats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
+            
 
             ownerTower.GetSpecial().IncreaseStatsPerLevel();
         }

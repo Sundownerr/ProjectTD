@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
-using Game.Data.Entity.Tower.Stats;
+using Game.Tower.Data.Stats;
 
-namespace Game.Data.Entity.Tower
+namespace Game.Tower.Data
 {  
     [CreateAssetMenu(fileName = "New Tower", menuName = "Data/Tower/Tower")]
     [Serializable]   

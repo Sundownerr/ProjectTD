@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Game.Data.Entity.Tower.Stats
+namespace Game.Tower.Data.Stats
 {
     [Serializable]
     public class Element

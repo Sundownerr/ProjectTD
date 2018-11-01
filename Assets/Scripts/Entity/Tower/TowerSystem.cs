@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
+using Game.Tower.Data;
 
 namespace Game.Tower
 {
@@ -40,8 +41,6 @@ namespace Game.Tower
             IsVulnerable = false;
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
-
-
         }
 
         public void SetSystem()
@@ -114,12 +113,12 @@ namespace Game.Tower
             MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }
 
-        public Data.Entity.Tower.TowerData GetStats()
+        public TowerData GetStats()
         {
             return StatsSystem.CurrentStats;
         }
 
-        public void SetStats(Data.Entity.Tower.TowerData stats)
+        public void SetStats(TowerData stats)
         {
             StatsSystem.CurrentStats = stats;
         }

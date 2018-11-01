@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game.Data.Entity
+namespace Game
 {
     public abstract class Entity : ScriptableObject
     {

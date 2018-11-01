@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Data.Entity.Tower
+namespace Game.Tower.Data.Stats.Specials
 {
     [CreateAssetMenu(fileName = "Chainshot", menuName = "Data/Tower/Special/Chainshot")]
 

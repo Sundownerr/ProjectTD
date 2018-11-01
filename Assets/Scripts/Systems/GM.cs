@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Game.Data;
+using Game.Tower.Data;
 
 namespace Game.System
 {
@@ -15,7 +17,7 @@ namespace Game.System
         public List<GameObject> CreepList, CellList, PlacedTowerList;
 
         [NaughtyAttributes.BoxGroup("List")]
-        public List<Data.Entity.Tower.TowerData> AvailableTowerList;
+        public List<TowerData> AvailableTowerList;
 
         [NaughtyAttributes.BoxGroup("List")]
         public List<Cells.Cell> CellStateList;
@@ -39,10 +41,10 @@ namespace Game.System
         public WaveSystem WaveSystem;
 
         [NaughtyAttributes.BoxGroup("Data")]
-        public Data.PlayerData PlayerData;
+        public PlayerData PlayerData;
 
         [NaughtyAttributes.BoxGroup("Data")]
-        public Data.AllTowerData AllTowerData;
+        public AllTowerData AllTowerData;
 
         [HideInInspector]
         public PlayerInputSystem PlayerInputSystem;
