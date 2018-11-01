@@ -21,7 +21,6 @@ namespace Game.Data
         [Expandable]
         public List<Effect.Effect> EffectList;
 
-        private List<Creep.CreepSystem> targetList;
         private Creep.CreepSystem target;
         private bool isStackable, isStacked;
         private StateMachine state;

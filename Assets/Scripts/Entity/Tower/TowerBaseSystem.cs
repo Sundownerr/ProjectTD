@@ -23,8 +23,7 @@ namespace Game.Tower
         [HideInInspector]
         public TowerSpecialSystem specialSystem;
 
-        protected List<Renderer> rendererList;
-    
+        private Renderer[] rendererList;
         private TowerCombatSystem combatSystem;
         private TowerAbilitySystem abilitySystem;
         private StateMachine state;
@@ -62,8 +61,7 @@ namespace Game.Tower
             Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
             RangeSystem.SetShow();
 
-            rendererList = new List<Renderer>();
-            rendererList.AddRange(GetComponentsInChildren<Renderer>());
+            rendererList = GetComponentsInChildren<Renderer>();
 
             Bullet.SetActive(false);
             StatsSystem.UpdateUI();
@@ -81,7 +79,7 @@ namespace Game.Tower
        
         private void SetTowerColor(Color color)
         {
-            for (int i = 0; i < rendererList.Count; i++)
+            for (int i = 0; i < rendererList.Length; i++)
                 rendererList[i].material.color = color;
         }
 

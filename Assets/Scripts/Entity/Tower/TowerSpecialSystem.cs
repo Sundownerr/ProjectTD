@@ -17,7 +17,7 @@ namespace Game.Tower
 
         public void Set()
         {
-            for (int i = 0; i < ownerTower.StatsSystem.Stats.SpecialList.Count; i++)
+            for (int i = 0; i < ownerTower.StatsSystem.Stats.SpecialList.Length; i++)
                 ownerTower.StatsSystem.Stats.SpecialList[i].InitSpecial(ownerTower);
         }
 
@@ -55,14 +55,14 @@ namespace Game.Tower
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, bullet.AOEShotRange, hitTargetList, layer);
 
             for (int i = 0; i < hitTargetCount; i++)
-                hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage, ownerTower);
+                hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage.Value, ownerTower);
         }
 
         public void IncreaseStatsPerLevel()
         {
             var specialList = ownerTower.StatsSystem.Stats.SpecialList;
 
-            for (int i = 0; i < specialList.Count; i++)
+            for (int i = 0; i < specialList.Length; i++)
                 specialList[i].IncreaseStatsPerLevel();            
         }
     }

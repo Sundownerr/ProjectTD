@@ -140,7 +140,7 @@ namespace Game.System
             private readonly PlayerInputSystem o;
 
             public MouseNotOnUIState(PlayerInputSystem o) { this.o = o; }
-
+            
             public void Enter()
             {
                 if (GM.Instance.TowerUISystem.gameObject.activeSelf)
@@ -209,14 +209,12 @@ namespace Game.System
                 GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
 
                 for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
-                {
                     if (GM.Instance.AvailableTowerList[i] == o.NewTowerData)
                     {
                         GM.Instance.AvailableTowerList.RemoveAt(i);
                         break;
                     }
-                }
-
+                
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
                 GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
 

@@ -26,16 +26,19 @@ namespace Game.Data.Entity.Tower
         public int WaveLevel, ElementLevel, TowerLimit, MagicCrystalReq, GoldCost;
      
         [BoxGroup("IDs")]
-        public int RarityId, ElementId, DamageTypeId;
+        public int RarityId, ElementId;
 
         [BoxGroup("Combat Info")]
-        public float Damage, Range, Mana, ManaRegen, AttackSpeed, TriggerChance, CritChance, CritMultiplier, MulticritCount, SpellDamage, SpellCritChance;
+        public Damage Damage;
+
+        [BoxGroup("Combat Info")]
+        public float Range, Mana, ManaRegen, AttackSpeed, TriggerChance, CritChance, CritMultiplier, MulticritCount, SpellDamage, SpellCritChance;       
 
         [BoxGroup("Ratio")]
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio, BuffDuration, DebuffDuration;
 
         [BoxGroup("Special"), Expandable]
-        public List<Special> SpecialList;     
+        public Special[] SpecialList;     
 
         [Space, Expandable]
         public List<TowerData> GradeList;

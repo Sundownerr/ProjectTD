@@ -57,7 +57,7 @@ namespace Game.System
 
             TowerName.text = choosedTowerStats.EntityName;
             Level.text = KiloFormat(choosedTowerStats.Level);
-            Damage.text = KiloFormat(choosedTowerStats.Damage);
+            Damage.text = KiloFormat(choosedTowerStats.Damage.Value);
             Range.text = KiloFormat(choosedTowerStats.Range);
             Mana.text = KiloFormat(choosedTowerStats.Mana);
             AttackSpeed.text = KiloFormat(choosedTowerStats.AttackSpeed);

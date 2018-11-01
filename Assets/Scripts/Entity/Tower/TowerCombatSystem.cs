@@ -114,7 +114,7 @@ namespace Game.Tower
             if (bullet.AOEShotRange > 0)
                 tower.specialSystem.DamageInAOE(bullet);
             else
-                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(tower.StatsSystem.Stats.Damage, tower);            
+                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(tower.StatsSystem.Stats.Damage.Value, tower);            
 
             if (isChainShot)
                 tower.specialSystem.SetChainTarget(bullet);

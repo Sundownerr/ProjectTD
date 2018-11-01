@@ -53,16 +53,18 @@ namespace Game.Tower
 
         private void UpgradeSpecial(TowerData newBaseStats)
         {          
-            for (int i = 0; i < newBaseStats.SpecialList.Count; i++)
+            for (int i = 0; i < newBaseStats.SpecialList.Length; i++)
                 Stats.SpecialList[i] = UnityEngine.Object.Instantiate(Stats.SpecialList[i]);
         }
 
         private void IncreaseStatsPerLevel()
         {
-            Stats.Damage += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage));
+            Stats.Damage.Value += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage.Value));
             Stats.AttackSpeed -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
             Stats.CritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
-            Stats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);          
+            Stats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
+
+            ownerTower.specialSystem.IncreaseStatsPerLevel();
         }
 
         public void AddExp(int amount)
@@ -72,8 +74,7 @@ namespace Game.Tower
             for (int i = Stats.Level; i < 25; i++)
                 if (Stats.Exp >= GM.ExpToLevelUp[Stats.Level - 1] && Stats.Level < 25)
                 {
-                    IncreaseStatsPerLevel();
-                    ownerTower.specialSystem.IncreaseStatsPerLevel();
+                    IncreaseStatsPerLevel();                   
 
                     Stats.Level++;
 
@@ -82,7 +83,6 @@ namespace Game.Tower
                 }           
             UpdateUI();
         }
-
 
         public void UpdateUI()
         {

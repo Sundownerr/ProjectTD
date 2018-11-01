@@ -36,7 +36,6 @@ namespace Game.Data.Effect
 
         public override void Start()
         {
-          
             if (target != null)
             {
                 effectPrefab = Instantiate(EffectPrefab,

@@ -33,8 +33,7 @@ namespace Game.System
 
                     SetCellsColors();
                 }
-                else
-                    if (lastCell.activeSelf)
+                else if (lastCell.activeSelf)
                     SetCellsActive(false);
             }
         }
@@ -42,7 +41,7 @@ namespace Game.System
         private IEnumerator BuildTimer()
         {
             CreateGrid(GM.Instance.CellAreaList.Length);
-
+            
             yield return new WaitForSeconds(1f);
 
             IsGridBuilded = true;
