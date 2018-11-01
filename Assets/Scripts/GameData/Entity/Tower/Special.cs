@@ -10,6 +10,6 @@ namespace Game.Data.Entity.Tower
         public string SpecialName, SpecialDescription;
 
         public virtual void IncreaseStatsPerLevel() { }
-        public virtual void InitSpecial(TowerBaseSystem ownerTower) { }
+        public virtual void InitSpecial(TowerSystem ownerTower) { }
     }
 }

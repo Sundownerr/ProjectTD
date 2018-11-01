@@ -4,9 +4,13 @@ namespace Game.Data.Entity.Creep
 {  
     public abstract class CreepData : Entity
     {
-        public float Health, MoveSpeed, DefaultMoveSpeed;
-        public int RaceId, Exp, Gold;
+        [HideInInspector]
+        public float MoveSpeed;
+
+        public float Health, DefaultMoveSpeed;
+        public int Exp, Gold;
         public Armor Armor;
+        public RaceType Race;
 
         public GameObject model;
     }

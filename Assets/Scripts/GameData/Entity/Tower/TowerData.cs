@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using Game.Data.Entity.Tower.Stats;
 
 namespace Game.Data.Entity.Tower
-{
+{  
     [CreateAssetMenu(fileName = "New Tower", menuName = "Data/Tower/Tower")]
     [Serializable]   
     public class TowerData : Entity
@@ -25,8 +26,13 @@ namespace Game.Data.Entity.Tower
         [BoxGroup("Main Info")]
         public int WaveLevel, ElementLevel, TowerLimit, MagicCrystalReq, GoldCost;
      
-        [BoxGroup("IDs")]
-        public int RarityId, ElementId;
+        [BoxGroup("Main Info")]
+        [SerializeField]
+        public RarityType Rarity;
+
+        [BoxGroup("Main Info")]
+        [SerializeField]
+        public ElementType Element;
 
         [BoxGroup("Combat Info")]
         public Damage Damage;
@@ -45,11 +51,12 @@ namespace Game.Data.Entity.Tower
 
         [Space, Expandable]
         public List<Ability> AbilityList;
-
+        
         private void Awake()
         {
             for (int i = 0; i < 5; i++)
-                DamageToRace.Add(100f);
+                DamageToRace.Add(100f);           
         }
+
     }
 }

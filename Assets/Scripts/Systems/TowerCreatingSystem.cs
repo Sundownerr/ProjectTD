@@ -47,7 +47,7 @@ namespace Game.System
                         GM.Instance.BuildUISystem.UpdateAvailableElement();
                     }       
             
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.BuildUISystem.ChoosedElementId);
+            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.BuildUISystem.ChoosedElement);
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using Game.Data.Entity.Tower;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEditor;
 using Game.System;
+using Game.Data.Entity.Tower;
+using Game.Data.Entity.Tower.Stats;
 
 namespace Game.Data
 {

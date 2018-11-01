@@ -64,8 +64,8 @@ namespace Game.System
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
                 var newTower = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        
-                newTower.GetComponent<Tower.TowerBaseSystem>().StatsSystem.Stats = GM.Instance.PlayerInputSystem.NewTowerData;
-                newTower.GetComponent<Tower.TowerBaseSystem>().SetSystem();
+                newTower.GetComponent<Tower.TowerSystem>().StatsSystem.CurrentStats = GM.Instance.PlayerInputSystem.NewTowerData;
+                newTower.GetComponent<Tower.TowerSystem>().SetSystem();
 
                 GM.Instance.PlacedTowerList.Add(newTower);
                
@@ -76,7 +76,7 @@ namespace Game.System
                 lastTower = GM.Instance.PlacedTowerList[GM.Instance.PlacedTowerList.Count - 1];
 
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
-                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
 
                 state.ChangeState(new MoveTowerState(this));
             }        
@@ -131,7 +131,7 @@ namespace Game.System
 
         private void PlaceTower()
         {
-            lastTower.GetComponent<Tower.TowerBaseSystem>().OcuppiedCell = chosenCellState.gameObject;
+            lastTower.GetComponent<Tower.TowerSystem>().OcuppiedCell = chosenCellState.gameObject;
             chosenCellState.IsBusy = true;
         
             state.ChangeState(new GetInputState(this));            
@@ -149,7 +149,7 @@ namespace Game.System
 
             GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);
             GM.Instance.BuildUISystem.UpdateAvailableElement();
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
+            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
 
             state.ChangeState(new GetInputState(this));
         }
@@ -251,7 +251,7 @@ namespace Game.System
             {
                 o.PlaceTower();
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
-                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
             }
 
             public void Execute() { }

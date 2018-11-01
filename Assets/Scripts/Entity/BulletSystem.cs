@@ -14,8 +14,7 @@ namespace Game.Tower
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
+            base.Awake();
 
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);

@@ -17,12 +17,13 @@ namespace Game.Data.Effect
 
         public IEnumerator SetEffect(float delay)
         {
+
             while (tick < Duration)
             {
                 tick++;
 
-                if (target != null)
-                    target.GetDamage(DamagePerTick, tower);
+                if (this.target is Creep.CreepSystem target)
+                    target.GetDamage(DamagePerTick, (Tower.TowerSystem)owner);
                 else
                 {
                     End();
@@ -36,7 +37,7 @@ namespace Game.Data.Effect
 
         public override void Start()
         {
-            if (target != null)
+            if (this.target is Creep.CreepSystem target)
             {
                 effectPrefab = Instantiate(EffectPrefab,
                                 target.gameObject.transform.position + Vector3.up * 20,
@@ -44,7 +45,6 @@ namespace Game.Data.Effect
                                 target.gameObject.transform);
 
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-                target.creepRenderer.material.color = Color.green;
 
                 Show(true);
             }
@@ -56,9 +56,6 @@ namespace Game.Data.Effect
 
         public override void End()
         {
-            if (target != null)
-                target.creepRenderer.material.color = Color.white;
-    
             Destroy(effectPrefab);
             tick = 0;
 

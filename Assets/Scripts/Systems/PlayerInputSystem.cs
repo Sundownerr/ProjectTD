@@ -165,7 +165,7 @@ namespace Game.System
 
             public void Enter()
             {
-                o.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Sell();
+                o.ChoosedTower.GetComponent<Tower.TowerSystem>().Sell();
                 o.state.ChangeState(new GetInputState(o));
             }
 
@@ -186,7 +186,7 @@ namespace Game.System
 
             public void Enter()
             {
-                o.ChoosedTower.GetComponent<Tower.TowerBaseSystem>().Upgrade();
+                o.ChoosedTower.GetComponent<Tower.TowerSystem>().Upgrade();
                 o.state.ChangeState(new GetInputState(o));
             }
 
@@ -216,7 +216,7 @@ namespace Game.System
                     }
                 
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
-                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.ElementId);
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
 
                 o.state.ChangeState(new GetInputState(o));
             }

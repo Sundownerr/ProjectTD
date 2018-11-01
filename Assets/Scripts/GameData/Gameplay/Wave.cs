@@ -8,6 +8,6 @@ namespace Game.Data
     public class Wave : ScriptableObject
     {
         public List<Creep.CreepSystem> CreepList;
-        public int RaceId, ArmorId;
+        public int RaceId;
     }
 }

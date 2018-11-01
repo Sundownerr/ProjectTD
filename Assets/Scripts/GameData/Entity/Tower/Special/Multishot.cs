@@ -18,7 +18,7 @@ namespace Game.Data.Entity.Tower
             SpecialDescription = $"Shoot {Count} additional targets";
         }
 
-        public override void InitSpecial(TowerBaseSystem ownerTower)
+        public override void InitSpecial(TowerSystem ownerTower)
         {
             ownerTower.Bullet.GetComponent<BulletSystem>().MultishotCount = Count;
         }

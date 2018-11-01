@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 
-namespace Game.Tower
+namespace Game.Tower.System
 {
-    public class TowerRangeSystem : ExtendedMonoBehaviour
+    public class Range : ExtendedMonoBehaviour
     {
         public List<GameObject> CreepList;
         public List<Creep.CreepSystem> CreepSystemList;

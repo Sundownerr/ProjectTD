@@ -2,28 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Tower
+namespace Game.Tower.System
 {
-    public class TowerSpecialSystem
+    public class Special
     {
         public bool IsHaveChainTargets;
 
-        private TowerBaseSystem ownerTower;
+        private TowerSystem ownerTower;
        
-        public TowerSpecialSystem(TowerBaseSystem ownerTower)
+        public Special(TowerSystem ownerTower)
         {
             this.ownerTower = ownerTower;
         }
 
         public void Set()
         {
-            for (int i = 0; i < ownerTower.StatsSystem.Stats.SpecialList.Length; i++)
-                ownerTower.StatsSystem.Stats.SpecialList[i].InitSpecial(ownerTower);
+            for (int i = 0; i < ownerTower.GetStats().SpecialList.Length; i++)
+                ownerTower.GetStats().SpecialList[i].InitSpecial(ownerTower);
         }
 
         public int CalculateShotCount()
         {
-            var creepList = ownerTower.RangeSystem.CreepList;
+            var creepList = ownerTower.GetCreepInRangeList();
             var requiredShotCount = 1 + ownerTower.Bullet.GetComponent<BulletSystem>().MultishotCount;
 
             return creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;         
@@ -55,12 +55,12 @@ namespace Game.Tower
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, bullet.AOEShotRange, hitTargetList, layer);
 
             for (int i = 0; i < hitTargetCount; i++)
-                hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.StatsSystem.Stats.Damage.Value, ownerTower);
+                hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(ownerTower.GetStats().Damage.Value, ownerTower);
         }
 
         public void IncreaseStatsPerLevel()
         {
-            var specialList = ownerTower.StatsSystem.Stats.SpecialList;
+            var specialList = ownerTower.GetStats().SpecialList;
 
             for (int i = 0; i < specialList.Length; i++)
                 specialList[i].IncreaseStatsPerLevel();            

@@ -24,8 +24,7 @@ namespace Game.Data.Effect
             if (target != null)
             {
                 effectPrefab = Instantiate(EffectPrefab, target.gameObject.transform.position, Quaternion.identity, target.gameObject.transform);
-
-                target.GetStunned(Duration);
+                target.SetOn(false);
             }
 
             base.Start();
@@ -33,7 +32,8 @@ namespace Game.Data.Effect
         }
 
         public override void End()
-        {      
+        {
+            target?.SetOn(false);
             Destroy(effectPrefab);
 
             base.End();

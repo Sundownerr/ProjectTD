@@ -1,10 +1,11 @@
 ﻿
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Game.System
 {
-
+    [Serializable]
     public class GM : ExtendedMonoBehaviour
     {
         [NaughtyAttributes.BoxGroup("List")]

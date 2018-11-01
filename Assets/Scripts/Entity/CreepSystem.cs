@@ -2,10 +2,12 @@
 using UnityEngine;
 using Game.System;
 using Game.Data.Entity.Creep;
+using Game.Tower;
+using Game.Creep;
 
 namespace Game.Creep
 {
-    public class CreepSystem : ExtendedMonoBehaviour
+    public class CreepSystem : EntitySystem
     {
         [HideInInspector]
         public bool ReachedLastWaypoint;
@@ -21,13 +23,12 @@ namespace Game.Creep
         private StateMachine state;
         private Coroutine stunCoroutine;
         private float stunDuration;
-        private Tower.TowerBaseSystem lastDamageDealer;
+        private EntitySystem lastDamageDealer;
         private bool isKilled;
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
+            base.Awake();
 
             creepTransform = transform;
             creepTransform.position = GM.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
@@ -39,14 +40,20 @@ namespace Game.Creep
             transform.parent = GM.Instance.CreepParent;
 
             GM.Instance.CreepList.Add(gameObject);
-
+            IsVulnerable = true;
             state = new StateMachine();
             state.ChangeState(new WalkState(this));
         }
 
         private void Update()
         {
-            state.Update();
+            if(isOn)
+                state.Update();
+        }
+
+        public EntitySystem GetDamageDealer()
+        {
+            return lastDamageDealer;
         }
 
         private void MoveAndRotateCreep()
@@ -69,14 +76,15 @@ namespace Game.Creep
             creepTransform.localRotation = rotation;
         }
 
-        private float CalculateDamage(float rawDamage, Tower.TowerBaseSystem damageDealer)
+        private float CalculateDamage(float rawDamage, EntitySystem damageDealer)
         {
-            var damage = GetPercentOfValue(damageDealer.StatsSystem.Stats.DamageToRace[Stats.RaceId], rawDamage);
+            var tower = damageDealer as TowerSystem;        
+            var damage = tower == null ? 0 : GetPercentOfValue(tower.GetStats().DamageToRace[(int)Stats.Race], rawDamage);
             // add armor modificator
             return damage;
         }
 
-        public void GetDamage(float damage, Tower.TowerBaseSystem damageDealer)
+        public void GetDamage(float damage, EntitySystem damageDealer)
         {
             if (!isKilled)
             {
@@ -167,9 +175,14 @@ namespace Game.Creep
 
             public void Enter()
             {
-                o.lastDamageDealer.StatsSystem.AddExp(o.Stats.Exp);
-                GM.Instance.ResourceSystem.AddGold(o.Stats.Gold);
+                var tower = o.lastDamageDealer as TowerSystem;
 
+                if (tower != null)
+                {
+                    tower.AddExp(o.Stats.Exp);
+                    GM.Instance.ResourceSystem.AddGold(o.Stats.Gold);
+                }
+              
                 o.state.ChangeState(new DestroyState(o));
             }
 

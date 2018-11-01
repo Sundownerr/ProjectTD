@@ -6,33 +6,26 @@ namespace Game.Data.Effect
 {
     public abstract class Effect : ScriptableObject
     {
-        public string EffectName, EffectDescription;
+        public string Name, Description;
         public float Duration, NextInterval;
-        public bool IsStackable;
-
-        [HideInInspector]
-        public float LeftDuration;
-
-        [HideInInspector]
-        public List<Creep.CreepSystem> TargetList;           
+        public bool IsStackable;   
 
         [HideInInspector]
         public bool IsEnded;
 
         [HideInInspector]
-        public Tower.TowerBaseSystem tower;
+        public EntitySystem owner;
 
         protected bool IsSet;
-        protected Creep.CreepSystem target;
+        protected EntitySystem target;
         protected Coroutine EffectCoroutine;
-        protected List<Creep.CreepSystem> AffectedCreepList;
+        protected List<EntitySystem> AffectedTargetList;
 
         public virtual void Start()
         {
             if (GetTarget() == null)
                 End();
 
-            LeftDuration = Duration;
             IsSet = true;
             IsEnded = false;
         }
@@ -45,8 +38,6 @@ namespace Game.Data.Effect
                     End();
                     GM.Instance.StopCoroutine(EffectCoroutine);
                 }
-                else if (LeftDuration < Duration)
-                    LeftDuration -= Time.deltaTime;
         }
 
         public virtual void End()
@@ -68,8 +59,8 @@ namespace Game.Data.Effect
 
         public virtual void Reset()
         {
-            if (AffectedCreepList != null)
-                AffectedCreepList.Clear();
+            if (AffectedTargetList != null)
+                AffectedTargetList.Clear();
 
             if (EffectCoroutine != null)
                 GM.Instance.StopCoroutine(EffectCoroutine);
@@ -80,10 +71,6 @@ namespace Game.Data.Effect
             IsSet = false;
         }    
 
-        public virtual void StackReset(float leftDuration)
-        {
-        }
-
         public virtual void Init()
         {
             if (!IsSet)
@@ -92,14 +79,18 @@ namespace Game.Data.Effect
             Continue();
         }
 
-        public virtual Creep.CreepSystem GetTarget()
+        public virtual EntitySystem GetTarget()
         {
             return target;
         }
 
-        public virtual void SetTarget(Creep.CreepSystem target)
-        {          
-            this.target = target;
+        public virtual void SetTarget(EntitySystem target, bool isForceSet)
+        {
+            if (isForceSet)
+                this.target = target;
+            else
+                if (this.target == null)
+                this.target = target;
         }
     }
 }

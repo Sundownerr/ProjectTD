@@ -17,7 +17,7 @@ namespace Game.Data.Entity.Tower
             SpecialDescription = $"Bounce between {BounceCount} targets";
         }
 
-        public override void InitSpecial(TowerBaseSystem ownerTower)
+        public override void InitSpecial(TowerSystem ownerTower)
         {
             ownerTower.Bullet.GetComponent<BulletSystem>().ChainshotCount = BounceCount;
             ownerTower.Bullet.GetComponent<BulletSystem>().RemainingBounceCount = BounceCount;

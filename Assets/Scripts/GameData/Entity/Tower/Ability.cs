@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
 using System;
+using Game.Tower;
+using Game.Creep;
 
-namespace Game.Data
+namespace Game.Data.Entity.Tower
 {
     [CreateAssetMenu(fileName = "New Ability", menuName = "Data/Tower/Ability")]
 
@@ -21,10 +23,10 @@ namespace Game.Data
         [Expandable]
         public List<Effect.Effect> EffectList;
 
-        private Creep.CreepSystem target;
         private bool isStackable, isStacked;
+        private CreepSystem target;
         private StateMachine state;
-        private Tower.TowerBaseSystem tower;
+        private TowerSystem tower;
         private int effectCount;
         private float timer;
 
@@ -39,34 +41,34 @@ namespace Game.Data
             state.Update();
         }
 
-        public void SetOwnerTower(Tower.TowerBaseSystem ownerTower)
+        public void SetOwnerTower(TowerSystem ownerTower)
         {
             tower = ownerTower;
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].tower = ownerTower;
+                EffectList[i].owner = ownerTower;
 
             EffectList[EffectList.Count - 1].NextInterval = 0.01f;
             CheckStackable();
         }
 
-        public void SetTarget(Creep.CreepSystem target)
+        public void SetTarget(CreepSystem target)
         {
             this.target = target;
             SetEffectsTarget(target);
         }
 
-        public Creep.CreepSystem GetTarget()
+        public CreepSystem GetTarget()
         {
             return target;
         }
 
-        private void SetEffectsTarget(Creep.CreepSystem target)
+        private void SetEffectsTarget(CreepSystem target)
         {
             for (int i = 0; i < EffectList.Count; i++)
                 if(EffectList[i].IsStackable)
-                    EffectList[i].SetTarget(target);
-                else if(EffectList[i].GetTarget() == null)
-                    EffectList[i].SetTarget(target);
+                    EffectList[i].SetTarget(target, true);
+                else 
+                    EffectList[i].SetTarget(target, false);
         }
 
         public void EndEffects()

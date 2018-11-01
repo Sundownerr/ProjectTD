@@ -2,30 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
-using Game.Data.Entity.Tower;
 
 namespace Game.Tower
 {
-    public class TowerBaseSystem : ExtendedMonoBehaviour
+    public class TowerSystem : EntitySystem
     {
         [HideInInspector]
         public Transform RangeTransform, MovingPartTransform, StaticPartTransform, ShootPointTransform;
 
         [HideInInspector]
         public GameObject OcuppiedCell, Bullet, Range;        
-
-        [HideInInspector]
-        public TowerRangeSystem RangeSystem;
-
-        [HideInInspector]
-        public TowerStatsSystem StatsSystem;
-
-        [HideInInspector]
-        public TowerSpecialSystem specialSystem;
-
+  
+        private System.Range rangeSystem;       
         private Renderer[] rendererList;
-        private TowerCombatSystem combatSystem;
-        private TowerAbilitySystem abilitySystem;
+        private System.Special specialSystem;
+        private System.Combat combatSystem;
+        private System.AbilitySystem abilitySystem;
+        private System.Stats StatsSystem;
         private StateMachine state;
         private GameObject Target;
         private bool isTowerPlaced;
@@ -40,11 +33,12 @@ namespace Game.Tower
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             Bullet = transform.GetChild(2).gameObject;
 
-            StatsSystem = new TowerStatsSystem(this);
-            specialSystem = new TowerSpecialSystem(this);
-            combatSystem = new TowerCombatSystem(this);
-            abilitySystem = new TowerAbilitySystem(this);
+            StatsSystem = new System.Stats(this);
+            specialSystem = new System.Special(this);
+            combatSystem = new System.Combat(this);
+            abilitySystem = new System.AbilitySystem(this);
 
+            IsVulnerable = false;
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
         }
@@ -57,9 +51,9 @@ namespace Game.Tower
             abilitySystem.Set();
 
             Range = Instantiate(GM.Instance.RangePrefab, transform);
-            RangeSystem = Range.GetComponent<TowerRangeSystem>();
-            Range.transform.localScale = new Vector3(StatsSystem.Stats.Range, 0.001f, StatsSystem.Stats.Range);
-            RangeSystem.SetShow();
+            rangeSystem = Range.GetComponent<System.Range>();
+            Range.transform.localScale = new Vector3(GetStats().Range, 0.001f, GetStats().Range);
+            rangeSystem.SetShow();
 
             rendererList = GetComponentsInChildren<Renderer>();
 
@@ -69,12 +63,15 @@ namespace Game.Tower
 
         private void Update()
         {
-            state.Update();
+            if (isOn)
+            {
+                state.Update();
 
-            if (isTowerPlaced)
-                abilitySystem.State.Update();
+                if (isTowerPlaced)
+                    abilitySystem.State.Update();
+            }
             
-            RangeSystem.SetShow();
+            rangeSystem.SetShow();
         }
        
         private void SetTowerColor(Color color)
@@ -95,11 +92,11 @@ namespace Game.Tower
             
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
-            var placeEffect = Instantiate(GM.Instance.ElementPlaceEffectList[StatsSystem.Stats.ElementId], transform.position + Vector3.up * 5, Quaternion.identity);
+            var placeEffect = Instantiate(GM.Instance.ElementPlaceEffectList[(int)GetStats().Element], transform.position + Vector3.up * 5, Quaternion.identity);
             Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
 
             gameObject.layer = 14;
-            RangeSystem.SetShow(false);
+            rangeSystem.SetShow(false);
           
             GM.Instance.PlayerInputSystem.NewTowerData = null;           
 
@@ -116,20 +113,40 @@ namespace Game.Tower
             MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }
 
+        public Data.Entity.Tower.TowerData GetStats()
+        {
+            return StatsSystem.CurrentStats;
+        }
+
+        public List<Creep.CreepSystem> GetCreepInRangeList()
+        {
+            return rangeSystem.CreepSystemList;
+        }
+
+        public System.Special GetSpecial()
+        {
+            return specialSystem;
+        }
+
+        public void AddExp(int amount)
+        {
+            StatsSystem.AddExp(amount);
+        }
+
         public void Upgrade()
         {
             var isGradeCountOk =
-                StatsSystem.Stats.GradeList.Count > 0 &&
-                StatsSystem.Stats.GradeCount < StatsSystem.Stats.GradeList.Count;
+                GetStats().GradeList.Count > 0 &&
+                GetStats().GradeCount < GetStats().GradeList.Count;
 
             if (isGradeCountOk)
             {
-                var upgradedTowerPrefab = Instantiate(StatsSystem.Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
-                var upgradedTowerBaseSystem = upgradedTowerPrefab.GetComponent<TowerBaseSystem>();
+                var upgradedTowerPrefab = Instantiate(GetStats().GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
+                var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
                
-                upgradedTowerBaseSystem.StatsSystem.Upgrade(StatsSystem.Stats, StatsSystem.Stats.GradeList[0]);
-                upgradedTowerBaseSystem.OcuppiedCell = OcuppiedCell;
-                upgradedTowerBaseSystem.SetSystem();
+                upgradedTowerSystem.StatsSystem.Upgrade(GetStats(), GetStats().GradeList[0]);
+                upgradedTowerSystem.OcuppiedCell = OcuppiedCell;
+                upgradedTowerSystem.SetSystem();
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;
                 
@@ -139,8 +156,8 @@ namespace Game.Tower
 
         public void Sell()
         {
-            GM.Instance.ResourceSystem.AddTowerLimit(-StatsSystem.Stats.TowerLimit);
-            GM.Instance.ResourceSystem.AddGold(StatsSystem.Stats.GoldCost);
+            GM.Instance.ResourceSystem.AddTowerLimit(-GetStats().TowerLimit);
+            GM.Instance.ResourceSystem.AddGold(GetStats().GoldCost);
 
             OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
             GM.Instance.PlacedTowerList.Remove(gameObject);
@@ -149,9 +166,9 @@ namespace Game.Tower
 
         protected class SpawnState : IState
         {
-            private readonly TowerBaseSystem o;
+            private readonly TowerSystem o;
 
-            public SpawnState(TowerBaseSystem o) { this.o = o; }
+            public SpawnState(TowerSystem o) { this.o = o; }
 
             public void Enter() { }
 
@@ -172,15 +189,15 @@ namespace Game.Tower
 
         protected class LookForCreepState : IState
         {
-            private readonly TowerBaseSystem o;
+            private readonly TowerSystem o;
 
-            public LookForCreepState(TowerBaseSystem o) { this.o = o; }
+            public LookForCreepState(TowerSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                if (o.RangeSystem.CreepList.Count > 0)
+                if (o.rangeSystem.CreepList.Count > 0)
                     o.state.ChangeState(new CombatState(o));                  
             }
 
@@ -189,9 +206,9 @@ namespace Game.Tower
 
         protected class CombatState : IState
         {
-            private readonly TowerBaseSystem o;
+            private readonly TowerSystem o;
 
-            public CombatState(TowerBaseSystem o) { this.o = o; }
+            public CombatState(TowerSystem o) { this.o = o; }
 
             public void Enter() { }
 
@@ -199,17 +216,17 @@ namespace Game.Tower
             {
                 o.combatSystem.State.Update();
 
-                for (int i = 0; i < o.RangeSystem.CreepList.Count; i++)
-                    if (o.RangeSystem.CreepList[i] == null)
+                for (int i = 0; i < o.rangeSystem.CreepList.Count; i++)
+                    if (o.rangeSystem.CreepList[i] == null)
                     {
-                        o.RangeSystem.CreepList.RemoveAt(i);
-                        o.RangeSystem.CreepSystemList.RemoveAt(i);
+                        o.rangeSystem.CreepList.RemoveAt(i);
+                        o.rangeSystem.CreepSystemList.RemoveAt(i);
                     }
 
-                if (o.RangeSystem.CreepList.Count < 1)
+                if (o.rangeSystem.CreepList.Count < 1)
                     o.state.ChangeState(new MoveRemainingBulletState(o));
                 else
-                    o.Target = o.RangeSystem.CreepList[0];         
+                    o.Target = o.rangeSystem.CreepList[0];         
                               
                 if (o.Target != null)
                     o.RotateAtCreep(o.Target);         
@@ -220,15 +237,15 @@ namespace Game.Tower
 
         protected class MoveRemainingBulletState : IState
         {
-            private readonly TowerBaseSystem o;
+            private readonly TowerSystem o;
 
-            public MoveRemainingBulletState(TowerBaseSystem o) { this.o = o; }
+            public MoveRemainingBulletState(TowerSystem o) { this.o = o; }
 
             public void Enter() { }
 
             public void Execute()
             {
-                if (o.RangeSystem.CreepList.Count > 0)
+                if (o.rangeSystem.CreepList.Count > 0)
                     o.state.ChangeState(new CombatState(o));
                 else 
                 if(!o.combatSystem.CheckAllBulletInactive())
