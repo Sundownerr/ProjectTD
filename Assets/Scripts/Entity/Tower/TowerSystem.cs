@@ -25,8 +25,7 @@ namespace Game.Tower
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;            
+            base.Awake();         
 
             MovingPartTransform = transform.GetChild(0);
             StaticPartTransform = transform.GetChild(1);
@@ -41,6 +40,8 @@ namespace Game.Tower
             IsVulnerable = false;
             state = new StateMachine();
             state.ChangeState(new SpawnState(this));
+
+
         }
 
         public void SetSystem()
