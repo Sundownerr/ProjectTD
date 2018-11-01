@@ -26,8 +26,7 @@ namespace Game.System
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
+            base.Awake();
            
             results = new List<RaycastResult>();
 

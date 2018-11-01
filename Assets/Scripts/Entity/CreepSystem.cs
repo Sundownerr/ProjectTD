@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Game.System;
-using Game.Data.Entity.Creep;
 using Game.Tower;
 using Game.Creep;
 
@@ -47,6 +46,7 @@ namespace Game.Creep
 
         private void Update()
         {
+ 
             if(isOn)
                 state.Update();
         }
@@ -125,8 +125,7 @@ namespace Game.Creep
         {
             private CreepSystem o;
 
-            public WalkState(CreepSystem o) { this.o = o; }
-
+            public WalkState(CreepSystem o) => this.o = o;
             public void Enter() { }
 
             public void Execute()
@@ -151,7 +150,7 @@ namespace Game.Creep
         {
             private CreepSystem o;
 
-            public StunnedState(CreepSystem o) { this.o = o; }
+            public StunnedState(CreepSystem o) => this.o = o;
 
             public void Enter()
             {
@@ -171,7 +170,7 @@ namespace Game.Creep
         {
             private CreepSystem o;
 
-            public GiveRecourcesState(CreepSystem o) { this.o = o; }
+            public GiveRecourcesState(CreepSystem o) => this.o = o;
 
             public void Enter()
             {
@@ -195,8 +194,7 @@ namespace Game.Creep
         {
             private CreepSystem o;
 
-            public DestroyState(CreepSystem o) { this.o = o; }
-
+            public DestroyState(CreepSystem o) => this.o = o;
             public void Enter()
             {             
                 Destroy(o.Stats);

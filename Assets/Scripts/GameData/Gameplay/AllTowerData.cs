@@ -20,27 +20,21 @@ namespace Game.Data
         private void Awake()
         {
             var towerData = Resources.Load("All Tower Data");
-
-            if (towerData == null)
+            
+            if(towerData is AllTowerData data)
+                AllTowerList = data.GetAllTowerList();
+            else 
             {
                 AllTowerList.ElementsList = new List<Element>();          
 
                 for (int i = 0; i < 7; i++)
-                    AllTowerList.ElementsList.Add(
-                        new Element()
-                        {
-                            Name = GM.Instance.ElementNameList[i],
-
-                            RarityList = new List<Rarity>
-                            {
-                                new Rarity(new List<TowerData>(), "Common"),
-                                new Rarity(new List<TowerData>(), "Uncommon"),
-                                new Rarity(new List<TowerData>(), "Rare"),
-                                new Rarity(new List<TowerData>(), "Unique")
-                            }
-                        }
-                    );
-            }
+                    AllTowerList.ElementsList.Add(new Element(GM.Instance.ElementNameList[i]));
+            }                            
         }
+
+        public ElementList GetAllTowerList()
+        {
+            return AllTowerList;
+        }                  
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
 using Game.Tower.Data.Stats;
+using Game.System;
+using Game.Data;
 
 namespace Game.Tower.Data
 {  
@@ -12,7 +14,7 @@ namespace Game.Tower.Data
     public class TowerData : Entity
     {
         [HideInInspector]
-        public int Exp, Level, GradeCount;
+        public int Exp, Level, GradeCount;     
 
         [HideInInspector]
         public List<float> DamageToRace;
@@ -23,14 +25,14 @@ namespace Game.Tower.Data
         [ShowAssetPreview(125, 125)]
         public Sprite Image;
 
-        [BoxGroup("Main Info")]
+        [BoxGroup("Main Info"), OnValueChanged("OnValuesChanged")]
         public int WaveLevel, ElementLevel, TowerLimit, MagicCrystalReq, GoldCost;
      
-        [BoxGroup("Main Info")]
+        [BoxGroup("Main Info"), OnValueChanged("OnValuesChanged")]
         [SerializeField]
         public RarityType Rarity;
 
-        [BoxGroup("Main Info")]
+        [BoxGroup("Main Info"), OnValueChanged("OnValuesChanged")]
         [SerializeField]
         public ElementType Element;
 
@@ -54,9 +56,31 @@ namespace Game.Tower.Data
         
         private void Awake()
         {
-            for (int i = 0; i < 5; i++)
-                DamageToRace.Add(100f);           
+            if (Id == null || Id.Length == 0)           
+                Id = SetId();
+            
+            if(DamageToRace == null)
+                for (int i = 0; i < 5; i++)
+                    DamageToRace.Add(100f);           
         }
 
+        private void OnValuesChanged()
+        {
+             Id = SetId();
+        }
+
+        private int[] SetId()
+        {
+            return new int[]
+                {
+                    (int)Element,
+                    (int)Rarity,
+                    (int)WaveLevel,
+                    TowerLimit,
+                    ElementLevel,
+                    MagicCrystalReq,
+                    GoldCost
+                };
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace Game.Tower
         private TowerSystem tower;
         private int effectCount;
         private float timer;
+        private int id; 
 
         private void OnEnable()
         {
@@ -49,6 +50,7 @@ namespace Game.Tower
 
             EffectList[EffectList.Count - 1].NextInterval = 0.01f;
             CheckStackable();
+           
         }
 
         public void SetTarget(CreepSystem target)

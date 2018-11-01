@@ -33,7 +33,9 @@ namespace Game.Data.Effect
 
         public override void End()
         {
-            target?.SetOn(false);
+            if(target != null)
+                target.SetOn(true);
+            
             Destroy(effectPrefab);
 
             base.End();

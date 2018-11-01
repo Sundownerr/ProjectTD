@@ -61,7 +61,6 @@ namespace Game.System
                 state.ChangeState(new GetInputState(this));
             else
             {
-                Debug.Log("asda");
                 GM.PLAYERSTATE = GM.PLACING_TOWER;
 
                 var newTower = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        

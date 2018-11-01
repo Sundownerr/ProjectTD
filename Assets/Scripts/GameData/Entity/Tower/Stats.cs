@@ -1,4 +1,4 @@
-﻿using Game.Data.Entity.Tower;
+﻿
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -8,6 +8,19 @@ namespace Game.Tower.Data.Stats
     [Serializable]
     public class Element
     {
+        public Element(string name)
+        {
+            Name = name;
+            
+            RarityList = new List<Rarity>
+            {
+                new Rarity("Common"),
+                new Rarity("Uncommon"),
+                new Rarity("Rare"),
+                new Rarity("Unique")
+            };
+        }
+        
         [SerializeField]
         public List<Rarity> RarityList;
 
@@ -24,9 +37,9 @@ namespace Game.Tower.Data.Stats
         [SerializeField]
         public string Name;
 
-        public Rarity(List<TowerData> towerList, string name)
+        public Rarity(string name) 
         {
-            TowerList = towerList;
+            TowerList = new List<TowerData>();
             Name = name;
         }
     }

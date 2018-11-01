@@ -40,13 +40,14 @@ namespace Game.Tower.System
         }
 
         private bool CheckEffectTarget(Creep.CreepSystem target)
-        {
+        {           
             if (effectStackList.Count > 0)
                 for (int i = 0; i < effectStackList.Count; i++)
-                    if (effectStackList[i].GetTarget() == target)
-                        return true;
-
-            return false;
+                    if (effectStackList[i].GetTarget() == target)               
+                        for (int j = 0; j < effectStackList.Count; j++)                         
+                            if(effectStackList[j] == effectStackList[i])
+                                    return true;       
+            return false;                  
         }
 
         protected class LookForCreepState : IState
@@ -135,8 +136,11 @@ namespace Game.Tower.System
                                 if (!o.abilityList[i].EffectList[j].IsStackable)
                                 {
                                     var effect = o.abilityList[i].EffectList[j];
+                                    var isNotAbilityTarget = 
+                                        effect.GetTarget() != o.abilityList[i].GetTarget() || 
+                                        !o.CheckTargetInRange((Creep.CreepSystem)effect.GetTarget());
 
-                                    if (effect.GetTarget() != o.abilityList[i].GetTarget() || !o.CheckTargetInRange((Creep.CreepSystem)effect.GetTarget()))
+                                    if (isNotAbilityTarget)
                                     {
                                         o.stackAbilityId = i;
                                         o.stackEffectId = j;
