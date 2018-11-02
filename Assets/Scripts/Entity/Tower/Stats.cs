@@ -10,9 +10,11 @@ namespace Game.Tower.System
     [Serializable]
     public class Stats 
     {
-        public TowerData CurrentStats, BaseStats;
- 
-        private TowerSystem tower;      
+        public TowerData CurrentStats { get => currentStats; set => currentStats = value; }
+        public TowerData BaseStats { get => baseStats; set => baseStats = value; }
+
+        private TowerSystem tower;
+        private TowerData currentStats, baseStats;
 
         public Stats(TowerSystem ownerTower) => tower = ownerTower;    
    

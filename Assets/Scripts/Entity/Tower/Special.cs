@@ -6,10 +6,11 @@ namespace Game.Tower.System
 {
     public class Special
     {
-        public bool IsHaveChainTargets;
-
+        public bool IsHaveChainTargets { get => isHaveChainTargets; set => isHaveChainTargets = value; }
+        
+        private bool isHaveChainTargets;
         private TowerSystem tower;
-       
+  
         public Special(TowerSystem ownerTower) => tower = ownerTower;
 
         public void Set()

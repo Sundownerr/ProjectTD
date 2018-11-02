@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using Game.System;
 
 
 namespace Game.Tower.System
@@ -29,8 +30,8 @@ namespace Game.Tower.System
             bulletDataList  = new List<BulletSystem>();
 
             bulletPool  = new ObjectPool();
-            bulletPool.poolObject = tower.Bullet;
-            bulletPool.parent = tower.transform;
+            bulletPool.PoolObject = tower.Bullet;
+            bulletPool.Parent = tower.transform;
             bulletPool.Initialize();
 
             State = new StateMachine();

@@ -48,10 +48,10 @@ namespace Game.System
 
             public void Execute()
             {
-                var terrainLayer = 1 << 9;
-                var creepLayer = 1 << 12;
-                var towerLayer = 1 << 14;
-                var layerMask = terrainLayer | creepLayer | towerLayer;
+                var terrainLayer    = 1 << 9;
+                var creepLayer      = 1 << 12;
+                var towerLayer      = 1 << 14;
+                var layerMask       = terrainLayer | creepLayer | towerLayer;
 
                 o.WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
                 var isRayHit = Physics.Raycast(o.WorldRay, out o.hit, 10000, layerMask);

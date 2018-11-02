@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.System;
+using Game.Creep;
 
 namespace Game.Tower.System
 {
     public class Range : ExtendedMonoBehaviour
     {
-        public List<GameObject> CreepList;
-        public List<Creep.CreepSystem> CreepSystemList;
+        
+        public List<CreepSystem> CreepSystemList { get => creepSystemList; set => creepSystemList = value; }
+        public List<GameObject> CreepList { get => creepList; set => creepList = value; }
 
+        private List<GameObject> creepList;
+        private List<Creep.CreepSystem> creepSystemList;
         private Renderer rend;
         private Color transparent, notTransparent;
         private bool isRangeShowed;
