@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Game.Tower.Data;
 
 namespace Game.System
 {
     public class PlayerInputSystem : ExtendedMonoBehaviour
     {
-        [HideInInspector]
-        public Tower.Data.TowerData NewTowerData;
-
-        [HideInInspector]
-        public GameObject ChoosedTower;
-
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
         
+        private Tower.Data.TowerData newTowerData;
+        private GameObject choosedTower;
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
         private StateMachine state;
         private RaycastHit hit;
         private Ray WorldRay;
         private bool isHitUI;
+
+        public GameObject ChoosedTower { get => choosedTower; set => choosedTower = value; }
+        public TowerData NewTowerData { get => newTowerData; set => newTowerData = value; }
 
         protected override void Awake()
         {

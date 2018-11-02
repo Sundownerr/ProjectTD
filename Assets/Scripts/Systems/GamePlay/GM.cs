@@ -28,15 +28,6 @@ namespace Game.System
         [NaughtyAttributes.BoxGroup("Parent")]
         public Transform CellParent, TowerParent, CreepParent;
 
-        [HideInInspector]
-        public TowerPlaceSystem TowerPlaceSystem;
-
-        [HideInInspector]
-        public GridSystem GridSystem;
-
-        [HideInInspector]
-        public WaveSystem WaveSystem;
-
         [NaughtyAttributes.BoxGroup("Data")]
         public PlayerData PlayerData;
 
@@ -52,36 +43,36 @@ namespace Game.System
         [NaughtyAttributes.BoxGroup("Data")]
         public int WaveAmount;
 
-        [HideInInspector]
-        public PlayerInputSystem PlayerInputSystem;
+        public TowerPlaceSystem TowerPlaceSystem { get => towerPlaceSystem; set => towerPlaceSystem = value; }
+        public GridSystem GridSystem { get => gridSystem; set => gridSystem = value; }
+        public WaveSystem WaveSystem { get => waveSystem; set => waveSystem = value; }
+        public PlayerInputSystem PlayerInputSystem { get => playerInputSystem; set => playerInputSystem = value; }
+        public BaseUISystem BaseUISystem { get => baseUISystem; set => baseUISystem = value; }
+        public TowerUISystem TowerUISystem { get => towerUISystem; set => towerUISystem = value; }
+        public ResourceSystem ResourceSystem { get => resourceSystem; set => resourceSystem = value; }
+        public ElementSystem ElementSystem { get => elementSystem; set => elementSystem = value; }
+        public ElementUISystem ElementUISystem { get => elementUISystem; set => elementUISystem = value; }
+        public TowerCreatingSystem TowerCreatingSystem { get => towerCreatingSystem; set => towerCreatingSystem = value; }
+        public BuildUISystem BuildUISystem { get => buildUISystem; set => buildUISystem = value; }
 
-        [HideInInspector]
-        public BaseUISystem BaseUISystem;
-
-        [HideInInspector]
-        public TowerUISystem TowerUISystem;
-
-        [HideInInspector]
-        public ResourceSystem ResourceSystem;
-
-        [HideInInspector]
-        public ElementSystem ElementSystem;
-
-        [HideInInspector]
-        public ElementUISystem ElementUISystem;
-
-        [HideInInspector]
-        public TowerCreatingSystem TowerCreatingSystem;
-
-        [HideInInspector]
-        public BuildUISystem BuildUISystem;
+        private TowerPlaceSystem towerPlaceSystem;
+        private GridSystem gridSystem;
+        private WaveSystem waveSystem;
+        private PlayerInputSystem playerInputSystem;
+        private BaseUISystem baseUISystem;
+        private TowerUISystem towerUISystem;
+        private ResourceSystem resourceSystem;
+        private ElementSystem elementSystem;
+        private ElementUISystem elementUISystem;
+        private TowerCreatingSystem towerCreatingSystem;
+        private BuildUISystem buildUISystem;
 
         public Canvas UICanvas;
 
         public static GM Instance;       
         public static State PlayerState;
         public static int[] ExpToLevelUp;
-
+     
         public enum State
         {
             Idle,

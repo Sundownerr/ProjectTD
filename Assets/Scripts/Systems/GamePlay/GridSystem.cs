@@ -6,8 +6,9 @@ namespace Game.System
 {
     public class GridSystem 
     {
-        public bool IsGridBuilded;
+        public bool IsGridBuilded { get => isGridBuilded; set => isGridBuilded = value; }
 
+        private bool isGridBuilded;
         private Color blue, red, green;
 
         public GridSystem()
@@ -18,7 +19,7 @@ namespace Game.System
             red = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             green = new Color(0.1f, 0.3f, 0.1f, 0.5f);
             blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);
-        }
+        }       
 
         public void Update()
         {
