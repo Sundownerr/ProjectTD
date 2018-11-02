@@ -14,7 +14,7 @@ namespace Game.System
         private StateMachine state;
         private List<List<GameObject>> creepWaveList;
         private WaveCreatingSystem waveCreatingSystem;
-        private List<CreepData> currentWave;
+        private List<CreepData> currentWaveCreepList;
         private List<List<CreepData>> waveList;
 
         public WaveSystem()
@@ -41,21 +41,42 @@ namespace Game.System
             var waveList = GM.Instance.WaveDataBase.WaveList;
             var tempWaveList = new List<List<CreepData>>();
 
-            for (int i = 0; i < waveAmount; i++)
+            for (int waveCount = 0; waveCount < waveAmount; waveCount++)
             {
                 var race = (RaceType)raceTypeList.GetValue(UnityEngine.Random.Range(0, raceTypeList.Length));
                 var armor = (Armor.ArmorType)armorTypeList.GetValue(UnityEngine.Random.Range(0, armorTypeList.Length));
                 var wave = waveList[UnityEngine.Random.Range(0, waveList.Count)];
 
-                tempWaveList.Add(waveCreatingSystem.CreateWave(race, i, wave));
+                tempWaveList.Add(AdjustCreepStats(waveCreatingSystem.CreateWave(race, waveCount, wave), waveCount));
             }   
             return tempWaveList;
+        }
+
+        private List<CreepData> AdjustCreepStats(List<CreepData> waveCreepList, int waveCount)
+        {
+            var tempCreepList = waveCreepList;
+
+            for (int i = 0; i < tempCreepList.Count; i++)
+                tempCreepList[i] = CalculateStats(tempCreepList[i]);   
+
+            return tempCreepList;                  
+        }
+
+        private CreepData CalculateStats(CreepData stats)
+        {
+            var tempStats = stats;
+
+            tempStats.Armor.Value       += WaveCount;
+            tempStats.DefaultMoveSpeed  += WaveCount + 3;
+            tempStats.Gold              += WaveCount / 7;
+            tempStats.Health            += WaveCount * 10;
+            
+            return tempStats;
         }
         
         private void AddMagicCrystalAfterWaveEnd()
         {
             if (creepWaveList.Count > 0)
-
                 for (int waveId = 0; waveId < creepWaveList.Count; waveId++)   
                     
                     if (creepWaveList[waveId].Count > 0)
@@ -77,7 +98,8 @@ namespace Game.System
               
             while (spawnedCreepCount < needToSpawnCount)
             {
-                var creep = UnityEngine.Object.Instantiate(currentWave[WaveCount].Prefab);
+                var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawnedCreepCount].Prefab);
+                creep.GetComponent<CreepSystem>().SetStats(currentWaveCreepList[spawnedCreepCount]);
 
                 creepWaveList[creepWaveList.Count - 1].Add(creep);
 
@@ -101,8 +123,8 @@ namespace Game.System
 
             public void Enter() 
             {
-                o.CreateWaveList(waveAmount);
-                o.currentWave = o.waveList[o.WaveCount];
+                o.waveList = o.CreateWaveList(waveAmount);
+                o.currentWaveCreepList = o.waveList[o.WaveCount];
                 o.state.ChangeState(new GetInputState(o));
             }
 
@@ -143,7 +165,7 @@ namespace Game.System
                 {
                     o.creepWaveList.Add(new List<GameObject>());
 
-                    GM.Instance.StartCoroutine(o.SpawnCreeps(o.currentWave.Count, 0.5f));
+                    GM.Instance.StartCoroutine(o.SpawnCreeps(o.currentWaveCreepList.Count, 0.5f));
                     o.state.ChangeState(new SpawnCreepsState(o));
                 }
             }
