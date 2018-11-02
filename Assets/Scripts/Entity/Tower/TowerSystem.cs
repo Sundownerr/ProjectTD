@@ -19,7 +19,7 @@ namespace Game.Tower
         private System.Special specialSystem;
         private System.Combat combatSystem;
         private System.AbilitySystem abilitySystem;
-        private System.Stats StatsSystem;
+        private System.Stats statsSystem;
         private StateMachine state;
         private GameObject Target;
         private bool isTowerPlaced;
@@ -33,7 +33,7 @@ namespace Game.Tower
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             Bullet = transform.GetChild(2).gameObject;
 
-            StatsSystem = new System.Stats(this);
+            statsSystem = new System.Stats(this);
             specialSystem = new System.Special(this);
             combatSystem = new System.Combat(this);
             abilitySystem = new System.AbilitySystem(this);
@@ -45,7 +45,7 @@ namespace Game.Tower
 
         public void SetSystem()
         {
-            StatsSystem.Set();
+            statsSystem.Set();
             specialSystem.Set();
             combatSystem.Set();
             abilitySystem.Set();
@@ -58,7 +58,7 @@ namespace Game.Tower
             rendererList = GetComponentsInChildren<Renderer>();
 
             Bullet.SetActive(false);
-            StatsSystem.UpdateUI();
+            statsSystem.UpdateUI();
         }
 
         private void Update()
@@ -113,31 +113,16 @@ namespace Game.Tower
             MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }
 
-        public TowerData GetStats()
-        {
-            return StatsSystem.CurrentStats;
-        }
+        public TowerData GetStats() => statsSystem.CurrentStats;  
 
-        public void SetStats(TowerData stats)
-        {
-            StatsSystem.CurrentStats = stats;
-        }
+        public List<Creep.CreepSystem> GetCreepInRangeList() => rangeSystem.CreepSystemList;
+    
+        public System.Special GetSpecial() => specialSystem;     
 
-        public List<Creep.CreepSystem> GetCreepInRangeList()
-        {
-            return rangeSystem.CreepSystemList;
-        }
+        public void SetStats(TowerData stats) => statsSystem.CurrentStats = stats;   
 
-        public System.Special GetSpecial()
-        {
-            return specialSystem;
-        }
-
-        public void AddExp(int amount)
-        {
-            StatsSystem.AddExp(amount);
-        }
-
+        public void AddExp(int amount) => statsSystem.AddExp(amount);
+        
         public void Upgrade()
         {
             var isGradeCountOk =
@@ -149,7 +134,7 @@ namespace Game.Tower
                 var upgradedTowerPrefab = Instantiate(GetStats().GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
                 var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
                
-                upgradedTowerSystem.StatsSystem.Upgrade(GetStats(), GetStats().GradeList[0]);
+                upgradedTowerSystem.statsSystem.Upgrade(GetStats(), GetStats().GradeList[0]);
                 upgradedTowerSystem.OcuppiedCell = OcuppiedCell;
                 upgradedTowerSystem.SetSystem();
 
@@ -173,7 +158,7 @@ namespace Game.Tower
         {
             private readonly TowerSystem o;
 
-            public SpawnState(TowerSystem o) { this.o = o; }
+            public SpawnState(TowerSystem o) => this.o = o;
 
             public void Enter() { }
 
@@ -188,7 +173,7 @@ namespace Game.Tower
             public void Exit()
             {
                 o.EndPlacing();
-                o.StatsSystem.UpdateUI();
+                o.statsSystem.UpdateUI();
             }
         }
 
@@ -196,7 +181,7 @@ namespace Game.Tower
         {
             private readonly TowerSystem o;
 
-            public LookForCreepState(TowerSystem o) { this.o = o; }
+            public LookForCreepState(TowerSystem o) => this.o = o;
 
             public void Enter() { }
 
@@ -213,7 +198,7 @@ namespace Game.Tower
         {
             private readonly TowerSystem o;
 
-            public CombatState(TowerSystem o) { this.o = o; }
+            public CombatState(TowerSystem o) => this.o = o;
 
             public void Enter() { }
 
@@ -221,17 +206,17 @@ namespace Game.Tower
             {
                 o.combatSystem.State.Update();
 
-                for (int i = 0; i < o.rangeSystem.CreepList.Count; i++)
-                    if (o.rangeSystem.CreepList[i] == null)
+                for (int i = 0; i < o.GetCreepInRangeList().Count; i++)
+                    if (o.GetCreepInRangeList()[i] == null)
                     {
                         o.rangeSystem.CreepList.RemoveAt(i);
                         o.rangeSystem.CreepSystemList.RemoveAt(i);
                     }
 
-                if (o.rangeSystem.CreepList.Count < 1)
+                if (o.GetCreepInRangeList().Count < 1)
                     o.state.ChangeState(new MoveRemainingBulletState(o));
                 else
-                    o.Target = o.rangeSystem.CreepList[0];         
+                    o.Target = o.GetCreepInRangeList()[0].gameObject;         
                               
                 if (o.Target != null)
                     o.RotateAtCreep(o.Target);         
@@ -244,7 +229,7 @@ namespace Game.Tower
         {
             private readonly TowerSystem o;
 
-            public MoveRemainingBulletState(TowerSystem o) { this.o = o; }
+            public MoveRemainingBulletState(TowerSystem o) => this.o = o;
 
             public void Enter() { }
 

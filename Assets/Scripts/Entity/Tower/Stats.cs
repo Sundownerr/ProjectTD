@@ -12,13 +12,10 @@ namespace Game.Tower.System
     {
         public TowerData CurrentStats, BaseStats;
  
-        private TowerSystem ownerTower;      
+        private TowerSystem tower;      
 
-        public Stats(TowerSystem ownerTower)
-        {
-            this.ownerTower = ownerTower;       
-        }
-
+        public Stats(TowerSystem ownerTower) => tower = ownerTower;    
+   
         public void Set()
         {
             CurrentStats = UnityEngine.Object.Instantiate(CurrentStats);
@@ -30,7 +27,7 @@ namespace Game.Tower.System
                 for (int j = 0; j < CurrentStats.AbilityList[i].EffectList.Count; j++)
                     CurrentStats.AbilityList[i].EffectList[j] = UnityEngine.Object.Instantiate(CurrentStats.AbilityList[i].EffectList[j]);
 
-                CurrentStats.AbilityList[i].SetOwnerTower(ownerTower);
+                CurrentStats.AbilityList[i].SetOwnerTower(tower);
             }
 
             BaseStats = UnityEngine.Object.Instantiate(CurrentStats);
@@ -64,8 +61,7 @@ namespace Game.Tower.System
             CurrentStats.CritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
             CurrentStats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
             
-
-            ownerTower.GetSpecial().IncreaseStatsPerLevel();
+            tower.GetSpecial().IncreaseStatsPerLevel();
         }
 
         public void AddExp(int amount)
@@ -79,7 +75,7 @@ namespace Game.Tower.System
 
                     CurrentStats.Level++;
 
-                    var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, ownerTower.transform.position, Quaternion.identity);
+                    var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, tower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }           
             UpdateUI();
@@ -87,7 +83,7 @@ namespace Game.Tower.System
 
         public void UpdateUI()
         {
-            if (GM.Instance.PlayerInputSystem.ChoosedTower == ownerTower.gameObject)
+            if (GM.Instance.PlayerInputSystem.ChoosedTower == tower.gameObject)
                 GM.Instance.TowerUISystem.UpdateValues();           
         }
     }
