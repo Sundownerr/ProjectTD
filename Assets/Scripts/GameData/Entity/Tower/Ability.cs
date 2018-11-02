@@ -37,11 +37,10 @@ namespace Game.Tower
             state.ChangeState(new SetEffectState(this));
         }
 
-        public void Init()
-        {
-            state.Update();
-        }
+        public void Init() => state.Update();
 
+        public CreepSystem GetTarget() => target;
+        
         public void SetOwnerTower(TowerSystem ownerTower)
         {
             tower = ownerTower;
@@ -49,20 +48,14 @@ namespace Game.Tower
                 EffectList[i].owner = ownerTower;
 
             EffectList[EffectList.Count - 1].NextInterval = 0.01f;
-            CheckStackable();
-           
+            CheckStackable();           
         }
 
         public void SetTarget(CreepSystem target)
         {
             this.target = target;
             SetEffectsTarget(target);
-        }
-
-        public CreepSystem GetTarget()
-        {
-            return target;
-        }
+        }       
 
         private void SetEffectsTarget(CreepSystem target)
         {
@@ -73,12 +66,6 @@ namespace Game.Tower
                     EffectList[i].SetTarget(target, false);
         }
 
-        public void EndEffects()
-        {
-            for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].End();           
-        }
-        
         public void StackReset()
         {
             isStacked = true;
@@ -122,11 +109,9 @@ namespace Game.Tower
             return true;
         }
 
-        public bool CheckAllEffectsSet()
-        {
-            return effectCount >= EffectList.Count - 1 ? true : false;         
-        }
-
+        public bool CheckAllEffectsSet() => 
+            effectCount >= EffectList.Count - 1 ? true : false;         
+        
         public bool CheckNeedStack()
         {
             if (isStackable)

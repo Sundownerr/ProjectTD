@@ -37,11 +37,8 @@ namespace Game.Cells
             if (rayHit)
             {
                 FillSide(Vector3.forward, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
-
                 FillSide(Vector3.back, 1, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
-
                 FillSide(Vector3.left, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
-
                 FillSide(Vector3.right, 2, cell, cellPrefab, rayDistance, expandLayerMask, spacing);
             }
             else

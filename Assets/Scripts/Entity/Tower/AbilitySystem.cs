@@ -54,7 +54,7 @@ namespace Game.Tower.System
         {
             private readonly AbilitySystem o;
 
-            public LookForCreepState(AbilitySystem o) { this.o = o; }
+            public LookForCreepState(AbilitySystem o) => this.o = o;
 
             public void Enter() { }
 
@@ -74,7 +74,7 @@ namespace Game.Tower.System
         {
             private AbilitySystem o;
 
-            public CreateStackEffectState(AbilitySystem o) { this.o = o; }
+            public CreateStackEffectState(AbilitySystem o) => this.o = o;
 
             public void Enter()
             {
@@ -96,7 +96,7 @@ namespace Game.Tower.System
         {
             private AbilitySystem o;
 
-            public CreateStackAbilityState(AbilitySystem o) { this.o = o; }
+            public CreateStackAbilityState(AbilitySystem o) => this.o = o;
 
             public void Enter()
             {
@@ -118,7 +118,7 @@ namespace Game.Tower.System
         {
             private readonly AbilitySystem o;
 
-            public CombatState(AbilitySystem o) { this.o = o; }
+            public CombatState(AbilitySystem o) => this.o = o;
 
             public void Enter() { }
 
@@ -224,15 +224,16 @@ namespace Game.Tower.System
         }
 
         protected class ContinueEffectState : IState
-        {
+        {          
             private readonly AbilitySystem o;
 
-            public ContinueEffectState(AbilitySystem o) { this.o = o; }
+            public ContinueEffectState(AbilitySystem o) => this.o = o;
 
             public void Enter() { }
 
             public void Execute()
             {
+                
                 var isCreepInRange =
                     o.tower.GetCreepInRangeList().Count > 0;
 

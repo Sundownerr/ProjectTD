@@ -14,8 +14,7 @@ namespace Game.Cells
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
+            base.Awake();
 
             GM.Instance.CellList.Add(gameObject);
             GM.Instance.CellStateList.Add(this);
