@@ -5,8 +5,10 @@ namespace Game.Creep
 
     public class Flying : CreepData
     {      
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             MoveSpeed = DefaultMoveSpeed;
             Exp = 4;
             Gold = 4;
