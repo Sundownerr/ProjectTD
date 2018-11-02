@@ -68,7 +68,7 @@ namespace Game.System
         {
             private readonly WaveSystem o;
 
-            public SpawnCreepsState(WaveSystem o) { this.o = o; }
+            public SpawnCreepsState(WaveSystem o) => this.o = o; 
 
             public void Enter() { }
 
@@ -86,7 +86,7 @@ namespace Game.System
         {
             private readonly WaveSystem o;
 
-            public GetInputState(WaveSystem o) { this.o = o; }
+            public GetInputState(WaveSystem o) => this.o = o; 
 
             public void Enter() { }
 
@@ -101,10 +101,7 @@ namespace Game.System
                 }
             }
 
-            public void Exit()
-            {
-                GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(false);
-            }
+            public void Exit() => GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(false);                   
         }
     }
 }

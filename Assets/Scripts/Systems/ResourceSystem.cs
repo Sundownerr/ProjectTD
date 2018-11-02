@@ -3,10 +3,7 @@ namespace Game.System
 {
     public class ResourceSystem
     {
-        public ResourceSystem()
-        {
-            GM.Instance.ResourceSystem = this;
-        }
+        public ResourceSystem() => GM.Instance.ResourceSystem = this;      
 
         public void AddMagicCrystal(int amount)
         {

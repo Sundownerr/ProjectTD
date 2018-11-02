@@ -158,7 +158,7 @@ namespace Game.System
         {
             private readonly TowerPlaceSystem o;
 
-            public GetCellDataState(TowerPlaceSystem o) { this.o = o; }
+            public GetCellDataState(TowerPlaceSystem o) => this.o = o; 
 
             public void Enter() { }
 
@@ -175,12 +175,9 @@ namespace Game.System
         {
             private readonly TowerPlaceSystem o;
 
-            public GetInputState(TowerPlaceSystem o) { this.o = o; }
+            public GetInputState(TowerPlaceSystem o) => this.o = o; 
 
-            public void Enter()
-            {
-                GM.PLAYERSTATE = GM.IDLE;
-            }
+            public void Enter() => GM.PLAYERSTATE = GM.IDLE;
 
             public void Execute()
             {                
@@ -206,36 +203,24 @@ namespace Game.System
         {
             private readonly TowerPlaceSystem o;
 
-            public CreateTowerState(TowerPlaceSystem o) { this.o = o; }
+            public CreateTowerState(TowerPlaceSystem o) => this.o = o; 
 
-            public void Enter()
-            {
-                o.CreateTower();      
-            }
+            public void Enter() => o.CreateTower();      
+            
+            public void Execute() { }
 
-            public void Execute()
-            {
-
-            }
-
-            public void Exit()
-            {
-
-            }
+            public void Exit() { }
         }
 
         protected class MoveTowerState : IState
         {
             private readonly TowerPlaceSystem o;
 
-            public MoveTowerState(TowerPlaceSystem o) { this.o = o; }
+            public MoveTowerState(TowerPlaceSystem o) => this.o = o; 
 
             public void Enter() { }
 
-            public void Execute()
-            {
-                o.MoveTower();
-            }
+            public void Execute() => o.MoveTower();
 
             public void Exit() { }
         }
@@ -244,7 +229,7 @@ namespace Game.System
         {
             private readonly TowerPlaceSystem o;
 
-            public PlaceTowerState(TowerPlaceSystem o) { this.o = o; }
+            public PlaceTowerState(TowerPlaceSystem o) => this.o = o; 
 
             public void Enter()
             {
@@ -262,12 +247,9 @@ namespace Game.System
         {
             private readonly TowerPlaceSystem o;
 
-            public DeleteTowerState(TowerPlaceSystem o) { this.o = o; }
+            public DeleteTowerState(TowerPlaceSystem o) => this.o = o; 
 
-            public void Enter()
-            {
-                o.DeleteTower();
-            }
+            public void Enter() => o.DeleteTower();
 
             public void Execute() { }
 
