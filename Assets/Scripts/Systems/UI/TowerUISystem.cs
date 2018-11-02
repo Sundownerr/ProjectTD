@@ -8,14 +8,15 @@ namespace Game.System
 {
     public class TowerUISystem : ExtendedMonoBehaviour
     {
-
+        public bool IsSellig { get => isSellig; set => isSellig = value; }
+        public bool IsUpgrading { get => isUpgrading; set => isUpgrading = value; }
+        
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
         public TextMeshProUGUI TowerName, CritChance, Level;
-        public bool IsSellig, IsUpgrading;
-
         public Button SellButton, UpgradeButton;
 
         private GameObject choosedTower;
+        private bool isSellig, isUpgrading;  
 
         protected override void Awake()
         {
@@ -29,7 +30,6 @@ namespace Game.System
 
         private void OnEnable() => UpdateValues();
     
-
         public IEnumerator RefreshUI()
         {
             gameObject.SetActive(false);
@@ -46,16 +46,16 @@ namespace Game.System
             choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;
             var choosedTowerStats = choosedTower.GetComponent<TowerSystem>().GetStats();
 
-            TowerName.text = choosedTowerStats.EntityName;
-            Level.text = KiloFormat(choosedTowerStats.Level);
-            Damage.text = KiloFormat(choosedTowerStats.Damage.Value);
-            Range.text = KiloFormat(choosedTowerStats.Range);
-            Mana.text = KiloFormat(choosedTowerStats.Mana);
-            AttackSpeed.text = KiloFormat(choosedTowerStats.AttackSpeed);
-            TriggerChance.text = KiloFormat(choosedTowerStats.TriggerChance) + "%";
-            SpellCritChance.text = KiloFormat(choosedTowerStats.SpellCritChance) + "%";
-            SpellDamage.text = KiloFormat(choosedTowerStats.SpellDamage) + "%";
-            CritChance.text = KiloFormat(choosedTowerStats.CritChance) + "%";
+            TowerName.text = choosedTowerStats.Name;
+            Level.text              = KiloFormat(choosedTowerStats.Level);
+            Damage.text             = KiloFormat(choosedTowerStats.Damage.Value);
+            Range.text              = KiloFormat(choosedTowerStats.Range);
+            Mana.text               = KiloFormat(choosedTowerStats.Mana);
+            AttackSpeed.text        = KiloFormat(choosedTowerStats.AttackSpeed);
+            TriggerChance.text      = KiloFormat(choosedTowerStats.TriggerChance) + "%";
+            SpellCritChance.text    = KiloFormat(choosedTowerStats.SpellCritChance) + "%";
+            SpellDamage.text        = KiloFormat(choosedTowerStats.SpellDamage) + "%";
+            CritChance.text         = KiloFormat(choosedTowerStats.CritChance) + "%";
 
             var isHaveUpgrade =
               choosedTowerStats.GradeList.Count > 0;          

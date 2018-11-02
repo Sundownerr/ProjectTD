@@ -164,7 +164,7 @@ namespace Game.Data
 
             public SetEffectState(Ability o) => this.o = o; 
 
-            public void Enter() { Debug.Log("state"); }
+            public void Enter() { }
 
             public void Execute()
             {

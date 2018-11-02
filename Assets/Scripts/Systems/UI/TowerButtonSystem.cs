@@ -5,8 +5,11 @@ namespace Game.System
 {
     public class TowerButtonSystem : ExtendedMonoBehaviour
     {
-        public TowerData TowerData;
-        public int Count;
+        public int Count { get => count; set => count = value; }
+        public TowerData TowerData { get => towerData; set => towerData = value; }
+
+        private TowerData towerData;
+        private int count;
 
         protected override void Awake()
         {

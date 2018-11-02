@@ -76,9 +76,7 @@ namespace Game.System
                 lastTower = newTowerSystem;
 
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
-                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
-
-                
+                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);      
             }        
         }
 

@@ -57,9 +57,7 @@ namespace Game.Tower.Data
 
         [SerializeField]
         private int level, exp, gradeCount;
-
        
-
         protected override void Awake()
         {                  
            base.Awake();

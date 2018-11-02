@@ -13,8 +13,8 @@ namespace Game.Tower.Data.Stats.Specials
 
         private void Awake()
         {
-            SpecialName = "Chainshot";
-            SpecialDescription = $"Bounce between {BounceCount} targets";
+            Name = "Chainshot";
+            Description = $"Bounce between {BounceCount} targets";
         }
 
         public override void InitSpecial(TowerSystem ownerTower)

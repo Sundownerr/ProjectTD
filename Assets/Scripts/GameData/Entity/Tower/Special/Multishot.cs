@@ -14,8 +14,8 @@ namespace Game.Tower.Data.Stats.Specials
 
         private void Awake()
         {
-            SpecialName = "Multishot";
-            SpecialDescription = $"Shoot {Count} additional targets";
+            Name = "Multishot";
+            Description = $"Shoot {Count} additional targets";
         }
 
         public override void InitSpecial(TowerSystem ownerTower)

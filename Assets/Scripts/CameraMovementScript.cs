@@ -11,10 +11,9 @@ public class CameraMovementScript : ExtendedMonoBehaviour
     {     
         camRigidBody = GetComponent<Rigidbody>();
 
-        speed = 2000f;
-        boundary = 10f;
-
-        rotationX = 54f;  
+        speed       = 2000f;
+        boundary    = 10f;
+        rotationX   = 54f;  
     }
 
     private void FixedUpdate()
@@ -35,24 +34,17 @@ public class CameraMovementScript : ExtendedMonoBehaviour
                 camRigidBody.AddForce(Vector3.up * 2500);
             }
 
-        var onLeftEdge = Input.mousePosition.x > Screen.width - boundary;
-        var onRightEdge = Input.mousePosition.x < 0 + boundary;
-        var onTopEdge = Input.mousePosition.y > Screen.height - boundary;
-        var onBottomEdge = Input.mousePosition.y < 0 + boundary;
+        var onLeftEdge      = Input.mousePosition.x > Screen.width - boundary;
+        var onRightEdge     = Input.mousePosition.x < 0 + boundary;
+        var onTopEdge       = Input.mousePosition.y > Screen.height - boundary;
+        var onBottomEdge    = Input.mousePosition.y < 0 + boundary;
 
-        var vel = Vector3.zero;
-        
-        if (transform.position.x < 240f & onLeftEdge)
-            vel = Vector3.right * speed;
-
-        if (transform.position.x > -305f & onRightEdge)
-            vel = Vector3.left * speed;
-
-        if (transform.position.z > -700f & onBottomEdge)
-            vel = Vector3.back * speed;
-
-        if (transform.position.z < 104f & onTopEdge)
-            vel = Vector3.forward * speed;
+        var vel = 
+                transform.position.x < 240f     & onLeftEdge    ? Vector3.right * speed :
+                transform.position.x > -305f    & onRightEdge   ? Vector3.left * speed :
+                transform.position.z > -700f    & onBottomEdge  ? Vector3.back * speed :
+                transform.position.z < 104f     & onTopEdge     ? Vector3.forward * speed :
+                Vector3.zero;
 
         camRigidBody.AddForce(vel);
     }

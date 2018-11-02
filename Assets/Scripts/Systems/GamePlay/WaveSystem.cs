@@ -9,8 +9,9 @@ namespace Game.System
 {
     public class WaveSystem 
     {
-        public int WaveCount;
+        public int WaveCount { get => waveCount; set => waveCount = value; }
 
+        private int waveCount;
         private StateMachine state;
         private List<List<GameObject>> creepWaveList;
         private WaveCreatingSystem waveCreatingSystem;
@@ -20,6 +21,8 @@ namespace Game.System
         public WaveSystem()
         {
             creepWaveList = new List<List<GameObject>>();
+            currentWaveCreepList = new List<CreepData>();
+            waveList = new List<List<CreepData>>();
 
             state = new StateMachine();
             state.ChangeState(new GenerateWavesState(this, GM.Instance.WaveAmount));
@@ -36,8 +39,8 @@ namespace Game.System
 
         private List<List<CreepData>> CreateWaveList(int waveAmount)
         {
-            var raceTypeList = Enum.GetValues(typeof(RaceType)); 
-            var armorTypeList = Enum.GetValues(typeof(Armor.ArmorType));
+            var raceTypeList    = Enum.GetValues(typeof(RaceType)); 
+            var armorTypeList   = Enum.GetValues(typeof(Armor.ArmorType));
             var waveList = GM.Instance.WaveDataBase.WaveList;
             var tempWaveList = new List<List<CreepData>>();
 
@@ -124,7 +127,7 @@ namespace Game.System
             public void Enter() 
             {
                 o.waveList = o.CreateWaveList(waveAmount);
-                o.currentWaveCreepList = o.waveList[o.WaveCount];
+               // o.currentWaveCreepList = o.waveList[0];
                 o.state.ChangeState(new GetInputState(o));
             }
 
