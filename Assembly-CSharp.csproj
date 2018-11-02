@@ -204,6 +204,7 @@
      <Compile Include="Assets\Scripts\GameData\Gameplay\PlayerData.cs" />
      <Compile Include="Assets\Scripts\GameData\Gameplay\TowerDataBase.cs" />
      <Compile Include="Assets\Scripts\GameData\Gameplay\Wave.cs" />
+     <Compile Include="Assets\Scripts\GameData\Gameplay\WaveDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\ElementSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GM.cs" />
      <Compile Include="Assets\Scripts\Systems\GridSystem.cs" />

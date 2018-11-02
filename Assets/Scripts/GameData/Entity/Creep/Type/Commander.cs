@@ -12,6 +12,7 @@ namespace Game.Creep.Data
             MoveSpeed = DefaultMoveSpeed;
             Exp = 4;
             Gold = 4;
+            Type = CreepType.Commander;
         }
     }
 }

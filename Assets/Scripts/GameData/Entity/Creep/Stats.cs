@@ -39,7 +39,8 @@ namespace Game.Creep.Data
         Small = 0,
         Normal = 1,
         Commander = 2, 
-        Boss = 3
+        Flying = 3, 
+        Boss = 4
     }
 
 
