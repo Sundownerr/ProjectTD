@@ -45,17 +45,13 @@ namespace Game.Creep
         }
 
         private void Update()
-        {
- 
+        { 
             if(isOn)
                 state.Update();
         }
 
-        public EntitySystem GetDamageDealer()
-        {
-            return lastDamageDealer;
-        }
-
+        public EntitySystem GetDamageDealer() => lastDamageDealer;
+        
         private void MoveAndRotateCreep()
         {
             creepTransform.Translate(Vector3.forward * Time.deltaTime * Stats.MoveSpeed, Space.Self);
@@ -78,9 +74,13 @@ namespace Game.Creep
 
         private float CalculateDamage(float rawDamage, EntitySystem damageDealer)
         {
-            var tower = damageDealer as TowerSystem;        
-            var damage = tower == null ? 0 : GetPercentOfValue(tower.GetStats().DamageToRace[(int)Stats.Race], rawDamage);
+            var damage = 0f;
+
+            if(damageDealer is Tower.TowerSystem tower)       
+                damage = GetPercentOfValue(tower.GetStats().DamageToRace[(int)Stats.Race], rawDamage);
+
             // add armor modificator
+
             return damage;
         }
 
@@ -99,31 +99,9 @@ namespace Game.Creep
             }
         }
 
-        public void GetStunned(float duration)
-        {
-            if(duration > stunDuration)
-                stunDuration = duration;
-          
-            if (stunCoroutine != null)
-                StopCoroutine(stunCoroutine);           
-
-            state.ChangeState(new StunnedState(this));
-            stunCoroutine = StartCoroutine(RemoveStunnedState(stunDuration));
-        }
-
-        private IEnumerator RemoveStunnedState(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-
-            if(isStunned)
-                isStunned = false;
-            
-            stunCoroutine = null;
-        }
-
         protected class WalkState : IState
         {
-            private CreepSystem o;
+            private readonly CreepSystem o;
 
             public WalkState(CreepSystem o) => this.o = o;
             public void Enter() { }
@@ -146,29 +124,9 @@ namespace Game.Creep
             public void Exit() { }
         }
 
-        protected class StunnedState : IState
-        {
-            private CreepSystem o;
-
-            public StunnedState(CreepSystem o) => this.o = o;
-
-            public void Enter()
-            {
-                o.isStunned = true;               
-            }
-
-            public void Execute()
-            {                         
-                if(!o.isStunned)
-                    o.state.ChangeState(new WalkState(o));
-            }
-
-            public void Exit() { }
-        }
-
         protected class GiveRecourcesState : IState
         {
-            private CreepSystem o;
+            private readonly CreepSystem o;
 
             public GiveRecourcesState(CreepSystem o) => this.o = o;
 
@@ -192,7 +150,7 @@ namespace Game.Creep
 
         protected class DestroyState : IState
         {
-            private CreepSystem o;
+            private readonly CreepSystem o;
 
             public DestroyState(CreepSystem o) => this.o = o;
             public void Enter()

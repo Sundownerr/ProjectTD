@@ -29,8 +29,8 @@ namespace Game.Tower
 
         private void OnDisable()
         {
-            RemainingBounceCount = ChainshotCount > 0 ? ChainshotCount : 0;
-            Show(false);           
+            Show(false);  
+            RemainingBounceCount = ChainshotCount > 0 ? ChainshotCount : 0;                 
         }
 
         public void Show(bool enabled)
