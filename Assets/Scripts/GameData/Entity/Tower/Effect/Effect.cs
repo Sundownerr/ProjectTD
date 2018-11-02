@@ -40,10 +40,7 @@ namespace Game.Data.Effect
                 }
         }
 
-        public virtual void End()
-        {
-            IsEnded = true;
-        }
+        public virtual void End() => IsEnded = true;
 
         public virtual void ApplyReset()
         {
@@ -79,10 +76,7 @@ namespace Game.Data.Effect
             Continue();
         }
 
-        public virtual EntitySystem GetTarget()
-        {
-            return target;
-        }
+        public virtual EntitySystem GetTarget() => target;
 
         public virtual void SetTarget(EntitySystem target, bool isForceSet)
         {

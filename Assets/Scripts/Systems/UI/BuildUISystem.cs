@@ -20,11 +20,12 @@ namespace Game.System
         private List<GameObject> towerButtonList;
         private RectTransform rarityTransform;
 
+        private delegate void Act();
+
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
-
+            base.Awake();
+            
             towerButtonList = new List<GameObject>();
             availableTowerList = new List<TowerData>();
 
@@ -81,6 +82,7 @@ namespace Game.System
 
         public void UpdateRarity(ElementType element)
         {      
+            
             var towerCount = 0;         
 
             for (int i = 0; i < towerButtonList.Count; i++)

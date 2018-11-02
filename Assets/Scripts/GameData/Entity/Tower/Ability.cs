@@ -137,7 +137,7 @@ namespace Game.Tower
         {
             private readonly Ability o;
 
-            public SetEffectState(Ability o) { this.o = o; }
+            public SetEffectState(Ability o) => this.o = o; 
 
             public void Enter() {  }
 

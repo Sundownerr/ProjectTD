@@ -32,9 +32,6 @@ namespace Game.Data
             }                            
         }
 
-        public ElementList GetAllTowerList()
-        {
-            return AllTowerList;
-        }                  
+        public ElementList GetAllTowerList() => AllTowerList;              
     }
 }
