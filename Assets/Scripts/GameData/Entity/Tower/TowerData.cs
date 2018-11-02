@@ -60,21 +60,24 @@ namespace Game.Tower.Data
             
             if(DamageToRace == null)
                 for (int i = 0; i < 5; i++)
-                    DamageToRace.Add(100f);           
+                    DamageToRace.Add(100f);    
+
+            if(owner == null)
+                owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();       
         }
 
-        private void OnValuesChanged() => Id = SetId();
+        private void OnValuesChanged() => SetId();
 
-        protected override int[] SetId() => new int[]
-                                            {
-                                                (int)Element,
-                                                (int)Rarity,
-                                                (int)WaveLevel,
-                                                TowerLimit,
-                                                ElementLevel,
-                                                MagicCrystalReq,
-                                                GoldCost
-                                            };
-        
+        protected override void SetId() => Id = new List<int>
+                                                {
+                                                    (int)Element,
+                                                    (int)Rarity,
+                                                    (int)WaveLevel,
+                                                    TowerLimit,
+                                                    ElementLevel,
+                                                    MagicCrystalReq,
+                                                    GoldCost
+                                                };
+            
     }
 }

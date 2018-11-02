@@ -9,9 +9,9 @@ namespace Game.System
         public bool IsVulnerable;
         protected bool isOn;
 
-        public virtual void ApplyEffect(Data.Effect.Effect effect) { }
+        public virtual void ApplyEffect(Data.Effect effect) { }
 
-        public virtual void RemoveEffect(Data.Effect.Effect effect) { }
+        public virtual void RemoveEffect(Data.Effect effect) { }
 
         protected override void Awake()
         {

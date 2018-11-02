@@ -4,14 +4,14 @@ using UnityEngine;
 using Game.System;
 using System;
 using Game.Creep;
-using Game.Data.Effect;
+using Game.Tower;
 
-namespace Game.Tower
+namespace Game.Data
 {
     [CreateAssetMenu(fileName = "New Ability", menuName = "Data/Tower/Ability")]
 
     [Serializable]
-    public class Ability : ScriptableObject
+    public class Ability : Entity
     {       
         [HideInInspector]
         public bool IsNeedStack, IsOnCooldown;
@@ -24,12 +24,10 @@ namespace Game.Tower
         public List<Effect> EffectList;
 
         private bool isStackable, isStacked;
-        private CreepSystem target;
+        private EntitySystem target;
         private StateMachine state;
-        private TowerSystem tower;
         private int effectCount;
         private float timer;
-        private int id; 
 
         private void OnEnable()
         {
@@ -37,27 +35,45 @@ namespace Game.Tower
             state.ChangeState(new SetEffectState(this));
         }
 
+        protected override void SetId() 
+        {
+            var tempId = new List<int>();
+
+            if (owner is Creep.CreepSystem ownerCreep)
+            {
+                tempId.AddRange(ownerCreep.GetStats().Id);              
+            }
+            else if(owner is Tower.TowerSystem ownerTower)
+            {
+                tempId.AddRange(ownerTower.GetStats().Id);   
+                tempId.Add(ownerTower.GetStats().AbilityList.IndexOf(this));
+            }
+
+            Id = tempId;
+        }
+
         public void Init() => state.Update();
 
-        public CreepSystem GetTarget() => target;
+        public EntitySystem GetTarget() => target;
         
-        public void SetOwnerTower(TowerSystem ownerTower)
+        public override void SetOwner(EntitySystem owner)
         {
-            tower = ownerTower;
+            this.owner = owner;
+
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].owner = ownerTower;
+                EffectList[i].SetOwner(owner);
 
             EffectList[EffectList.Count - 1].NextInterval = 0.01f;
             CheckStackable();           
         }
 
-        public void SetTarget(CreepSystem target)
+        public void SetTarget(EntitySystem target)
         {
             this.target = target;
             SetEffectsTarget(target);
         }       
 
-        private void SetEffectsTarget(CreepSystem target)
+        private void SetEffectsTarget(EntitySystem target)
         {
             for (int i = 0; i < EffectList.Count; i++)
                 if(EffectList[i].IsStackable)

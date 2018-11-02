@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Game.System;
 
-namespace Game.Data.Effect
+namespace Game.Data.Effects
 {
     [CreateAssetMenu(fileName = "Stun", menuName = "Data/Tower/Effect/Stun")]
     public class Stun : Effect

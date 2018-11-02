@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Game.System;
 
-namespace Game.Data.Effect
+namespace Game.Data
 {
-    public abstract class Effect : ScriptableObject
+    public abstract class Effect : Entity
     {
         public string Name, Description;
         public float Duration, NextInterval;
@@ -13,13 +13,31 @@ namespace Game.Data.Effect
         [HideInInspector]
         public bool IsEnded;
 
-        [HideInInspector]
-        public EntitySystem owner;
-
         protected bool IsSet;
         protected EntitySystem target;
+        protected Ability ownerAbility;
         protected Coroutine EffectCoroutine;
         protected List<EntitySystem> AffectedTargetList;
+
+        protected new virtual void Awake() => base.Awake();
+
+        protected override void SetId() 
+        {
+            var tempId = new List<int>();
+
+            if (owner is Creep.CreepSystem ownerCreep)
+            {
+                tempId.AddRange(ownerCreep.GetStats().Id);              
+            }
+            else if(owner is Tower.TowerSystem ownerTower)
+            {
+                var stats = ownerTower.GetStats();
+                tempId.AddRange(stats.Id);  
+                tempId.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));
+            }
+
+            Id = tempId;
+        }
 
         public virtual void Start()
         {

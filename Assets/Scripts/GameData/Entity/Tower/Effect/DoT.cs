@@ -3,7 +3,7 @@ using UnityEngine;
 using Game.System;
 using System.Collections.Generic;
 
-namespace Game.Data.Effect
+namespace Game.Data.Effects
 {
     [CreateAssetMenu(fileName = "DoT", menuName = "Data/Tower/Effect/DoT")]
     public class DoT : Effect
@@ -17,7 +17,6 @@ namespace Game.Data.Effect
 
         public IEnumerator SetEffect(float delay)
         {
-
             while (tick < Duration)
             {
                 tick++;

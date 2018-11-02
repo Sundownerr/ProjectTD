@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using Game.System;
 
 namespace Game
 {
@@ -7,27 +9,34 @@ namespace Game
         public string EntityName;
         public string EntityDescription;
 
+        protected EntitySystem owner;
+
         [NaughtyAttributes.ReadOnly]
-        public int[] Id;
+        public List<int> Id;
 
         protected virtual void Awake() 
         {
-             if (Id == null || Id.Length == 0)           
-                Id = SetId();
+             if (Id == null || Id.Count == 0)           
+                SetId();
         }
 
-        public virtual bool CompareId(int[] otherId)
+        public virtual bool CompareId(List<int> otherId)
         {
-            if(Id.Length != otherId.Length)
+            if(Id.Count != otherId.Count)
                 return false;
             else
-                for (int i = 0; i < Id.Length; i++)
+                for (int i = 0; i < Id.Count; i++)
                     if(Id[i] != otherId[i])
                         return false;
 
             return true;
         }
 
-        protected virtual int[] SetId() => null;
+        protected virtual void SetId() {}
+
+        public virtual void SetOwner(EntitySystem owner) => this.owner = owner;
+
+        public virtual EntitySystem GetOwner() => owner;
+        
     }
 }

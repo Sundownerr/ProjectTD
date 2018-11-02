@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Data.Effect;
+using Game.Data;
+using Game.System;
 
 namespace Game.Tower.System
 {
@@ -30,7 +31,7 @@ namespace Game.Tower.System
             effectStackList = new List<Effect>();
         }
 
-        private bool CheckTargetInRange(Creep.CreepSystem target)
+        private bool CheckTargetInRange(EntitySystem target)
         {
             for (int i = 0; i < tower.GetCreepInRangeList().Count; i++)
                 if (target == tower.GetCreepInRangeList()[i])
@@ -39,7 +40,7 @@ namespace Game.Tower.System
             return false;
         }
 
-        private bool CheckEffectTarget(Creep.CreepSystem target)
+        private bool CheckEffectTarget(EntitySystem target)
         {           
             if (effectStackList.Count > 0)
                 for (int i = 0; i < effectStackList.Count; i++)

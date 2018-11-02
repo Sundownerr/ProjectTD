@@ -10,6 +10,7 @@ namespace Game.Creep.Stats
     {
         [SerializeField]
         public ArmorType Type;
+        
         [SerializeField]
         public float Value;
 
