@@ -8,20 +8,23 @@ namespace Game.Tower
 {
     public class TowerSystem : EntitySystem
     {
-        [HideInInspector]
-        public Transform RangeTransform, MovingPartTransform, StaticPartTransform, ShootPointTransform;
+        public Transform RangeTransform { get => rangeTransform; set => rangeTransform = value; }
+        public Transform MovingPartTransform { get => movingPartTransform; set => movingPartTransform = value; }
+        public Transform StaticPartTransform { get => staticPartTransform; set => staticPartTransform = value; }
+        public Transform ShootPointTransform { get => shootPointTransform; set => shootPointTransform = value; }
+        public GameObject OcuppiedCell { get => ocuppiedCell; set => ocuppiedCell = value; }
+        public GameObject Bullet { get => bullet; set => bullet = value; }
+        public GameObject Range { get => range; set => range = value; }
 
-        [HideInInspector]
-        public GameObject OcuppiedCell, Bullet, Range;        
-  
-        private System.Range rangeSystem;       
+        private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
+        private GameObject ocuppiedCell, bullet, target, range;    
         private Renderer[] rendererList;
+        private System.Range rangeSystem; 
         private System.Special specialSystem;
         private System.Combat combatSystem;
         private System.AbilitySystem abilitySystem;
         private System.Stats statsSystem;
         private StateMachine state;
-        private GameObject Target;
         private bool isTowerPlaced;
 
         protected override void Awake()
@@ -216,10 +219,10 @@ namespace Game.Tower
                 if (o.GetCreepInRangeList().Count < 1)
                     o.state.ChangeState(new MoveRemainingBulletState(o));
                 else
-                    o.Target = o.GetCreepInRangeList()[0].gameObject;         
+                    o.target = o.GetCreepInRangeList()[0].gameObject;         
                               
-                if (o.Target != null)
-                    o.RotateAtCreep(o.Target);         
+                if (o.target != null)
+                    o.RotateAtCreep(o.target);         
             }
 
             public void Exit() { }

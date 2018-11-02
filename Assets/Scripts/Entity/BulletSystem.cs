@@ -4,13 +4,21 @@ namespace Game.Tower
 {
     public class BulletSystem : ExtendedMonoBehaviour
     {
-        public ParticleSystem[] ParticleSystemList;
-        public bool IsTargetReached;
-        public float Lifetime, Speed;
-        public int RemainingBounceCount, ChainshotCount, MultishotCount, AOEShotRange;
-        public GameObject Target;
-                        
+        public GameObject Target { get => target; set => target = value; }
+        public int RemainingBounceCount { get => remainingBounceCount; set => remainingBounceCount = value >= 0 ? value : 0; }
+        public int ChainshotCount { get => chainshotCount; set => chainshotCount = value >= 0 ? value : 0; }
+        public int MultishotCount { get => multishotCount; set => multishotCount = value >= 0 ? value : 0; }
+        public int AOEShotRange { get => aOEShotRange; set => aOEShotRange = value >= 0 ? value : 0; }
+        public float Lifetime { get => lifetime; set => lifetime = value >= 0 ? value : 0; }
+        public float Speed { get => speed; set => speed = value >= 0 ? value : 0; }
+        public bool IsTargetReached { get => isTargetReached; set => isTargetReached = value; }
+
+        private bool isTargetReached;
+        private GameObject target;
         private ParticleSystem.EmissionModule emissionModule;
+        private ParticleSystem[] particleSystemList;
+        private int remainingBounceCount, chainshotCount, multishotCount, aOEShotRange;
+        private float lifetime, speed;
 
         protected override void Awake()
         {
@@ -18,7 +26,7 @@ namespace Game.Tower
 
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);
-            Lifetime = ParticleSystemList[0].main.startLifetime.constant;           
+            Lifetime = particleSystemList[0].main.startLifetime.constant;           
         }
 
         private void OnEnable()
@@ -35,15 +43,15 @@ namespace Game.Tower
 
         public void Show(bool enabled)
         {
-            for (int i = 0; i < ParticleSystemList.Length; i++)
+            for (int i = 0; i < particleSystemList.Length; i++)
             {
-                emissionModule = ParticleSystemList[i].emission;
+                emissionModule = particleSystemList[i].emission;
                 emissionModule.enabled = enabled;
                
                 if (enabled)
-                    ParticleSystemList[i].Play();
+                    particleSystemList[i].Play();
                 else
-                    ParticleSystemList[i].Stop();
+                    particleSystemList[i].Stop();
             }
         }      
     }

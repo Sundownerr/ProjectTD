@@ -9,11 +9,11 @@ namespace Game.Creep
     public class CreepData : Entity
     {
 
-        public float MoveSpeed  { get => moveSpeed; set => moveSpeed = value > 0 ? value : 0; }
+        public float MoveSpeed  { get => moveSpeed; set => moveSpeed = value >= 0 ? value : 0; }
         public int Exp          { get => exp; set => exp = value; }
-        public int Gold         { get => gold; set => gold = value> 0 ? value : 0; }
+        public int Gold         { get => gold; set => gold = value >= 0 ? value : 0; }
         public int WaveLevel    { get => waveLevel; set => waveLevel = value; }
-        public float Health     { get => health; set => health = value > 0 ? value : 0; }
+        public float Health     { get => health; set => health = value >= 0 ? value : 0; }
         public float DefaultMoveSpeed       { get => defaultMoveSpeed; set => defaultMoveSpeed = value; }
         public CreepType Type   { get => type; set => type = value; }
         public List<Ability> AbilityList    { get => abilityList; set => abilityList = value; }
