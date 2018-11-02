@@ -27,20 +27,20 @@ namespace Game.Creep.Data
     [Serializable]
     public enum RaceType
     {
-        Humanoid = 0,
-        Magical = 1,
-        Undead = 2, 
-        Nature = 3
+        Humanoid    = 0,
+        Magical     = 1,
+        Undead      = 2, 
+        Nature      = 3
     }
 
     [Serializable]
     public enum CreepType
     {
-        Small = 0,
-        Normal = 1,
-        Commander = 2, 
-        Flying = 3, 
-        Boss = 4
+        Small       = 0,
+        Normal      = 1,
+        Commander   = 2, 
+        Flying      = 3, 
+        Boss        = 4
     }
 
 

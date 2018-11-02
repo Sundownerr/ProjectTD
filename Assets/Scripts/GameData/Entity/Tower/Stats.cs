@@ -74,21 +74,21 @@ namespace Game.Tower.Data.Stats
     [Serializable]
     public enum ElementType
     {
-        Astral = 0,
-        Darkness = 1,
-        Ice = 2,
-        Iron = 3,
-        Storm = 4,
-        Nature = 5,
-        Fire = 6
+        Astral      = 0,
+        Darkness    = 1,
+        Ice         = 2,
+        Iron        = 3,
+        Storm       = 4,
+        Nature      = 5,
+        Fire        = 6
     }
 
     [Serializable]
     public enum RarityType
     {
-        Common = 0,
-        Uncommon = 1,
-        Rare = 2,
-        Unique = 3,
+        Common      = 0,
+        Uncommon    = 1,
+        Rare        = 2,
+        Unique      = 3,
     }
 }
