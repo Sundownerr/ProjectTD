@@ -54,33 +54,27 @@ namespace Game.Tower.Data
         [Space, Expandable]
         public List<Ability> AbilityList;
         
-        private void Awake()
+        protected override void Awake()
         {
-            if (Id == null || Id.Length == 0)           
-                Id = SetId();
+           base.Awake();
             
             if(DamageToRace == null)
                 for (int i = 0; i < 5; i++)
                     DamageToRace.Add(100f);           
         }
 
-        private void OnValuesChanged()
-        {
-             Id = SetId();
-        }
+        private void OnValuesChanged() => Id = SetId();
 
-        private int[] SetId()
-        {
-            return new int[]
-                {
-                    (int)Element,
-                    (int)Rarity,
-                    (int)WaveLevel,
-                    TowerLimit,
-                    ElementLevel,
-                    MagicCrystalReq,
-                    GoldCost
-                };
-        }
+        protected override int[] SetId() => new int[]
+                                            {
+                                                (int)Element,
+                                                (int)Rarity,
+                                                (int)WaveLevel,
+                                                TowerLimit,
+                                                ElementLevel,
+                                                MagicCrystalReq,
+                                                GoldCost
+                                            };
+        
     }
 }

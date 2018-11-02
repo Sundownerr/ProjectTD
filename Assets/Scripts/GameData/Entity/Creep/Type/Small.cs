@@ -5,8 +5,10 @@ namespace Game.Creep
 
     public class Small : CreepData
     {
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             MoveSpeed = DefaultMoveSpeed;
             Exp = 1;
             Gold = 1;

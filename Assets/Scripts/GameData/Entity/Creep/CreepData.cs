@@ -14,5 +14,7 @@ namespace Game.Creep
         public RaceType Race;
 
         public GameObject model;
+
+        protected new virtual void Awake() => base.Awake();
     }
 }

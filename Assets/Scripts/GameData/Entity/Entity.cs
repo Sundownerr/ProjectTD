@@ -10,6 +10,12 @@ namespace Game
         [NaughtyAttributes.ReadOnly]
         public int[] Id;
 
+        protected virtual void Awake() 
+        {
+             if (Id == null || Id.Length == 0)           
+                Id = SetId();
+        }
+
         public virtual bool CompareId(int[] otherId)
         {
             if(Id.Length != otherId.Length)
@@ -21,5 +27,7 @@ namespace Game
 
             return true;
         }
+
+        protected virtual int[] SetId() => null;
     }
 }
