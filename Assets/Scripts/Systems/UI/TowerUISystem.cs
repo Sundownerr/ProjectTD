@@ -19,8 +19,7 @@ namespace Game.System
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
+            base.Awake();
 
             GM.Instance.TowerUISystem = this;
             gameObject.SetActive(false);
@@ -28,10 +27,8 @@ namespace Game.System
             UpgradeButton.onClick.AddListener(Upgrade);
         }
 
-        private void OnEnable()
-        {
-            UpdateValues();
-        }
+        private void OnEnable() => UpdateValues();
+    
 
         public IEnumerator RefreshUI()
         {
@@ -40,15 +37,9 @@ namespace Game.System
             gameObject.SetActive(true);
         }
 
-        private void Sell()
-        {
-            IsSellig = true;
-        }
+        private void Sell() => IsSellig = true;
 
-        private void Upgrade()
-        {
-            IsUpgrading = true;
-        }
+        private void Upgrade() => IsUpgrading = true;
 
         public void UpdateValues()
         {

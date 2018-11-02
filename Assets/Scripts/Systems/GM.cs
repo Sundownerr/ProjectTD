@@ -78,8 +78,7 @@ namespace Game.System
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;
+            base.Awake();
 
             if (Instance == null)
                 Instance = this;

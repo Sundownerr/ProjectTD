@@ -36,16 +36,13 @@ namespace Game.System
             state.ChangeState(new GetInputState(this));
         }
 
-        private void Update()
-        {
-            state.Update();
-        }
+        private void Update() => state.Update();
 
         protected class GetInputState : IState
         {
             private readonly PlayerInputSystem o;
 
-            public GetInputState(PlayerInputSystem o) { this.o = o; }
+            public GetInputState(PlayerInputSystem o) => this.o = o; 
 
             public void Enter() { }
 
@@ -110,7 +107,7 @@ namespace Game.System
         {
             private readonly PlayerInputSystem o;
 
-            public MouseOnTowerState(PlayerInputSystem o) { this.o = o; }
+            public MouseOnTowerState(PlayerInputSystem o) => this.o = o; 
 
             public void Enter()
             {
@@ -138,7 +135,7 @@ namespace Game.System
         {
             private readonly PlayerInputSystem o;
 
-            public MouseNotOnUIState(PlayerInputSystem o) { this.o = o; }
+            public MouseNotOnUIState(PlayerInputSystem o) => this.o = o; 
             
             public void Enter()
             {
@@ -160,7 +157,7 @@ namespace Game.System
         {
             private readonly PlayerInputSystem o;
 
-            public SellTowerState(PlayerInputSystem o) { this.o = o; }
+            public SellTowerState(PlayerInputSystem o) => this.o = o; 
 
             public void Enter()
             {
@@ -181,7 +178,7 @@ namespace Game.System
         {
             private readonly PlayerInputSystem o;
 
-            public UpgradeTowerState(PlayerInputSystem o) { this.o = o; }
+            public UpgradeTowerState(PlayerInputSystem o) => this.o = o; 
 
             public void Enter()
             {
@@ -201,7 +198,7 @@ namespace Game.System
         {
             private readonly PlayerInputSystem o;
 
-            public CreateNewTowerState(PlayerInputSystem o) { this.o = o; }
+            public CreateNewTowerState(PlayerInputSystem o) => this.o = o; 
 
             public void Enter()
             {               
