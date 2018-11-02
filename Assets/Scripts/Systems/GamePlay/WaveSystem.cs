@@ -66,7 +66,7 @@ namespace Game.System
         {
             var tempStats = stats;
 
-            tempStats.Armor.Value       += WaveCount;
+            tempStats.ArmorValue        += WaveCount;
             tempStats.DefaultMoveSpeed  += WaveCount + 3;
             tempStats.Gold              += WaveCount / 7;
             tempStats.Health            += WaveCount * 10;

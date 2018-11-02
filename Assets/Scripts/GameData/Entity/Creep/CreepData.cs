@@ -8,29 +8,28 @@ namespace Game.Creep
 {  
     public class CreepData : Entity
     {
-        [HideInInspector]
-        public float MoveSpeed;
+
+        public float MoveSpeed  { get => moveSpeed; set => moveSpeed = value > 0 ? value : 0; }
+        public int Exp          { get => exp; set => exp = value; }
+        public int Gold         { get => gold; set => gold = value> 0 ? value : 0; }
+        public int WaveLevel    { get => waveLevel; set => waveLevel = value; }
+        public float Health     { get => health; set => health = value > 0 ? value : 0; }
+        public float DefaultMoveSpeed       { get => defaultMoveSpeed; set => defaultMoveSpeed = value; }
+        public CreepType Type   { get => type; set => type = value; }
+        public List<Ability> AbilityList    { get => abilityList; set => abilityList = value; }
+        public float ArmorValue { get => armorValue; set => armorValue = value; }
+        public Armor.ArmorType ArmorType    { get => armorType; set => armorType = value; }
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
-
-        [BoxGroup("Base Info"), OnValueChanged("OnValuesChanged")]
-        public int Exp, Gold, WaveLevel;
-
-        [BoxGroup("Base Info"), OnValueChanged("OnValuesChanged")]
         public RaceType Race;
-        
-        [BoxGroup("Base Info"), OnValueChanged("OnValuesChanged")]
-        public CreepType Type;
 
-        [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
-        public float Health, DefaultMoveSpeed;
-
-        [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
-        public Armor Armor;
-      
-        [BoxGroup("Combat Info"), Expandable]
-        public List<Ability> AbilityList;
+        private Armor.ArmorType armorType;
+        private float armorValue;
+        private int waveLevel, gold, exp;
+        private float defaultMoveSpeed, moveSpeed, health;    
+        private CreepType type;
+        private List<Ability> abilityList;
 
         protected new virtual void Awake() 
         {
@@ -45,7 +44,7 @@ namespace Game.Creep
         protected override void SetId() => Id = new List<int>
                                                 {
                                                     (int)Race,
-                                                    (int)Armor.Type,
+                                                    (int)ArmorType,
                                                     (int)Type,
                                                     WaveLevel,
                                                     Exp,
