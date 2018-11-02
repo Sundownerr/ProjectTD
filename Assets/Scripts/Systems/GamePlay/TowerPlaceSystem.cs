@@ -4,34 +4,29 @@ using UnityEngine;
 namespace Game.System
 {
     public class TowerPlaceSystem
-    { 
-        [HideInInspector]
-        public Vector3 GhostedTowerPos;
+    {
+        public GameObject NewBusyCell { get => newBusyCell; set => newBusyCell = value; }
+        public Vector3 GhostedTowerPos { get => ghostedTowerPos; set => ghostedTowerPos = value; }
+        public Color GhostedTowerColor { get => ghostedTowerColor; set => ghostedTowerColor = value; }
+        public bool IsTowerLimitOk { get => isTowerLimitOk; set => isTowerLimitOk = value; }
 
-        [HideInInspector]
-        public Color GhostedTowerColor;
-
-        [HideInInspector]
-        public GameObject NewBusyCell;
-
-        public LayerMask LayerMask;
-        public bool IsTowerLimitOk;
-      
-        private Color transparentRed, transparentGreen, towerColor;
-        private GameObject lastTower;
+        private bool isTowerLimitOk;
+        private Color transparentRed, transparentGreen, towerColor, ghostedTowerColor;
+        private GameObject newBusyCell;
+        private Tower.TowerSystem lastTower;
         private RaycastHit hit;
         private Camera mainCam;
         private StateMachine state;
-        private Vector3 towerPos;
+        private Vector3 towerPos, ghostedTowerPos;
         private Cells.Cell chosenCellState;
         private int newTowerLimit, newGoldCost, newMagicCrystalCost;
-              
+
         public TowerPlaceSystem()
         {
             mainCam = Camera.main;
 
-            transparentRed = Color.red - new Color(0, 0, 0, 0.8f);
-            transparentGreen = Color.green - new Color(0, 0, 0, 0.8f);
+            transparentRed      = Color.red - new Color(0, 0, 0, 0.8f);
+            transparentGreen    = Color.green - new Color(0, 0, 0, 0.8f);
 
             GM.Instance.TowerPlaceSystem = this;
 
@@ -63,67 +58,72 @@ namespace Game.System
             {
                 GM.PlayerState = GM.State.PlacingTower;
 
-                var newTower = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        
-                newTower.GetComponent<Tower.TowerSystem>().SetStats(Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData));
-                newTower.GetComponent<Tower.TowerSystem>().SetSystem();
+                var newTower = Object.Instantiate(
+                    GM.Instance.PlayerInputSystem.NewTowerData.Prefab, 
+                    Vector3.zero - Vector3.up * 10, Quaternion.identity, 
+                    GM.Instance.TowerParent);  
 
-                GM.Instance.PlacedTowerList.Add(newTower);
-               
+                var newTowerSystem =  newTower.GetComponent<Tower.TowerSystem>();
+
+                newTowerSystem.SetStats(Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData));
+                newTowerSystem.SetSystem();
+
+                GM.Instance.PlacedTowerList.Add(newTower);              
 
                 GM.Instance.ResourceSystem.AddTowerLimit(newTowerLimit);
                 GM.Instance.ResourceSystem.AddGold(-newGoldCost);
 
-                lastTower = GM.Instance.PlacedTowerList[GM.Instance.PlacedTowerList.Count - 1];
+                lastTower = newTowerSystem;
 
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
                 GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
 
-                state.ChangeState(new MoveTowerState(this));
+                
             }        
         }
 
         private void SetTowerColorAndPosition(Vector3 pos, Color color)
         {
-            GhostedTowerPos = pos;
-            GhostedTowerColor = color;
+            GhostedTowerPos     = pos;
+            GhostedTowerColor   = color;
         }
 
         private void MoveTower()
         {          
             var ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            var cellStateList = GM.Instance.CellStateList;
-            var cellList = GM.Instance.CellList;
-            var terrainLayer = 1 << 9;
-            var cellLayer = 1 << 15;
-            var layerMask = terrainLayer | cellLayer;
+
+            var cellStateList   = GM.Instance.CellStateList;
+            var cellList        = GM.Instance.CellList;
+
+            var terrainLayer    = 1 << 9;
+            var cellLayer       = 1 << 15;
+            var layerMask       = terrainLayer | cellLayer;
+
+            if (Input.GetMouseButtonDown(1))
+                    state.ChangeState(new DeleteTowerState(this));
 
             if (Physics.Raycast(ray, out hit, 5000, layerMask))
             {              
                 towerPos = hit.point;
-                towerColor = transparentRed;
+                towerColor = transparentRed;             
 
                 for (int i = 0; i < cellList.Count; i++)
                 {                   
-                    var isHitCell = hit.transform.gameObject == cellList[i];
+                    var isHitCell   = hit.transform.gameObject == cellList[i];
                     var isHitCellOk = isHitCell && !cellStateList[i].IsBusy;
-
-                    if (!isHitCellOk)
-                        cellStateList[i].IsChosen = false;
-                    else
+                    cellStateList[i].IsChosen = isHitCellOk ? true : false;
+                 
+                    if(isHitCellOk)
                     {
                         chosenCellState = cellStateList[i];
-                        chosenCellState.IsChosen = true;
-
+     
                         towerPos = chosenCellState.transform.position;
                         towerColor = transparentGreen;                   
 
                         if (Input.GetMouseButtonDown(0))
                             state.ChangeState(new PlaceTowerState(this));
                     } 
-                }
-
-                if (Input.GetMouseButtonDown(1))
-                    state.ChangeState(new DeleteTowerState(this));
+                }           
 
                 SetTowerColorAndPosition(towerPos, towerColor);
             }
@@ -131,10 +131,8 @@ namespace Game.System
 
         private void PlaceTower()
         {
-            lastTower.GetComponent<Tower.TowerSystem>().OcuppiedCell = chosenCellState.gameObject;
-            chosenCellState.IsBusy = true;
-        
-            state.ChangeState(new GetInputState(this));            
+            lastTower.OcuppiedCell = chosenCellState.gameObject;
+            chosenCellState.IsBusy = true;              
         }
 
         private void DeleteTower()
@@ -149,9 +147,7 @@ namespace Game.System
 
             GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);
             GM.Instance.BuildUISystem.UpdateAvailableElement();
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
-
-            state.ChangeState(new GetInputState(this));
+            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);     
         }
 
         protected class GetCellDataState : IState
@@ -183,9 +179,9 @@ namespace Game.System
             {                
                 if (GM.PlayerState == GM.State.PreparePlacingTower)
                 {
-                    o.newTowerLimit = GM.Instance.PlayerInputSystem.NewTowerData.TowerLimit;
-                    o.newGoldCost = GM.Instance.PlayerInputSystem.NewTowerData.GoldCost;
-                    o.newMagicCrystalCost = GM.Instance.PlayerInputSystem.NewTowerData.MagicCrystalReq;
+                    o.newTowerLimit         = GM.Instance.PlayerInputSystem.NewTowerData.TowerLimit;
+                    o.newGoldCost           = GM.Instance.PlayerInputSystem.NewTowerData.GoldCost;
+                    o.newMagicCrystalCost   = GM.Instance.PlayerInputSystem.NewTowerData.MagicCrystalReq;
 
                     var isHaveResources = GM.Instance.ResourceSystem.CheckHaveResources(o.newTowerLimit, o.newGoldCost, o.newMagicCrystalCost);
                    
@@ -205,7 +201,12 @@ namespace Game.System
 
             public CreateTowerState(TowerPlaceSystem o) => this.o = o; 
 
-            public void Enter() => o.CreateTower();      
+            public void Enter() 
+            {
+                o.CreateTower();     
+
+                o.state.ChangeState(new MoveTowerState(o));
+            }
             
             public void Execute() { }
 
@@ -220,7 +221,10 @@ namespace Game.System
 
             public void Enter() { }
 
-            public void Execute() => o.MoveTower();
+            public void Execute()  
+            {
+                o.MoveTower();           
+            }
 
             public void Exit() { }
         }
@@ -236,6 +240,8 @@ namespace Game.System
                 o.PlaceTower();
                 GM.Instance.BuildUISystem.UpdateAvailableElement();
                 GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
+
+                o.state.ChangeState(new GetInputState(o));      
             }
 
             public void Execute() { }
@@ -249,7 +255,11 @@ namespace Game.System
 
             public DeleteTowerState(TowerPlaceSystem o) => this.o = o; 
 
-            public void Enter() => o.DeleteTower();
+            public void Enter()
+            { 
+                o.DeleteTower();
+                o.state.ChangeState(new GetInputState(o));
+            }
 
             public void Execute() { }
 

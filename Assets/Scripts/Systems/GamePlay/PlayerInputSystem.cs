@@ -9,6 +9,9 @@ namespace Game.System
 {
     public class PlayerInputSystem : ExtendedMonoBehaviour
     {
+        public GameObject ChoosedTower { get => choosedTower; set => choosedTower = value; }
+        public TowerData NewTowerData { get => newTowerData; set => newTowerData = value; }
+
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
         
@@ -20,10 +23,7 @@ namespace Game.System
         private RaycastHit hit;
         private Ray WorldRay;
         private bool isHitUI;
-
-        public GameObject ChoosedTower { get => choosedTower; set => choosedTower = value; }
-        public TowerData NewTowerData { get => newTowerData; set => newTowerData = value; }
-
+       
         protected override void Awake()
         {
             base.Awake();

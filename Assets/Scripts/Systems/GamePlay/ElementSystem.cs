@@ -3,7 +3,6 @@ namespace Game.System
 {
     public class ElementSystem
     {
-        public bool isFirstElementLearned;
         private int baseLearnCost, levelLimit;
 
         public ElementSystem()

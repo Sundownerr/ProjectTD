@@ -6,10 +6,11 @@ namespace Game
 {
     public abstract class Entity : ScriptableObject
     {
-        public string Name;
-        public string Description;
         public List<int> Id { get => id; set => id = value; }
 
+        public string Name;
+        public string Description;
+        
         protected EntitySystem owner; 
         protected List<int> id;
 

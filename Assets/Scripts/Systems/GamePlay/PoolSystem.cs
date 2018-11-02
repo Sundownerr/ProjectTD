@@ -5,16 +5,15 @@ namespace Game.System
 {
     public class ObjectPool
     {
-        private GameObject poolObject;
-        private Transform parent;
-        private uint poolLenght = 1;
-
-        private List<GameObject> poolList = new List<GameObject>();
-
         public GameObject PoolObject { get => poolObject; set => poolObject = value; }
         public Transform Parent { get => parent; set => parent = value; }
         public uint PoolLenght { get => poolLenght; set => poolLenght = value; }
 
+        private GameObject poolObject;
+        private Transform parent;
+        private uint poolLenght = 1;
+        private List<GameObject> poolList = new List<GameObject>();
+     
         public void Initialize()
         {
             if (PoolObject == null)

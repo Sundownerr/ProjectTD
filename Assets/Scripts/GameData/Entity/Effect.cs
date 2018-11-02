@@ -6,13 +6,12 @@ namespace Game.Data
 {
     public abstract class Effect : Entity
     {
+        public bool IsEnded { get => isEnded; set => isEnded = value; }
+
         public float Duration, NextInterval;
-        public bool IsStackable;   
+        public bool IsStackable;
 
-        [HideInInspector]
-        public bool IsEnded;
-
-        protected bool IsSet;
+        protected bool isSet, isEnded;
         protected EntitySystem target;
         protected Ability ownerAbility;
         protected Coroutine EffectCoroutine;
@@ -45,7 +44,7 @@ namespace Game.Data
             if (GetTarget() == null)
                 End();
 
-            IsSet = true;
+            isSet = true;
             IsEnded = false;
         }
 
@@ -84,12 +83,12 @@ namespace Game.Data
             End();
 
             IsEnded = false;
-            IsSet = false;
+            isSet = false;
         }    
 
         public virtual void Init()
         {
-            if (!IsSet)
+            if (!isSet)
                 Start();
             
             Continue();
