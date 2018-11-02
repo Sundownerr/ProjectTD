@@ -33,10 +33,10 @@ namespace Game.Tower
             ShootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             Bullet = transform.GetChild(2).gameObject;
 
-            statsSystem = new System.Stats(this);
-            specialSystem = new System.Special(this);
-            combatSystem = new System.Combat(this);
-            abilitySystem = new System.AbilitySystem(this);
+            statsSystem     = new System.Stats(this);
+            specialSystem   = new System.Special(this);
+            combatSystem    = new System.Combat(this);
+            abilitySystem   = new System.AbilitySystem(this);
 
             IsVulnerable = false;
             state = new StateMachine();
@@ -50,9 +50,9 @@ namespace Game.Tower
             combatSystem.Set();
             abilitySystem.Set();
 
-            Range = Instantiate(GM.Instance.RangePrefab, transform);
-            rangeSystem = Range.GetComponent<System.Range>();
-            Range.transform.localScale = new Vector3(GetStats().Range, 0.001f, GetStats().Range);
+            Range                       = Instantiate(GM.Instance.RangePrefab, transform);
+            rangeSystem                 = Range.GetComponent<System.Range>();
+            Range.transform.localScale  = new Vector3(GetStats().Range, 0.001f, GetStats().Range);
             rangeSystem.SetShow();
 
             rendererList = GetComponentsInChildren<Renderer>();

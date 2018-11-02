@@ -56,10 +56,10 @@ namespace Game.Tower.System
 
         private void IncreaseStatsPerLevel()
         {
-            CurrentStats.Damage.Value += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage.Value));
-            CurrentStats.AttackSpeed -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
-            CurrentStats.CritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
-            CurrentStats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
+            CurrentStats.Damage.Value       += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage.Value));
+            CurrentStats.AttackSpeed        -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
+            CurrentStats.CritChance         += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
+            CurrentStats.SpellCritChance    += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
             
             tower.GetSpecial().IncreaseStatsPerLevel();
         }
