@@ -27,7 +27,7 @@ namespace Game.Tower.System
                 for (int j = 0; j < CurrentStats.AbilityList[i].EffectList.Count; j++)
                     CurrentStats.AbilityList[i].EffectList[j] = UnityEngine.Object.Instantiate(CurrentStats.AbilityList[i].EffectList[j]);
 
-                CurrentStats.AbilityList[i].SetOwnerTower(tower);
+                CurrentStats.AbilityList[i].SetOwner(tower);
             }
 
             BaseStats = UnityEngine.Object.Instantiate(CurrentStats);

@@ -34,7 +34,13 @@ namespace Game
 
         protected virtual void SetId() {}
 
-        public virtual void SetOwner(EntitySystem owner) => this.owner = owner;
+        public virtual void SetOwner(EntitySystem owner) 
+        {
+            if(owner == null)
+                return;
+            else
+                this.owner = owner;
+        }
 
         public virtual EntitySystem GetOwner() => owner;
         

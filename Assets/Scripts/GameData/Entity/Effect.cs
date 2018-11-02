@@ -27,7 +27,9 @@ namespace Game.Data
 
             if (owner is Creep.CreepSystem ownerCreep)
             {
-                tempId.AddRange(ownerCreep.GetStats().Id);              
+                var stats = ownerCreep.GetStats();
+                tempId.AddRange(stats.Id);  
+                tempId.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));         
             }
             else if(owner is Tower.TowerSystem ownerTower)
             {

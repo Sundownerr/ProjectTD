@@ -258,7 +258,7 @@ namespace Game.Tower.System
                             o.isAllAbilitiesEnded = false;
                         }
                         else
-                            o.abilityList[i].Reset();
+                            o.abilityList[i].CooldownReset();
 
                     if (o.abilityStackList.Count > 0)
                         for (int i = 0; i < o.abilityStackList.Count; i++)

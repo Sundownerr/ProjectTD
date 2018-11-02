@@ -8,7 +8,7 @@ using Game.Tower;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "New Ability", menuName = "Data/Tower/Ability")]
+    [CreateAssetMenu(fileName = "New Ability", menuName = "Data/Ability")]
 
     [Serializable]
     public class Ability : Entity
@@ -29,10 +29,9 @@ namespace Game.Data
         private int effectCount;
         private float timer;
 
-        private void OnEnable()
+        protected override void Awake()
         {
-            state = new StateMachine();
-            state.ChangeState(new SetEffectState(this));
+            base.Awake();   
         }
 
         protected override void SetId() 
@@ -41,7 +40,8 @@ namespace Game.Data
 
             if (owner is Creep.CreepSystem ownerCreep)
             {
-                tempId.AddRange(ownerCreep.GetStats().Id);              
+                tempId.AddRange(ownerCreep.GetStats().Id);   
+                tempId.Add(ownerCreep.GetStats().AbilityList.IndexOf(this));           
             }
             else if(owner is Tower.TowerSystem ownerTower)
             {
@@ -57,14 +57,23 @@ namespace Game.Data
         public EntitySystem GetTarget() => target;
         
         public override void SetOwner(EntitySystem owner)
-        {
-            this.owner = owner;
+        {           
+            base.SetOwner(owner);
 
-            for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].SetOwner(owner);
+            if(owner == null)
+                return;
+            else
+            {
+                for (int i = 0; i < EffectList.Count; i++)
+                    EffectList[i].SetOwner(owner);
 
-            EffectList[EffectList.Count - 1].NextInterval = 0.01f;
-            CheckStackable();           
+                EffectList[EffectList.Count - 1].NextInterval = 0.01f;
+
+                CheckStackable();           
+
+                state = new StateMachine();
+                state.ChangeState(new SetEffectState(this));
+            }
         }
 
         public void SetTarget(EntitySystem target)
@@ -91,7 +100,7 @@ namespace Game.Data
                     EffectList[i] = Instantiate(EffectList[i]);                    
         }
 
-        public void Reset()
+        public void CooldownReset()
         {
             timer = 0;
             effectCount = 0;          
@@ -145,7 +154,7 @@ namespace Game.Data
             yield return new WaitForSeconds(delay);
            
             IsNeedStack = CheckNeedStack();
-            Reset();
+            CooldownReset();
             IsOnCooldown = false;
         }
      
@@ -155,7 +164,7 @@ namespace Game.Data
 
             public SetEffectState(Ability o) => this.o = o; 
 
-            public void Enter() {  }
+            public void Enter() { Debug.Log("state"); }
 
             public void Execute()
             {

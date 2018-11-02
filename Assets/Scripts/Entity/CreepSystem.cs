@@ -10,16 +10,15 @@ namespace Game.Creep
     {
         [HideInInspector]
         public bool ReachedLastWaypoint;
-        
+
         [HideInInspector]
         public Renderer creepRenderer;
+        
         private CreepData stats;
         private Transform creepTransform;
-        private bool waypointReached, isStunned;
+        private bool waypointReached;
         private int waypointIndex;
         private StateMachine state;
-        private Coroutine stunCoroutine;
-        private float stunDuration;
         private EntitySystem lastDamageDealer;
         private bool isKilled;
 

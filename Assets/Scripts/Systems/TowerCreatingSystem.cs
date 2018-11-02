@@ -30,14 +30,14 @@ namespace Game.System
                     leveledElementList.Add(i);
 
             for (int i = 0; i < leveledElementList.Count; i++)
-                for (int j = 0; j < GM.Instance.AllTowerData.AllTowerList.ElementsList.Count; j++)
+                for (int j = 0; j < GM.Instance.TowerDataBase.AllTowerList.ElementsList.Count; j++)
                     if (j == i)
                         GetTower(leveledElementList[i]);
         }
 
         private void GetTower(int id)
         {
-            var allTowerList = GM.Instance.AllTowerData.AllTowerList;        
+            var allTowerList = GM.Instance.TowerDataBase.AllTowerList;        
 
             for (int i = 0; i < allTowerList.ElementsList[id].RarityList.Count; i++)
                 for (int j = 0; j < allTowerList.ElementsList[id].RarityList[i].TowerList.Count; j++)

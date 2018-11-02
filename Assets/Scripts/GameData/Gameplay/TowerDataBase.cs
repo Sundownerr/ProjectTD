@@ -9,19 +9,19 @@ using Game.Tower.Data.Stats;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "All Tower Data", menuName = "Data/All Tower Data")]
+    [CreateAssetMenu(fileName = "TowerDataBase", menuName = "Data/Tower Data Base")]
 
     [Serializable]
-    public class AllTowerData : ScriptableObject
+    public class TowerDataBase : ScriptableObject
     {     
         [SerializeField]
         public ElementList AllTowerList;
 
         private void Awake()
         {
-            var towerData = Resources.Load("All Tower Data");
+            var towerData = Resources.Load("TowerDataBase");
             
-            if(towerData is AllTowerData data)
+            if(towerData is TowerDataBase data)
                 AllTowerList = data.GetAllTowerList();
             else 
             {

@@ -55,7 +55,7 @@ namespace Game.Tower.Data
         public List<Ability> AbilityList;
         
         protected override void Awake()
-        {
+        {                  
            base.Awake();
             
             if(DamageToRace == null)

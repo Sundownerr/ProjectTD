@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Game.Data.Effects
 {
-    [CreateAssetMenu(fileName = "DoT", menuName = "Data/Tower/Effect/DoT")]
+    [CreateAssetMenu(fileName = "DoT", menuName = "Data/Effect/DoT")]
     public class DoT : Effect
     {
         public int DamagePerTick;

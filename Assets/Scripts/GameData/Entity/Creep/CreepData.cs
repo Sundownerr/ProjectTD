@@ -1,20 +1,51 @@
 ﻿using UnityEngine;
 using Game.Creep.Stats;
+using System.Collections.Generic;
+using Game.Data;
+using NaughtyAttributes;
 
 namespace Game.Creep
 {  
-    public abstract class CreepData : Entity
+    public class CreepData : Entity
     {
         [HideInInspector]
         public float MoveSpeed;
 
+        [ShowAssetPreview(125, 125)]
+        public GameObject Prefab;
+
+        [BoxGroup("Base Info"), OnValueChanged("OnValuesChanged")]
+        public int Exp, Gold, WaveLevel;
+
+        [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
         public float Health, DefaultMoveSpeed;
-        public int Exp, Gold;
+
+        [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
         public Armor Armor;
+
+        [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
         public RaceType Race;
+      
+        [Expandable, BoxGroup("Combat Info")]
+        public List<Ability> AbilityList;
 
-        public GameObject model;
+        protected new virtual void Awake() 
+        {
+            base.Awake();
 
-        protected new virtual void Awake() => base.Awake();
+              if(owner == null)
+                owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();      
+        }
+
+        public void OnValuesChanged() => SetId();
+
+        protected override void SetId() => Id = new List<int>
+                                                {
+                                                    (int)Race,
+                                                    (int)Armor.Type,
+                                                    WaveLevel,
+                                                    Exp,
+                                                    Gold
+                                                };
     }
 }
