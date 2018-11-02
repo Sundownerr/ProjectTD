@@ -8,6 +8,12 @@ namespace Game.Tower.Data.Stats
     [Serializable]
     public class Element
     {
+        [SerializeField]
+        public List<Rarity> RarityList;
+
+        [SerializeField]
+        public string Name;
+
         public Element(string name)
         {
             Name = name;
@@ -19,13 +25,7 @@ namespace Game.Tower.Data.Stats
                 new Rarity("Rare"),
                 new Rarity("Unique")
             };
-        }
-        
-        [SerializeField]
-        public List<Rarity> RarityList;
-
-        [SerializeField]
-        public string Name;
+        }           
     }
 
     [Serializable]

@@ -1,5 +1,5 @@
 ﻿
-namespace Game.Creep
+namespace Game.Creep.Data
 {
     [UnityEngine.CreateAssetMenu(fileName = "Commander", menuName = "Data/Creep/Commander")]
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Game.Creep.Stats
+namespace Game.Creep.Data
 {
     [Serializable]
     public struct Armor
@@ -24,6 +24,7 @@ namespace Game.Creep.Stats
         }
     }
 
+    [Serializable]
     public enum RaceType
     {
         Humanoid = 0,

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Game.Creep.Stats;
+using Game.Creep.Data;
 using System.Collections.Generic;
 using Game.Data;
 using NaughtyAttributes;
