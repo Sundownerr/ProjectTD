@@ -6,7 +6,6 @@ namespace Game.Data
 {
     public abstract class Effect : Entity
     {
-        public string Name, Description;
         public float Duration, NextInterval;
         public bool IsStackable;   
 

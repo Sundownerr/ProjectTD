@@ -4,11 +4,12 @@ namespace Game.System
     public class ElementSystem
     {
         public bool isFirstElementLearned;
-        private int baseLearnCost;
+        private int baseLearnCost, levelLimit;
 
         public ElementSystem()
         {
             baseLearnCost = 20;
+            levelLimit = 15;
 
             GM.Instance.ElementSystem = this;
         }
@@ -16,8 +17,8 @@ namespace Game.System
         private bool CheckCanLearn(int elementLevel)
         {
             var learnCost = elementLevel + baseLearnCost;
-            var isCanLearn = elementLevel < 15;
-            var isLearnCostOk = learnCost <= GM.Instance.PlayerData.MagicCrystals;
+            var isCanLearn      = elementLevel < levelLimit;
+            var isLearnCostOk   = learnCost <= GM.Instance.PlayerData.MagicCrystals;
 
             if (!(isLearnCostOk && isCanLearn))
                 return false;

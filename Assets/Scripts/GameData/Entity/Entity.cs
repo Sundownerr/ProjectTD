@@ -6,13 +6,12 @@ namespace Game
 {
     public abstract class Entity : ScriptableObject
     {
-        public string EntityName;
-        public string EntityDescription;
+        public string Name;
+        public string Description;
+        public List<int> Id { get => id; set => id = value; }
 
-        protected EntitySystem owner;
-
-        [NaughtyAttributes.ReadOnly]
-        public List<int> Id;
+        protected EntitySystem owner; 
+        protected List<int> id;
 
         protected virtual void Awake() 
         {
