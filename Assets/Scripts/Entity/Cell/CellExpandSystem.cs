@@ -13,15 +13,15 @@ namespace Game.Cells
             var spacing = cell.transform.localScale.x + 1;
             var rayDistance = cell.transform.localScale.x;
 
-            var forwardRaycastHit = new RaycastHit();
-            var backRaycastHit = new RaycastHit();
-            var rightRaycastHit = new RaycastHit();
-            var leftRaycastHit = new RaycastHit();
+            var forwardRaycastHit   = new RaycastHit();
+            var backRaycastHit      = new RaycastHit();
+            var rightRaycastHit     = new RaycastHit();
+            var leftRaycastHit      = new RaycastHit();
 
-            var buildingAreaLayer = 1 << 8;
-            var terrainLayer = 1 << 9;
-            var expandLayerMask = ~terrainLayer | buildingAreaLayer;
-            var buildLayerMask = ~terrainLayer | buildingAreaLayer;
+            var buildingAreaLayer   = 1 << 8;
+            var terrainLayer        = 1 << 9;
+            var expandLayerMask     = ~terrainLayer | buildingAreaLayer;
+            var buildLayerMask      = ~terrainLayer | buildingAreaLayer;
 
             var fRay = new Ray(cell.transform.position + Vector3.forward * 15, Vector3.down);
             var bRay = new Ray(cell.transform.position + Vector3.back * 15, Vector3.down);

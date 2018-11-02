@@ -18,10 +18,11 @@ namespace Game.Tower.System
         {
             base.Awake();     
 
-            CreepList = new List<GameObject>();
+            CreepList       = new List<GameObject>();
             CreepSystemList = new List<Creep.CreepSystem>();
-            transform.position += new Vector3(0, -5, 0);
             rend = GetComponent<Renderer>();
+
+            transform.position += new Vector3(0, -5, 0);         
 
             transparent = new Color(0f, 0f, 0f, 0f);
             notTransparent = new Color(0, 0.5f, 0, 0.2f);

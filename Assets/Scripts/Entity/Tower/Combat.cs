@@ -25,10 +25,10 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            bulletList = new List<GameObject>();
-            bulletDataList = new List<BulletSystem>();
+            bulletList      = new List<GameObject>();
+            bulletDataList  = new List<BulletSystem>();
 
-            bulletPool = new ObjectPool();
+            bulletPool  = new ObjectPool();
             bulletPool.poolObject = tower.Bullet;
             bulletPool.parent = tower.transform;
             bulletPool.Initialize();
@@ -43,7 +43,7 @@ namespace Game.Tower.System
             bulletList.Add(bulletPool.GetObject());
             bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<BulletSystem>());
 
-            bulletDataList[bulletDataList.Count - 1].Target = target.gameObject;
+            bulletDataList[bulletDataList.Count - 1].Target     = target.gameObject;
             bulletList[bulletList.Count - 1].transform.position = tower.ShootPointTransform.position;
             bulletList[bulletList.Count - 1].transform.rotation = tower.MovingPartTransform.rotation;
 

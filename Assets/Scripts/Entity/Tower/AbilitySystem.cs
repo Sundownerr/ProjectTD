@@ -27,8 +27,8 @@ namespace Game.Tower.System
         public void Set()
         {
             abilityList = tower.GetStats().AbilityList;
-            abilityStackList = new List<Ability>();
-            effectStackList = new List<Effect>();
+            abilityStackList    = new List<Ability>();
+            effectStackList     = new List<Effect>();
         }
 
         private bool CheckTargetInRange(EntitySystem target)
