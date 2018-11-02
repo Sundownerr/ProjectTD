@@ -164,7 +164,7 @@ namespace Game.Tower
 
             public void Execute()
             {
-                if (GM.PLAYERSTATE == GM.PLACING_TOWER)
+                if (GM.PlayerState == GM.State.PlacingTower)
                     o.StartPlacing();
                 else
                     o.state.ChangeState(new LookForCreepState(o));               

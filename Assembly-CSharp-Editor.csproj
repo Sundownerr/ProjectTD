@@ -141,8 +141,9 @@
      <Compile Include="Assets\ImportedAssets\PostProcessing\Editor\Utils\EditorResources.cs" />
      <Compile Include="Assets\ImportedAssets\PostProcessing\Editor\Utils\FxStyles.cs" />
      <Compile Include="Assets\ImportedAssets\PostProcessing\Editor\Utils\ReflectionUtils.cs" />
-     <Compile Include="Assets\Scripts\Editor\AllTowerEditor.cs" />
+     <Compile Include="Assets\Scripts\Editor\CreepDataBaseEditor.cs" />
      <Compile Include="Assets\Scripts\Editor\ExpandableAttributeDrawer.cs" />
+     <Compile Include="Assets\Scripts\Editor\TowerDataBaseEditor.cs" />
      <None Include="Assets\ImportedAssets\Plugins\NaughtyAttributes\Scripts\Editor\CodeGeneration\Templates\FieldDrawerDatabaseTemplate.txt" />
      <None Include="Assets\ImportedAssets\Plugins\NaughtyAttributes\Scripts\Editor\CodeGeneration\Templates\MethodDrawerDatabaseTemplate.txt" />
      <None Include="Assets\ImportedAssets\Plugins\NaughtyAttributes\Scripts\Editor\CodeGeneration\Templates\PropertyValidatorDatabaseTemplate.txt" />

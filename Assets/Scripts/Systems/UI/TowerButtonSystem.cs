@@ -17,7 +17,7 @@ namespace Game.System
 
         private void ClickTowerButton()
         {          
-            if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
+            if (GM.PlayerState != GM.State.PlacingTower && GM.PlayerState != GM.State.PreparePlacingTower)
             {
                 GM.Instance.BuildUISystem.IsChoosedNewTower = true;
                 GM.Instance.PlayerInputSystem.NewTowerData = TowerData;

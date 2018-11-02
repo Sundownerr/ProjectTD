@@ -22,9 +22,6 @@ namespace Game.System
         [NaughtyAttributes.BoxGroup("List")]
         public List<Cells.Cell> CellStateList;
 
-        [NaughtyAttributes.BoxGroup("List")]
-        public string[] ElementNameList;
-
         [NaughtyAttributes.BoxGroup("Prefab")]
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint, LevelUpEffect;
 
@@ -45,6 +42,9 @@ namespace Game.System
 
         [NaughtyAttributes.BoxGroup("Data")]
         public TowerDataBase TowerDataBase;
+
+        [NaughtyAttributes.BoxGroup("Data")]
+        public CreepDataBase CreepDataBase;
 
         [HideInInspector]
         public PlayerInputSystem PlayerInputSystem;
@@ -72,9 +72,18 @@ namespace Game.System
 
         public Canvas UICanvas;
 
-        public static GM Instance;
-        public static int PLAYERSTATE, IDLE, PLACING_TOWER, CHOOSED_CREEP, CHOOSED_TOWER, PREPARE_PLACING_TOWER;
+        public static GM Instance;       
+        public static State PlayerState;
         public static int[] ExpToLevelUp;
+
+        public enum State
+        {
+            Idle,
+            ChoosedCreep,
+            ChoosedTower,
+            PlacingTower,
+            PreparePlacingTower
+        }
 
         protected override void Awake()
         {
@@ -91,29 +100,11 @@ namespace Game.System
             WaveSystem = new WaveSystem();
             ElementSystem = new ElementSystem();
             ResourceSystem = new ResourceSystem();
-
-            IDLE = 0;
-            CHOOSED_CREEP = 1;
-            CHOOSED_TOWER = 2;
-            PLACING_TOWER = 3;
-            PREPARE_PLACING_TOWER = 4;
-
-            PLAYERSTATE = IDLE;
-
+            PlayerState = State.Idle;
+        
             Application.targetFrameRate = 70;
             QualitySettings.vSyncCount = 0;
             Cursor.lockState = CursorLockMode.Confined;
-
-            ElementNameList = new string[]
-              {
-                "Astral",
-                "Darkness",
-                "Ice",
-                "Iron",
-                "Storm",
-                "Nature",
-                "Fire"
-              };
 
             ExpToLevelUp = new int[25];
             ExpToLevelUp[0] = 12;

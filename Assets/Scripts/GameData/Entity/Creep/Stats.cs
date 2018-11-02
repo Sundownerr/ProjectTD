@@ -33,4 +33,16 @@ namespace Game.Creep.Data
         Nature = 3
     }
 
+
+    [Serializable]
+    public class Race
+    {
+        [SerializeField, Expandable]
+        public List<CreepData> CreepList;
+
+        public Race()
+        {
+            CreepList = new List<CreepData>();
+        }           
+    }
 }

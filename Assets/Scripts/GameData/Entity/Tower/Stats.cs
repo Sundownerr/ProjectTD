@@ -5,6 +5,14 @@ using System;
 
 namespace Game.Tower.Data.Stats
 {
+    
+    [Serializable]
+    public class ElementList
+    {
+        [SerializeField]
+        public List<Element> ElementsList;
+    }
+
     [Serializable]
     public class Element
     {
@@ -16,14 +24,13 @@ namespace Game.Tower.Data.Stats
 
         public Element(string name)
         {
-            Name = name;
-            
+            Name = name;        
             RarityList = new List<Rarity>
             {
-                new Rarity("Common"),
-                new Rarity("Uncommon"),
-                new Rarity("Rare"),
-                new Rarity("Unique")
+                new Rarity(RarityType.Common.ToString()),
+                new Rarity(RarityType.Uncommon.ToString()),
+                new Rarity(RarityType.Rare.ToString()),
+                new Rarity(RarityType.Unique.ToString())
             };
         }           
     }
@@ -39,16 +46,9 @@ namespace Game.Tower.Data.Stats
 
         public Rarity(string name) 
         {
-            TowerList = new List<TowerData>();
-            Name = name;
+            Name = name;          
+            TowerList = new List<TowerData>();          
         }
-    }
-
-    [Serializable]
-    public class ElementList
-    {
-        [SerializeField]
-        public List<Element> ElementsList;
     }
 
     [Serializable]

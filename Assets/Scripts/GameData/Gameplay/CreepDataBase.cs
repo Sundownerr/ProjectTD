@@ -13,32 +13,27 @@ namespace Game.Data
 	public class CreepDataBase : ScriptableObject 
 	{
         [SerializeField]
-        public List<RaceType> AllCreepList;
+        public List<Race> AllCreepList;
 
         private void Awake()
         {
-
             var creepDB = Resources.Load("CreepDataBase");
             
-            if(creepDB is CreepDataBase data)
-            {
-                AllCreepList = data.GetAllTowerList();
-            }
+            if(creepDB is CreepDataBase data)            
+                AllCreepList = data.GetAllTowerList();          
             else 
-            {
-                AllCreepList = new List<RaceType>();                
-                                    
-                   
+            {               
+                AllCreepList = new List<Race>();             
+
 				var raceList = Enum.GetValues(typeof(RaceType));  
-                         
-                foreach (RaceType race in raceList)
-				{
-					AllCreepList.Add(race);
-				}
-            }                            
+                
+                for (int i = 0; i < raceList.Length; i++)
+                    AllCreepList.Add(new Race());
+                
+            }                           
         }
 
-        public List<RaceType> GetAllTowerList() => AllCreepList;              
+        public List<Race> GetAllTowerList() => AllCreepList;              
     }
 }
 

@@ -120,8 +120,8 @@ namespace Game.System
 
                 o.StartCoroutine(towerUI.RefreshUI());
 
-                if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
-                    GM.PLAYERSTATE = GM.CHOOSED_TOWER;
+                if (GM.PlayerState != GM.State.PlacingTower && GM.PlayerState != GM.State.PreparePlacingTower)
+                    GM.PlayerState = GM.State.ChoosedTower;
 
                 o.state.ChangeState(new GetInputState(o));
             }
@@ -142,8 +142,8 @@ namespace Game.System
                 if (GM.Instance.TowerUISystem.gameObject.activeSelf)
                     GM.Instance.TowerUISystem.gameObject.SetActive(false);
                 
-                if (GM.PLAYERSTATE != GM.PLACING_TOWER && GM.PLAYERSTATE != GM.PREPARE_PLACING_TOWER)
-                    GM.PLAYERSTATE = GM.IDLE;
+                if (GM.PlayerState != GM.State.PlacingTower && GM.PlayerState != GM.State.PreparePlacingTower)
+                    GM.PlayerState = GM.State.Idle;
 
                 o.state.ChangeState(new GetInputState(o));
             }
@@ -202,7 +202,7 @@ namespace Game.System
 
             public void Enter()
             {               
-                GM.PLAYERSTATE = GM.PREPARE_PLACING_TOWER;
+                GM.PlayerState = GM.State.PreparePlacingTower;
 
                 for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
                     if (GM.Instance.AvailableTowerList[i] == o.NewTowerData)

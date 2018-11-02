@@ -46,7 +46,7 @@ namespace Game.System
 
         private IEnumerator Refresh()
         {
-            GM.PLAYERSTATE = GM.IDLE;
+            GM.PlayerState = GM.State.Idle;
 
             yield return new WaitForFixedUpdate();
 
@@ -61,7 +61,7 @@ namespace Game.System
                 state.ChangeState(new GetInputState(this));
             else
             {
-                GM.PLAYERSTATE = GM.PLACING_TOWER;
+                GM.PlayerState = GM.State.PlacingTower;
 
                 var newTower = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData.Prefab, Vector3.zero - Vector3.up * 10, Quaternion.identity, GM.Instance.TowerParent);        
                 newTower.GetComponent<Tower.TowerSystem>().SetStats(Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData));
@@ -177,11 +177,11 @@ namespace Game.System
 
             public GetInputState(TowerPlaceSystem o) => this.o = o; 
 
-            public void Enter() => GM.PLAYERSTATE = GM.IDLE;
+            public void Enter() => GM.PlayerState = GM.State.Idle;
 
             public void Execute()
             {                
-                if (GM.PLAYERSTATE == GM.PREPARE_PLACING_TOWER)
+                if (GM.PlayerState == GM.State.PreparePlacingTower)
                 {
                     o.newTowerLimit = GM.Instance.PlayerInputSystem.NewTowerData.TowerLimit;
                     o.newGoldCost = GM.Instance.PlayerInputSystem.NewTowerData.GoldCost;

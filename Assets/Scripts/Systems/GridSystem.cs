@@ -26,7 +26,7 @@ namespace Game.System
             {
                 var lastCell = GM.Instance.CellList[GM.Instance.CellList.Count - 1];
 
-                if (GM.PLAYERSTATE == GM.PLACING_TOWER)
+                if (GM.PlayerState == GM.State.PlacingTower)
                 {
                     if (!lastCell.activeSelf)
                         SetCellsActive(true);
