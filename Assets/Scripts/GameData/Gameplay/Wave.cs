@@ -11,7 +11,7 @@ namespace Game.Data
     [Serializable]
     public class Wave : ScriptableObject
     {
-         [SerializeField]
+        [SerializeField]
         public List<CreepType> CreepTypeList;       
     }
 }
