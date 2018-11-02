@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Creep;
 using UnityEngine;
+using System;
 
 namespace Game.System
 {
@@ -10,6 +12,7 @@ namespace Game.System
 
         private StateMachine state;
         private List<List<GameObject>> creepWaveList;
+        private WaveCreatingSystem waveCreatingSystem;
 
         public WaveSystem()
         {
@@ -26,6 +29,11 @@ namespace Game.System
             state.Update();
 
             AddMagicCrystalAfterWaveEnd();
+        }
+
+        private List<List<CreepData>> CreateWaveList(int waveAmount)
+        {
+           
         }
         
         private void AddMagicCrystalAfterWaveEnd()
