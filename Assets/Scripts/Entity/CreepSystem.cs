@@ -8,12 +8,11 @@ namespace Game.Creep
 {
     public class CreepSystem : EntitySystem
     {
-        [HideInInspector]
-        public bool ReachedLastWaypoint;
+        public bool ReachedLastWaypoint { get => reachedLastWaypoint; set => reachedLastWaypoint = value; }
+        public Renderer CreepRenderer { get => creepRenderer; set => creepRenderer = value; }
 
-        [HideInInspector]
-        public Renderer creepRenderer;
-        
+        private bool reachedLastWaypoint;
+        private Renderer creepRenderer;
         private CreepData stats;
         private Transform creepTransform;
         private bool waypointReached;
@@ -29,7 +28,7 @@ namespace Game.Creep
             creepTransform = transform;
             creepTransform.position = GM.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
 
-            creepRenderer = transform.GetChild(0).GetComponent<Renderer>();
+            CreepRenderer = transform.GetChild(0).GetComponent<Renderer>();
 
             stats = Instantiate(stats);           
             

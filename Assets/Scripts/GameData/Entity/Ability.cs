@@ -12,10 +12,10 @@ namespace Game.Data
 
     [Serializable]
     public class Ability : Entity
-    {       
-        [HideInInspector]
-        public bool IsNeedStack, IsOnCooldown;
-
+    {
+        public bool IsNeedStack { get => isNeedStack; set => isNeedStack = value; }
+        public bool IsOnCooldown { get => isOnCooldown; set => isOnCooldown = value; }
+        
         public string AbilityName, AbilityDescription;
         public float Cooldown, TriggerChance;
         public int ManaCost;
@@ -23,7 +23,7 @@ namespace Game.Data
         [Expandable]
         public List<Effect> EffectList;
 
-        private bool isStackable, isStacked;
+        private bool isStackable, isStacked, isNeedStack, isOnCooldown;
         private EntitySystem target;
         private StateMachine state;
         private int effectCount;

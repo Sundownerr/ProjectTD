@@ -13,8 +13,9 @@ namespace Game.Tower.Data
     [Serializable]   
     public class TowerData : Entity
     {
-        [HideInInspector]
-        public int Exp, Level, GradeCount;     
+        public int Exp { get => exp; set => exp = value; }
+        public int Level { get => level; set => level = value; }
+        public int GradeCount { get => gradeCount; set => gradeCount = value; }
 
         [HideInInspector]
         public List<float> DamageToRace;
@@ -53,7 +54,12 @@ namespace Game.Tower.Data
 
         [Space, Expandable]
         public List<Ability> AbilityList;
-        
+
+        [SerializeField]
+        private int level, exp, gradeCount;
+
+       
+
         protected override void Awake()
         {                  
            base.Awake();

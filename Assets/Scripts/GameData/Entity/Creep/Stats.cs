@@ -9,10 +9,13 @@ namespace Game.Creep.Data
     public struct Armor
     {
         [SerializeField]
-        public ArmorType Type;
-        
+        private ArmorType type;
+
         [SerializeField]
-        public float Value;
+        private float value;
+
+        public ArmorType Type { get => type; set => type = value; }
+        public float Value { get => value; set => this.value = value; }
 
         [Serializable]
         public enum ArmorType
