@@ -16,8 +16,7 @@ namespace Game.Tower.System
 
         protected override void Awake()
         {
-            if ((object)CachedTransform == null)
-                CachedTransform = transform;           
+            base.Awake();     
 
             CreepList = new List<GameObject>();
             CreepSystemList = new List<Creep.CreepSystem>();
@@ -58,6 +57,12 @@ namespace Game.Tower.System
                 }
         }
 
+        private void Show(bool show) 
+        {    
+            isRangeShowed = show ? true : false;
+            rend.material.color = show ? notTransparent : transparent;
+        }
+
         public void SetShow()
         {
             var isChoosedTower =
@@ -67,27 +72,12 @@ namespace Game.Tower.System
             if (isChoosedTower)
             {
                 if (!isRangeShowed)
-                {
-                    Show(true);
-                    isRangeShowed = true;
-                }
+                    Show(true);                                
             }
-            else
-            if (isRangeShowed)
-            {
-                Show(false);
-                isRangeShowed = false;
-            }
+            else if (isRangeShowed)            
+                Show(false);                        
         }
 
-        public void SetShow(bool show)
-        {
-            Show(show);
-        }
-
-        private void Show(bool show)
-        {
-            rend.material.color = show ? notTransparent : transparent;
-        }
+        public void SetShow(bool show) => Show(show);              
     }
 }

@@ -19,15 +19,9 @@ namespace Game.Tower.System
         private ObjectPool bulletPool;
         private float timer;
 
-        public Combat(TowerSystem ownerTower)
-        {          
-            tower = ownerTower;
-        }
+        public Combat(TowerSystem ownerTower) => tower = ownerTower;
 
-        private void OnDestroy()
-        {
-            bulletPool.DestroyPool();
-        }
+        private void OnDestroy() => bulletPool.DestroyPool();
 
         public void Set()
         {
@@ -62,7 +56,7 @@ namespace Game.Tower.System
                 bullet.StartCoroutine(RemoveBullet(bullet));
         }
 
-        public void MoveBullet()
+        public void MoveBullet() 
         {
             for (int i = 0; i < bulletList.Count; i++)
                 if (bulletList[i].activeSelf)
@@ -134,7 +128,7 @@ namespace Game.Tower.System
         {
             private readonly Combat o;
 
-            public ShootState(Combat o) { this.o = o; }
+            public ShootState(Combat o) => this.o = o;
 
             public void Enter() { }
 
