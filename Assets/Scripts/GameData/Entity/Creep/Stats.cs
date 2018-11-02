@@ -33,6 +33,15 @@ namespace Game.Creep.Data
         Nature = 3
     }
 
+    [Serializable]
+    public enum CreepType
+    {
+        Small = 0,
+        Normal = 1,
+        Commander = 2, 
+        Boss = 3
+    }
+
 
     [Serializable]
     public class Race

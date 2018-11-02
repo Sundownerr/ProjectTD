@@ -17,16 +17,19 @@ namespace Game.Creep
         [BoxGroup("Base Info"), OnValueChanged("OnValuesChanged")]
         public int Exp, Gold, WaveLevel;
 
+        [BoxGroup("Base Info"), OnValueChanged("OnValuesChanged")]
+        public RaceType Race;
+        
+        [BoxGroup("Base Info"), OnValueChanged("OnValuesChanged")]
+        public CreepType Type;
+
         [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
         public float Health, DefaultMoveSpeed;
 
         [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
         public Armor Armor;
-
-        [BoxGroup("Combat Info"), OnValueChanged("OnValuesChanged")]
-        public RaceType Race;
       
-        [Expandable, BoxGroup("Combat Info")]
+        [BoxGroup("Combat Info"), Expandable]
         public List<Ability> AbilityList;
 
         protected new virtual void Awake() 
@@ -43,6 +46,7 @@ namespace Game.Creep
                                                 {
                                                     (int)Race,
                                                     (int)Armor.Type,
+                                                    (int)Type,
                                                     WaveLevel,
                                                     Exp,
                                                     Gold

@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Creep;
+using Game.Creep.Data;
 using UnityEngine;
+using System;
 
 namespace Game.Data
 {
     [CreateAssetMenu(fileName = "Wave", menuName = "Data/Wave")]
+    [Serializable]
     public class Wave : ScriptableObject
     {
-        public List<Creep.CreepSystem> CreepList;
-        public int RaceId;
+         [SerializeField]
+        public List<CreepType> CreepTypeList;       
     }
 }
