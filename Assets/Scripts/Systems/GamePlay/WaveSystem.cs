@@ -5,36 +5,37 @@ using UnityEngine;
 using System;
 using Game.Creep.Data;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class WaveSystem 
     {
-        public int WaveCount { get => waveCount; set => waveCount = value; }
+        public int WaveNumber { get => waveNumber; set => waveNumber = value > 0 ? value : 1; }
 
-        private int waveCount;
+        private int waveNumber;
         private StateMachine state;
-        private List<List<GameObject>> creepWaveList;
         private WaveCreatingSystem waveCreatingSystem;
-        private List<CreepData> currentWaveCreepList;
+        private List<List<GameObject>> creepWaveList;
         private List<List<CreepData>> waveList;
+        private List<CreepData> currentWaveCreepList;
 
         public WaveSystem()
         {
-            creepWaveList = new List<List<GameObject>>();
-            currentWaveCreepList = new List<CreepData>();
-            waveList = new List<List<CreepData>>();
+            GM.Instance.WaveSystem = this;
+
+            currentWaveCreepList    = new List<CreepData>();
+            creepWaveList           = new List<List<GameObject>>();           
+            waveList                = new List<List<CreepData>>();
+            waveCreatingSystem      = new WaveCreatingSystem();
 
             state = new StateMachine();
-            state.ChangeState(new GenerateWavesState(this, GM.Instance.WaveAmount));
-
-            GM.Instance.WaveSystem = this;
+            state.ChangeState(new GenerateWavesState(this, GM.Instance.WaveAmount));        
         }
 
         public void Update()
         {
             state.Update();
 
-            AddMagicCrystalAfterWaveEnd();
+            AddMagicCrystalAfterWaveEnd();                      
         }
 
         private List<List<CreepData>> CreateWaveList(int waveAmount)
@@ -43,38 +44,49 @@ namespace Game.System
             var armorTypeList   = Enum.GetValues(typeof(Armor.ArmorType));
             var waveList = GM.Instance.WaveDataBase.WaveList;
             var tempWaveList = new List<List<CreepData>>();
+            var waveRandomList = new List<int>();
+            var armorRandomList = new List<int>();
 
-            for (int waveCount = 0; waveCount < waveAmount; waveCount++)
+            for (int i = 0; i < waveAmount; i++)
             {
-                var race = RaceType.Humanoid;
-                var armor = Armor.ArmorType.Plate;
-                var wave = waveList[0];
+                waveRandomList.Add(StaticRandom.Instance.Next(0, waveList.Count));
+                armorRandomList.Add(StaticRandom.Instance.Next(0, armorTypeList.Length));       
 
-                tempWaveList.Add(AdjustCreepStats(waveCreatingSystem.CreateWave(race, waveCount, wave), armor, waveCount));
+                Debug.Log(waveRandomList[i]);     
+            }
+
+            for (int waveId = 0; waveId < waveAmount; waveId++)
+            {
+                var race    = RaceType.Humanoid;
+                var armor   = (Armor.ArmorType)armorTypeList.GetValue(armorRandomList[waveId]);
+                var wave    = GM.Instance.WaveDataBase.WaveList[waveRandomList[waveId]];
+                
+                tempWaveList.Add(AdjustCreepStats(waveCreatingSystem.CreateWave(race, waveId + 1, wave), armor, waveId + 1));
             }   
             return tempWaveList;
         }
 
-        private List<CreepData> AdjustCreepStats(List<CreepData> waveCreepList, Armor.ArmorType armorType, int waveCount)
+        private List<CreepData> AdjustCreepStats(List<CreepData> waveCreepList, Armor.ArmorType armor, int waveCount)
         {
             var tempCreepList = waveCreepList;
 
             for (int i = 0; i < tempCreepList.Count; i++)
-                tempCreepList[i] = CalculateStats(tempCreepList[i], armorType, waveCount);   
-
-            return tempCreepList;                  
+                tempCreepList[i] = CalculateStats(tempCreepList[i], armor, waveCount);   
+       
+            return tempCreepList;                 
         }
 
         private CreepData CalculateStats(CreepData stats, Armor.ArmorType armor, int waveCount)
         {
-            var tempStats = stats;
-
-            tempStats.ArmorType         = Armor.ArmorType.Chainmail;
-            tempStats.ArmorValue        += waveCount;
-            tempStats.DefaultMoveSpeed  += waveCount + 3;
-            tempStats.Gold              += waveCount / 7;
-            tempStats.Health            += waveCount * 10;
-            
+            var tempStats = UnityEngine.Object.Instantiate(stats);
+           
+            tempStats.ArmorType         = armor;
+            tempStats.ArmorValue        = waveCount;
+            tempStats.DefaultMoveSpeed  = 120 + waveCount * 5;
+            tempStats.Gold              = waveCount / 7;
+            tempStats.Health            = waveCount * 10;
+            tempStats.MoveSpeed         = tempStats.DefaultMoveSpeed;
+  
             return tempStats;
         }
         
@@ -102,7 +114,8 @@ namespace Game.System
               
             while (spawnedCreepCount < needToSpawnCount)
             {
-                var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawnedCreepCount].Prefab);
+                var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawnedCreepCount].Prefab, GM.Instance.CreepParent);  
+
                 creep.GetComponent<CreepSystem>().SetStats(currentWaveCreepList[spawnedCreepCount]);
 
                 creepWaveList[creepWaveList.Count - 1].Add(creep);
@@ -114,6 +127,25 @@ namespace Game.System
             state.ChangeState(new GetInputState(this));
         }
 
+        protected class GetInputState : IState
+        {
+            private readonly WaveSystem o;
+
+            public GetInputState(WaveSystem o) => this.o = o; 
+
+            public void Enter() { }
+
+            public void Execute()
+            {
+                if (GM.Instance.BaseUISystem.IsWaveStarted)
+                {                     
+                    o.state.ChangeState(new SpawnCreepsState(o));
+                }
+            }
+
+            public void Exit() => GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(false);                   
+        }
+       
         protected class GenerateWavesState : IState
         {
             private readonly WaveSystem o;
@@ -128,7 +160,8 @@ namespace Game.System
             public void Enter() 
             {
                 o.waveList = o.CreateWaveList(waveAmount);
-               // o.currentWaveCreepList = o.waveList[0];
+                o.WaveNumber = 1;
+                o.currentWaveCreepList = o.waveList[0];
                 o.state.ChangeState(new GetInputState(o));
             }
 
@@ -143,38 +176,25 @@ namespace Game.System
 
             public SpawnCreepsState(WaveSystem o) => this.o = o; 
 
-            public void Enter() { }
+            public void Enter() 
+            {
+                o.creepWaveList.Add(new List<GameObject>());
+                GM.Instance.StartCoroutine(o.SpawnCreeps(o.currentWaveCreepList.Count, 0.2f));
+            }
 
             public void Execute() { }
 
             public void Exit()
             {
-                GM.Instance.BaseUISystem.IsWaveStarted = false;
-                GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
-                o.WaveCount++;
-            }
-        }
-
-        protected class GetInputState : IState
-        {
-            private readonly WaveSystem o;
-
-            public GetInputState(WaveSystem o) => this.o = o; 
-
-            public void Enter() { }
-
-            public void Execute()
-            {
-                if (GM.Instance.BaseUISystem.IsWaveStarted)
+                if(o.WaveNumber <= GM.Instance.WaveAmount)
                 {
-                    o.creepWaveList.Add(new List<GameObject>());
-
-                    GM.Instance.StartCoroutine(o.SpawnCreeps(o.currentWaveCreepList.Count, 0.5f));
-                    o.state.ChangeState(new SpawnCreepsState(o));
+                     o.currentWaveCreepList = o.waveList[o.WaveNumber];
+                    GM.Instance.BaseUISystem.IsWaveStarted = false;
+                    GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
+                    o.WaveNumber++;
                 }
             }
-
-            public void Exit() => GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(false);                   
         }
+      
     }
 }

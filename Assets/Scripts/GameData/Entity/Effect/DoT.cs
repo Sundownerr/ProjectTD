@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Game.System;
+using Game.Systems;
 using System.Collections.Generic;
 
 namespace Game.Data.Effects

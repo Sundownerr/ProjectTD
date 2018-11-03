@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class TowerPlaceSystem
     {
@@ -23,12 +23,11 @@ namespace Game.System
 
         public TowerPlaceSystem()
         {
+            GM.Instance.TowerPlaceSystem = this;
             mainCam = Camera.main;
 
             transparentRed      = Color.red - new Color(0, 0, 0, 0.8f);
-            transparentGreen    = Color.green - new Color(0, 0, 0, 0.8f);
-
-            GM.Instance.TowerPlaceSystem = this;
+            transparentGreen    = Color.green - new Color(0, 0, 0, 0.8f);        
 
             state = new StateMachine();
             state.ChangeState(new GetCellDataState(this));

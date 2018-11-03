@@ -1,5 +1,5 @@
 ﻿
-namespace Game.System
+namespace Game.Systems
 {
     public class ResourceSystem
     {

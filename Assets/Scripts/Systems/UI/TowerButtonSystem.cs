@@ -1,7 +1,7 @@
 ﻿using UnityEngine.UI;
 using Game.Tower.Data;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class TowerButtonSystem : ExtendedMonoBehaviour
     {

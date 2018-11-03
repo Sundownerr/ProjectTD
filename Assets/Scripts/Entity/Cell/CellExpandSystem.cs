@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Game.System;
+using Game.Systems;
 
 namespace Game.Cells
 {

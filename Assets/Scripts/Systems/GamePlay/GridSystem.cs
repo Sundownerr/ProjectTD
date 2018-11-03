@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class GridSystem 
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Game.System;
+using Game.Systems;
 
 namespace Game
 {

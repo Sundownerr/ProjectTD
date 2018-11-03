@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using Game.System;
+using Game.Systems;
 
 namespace Game.Data.Effects
 {

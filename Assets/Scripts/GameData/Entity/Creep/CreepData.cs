@@ -11,8 +11,7 @@ namespace Game.Creep
 
         public float MoveSpeed  { get => moveSpeed; set => moveSpeed = value >= 0 ? value : 0; }
         public int Exp          { get => exp; set => exp = value; }
-        public int Gold         { get => gold; set => gold = value >= 0 ? value : 0; }
-        public int WaveLevel    { get => waveLevel; set => waveLevel = value; }
+        public int Gold         { get => gold; set => gold = value >= 0 ? value : 0; }      
         public float Health     { get => health; set => health = value >= 0 ? value : 0; }
         public float DefaultMoveSpeed       { get => defaultMoveSpeed; set => defaultMoveSpeed = value; }
         public CreepType Type   { get => type; set => type = value; }
@@ -22,11 +21,12 @@ namespace Game.Creep
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
+        public int WaveLevel;
         public RaceType Race;
 
         private Armor.ArmorType armorType;
         private float armorValue;
-        private int waveLevel, gold, exp;
+        private int gold, exp;
         private float defaultMoveSpeed, moveSpeed, health;    
         private CreepType type;
         private List<Ability> abilityList;

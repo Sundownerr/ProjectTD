@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Game.System;
+using Game.Systems;
 using Game.Tower;
 using Game.Creep;
 
@@ -29,11 +29,7 @@ namespace Game.Creep
             creepTransform.position = GM.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
 
             CreepRenderer = transform.GetChild(0).GetComponent<Renderer>();
-
-            stats = Instantiate(stats);           
-            
-            transform.parent = GM.Instance.CreepParent;
-
+    
             GM.Instance.CreepList.Add(gameObject);
             IsVulnerable = true;
             state = new StateMachine();
@@ -48,13 +44,18 @@ namespace Game.Creep
 
         public CreepData GetStats() => stats;
 
-        public void SetStats(CreepData stats) => this.stats = stats;
+
+        public void SetStats(CreepData stats)
+        {
+            this.stats = Instantiate(stats);
+            this.stats = stats;
+        } 
 
         public EntitySystem GetDamageDealer() => lastDamageDealer;
         
         private void MoveAndRotateCreep()
         {
-            creepTransform.Translate(Vector3.forward * Time.deltaTime * stats.MoveSpeed, Space.Self);
+            creepTransform.Translate(Vector3.forward * Time.deltaTime * GetStats().MoveSpeed, Space.Self);
 
             var clampPos = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
             creepTransform.position = clampPos;
@@ -104,6 +105,7 @@ namespace Game.Creep
             private readonly CreepSystem o;
 
             public WalkState(CreepSystem o) => this.o = o;
+
             public void Enter() { }
 
             public void Execute()
@@ -153,9 +155,10 @@ namespace Game.Creep
             private readonly CreepSystem o;
 
             public DestroyState(CreepSystem o) => this.o = o;
+
             public void Enter()
             {             
-                Destroy(o.stats);
+//                Destroy(o.stats);
                 GM.Instance.CreepList.Remove(o.gameObject);
                 Destroy(o.gameObject);
             }

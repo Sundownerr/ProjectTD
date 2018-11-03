@@ -1,7 +1,7 @@
 ﻿using UnityEngine.UI;
 using TMPro;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class ElementUISystem : ExtendedMonoBehaviour
     {

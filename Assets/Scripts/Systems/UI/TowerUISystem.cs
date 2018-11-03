@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Game.Tower;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class TowerUISystem : ExtendedMonoBehaviour
     {

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Game.Tower.Data;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class PlayerInputSystem : ExtendedMonoBehaviour
     {

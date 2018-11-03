@@ -1,7 +1,7 @@
 ﻿using UnityEngine.UI;
 using TMPro;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class BaseUISystem : ExtendedMonoBehaviour
     {
@@ -33,7 +33,8 @@ namespace Game.System
 
         private void StartWave()
         {
-            IsWaveStarted = true;
+            if(GM.Instance.WaveSystem.WaveNumber <= GM.Instance.WaveAmount)
+                IsWaveStarted = true;
         }
 
         private void LearnForce()

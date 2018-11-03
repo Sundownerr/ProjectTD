@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Game.System
+namespace Game.Systems
 {
     public class TowerCreatingSystem 
     {
@@ -41,7 +41,7 @@ namespace Game.System
 
             for (int i = 0; i < allTowerList.ElementsList[id].RarityList.Count; i++)
                 for (int j = 0; j < allTowerList.ElementsList[id].RarityList[i].TowerList.Count; j++)
-                    if (allTowerList.ElementsList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveCount)
+                    if (allTowerList.ElementsList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
                     {
                         GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);
                         GM.Instance.BuildUISystem.UpdateAvailableElement();
