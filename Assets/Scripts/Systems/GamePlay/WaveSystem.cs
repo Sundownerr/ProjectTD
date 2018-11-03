@@ -28,7 +28,7 @@ namespace Game.Systems
             waveCreatingSystem      = new WaveCreatingSystem();
 
             state = new StateMachine();
-            state.ChangeState(new GenerateWavesState(this, GM.Instance.WaveAmount));        
+            state.ChangeState(new GenerateWavesState(this, GM.Instance.WaveAmount));    
         }
 
         public void Update()
@@ -50,9 +50,7 @@ namespace Game.Systems
             for (int i = 0; i < waveAmount; i++)
             {
                 waveRandomList.Add(StaticRandom.Instance.Next(0, waveList.Count));
-                armorRandomList.Add(StaticRandom.Instance.Next(0, armorTypeList.Length));       
-
-                Debug.Log(waveRandomList[i]);     
+                armorRandomList.Add(StaticRandom.Instance.Next(0, armorTypeList.Length));        
             }
 
             for (int waveId = 0; waveId < waveAmount; waveId++)
@@ -115,7 +113,6 @@ namespace Game.Systems
             while (spawnedCreepCount < needToSpawnCount)
             {
                 var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawnedCreepCount].Prefab, GM.Instance.CreepParent);  
-
                 creep.GetComponent<CreepSystem>().SetStats(currentWaveCreepList[spawnedCreepCount]);
 
                 creepWaveList[creepWaveList.Count - 1].Add(creep);

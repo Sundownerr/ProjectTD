@@ -61,7 +61,7 @@ namespace Game.Systems
         private CreepData GetFittingCreepOfType(CreepType type, List<CreepData> fittingCreepList)
         {
             var tempCreepOfTypeList = new List<CreepData>();           
-
+    
             for (int i = 0; i < fittingCreepList.Count; i++)
                 if(fittingCreepList[i].Type == type)
                     if(tempCreepOfTypeList.Count < 2)

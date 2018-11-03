@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Game.Systems
 {
     public class TowerCreatingSystem 
-    {
-        private List<int> leveledElementList;
-
-        public TowerCreatingSystem()
+    {      
+        public TowerCreatingSystem() 
         {           
             GM.Instance.TowerCreatingSystem = this;
-
-            leveledElementList = new List<int>();
         }
 
         public void CreateRandomTower()
@@ -21,8 +18,7 @@ namespace Game.Systems
                 GM.Instance.PlayerData.StartTowerRerollCount--;
             }
 
-            leveledElementList.Clear();
-
+            var leveledElementList = new List<int>();
             var elementLevelList = GM.Instance.PlayerData.ElementLevelList;
 
             for (int i = 0; i < elementLevelList.Count; i++)
@@ -31,8 +27,8 @@ namespace Game.Systems
 
             for (int i = 0; i < leveledElementList.Count; i++)
                 for (int j = 0; j < GM.Instance.TowerDataBase.AllTowerList.ElementsList.Count; j++)
-                    if (j == i)
-                        GetTower(leveledElementList[i]);
+                    if (j == i) 
+                        GetTower(leveledElementList[i]);                                           
         }
 
         private void GetTower(int id)

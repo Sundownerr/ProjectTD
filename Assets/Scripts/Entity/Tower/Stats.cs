@@ -71,7 +71,7 @@ namespace Game.Tower.System
             CurrentStats.Exp += amount;
 
             for (int i = CurrentStats.Level; i < 25; i++)
-                if (CurrentStats.Exp >= GM.ExpToLevelUp[CurrentStats.Level - 1] && CurrentStats.Level < 25)
+                if (CurrentStats.Exp >= GM.ExpToLevelUp[CurrentStats.Level] && CurrentStats.Level < 25)
                 {
                     IncreaseStatsPerLevel();                   
 

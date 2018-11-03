@@ -10,6 +10,8 @@ namespace Game.Systems
 
         protected override void Awake()
         {
+            GM.Instance.ElementUISystem = this;
+
             base.Awake();
 
             Astral.onClick.AddListener(LearnAstral);
@@ -18,9 +20,7 @@ namespace Game.Systems
             Iron.onClick.AddListener(LearnIron);
             Storm.onClick.AddListener(LearnStorm);
             Nature.onClick.AddListener(LearnNature);
-            Fire.onClick.AddListener(LearnFire);
-
-            GM.Instance.ElementUISystem = this;
+            Fire.onClick.AddListener(LearnFire);       
 
             gameObject.SetActive(false);
         }

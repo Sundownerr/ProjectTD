@@ -13,6 +13,8 @@ namespace Game.Data
     {
         public int MagicCrystals, Gold, CurrentTowerLimit, MaxTowerLimit;
         public int StartTowerRerollCount;
+
+        [SerializeField]
         public List<int> ElementLevelList;
 
         private void Awake()

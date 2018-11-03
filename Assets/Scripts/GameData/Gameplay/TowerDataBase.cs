@@ -19,25 +19,16 @@ namespace Game.Data
 
         private void Awake()
         {
-
-            var towerData = Resources.Load("TowerDataBase");
-            
-            if(towerData is TowerDataBase data)
-            {
-                AllTowerList = data.GetAllTowerList();
-            }
-            else 
+            if(AllTowerList == null) 
             {
                 AllTowerList = new ElementList();                
                 AllTowerList.ElementsList = new List<Element>();          
                
                 var elementNameList = Enum.GetNames(typeof(ElementType));              
                          
-                for (int i = 0; i < 7; i++)
+                for (int i = 0; i < elementNameList.Length; i++)
                     AllTowerList.ElementsList.Add(new Element(elementNameList[i]));
             }                            
-        }
-
-        public ElementList GetAllTowerList() => AllTowerList;              
+        }           
     }
 }

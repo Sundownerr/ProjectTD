@@ -24,8 +24,10 @@ namespace Game.Systems
 
         protected override void Awake()
         {
-            base.Awake();
-            
+            GM.Instance.BuildUISystem = this;  
+              
+            base.Awake();          
+
             towerButtonList = new List<GameObject>();
             availableTowerList = new List<TowerData>();
 
@@ -46,7 +48,7 @@ namespace Game.Systems
             TowerButtonPrefab.SetActive(false);
 
             availableTowerList = GM.Instance.AvailableTowerList;
-            GM.Instance.BuildUISystem = this;          
+                 
         }
 
         private List<Button> DisableButtonList(List<Button> list)

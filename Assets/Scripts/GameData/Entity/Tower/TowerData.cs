@@ -14,7 +14,7 @@ namespace Game.Tower.Data
     public class TowerData : Entity
     {
         public int Exp { get => exp; set => exp = value; }
-        public int Level { get => level; set => level = value; }
+        public int Level { get => level; set => level = value > 25 ? 25 : value < 0 ? 0 : value; }
         public int GradeCount { get => gradeCount; set => gradeCount = value; }
 
         [HideInInspector]

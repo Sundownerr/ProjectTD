@@ -17,23 +17,16 @@ namespace Game.Data
 
         private void Awake()
         {
-            var creepDB = Resources.Load("CreepDataBase");
-            
-            if(creepDB is CreepDataBase data)            
-                AllCreepList = data.GetAllTowerList();          
-            else 
-            {               
+            if(AllCreepList == null)    
+            {      
                 AllCreepList = new List<Race>();             
 
 				var raceList = Enum.GetValues(typeof(RaceType));  
                 
                 for (int i = 0; i < raceList.Length; i++)
-                    AllCreepList.Add(new Race());
-                
+                    AllCreepList.Add(new Race());               
             }                           
-        }
-
-        public List<Race> GetAllTowerList() => AllCreepList;              
+        }              
     }
 }
 

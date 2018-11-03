@@ -13,16 +13,5 @@ namespace Game.Data
 	{
 		[SerializeField]
 		public List<Wave> WaveList;
-
-		private void Awake()
-		{
-			var waveDB = Resources.Load("WaveDataBase");
-
-			if(waveDB is WaveDataBase waveDataBase)
-				WaveList = waveDataBase.WaveList;
-			else
-				WaveList = new List<Wave>();
-		}
-
 	}
 }
