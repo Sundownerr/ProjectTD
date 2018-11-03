@@ -1,14 +1,11 @@
-﻿
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Game.Systems;
 using Game.Creep.Data;
 
 namespace Game.Data
 {
-  	[CreateAssetMenu(fileName = "CreepDataBase", menuName = "Data/Creep Data Base")]
+    [CreateAssetMenu(fileName = "CreepDataBase", menuName = "Data/Creep Data Base")]
    	[Serializable]
 	public class CreepDataBase : ScriptableObject 
 	{

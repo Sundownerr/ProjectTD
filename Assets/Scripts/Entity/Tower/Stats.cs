@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Game.Systems;
 using System;
 using Game.Tower.Data;
@@ -58,6 +56,7 @@ namespace Game.Tower.System
 
         private void IncreaseStatsPerLevel()
         {
+            CurrentStats.Level++;
             CurrentStats.Damage.Value       += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage.Value));
             CurrentStats.AttackSpeed        -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
             CurrentStats.CritChance         += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
@@ -74,9 +73,7 @@ namespace Game.Tower.System
                 if (CurrentStats.Exp >= GM.ExpToLevelUp[CurrentStats.Level] && CurrentStats.Level < 25)
                 {
                     IncreaseStatsPerLevel();                   
-
-                    CurrentStats.Level++;
-
+                    
                     var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, tower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }           

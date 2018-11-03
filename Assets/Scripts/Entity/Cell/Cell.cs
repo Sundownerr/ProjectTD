@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Game.Systems;
-#pragma warning disable CS1591 
+
 namespace Game.Cells
 {
 

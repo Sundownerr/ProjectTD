@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Creep;
+﻿using System.Collections.Generic;
 using Game.Creep.Data;
 using UnityEngine;
 using System;

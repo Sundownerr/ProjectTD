@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using Game.Systems;
 using Game.Tower;
-using Game.Creep;
+
 
 namespace Game.Creep
 {
@@ -158,7 +157,6 @@ namespace Game.Creep
 
             public void Enter()
             {             
-//                Destroy(o.stats);
                 GM.Instance.CreepList.Remove(o.gameObject);
                 Destroy(o.gameObject);
             }

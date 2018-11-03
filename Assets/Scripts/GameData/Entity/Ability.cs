@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.Systems;
 using System;
-using Game.Creep;
-using Game.Tower;
 
 namespace Game.Data
 {

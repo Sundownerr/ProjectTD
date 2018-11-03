@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Data;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 namespace Game.Data
-{	
-	[CreateAssetMenu(fileName = "WaveDataBase", menuName = "Data/Wave Data Base")]
+{
+    [CreateAssetMenu(fileName = "WaveDataBase", menuName = "Data/Wave Data Base")]
 
 	[Serializable]
 	public class WaveDataBase : ScriptableObject

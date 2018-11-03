@@ -1,10 +1,6 @@
-﻿
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Game.Systems;
-using Game.Tower.Data;
 using Game.Tower.Data.Stats;
 
 namespace Game.Data
@@ -18,7 +14,7 @@ namespace Game.Data
         public ElementList AllTowerList;
 
         private void Awake()
-        {
+        {    
             if(AllTowerList == null) 
             {
                 AllTowerList = new ElementList();                
