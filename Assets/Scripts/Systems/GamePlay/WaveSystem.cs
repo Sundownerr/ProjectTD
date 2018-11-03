@@ -46,33 +46,34 @@ namespace Game.System
 
             for (int waveCount = 0; waveCount < waveAmount; waveCount++)
             {
-                var race = (RaceType)raceTypeList.GetValue(UnityEngine.Random.Range(0, raceTypeList.Length));
-                var armor = (Armor.ArmorType)armorTypeList.GetValue(UnityEngine.Random.Range(0, armorTypeList.Length));
-                var wave = waveList[UnityEngine.Random.Range(0, waveList.Count)];
+                var race = RaceType.Humanoid;
+                var armor = Armor.ArmorType.Plate;
+                var wave = waveList[0];
 
-                tempWaveList.Add(AdjustCreepStats(waveCreatingSystem.CreateWave(race, waveCount, wave), waveCount));
+                tempWaveList.Add(AdjustCreepStats(waveCreatingSystem.CreateWave(race, waveCount, wave), armor, waveCount));
             }   
             return tempWaveList;
         }
 
-        private List<CreepData> AdjustCreepStats(List<CreepData> waveCreepList, int waveCount)
+        private List<CreepData> AdjustCreepStats(List<CreepData> waveCreepList, Armor.ArmorType armorType, int waveCount)
         {
             var tempCreepList = waveCreepList;
 
             for (int i = 0; i < tempCreepList.Count; i++)
-                tempCreepList[i] = CalculateStats(tempCreepList[i]);   
+                tempCreepList[i] = CalculateStats(tempCreepList[i], armorType, waveCount);   
 
             return tempCreepList;                  
         }
 
-        private CreepData CalculateStats(CreepData stats)
+        private CreepData CalculateStats(CreepData stats, Armor.ArmorType armor, int waveCount)
         {
             var tempStats = stats;
 
-            tempStats.ArmorValue        += WaveCount;
-            tempStats.DefaultMoveSpeed  += WaveCount + 3;
-            tempStats.Gold              += WaveCount / 7;
-            tempStats.Health            += WaveCount * 10;
+            tempStats.ArmorType         = Armor.ArmorType.Chainmail;
+            tempStats.ArmorValue        += waveCount;
+            tempStats.DefaultMoveSpeed  += waveCount + 3;
+            tempStats.Gold              += waveCount / 7;
+            tempStats.Health            += waveCount * 10;
             
             return tempStats;
         }

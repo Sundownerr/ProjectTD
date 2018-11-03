@@ -10,7 +10,7 @@ namespace Game.System
 {
     public class WaveCreatingSystem
     {
-        public List<CreepData> CreateWave(RaceType race, int WaveCount, Wave wave)
+        public List<CreepData> CreateWave(RaceType race, Armor.ArmorType armor, int WaveCount, Wave wave)
         {
             var allCreepList = GM.Instance.CreepDataBase.AllCreepList;       
             var fittingCreepList = new List<CreepData>();      
@@ -23,8 +23,8 @@ namespace Game.System
                             allCreepList[raceId].CreepList[i].WaveLevel >= GM.Instance.WaveSystem.WaveCount;
 
                         if(isCreepOk)
-                            fittingCreepList.Add(allCreepList[raceId].CreepList[i]);                  
-                    }      
+                            fittingCreepList.Add(Object.Instantiate(allCreepList[raceId].CreepList[i]));                  
+                    }   
 
             return GetFittingCreepList(fittingCreepList, wave);
         }
@@ -42,12 +42,13 @@ namespace Game.System
                     if(wave.CreepTypeList[i] == fittingCreepList[j].Type)
                         fittingCreepIndexList.Add(j);       
 
-                if(fittingCreepIndexList.Count > 1)
-                    tempCreepList.Add(fittingCreepList[Random.Range(0, fittingCreepIndexList.Count)]);
-                else
-                    tempCreepList.Add(fittingCreepList[fittingCreepIndexList[0]]);
-            }
+                var fittingCreep = 
+                    fittingCreepIndexList.Count > 1 ? 
+                    fittingCreepList[Random.Range(0, fittingCreepIndexList.Count)] :
+                    fittingCreepList[fittingCreepIndexList[0]];
 
+                    tempCreepList.Add(fittingCreep);
+            }
             return tempCreepList;
         }
     }

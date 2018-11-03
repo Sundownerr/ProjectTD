@@ -16,7 +16,7 @@ namespace Game.Data
 
 		private void Awake()
 		{
-			var waveDB = Resources.Load("Wave Data Base");
+			var waveDB = Resources.Load("WaveDataBase");
 
 			if(waveDB is WaveDataBase waveDataBase)
 				WaveList = waveDataBase.WaveList;
