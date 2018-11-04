@@ -59,7 +59,7 @@ namespace Game.Systems
                 var armor   = (Armor.ArmorType)armorTypeList.GetValue(armorRandomList[waveId]);
                 var wave    = GM.Instance.WaveDataBase.WaveList[waveRandomList[waveId]];
                 
-                tempWaveList.Add(AdjustCreepStats(waveCreatingSystem.CreateWave(race, waveId + 1, wave), armor, waveId + 1));
+                tempWaveList.Add(waveCreatingSystem.CreateWave(race, waveId + 1, wave));
             }   
             return tempWaveList;
         }
@@ -84,7 +84,8 @@ namespace Game.Systems
             tempStats.Gold              = waveCount / 7;
             tempStats.Health            = waveCount * 10;
             tempStats.MoveSpeed         = tempStats.DefaultMoveSpeed;
-  
+
+            tempStats.IsInstanced = true;
             return tempStats;
         }
         
@@ -106,19 +107,19 @@ namespace Game.Systems
                     }                       
         }
 
-        private IEnumerator SpawnCreeps(int needToSpawnCount, float spawnDelay)
+        private IEnumerator SpawnCreeps(int needToSpawn, float delay)
         {
-            var spawnedCreepCount = 0;
+            var spawned = 0;
               
-            while (spawnedCreepCount < needToSpawnCount)
+            while (spawned < needToSpawn)
             {
-                var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawnedCreepCount].Prefab, GM.Instance.CreepParent);  
-                creep.GetComponent<CreepSystem>().Stats = currentWaveCreepList[spawnedCreepCount];
+                var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawned].Prefab, GM.Instance.CreepParent);  
+                creep.GetComponent<CreepSystem>().Stats = CalculateStats(currentWaveCreepList[spawned], currentWaveCreepList[spawned].ArmorType, waveNumber);
 
                 creepWaveList[creepWaveList.Count - 1].Add(creep);
 
-                spawnedCreepCount++;
-                yield return new WaitForSeconds(spawnDelay);
+                spawned++;
+                yield return new WaitForSeconds(delay);
             }
 
             state.ChangeState(new GetInputState(this));

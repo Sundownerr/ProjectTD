@@ -66,7 +66,7 @@ namespace Game.Tower
             RangeSystem.SetShow();
 
             rendererList = GetComponentsInChildren<Renderer>();
-
+        
             Bullet.SetActive(false);
             StatsSystem.UpdateUI();
         }
