@@ -13,8 +13,8 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            for (int i = 0; i < tower.GetStats().SpecialList.Length; i++)
-                tower.GetStats().SpecialList[i].InitSpecial(tower);
+            for (int i = 0; i < tower.Stats.SpecialList.Length; i++)
+                tower.Stats.SpecialList[i].InitSpecial(tower);
         }
 
         public int CalculateShotCount()
@@ -51,12 +51,12 @@ namespace Game.Tower.System
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, bullet.AOEShotRange, hitTargetList, layer);
 
             for (int i = 0; i < hitTargetCount; i++)
-                hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(tower.GetStats().Damage.Value, tower);
+                hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(tower.Stats.Damage.Value, tower);
         }
 
         public void IncreaseStatsPerLevel()
         {
-            var specialList = tower.GetStats().SpecialList;
+            var specialList = tower.Stats.SpecialList;
 
             for (int i = 0; i < specialList.Length; i++)
                 specialList[i].IncreaseStatsPerLevel();            

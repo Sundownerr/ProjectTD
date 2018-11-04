@@ -19,6 +19,7 @@ namespace Game.Tower.System
         private TowerSystem tower;
         private ObjectPool bulletPool;
         private float timer;
+        
 
         public Combat(TowerSystem ownerTower) => tower = ownerTower;
 
@@ -36,7 +37,7 @@ namespace Game.Tower.System
 
             State = new StateMachine();
             State.ChangeState(new ShootState(this));
-            timer = tower.GetStats().AttackSpeed;
+            timer = tower.Stats.AttackSpeed;
         }
 
         private void CreateBullet(Creep.CreepSystem target)
@@ -51,6 +52,7 @@ namespace Game.Tower.System
             bulletList[bulletList.Count - 1].SetActive(true);
         }
 
+  
         private void SetTargetReached(BulletSystem bullet)
         {
             if (!bullet.IsTargetReached)                  
@@ -100,26 +102,41 @@ namespace Game.Tower.System
             bulletList.Remove(bullet.gameObject);
         }
 
-        private void HitTarget(BulletSystem bullet)
+        private void ApplyDamage(BulletSystem bullet)
         {
+            bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(tower.Stats.Damage.Value, tower);
+        }
+        
+        private delegate void HitAction(BulletSystem bullet);
+        HitAction hitAction;
+        
+        private void HitTarget(BulletSystem bullet)
+        {          
             var isChainShot =
                 bullet.ChainshotCount > 0 &&
                 bullet.RemainingBounceCount > 0;
+         
+            hitAction += bullet.AOEShotRange > 0 ? tower.SpecialSystem.DamageInAOE : (HitAction)ApplyDamage;
+            hitAction += isChainShot ? tower.SpecialSystem.SetChainTarget : (HitAction)SetTargetReached;
 
-            if (bullet.AOEShotRange > 0)
-                tower.GetSpecial().DamageInAOE(bullet);
-            else
-                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(tower.GetStats().Damage.Value, tower);            
-
-            if (isChainShot)
-                tower.GetSpecial().SetChainTarget(bullet);
-            else           
-                SetTargetReached(bullet);          
+            hitAction?.Invoke(bullet);
+            hitAction = null;
         }
+
+            // if (bullet.AOEShotRange > 0)        
+            //     tower.SpecialSystem.DamageInAOE(bullet);
+            // else
+            //     bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(tower.Stats.Damage.Value, tower);            
+
+            // if (isChainShot)
+            //     tower.SpecialSystem.SetChainTarget(bullet);
+            // else           
+            //     SetTargetReached(bullet);          
+        
 
         private void ShotBullet()
         {
-            var shotCount = tower.GetSpecial().CalculateShotCount();
+            var shotCount = tower.SpecialSystem.CalculateShotCount();
 
             for (int i = 0; i < shotCount; i++)
                 CreateBullet(tower.GetCreepInRangeList()[i]);                    
@@ -138,7 +155,7 @@ namespace Game.Tower.System
                 o.timer += Time.deltaTime;
                 o.MoveBullet();
 
-                if (o.timer > o.tower.GetStats().AttackSpeed)
+                if (o.timer > o.tower.Stats.AttackSpeed)
                 {
                     o.ShotBullet();
                     o.timer = 0;

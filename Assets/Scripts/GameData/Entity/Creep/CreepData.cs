@@ -3,6 +3,7 @@ using Game.Creep.Data;
 using System.Collections.Generic;
 using Game.Data;
 using NaughtyAttributes;
+using Game.Systems;
 
 namespace Game.Creep
 {  
@@ -18,37 +19,97 @@ namespace Game.Creep
         public List<Ability> AbilityList    { get => abilityList; set => abilityList = value; }
         public float ArmorValue { get => armorValue; set => armorValue = value; }
         public Armor.ArmorType ArmorType    { get => armorType; set => armorType = value; }
+        public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
         public int WaveLevel;
+  
         public RaceType Race;
 
-        private Armor.ArmorType armorType;
-        private float armorValue;
-        private int gold, exp;
-        private float defaultMoveSpeed, moveSpeed, health;    
-        private CreepType type;
-        private List<Ability> abilityList;
+        protected Armor.ArmorType armorType;
+        protected float armorValue;
+        protected int gold, exp, numberInList;
+        protected float defaultMoveSpeed, moveSpeed, health;    
+        protected CreepType type;
+        protected bool isInstanced;
+        protected List<Ability> abilityList;
 
         protected new virtual void Awake() 
         {
             base.Awake();
 
-              if(owner == null)
+            AddToDataBase();                   
+            
+            if(owner == null)
                 owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();      
         }
 
-        public void OnValuesChanged() => SetId();
+        [Button]
+        public void AddToDataBase()
+        {
+            if(!IsInstanced)
+            {
+                var database = Resources.Load("CreepDataBase");
+                if(database is CreepDataBase dataBase)     
+                {            
+                    var raceList = dataBase.AllCreepList;
+                    for (int i = 0; i < raceList.Count; i++)
+                        if(i == (int)Race)                    
+                        {
+                            for (int j = 0; j < raceList[i].CreepList.Count; j++)                             
+                                if(CompareId(raceList[i].CreepList[j].Id) || Name == raceList[i].CreepList[j].Name)
+                                    return;
+                            
+                            raceList[i].CreepList.Add(this);
+                            numberInList = raceList[i].CreepList.Count - 1;    
+
+                            SetId();
+                            SetName();                        
+                            
+                            UnityEditor.EditorUtility.SetDirty(dataBase);
+                            return;
+                        }
+                }
+            }           
+        }
+
+        private void RemoveFromDataBase()
+        {
+            if(!IsInstanced)
+            {
+                var database = Resources.Load("CreepDataBase");
+                if(database is CreepDataBase dataBase)             
+                {               
+                   dataBase.AllCreepList[(int)Race].CreepList.RemoveAt(numberInList);       
+
+                   UnityEditor.EditorUtility.SetDirty(dataBase);       
+                }    
+            }      
+        }
+
+        protected override void SetName()
+        {
+            var tempName = new System.Text.StringBuilder();
+        
+            tempName.Append(Race.ToString());
+            tempName.Append(Type.ToString());
+            tempName.Append((int)Race);
+            tempName.Append((int)Type);
+            tempName.Append(numberInList);
+
+            Name = tempName.ToString();
+        }
+
+        private void OnDestroy() => RemoveFromDataBase();
+
+        public void OnValuesChanged() => AddToDataBase();
 
         protected override void SetId() => Id = new List<int>
                                                 {
                                                     (int)Race,
-                                                    (int)ArmorType,
                                                     (int)Type,
-                                                    WaveLevel,
-                                                    Exp,
-                                                    Gold
+                                                    numberInList
                                                 };
     }
 }

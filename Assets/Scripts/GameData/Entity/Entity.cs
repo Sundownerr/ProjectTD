@@ -16,12 +16,13 @@ namespace Game
 
         protected virtual void Awake() 
         {
-             if (Id == null || Id.Count == 0)           
-                SetId();
         }
 
         public virtual bool CompareId(List<int> otherId)
         {
+            if(otherId == null || Id == null)
+                return false;
+
             if(Id.Count != otherId.Count)
                 return false;
             else
@@ -32,6 +33,7 @@ namespace Game
             return true;
         }
 
+        protected virtual void SetName() {}
         protected virtual void SetId() {}
 
         public virtual void SetOwner(EntitySystem owner) 

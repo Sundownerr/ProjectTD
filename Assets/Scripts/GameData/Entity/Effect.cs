@@ -25,13 +25,13 @@ namespace Game.Data
 
             if (owner is Creep.CreepSystem ownerCreep)
             {
-                var stats = ownerCreep.GetStats();
+                var stats = ownerCreep.Stats;
                 tempId.AddRange(stats.Id);  
                 tempId.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));         
             }
             else if(owner is Tower.TowerSystem ownerTower)
             {
-                var stats = ownerTower.GetStats();
+                var stats = ownerTower.Stats;
                 tempId.AddRange(stats.Id);  
                 tempId.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));
             }
@@ -64,15 +64,15 @@ namespace Game.Data
         {
             if (IsStackable)
             {
-                Reset();
+                RestartState();
             }
             else if (IsEnded)
             {
-                Reset();
+                RestartState();
             }
         }
 
-        public virtual void Reset()
+        public virtual void RestartState()
         {
             if (AffectedTargetList != null)
                 AffectedTargetList.Clear();

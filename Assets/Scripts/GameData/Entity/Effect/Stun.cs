@@ -23,7 +23,7 @@ namespace Game.Data.Effects
             if (target != null)
             {
                 effectPrefab = Instantiate(EffectPrefab, target.gameObject.transform.position, Quaternion.identity, target.gameObject.transform);
-                target.SetOn(false);
+                target.IsOn = false;
             }
 
             base.Start();
@@ -33,7 +33,7 @@ namespace Game.Data.Effects
         public override void End()
         {
             if(target != null)
-                target.SetOn(true);
+                target.IsOn = true;
             
             Destroy(effectPrefab);
 

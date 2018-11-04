@@ -38,13 +38,13 @@ namespace Game.Data
 
             if (owner is Creep.CreepSystem ownerCreep)
             {
-                tempId.AddRange(ownerCreep.GetStats().Id);   
-                tempId.Add(ownerCreep.GetStats().AbilityList.IndexOf(this));           
+                tempId.AddRange(ownerCreep.Stats.Id);   
+                tempId.Add(ownerCreep.Stats.AbilityList.IndexOf(this));           
             }
             else if(owner is Tower.TowerSystem ownerTower)
             {
-                tempId.AddRange(ownerTower.GetStats().Id);   
-                tempId.Add(ownerTower.GetStats().AbilityList.IndexOf(this));
+                tempId.AddRange(ownerTower.Stats.Id);   
+                tempId.Add(ownerTower.Stats.AbilityList.IndexOf(this));
             }
 
             Id = tempId;

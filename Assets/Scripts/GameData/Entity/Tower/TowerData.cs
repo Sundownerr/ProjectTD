@@ -83,20 +83,20 @@ namespace Game.Tower.Data
                 {            
                     var elementList = dataBase.AllTowerList.ElementsList;
                     for (int i = 0; i < elementList.Count; i++)
-                        if(i == (int)Element)                    
+                        if((int)Element == i)                    
                             for (int j = 0; j < elementList[i].RarityList.Count; j++)
-                                if(j == (int)Rarity)
+                                if((int)Rarity == j)
                                 {
                                     var towerList = elementList[i].RarityList[j].TowerList;
                                     for (int k = 0; k < towerList.Count; k++)
-                                        if(CompareId(towerList[k].Id))
-                                            if(Name == towerList[k].Name)
-                                                return;
+                                        if(CompareId(towerList[k].Id) || Name == towerList[k].Name)
+                                            return;
                                     
                                     elementList[i].RarityList[j].TowerList.Add(this);
                                     numberInList = towerList.Count - 1;
                                     SetId();
                                     UnityEditor.EditorUtility.SetDirty(dataBase);
+                                    return;
                                 }     
                 }  
             }           
@@ -107,8 +107,12 @@ namespace Game.Tower.Data
             if(!IsGradeTower && !IsInstanced)
             {
                 var database = Resources.Load("TowerDataBase");
-                if(database is TowerDataBase dataBase)                            
-                   dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.Remove(this);              
+                if(database is TowerDataBase dataBase)            
+                {                
+                    dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.Remove(this);  
+
+                    UnityEditor.EditorUtility.SetDirty(dataBase);
+                }
             }          
         }
 

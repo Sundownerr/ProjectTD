@@ -7,12 +7,12 @@ namespace Game.Creep.Data
     {
         protected override void Awake()
         {
-            base.Awake();
-            
             MoveSpeed = DefaultMoveSpeed;
             Exp = 2;
             Gold = 2;
-            Type = CreepType.Normal;
+            type = CreepType.Normal;
+
+            base.Awake();                  
         }
     }
 }

@@ -64,8 +64,8 @@ namespace Game.Systems
 
                 var newTowerSystem =  newTower.GetComponent<Tower.TowerSystem>();
 
-                newTowerSystem.SetStats(Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData));
-                newTowerSystem.GetStats().IsInstanced = true;
+                newTowerSystem.Stats = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData);
+                newTowerSystem.Stats.IsInstanced = true;
                 newTowerSystem.SetSystem();
 
                 GM.Instance.PlacedTowerList.Add(newTower);              

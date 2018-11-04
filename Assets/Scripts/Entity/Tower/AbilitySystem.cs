@@ -25,7 +25,7 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            abilityList = tower.GetStats().AbilityList;
+            abilityList = tower.Stats.AbilityList;
             abilityStackList    = new List<Ability>();
             effectStackList     = new List<Effect>();
         }
@@ -81,7 +81,7 @@ namespace Game.Tower.System
                 if (!o.CheckEffectTarget(o.abilityList[o.stackAbilityId].GetTarget()))
                 {
                     o.effectStackList.Add(Object.Instantiate(o.abilityList[o.stackAbilityId].EffectList[o.stackEffectId]));
-                    o.effectStackList[o.effectStackList.Count - 1].Reset();
+                    o.effectStackList[o.effectStackList.Count - 1].RestartState();
                     o.effectStackList[o.effectStackList.Count - 1].SetTarget(o.abilityList[o.stackAbilityId].GetTarget(), true);
                 }
                 o.State.ChangeState(new CombatState(o));

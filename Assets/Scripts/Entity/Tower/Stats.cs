@@ -62,7 +62,7 @@ namespace Game.Tower.System
             CurrentStats.CritChance         += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
             CurrentStats.SpellCritChance    += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
             
-            tower.GetSpecial().IncreaseStatsPerLevel();
+            tower.SpecialSystem.IncreaseStatsPerLevel();
         }
 
         public void AddExp(int amount)

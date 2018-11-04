@@ -4,8 +4,9 @@ namespace Game.Systems
     public class EntitySystem : ExtendedMonoBehaviour
     {
         public bool IsVulnerable { get => isVulnerable; set => isVulnerable = value; }
+        public bool IsOn { get => isOn; set => isOn = value; }
 
-        protected bool isVulnerable, isOn;     
+        protected bool isVulnerable, isOn;
 
         public virtual void ApplyEffect(Data.Effect effect) { }
 
@@ -14,15 +15,7 @@ namespace Game.Systems
         protected override void Awake()
         {
             base.Awake();
-            isOn = true;
-        }
-
-        public virtual void SetOn(bool value)
-        {
-            if (value)
-                isOn = true;
-            else
-                isOn = false;
+            IsOn = true;
         }
     }
 

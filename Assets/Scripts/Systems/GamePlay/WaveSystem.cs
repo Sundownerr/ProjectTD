@@ -40,12 +40,12 @@ namespace Game.Systems
 
         private List<List<CreepData>> CreateWaveList(int waveAmount)
         {
-            var raceTypeList    = Enum.GetValues(typeof(RaceType)); 
-            var armorTypeList   = Enum.GetValues(typeof(Armor.ArmorType));
-            var waveList = GM.Instance.WaveDataBase.WaveList;
-            var tempWaveList = new List<List<CreepData>>();
-            var waveRandomList = new List<int>();
             var armorRandomList = new List<int>();
+            var waveRandomList  = new List<int>();         
+            var armorTypeList   = Enum.GetValues(typeof(Armor.ArmorType));
+            var raceTypeList    = Enum.GetValues(typeof(RaceType));     
+            var tempWaveList    = new List<List<CreepData>>();      
+            var waveList        = GM.Instance.WaveDataBase.WaveList;      
 
             for (int i = 0; i < waveAmount; i++)
             {
@@ -113,7 +113,7 @@ namespace Game.Systems
             while (spawnedCreepCount < needToSpawnCount)
             {
                 var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawnedCreepCount].Prefab, GM.Instance.CreepParent);  
-                creep.GetComponent<CreepSystem>().SetStats(currentWaveCreepList[spawnedCreepCount]);
+                creep.GetComponent<CreepSystem>().Stats = currentWaveCreepList[spawnedCreepCount];
 
                 creepWaveList[creepWaveList.Count - 1].Add(creep);
 
@@ -134,10 +134,8 @@ namespace Game.Systems
 
             public void Execute()
             {
-                if (GM.Instance.BaseUISystem.IsWaveStarted)
-                {                     
-                    o.state.ChangeState(new SpawnCreepsState(o));
-                }
+                if (GM.Instance.BaseUISystem.IsWaveStarted)                                    
+                    o.state.ChangeState(new SpawnCreepsState(o));              
             }
 
             public void Exit() => GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(false);                   
@@ -185,13 +183,12 @@ namespace Game.Systems
             {
                 if(o.WaveNumber <= GM.Instance.WaveAmount)
                 {
-                     o.currentWaveCreepList = o.waveList[o.WaveNumber];
+                    o.currentWaveCreepList = o.waveList[o.WaveNumber];
                     GM.Instance.BaseUISystem.IsWaveStarted = false;
                     GM.Instance.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
                     o.WaveNumber++;
                 }
             }
-        }
-      
+        }    
     }
 }

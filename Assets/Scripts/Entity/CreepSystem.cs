@@ -10,6 +10,8 @@ namespace Game.Creep
         public bool ReachedLastWaypoint { get => reachedLastWaypoint; set => reachedLastWaypoint = value; }
         public Renderer CreepRenderer { get => creepRenderer; set => creepRenderer = value; }
 
+        public CreepData Stats  {   get => stats; set => stats = value; }
+
         private bool reachedLastWaypoint;
         private Renderer creepRenderer;
         private CreepData stats;
@@ -37,24 +39,15 @@ namespace Game.Creep
 
         private void Update()
         { 
-            if(isOn)
+            if(IsOn)
                 state.Update();
         }
-
-        public CreepData GetStats() => stats;
-
-
-        public void SetStats(CreepData stats)
-        {
-            this.stats = Instantiate(stats);
-            this.stats = stats;
-        } 
 
         public EntitySystem GetDamageDealer() => lastDamageDealer;
         
         private void MoveAndRotateCreep()
         {
-            creepTransform.Translate(Vector3.forward * Time.deltaTime * GetStats().MoveSpeed, Space.Self);
+            creepTransform.Translate(Vector3.forward * Time.deltaTime * stats.MoveSpeed, Space.Self);
 
             var clampPos = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
             creepTransform.position = clampPos;
@@ -77,7 +70,7 @@ namespace Game.Creep
             var damage = 0f;
 
             if(damageDealer is Tower.TowerSystem tower)       
-                damage = GetPercentOfValue(tower.GetStats().DamageToRace[(int)stats.Race], rawDamage);
+                damage = GetPercentOfValue(tower.Stats.DamageToRace[(int)Stats.Race], rawDamage);
 
             // add armor modificator
 
@@ -89,9 +82,9 @@ namespace Game.Creep
             if (!isKilled)
             {
                 lastDamageDealer = damageDealer;
-                stats.Health -= CalculateDamage(damage, lastDamageDealer);
+                Stats.Health -= CalculateDamage(damage, lastDamageDealer);
 
-                if (stats.Health <= 0)
+                if (Stats.Health <= 0)
                 {
                     isKilled = true;
                     state.ChangeState(new GiveRecourcesState(this));
@@ -137,8 +130,8 @@ namespace Game.Creep
 
                 if (tower != null)
                 {
-                    tower.AddExp(o.stats.Exp);
-                    GM.Instance.ResourceSystem.AddGold(o.stats.Gold);
+                    tower.AddExp(o.Stats.Exp);
+                    GM.Instance.ResourceSystem.AddGold(o.Stats.Gold);
                 }
               
                 o.state.ChangeState(new DestroyState(o));

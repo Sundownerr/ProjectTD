@@ -23,7 +23,15 @@ namespace Game.Data
                 for (int i = 0; i < raceList.Length; i++)
                     AllCreepList.Add(new Race());               
             }                           
-        }              
+        }  
+
+        private void OnValidate()
+        {
+            for (int i = 0; i < AllCreepList.Count; i++)       
+                for (int j = 0; j < AllCreepList[i].CreepList.Count; j++)              
+                    if(AllCreepList[i].CreepList[j] == null)
+                        AllCreepList[i].CreepList.RemoveAt(j);                          
+        }                  
     }
 }
 
