@@ -33,21 +33,26 @@ namespace Game.Data.Effects
             End();
         }
 
-        public override void Start()
+        public override void Apply()
         {
             if (this.target is Creep.CreepSystem target)
             {
-                effectPrefab = Instantiate(EffectPrefab,
-                                target.gameObject.transform.position + Vector3.up * 20,
-                                Quaternion.identity,
-                                target.gameObject.transform);
+                if(target != null)
+                {
+                    effectPrefab = Instantiate(EffectPrefab,
+                                    target.gameObject.transform.position + Vector3.up * 20,
+                                    Quaternion.identity,
+                                    target.gameObject.transform);
 
-                psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
+                    psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
 
-                Show(true);
+                    Show(true);
+                }
+                else
+                    End();
             }
 
-            base.Start();
+            base.Apply();
 
             EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
         }

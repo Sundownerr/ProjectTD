@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.Systems;
+using UnityEngine;
 
 namespace Game.Tower.System
 {
@@ -27,6 +28,7 @@ namespace Game.Tower.System
 
         public void SetChainTarget(BulletSystem bullet)
         {
+       
             var hitTargetList = new Collider[20];
             var layer = 1 << 12;
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, 150, hitTargetList, layer);
@@ -36,10 +38,22 @@ namespace Game.Tower.System
             else
             {
                 IsHaveChainTargets = true;
+                var isNewTargetFound = false;
 
-                var randomCreep = hitTargetList[Random.Range(0, hitTargetCount)].gameObject;
+                for (int i = 0; i < hitTargetCount; i++)
+                {
+                    var randomCreep = hitTargetList[UnityEngine.Random.Range(0, hitTargetCount)].gameObject;
+                    if(bullet.Target != randomCreep)
+                    {
+                        isNewTargetFound = true;
+                        bullet.Target = randomCreep;
+                        break;                  
+                    }                  
+                }   
 
-                bullet.Target = randomCreep;
+                if(!isNewTargetFound)
+                    bullet.Target = null;       
+ 
                 bullet.RemainingBounceCount--;
             }       
         }

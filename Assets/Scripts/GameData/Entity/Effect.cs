@@ -39,7 +39,7 @@ namespace Game.Data
             Id = tempId;
         }
 
-        public virtual void Start()
+        public virtual void Apply()
         {
             if (GetTarget() == null)
                 End();
@@ -89,7 +89,7 @@ namespace Game.Data
         public virtual void Init()
         {
             if (!isSet)
-                Start();
+                Apply();
             
             Continue();
         }

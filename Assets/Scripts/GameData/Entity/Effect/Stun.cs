@@ -18,7 +18,7 @@ namespace Game.Data.Effects
             End();
         }
 
-        public override void Start()
+        public override void Apply()
         {
             if (target != null)
             {
@@ -26,7 +26,7 @@ namespace Game.Data.Effects
                 target.IsOn = false;
             }
 
-            base.Start();
+            base.Apply();
             EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
         }
 
