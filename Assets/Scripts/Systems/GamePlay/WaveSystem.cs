@@ -64,16 +64,6 @@ namespace Game.Systems
             return tempWaveList;
         }
 
-        private List<CreepData> AdjustCreepStats(List<CreepData> waveCreepList, Armor.ArmorType armor, int waveCount)
-        {
-            var tempCreepList = waveCreepList;
-
-            for (int i = 0; i < tempCreepList.Count; i++)
-                tempCreepList[i] = CalculateStats(tempCreepList[i], armor, waveCount);   
-       
-            return tempCreepList;                 
-        }
-
         private CreepData CalculateStats(CreepData stats, Armor.ArmorType armor, int waveCount)
         {
             var tempStats = UnityEngine.Object.Instantiate(stats);
@@ -91,33 +81,35 @@ namespace Game.Systems
         
         private void AddMagicCrystalAfterWaveEnd()
         {
-            if (creepWaveList.Count > 0)
-                for (int waveId = 0; waveId < creepWaveList.Count; waveId++)   
-                    
-                    if (creepWaveList[waveId].Count > 0)
-                    {
-                        for (int creepId = 0; creepId < creepWaveList[waveId].Count; creepId++)
-                            if (creepWaveList[waveId][creepId] == null)
-                                creepWaveList[waveId].RemoveAt(creepId);
-                    }
-                    else
-                    {
-                        GM.Instance.ResourceSystem.AddMagicCrystal(5);
-                        creepWaveList.RemoveAt(waveId);
-                    }                       
+            for (int waveId = 0; waveId < creepWaveList.Count; waveId++)                 
+                if (creepWaveList[waveId].Count > 0)
+                {
+                    for (int creepId = 0; creepId < creepWaveList[waveId].Count; creepId++)
+                        if (creepWaveList[waveId][creepId] == null)
+                            creepWaveList[waveId].RemoveAt(creepId);
+                }
+                else
+                {
+                    GM.Instance.ResourceSystem.AddMagicCrystal(5);
+                    creepWaveList.RemoveAt(waveId);
+                }                       
         }
 
-        private IEnumerator SpawnCreeps(int needToSpawn, float delay)
+        private void SpawnCreep(CreepData creepStats)
+        {
+            var creep = UnityEngine.Object.Instantiate(creepStats.Prefab, GM.Instance.CreepParent);  
+            creep.GetComponent<CreepSystem>().Stats = CalculateStats(creepStats, creepStats.ArmorType, waveNumber);
+
+            creepWaveList[creepWaveList.Count - 1].Add(creep);
+        }
+
+        private IEnumerator SpawnCreepWave(int needToSpawn, float delay)
         {
             var spawned = 0;
               
             while (spawned < needToSpawn)
             {
-                var creep = UnityEngine.Object.Instantiate(currentWaveCreepList[spawned].Prefab, GM.Instance.CreepParent);  
-                creep.GetComponent<CreepSystem>().Stats = CalculateStats(currentWaveCreepList[spawned], currentWaveCreepList[spawned].ArmorType, waveNumber);
-
-                creepWaveList[creepWaveList.Count - 1].Add(creep);
-
+                SpawnCreep(currentWaveCreepList[spawned]);
                 spawned++;
                 yield return new WaitForSeconds(delay);
             }
@@ -175,7 +167,7 @@ namespace Game.Systems
             public void Enter() 
             {
                 o.creepWaveList.Add(new List<GameObject>());
-                GM.Instance.StartCoroutine(o.SpawnCreeps(o.currentWaveCreepList.Count, 0.2f));
+                GM.Instance.StartCoroutine(o.SpawnCreepWave(o.currentWaveCreepList.Count, 0.2f));
             }
 
             public void Execute() { }
