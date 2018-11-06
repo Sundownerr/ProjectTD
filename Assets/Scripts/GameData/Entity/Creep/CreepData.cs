@@ -35,14 +35,12 @@ namespace Game.Creep
         protected bool isInstanced;
         protected List<Ability> abilityList;
 
-        protected new virtual void Awake() 
+        protected virtual void Awake() 
         {
-            base.Awake();
-
             AddToDataBase();                   
             
-            if(owner == null)
-                owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();      
+            if(Owner == null)
+                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();      
         }
 
         [Button]

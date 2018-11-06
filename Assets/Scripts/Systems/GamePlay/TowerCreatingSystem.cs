@@ -11,11 +11,11 @@ namespace Game.Systems
 
         public void CreateRandomTower()
         {
-            if (GM.Instance.PlayerData.StartTowerRerollCount > 0)
-            {
-                GM.Instance.AvailableTowerList.Clear();
-                GM.Instance.PlayerData.StartTowerRerollCount--;
-            }
+            // if (GM.Instance.PlayerData.StartTowerRerollCount > 0)
+            // {
+            //     GM.Instance.AvailableTowerList.Clear();
+            //     GM.Instance.PlayerData.StartTowerRerollCount--;
+            // }
 
             var leveledElementList = new List<int>();
             var elementLevelList = GM.Instance.PlayerData.ElementLevelList;
@@ -38,10 +38,11 @@ namespace Game.Systems
                 for (int j = 0; j < allTowerList.ElementsList[id].RarityList[i].TowerList.Count; j++)           
                     if (allTowerList.ElementsList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
                     {
-                        GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);
-                        GM.Instance.BuildUISystem.UpdateAvailableElement();
-                    }       
-                
+                        GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);    
+                        GM.Instance.BuildUISystem.AddTowerButton(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);                 
+                    }      
+
+            GM.Instance.BuildUISystem.UpdateAvailableElement();
             GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.BuildUISystem.ChoosedElement);
         }
     }

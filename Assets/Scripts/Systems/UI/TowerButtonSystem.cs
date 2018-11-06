@@ -1,6 +1,7 @@
 ﻿using UnityEngine.UI;
 using Game.Tower.Data;
-
+using UnityEngine;
+using TMPro;
 namespace Game.Systems
 {
     public class TowerButtonSystem : ExtendedMonoBehaviour
@@ -10,24 +11,30 @@ namespace Game.Systems
 
         private TowerData towerData;
         private int count;
+        private TextMeshProUGUI towerCountText;
 
         protected override void Awake()
         {
             base.Awake();
 
             transform.GetChild(0).GetComponent<Button>().onClick.AddListener(ClickTowerButton);
+            towerCountText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         }
 
         private void ClickTowerButton()
         {          
-            if (GM.PlayerState != GM.State.PlacingTower && GM.PlayerState != GM.State.PreparePlacingTower)
+            if (GM.PlayerState != State.PlacingTower && GM.PlayerState != State.PreparePlacingTower)
             {
                 GM.Instance.BuildUISystem.IsChoosedNewTower = true;
                 GM.Instance.PlayerInputSystem.NewTowerData = TowerData;
-
                 Count--;
-
-                Destroy(gameObject);
+                towerCountText.text = Count.ToString();
+                
+                if(Count <= 1)
+                {
+                    GM.Instance.BuildUISystem.RemoveTowerButton(this);
+                    Destroy(gameObject);
+                }              
             }           
         }
     }

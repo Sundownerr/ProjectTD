@@ -7,41 +7,36 @@ namespace Game.Data
     public abstract class Effect : Entity
     {
         public bool IsEnded { get => isEnded; set => isEnded = value; }
+        public EntitySystem Target { get => target; set => target = value; }
 
         public float Duration, NextInterval;
         public bool IsStackable;
 
         protected bool isSet, isEnded;
-        protected EntitySystem target;
+        private EntitySystem target;
         protected Ability ownerAbility;
         protected Coroutine EffectCoroutine;
         protected List<EntitySystem> AffectedTargetList;
 
-        protected new virtual void Awake() => base.Awake();
-
         protected override void SetId() 
         {
-            var tempId = new List<int>();
-
-            if (owner is Creep.CreepSystem ownerCreep)
+            if (Owner is Creep.CreepSystem ownerCreep)
             {
                 var stats = ownerCreep.Stats;
-                tempId.AddRange(stats.Id);  
-                tempId.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));         
+                Id.AddRange(stats.Id);  
+                Id.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));         
             }
-            else if(owner is Tower.TowerSystem ownerTower)
+            else if(Owner is Tower.TowerSystem ownerTower)
             {
                 var stats = ownerTower.Stats;
-                tempId.AddRange(stats.Id);  
-                tempId.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));
+                Id.AddRange(stats.Id);  
+                Id.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));
             }
-
-            Id = tempId;
         }
 
         public virtual void Apply()
         {
-            if (GetTarget() == null)
+            if (Target == null)
                 End();
 
             isSet = true;
@@ -51,7 +46,7 @@ namespace Game.Data
         public virtual void Continue()
         {
             if (!IsEnded)
-                if (GetTarget() == null)
+                if (Target == null)
                 {
                     End();
                     GM.Instance.StopCoroutine(EffectCoroutine);
@@ -94,15 +89,13 @@ namespace Game.Data
             Continue();
         }
 
-        public virtual EntitySystem GetTarget() => target;
-
         public virtual void SetTarget(EntitySystem target, bool isForceSet)
         {
             if (isForceSet)
-                this.target = target;
+                this.Target = target;
             else
-                if (this.target == null)
-                this.target = target;
+                if (this.Target == null)
+                this.Target = target;
         }
     }
 }

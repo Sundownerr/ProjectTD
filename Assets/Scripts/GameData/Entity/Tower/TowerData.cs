@@ -59,18 +59,16 @@ namespace Game.Tower.Data
         private int level, exp, gradeCount, numberInList;
         private bool isInstanced;
        
-        protected override void Awake()
+        protected void Awake()
         {                  
-            base.Awake();        
-
             AddToDataBase();       
             
             if(DamageToRace == null)
                 for (int i = 0; i < 5; i++)
                     DamageToRace.Add(100f);    
 
-            if(owner == null)
-                owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();               
+            if(Owner == null)
+                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();               
         }
 
         [Button("Add to DataBase")]

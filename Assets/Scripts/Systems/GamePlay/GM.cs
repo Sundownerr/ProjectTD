@@ -8,6 +8,16 @@ using System.Threading;
 
 namespace Game.Systems
 {
+    public enum State
+        {
+            Idle,
+            ChoosedCreep,
+            ChoosedTower,
+            PlacingTower,
+            PreparePlacingTower
+        }
+
+
     [Serializable]
     public class GM : ExtendedMonoBehaviour
     {
@@ -74,15 +84,7 @@ namespace Game.Systems
         public static State PlayerState;
         public static int[] ExpToLevelUp;
      
-        public enum State
-        {
-            Idle,
-            ChoosedCreep,
-            ChoosedTower,
-            PlacingTower,
-            PreparePlacingTower
-        }
-
+        
         protected override void Awake()
         {
             base.Awake();
@@ -147,13 +149,10 @@ namespace Game.Systems
         private static int seed;
 
         private static ThreadLocal<System.Random> threadLocal = new ThreadLocal<System.Random>
-            (() => new System.Random(Interlocked.Increment(ref seed)));
+                        (() => new System.Random(Interlocked.Increment(ref seed)));
 
-        static StaticRandom()
-        {
-            seed = Environment.TickCount;
-        }
-
+        static StaticRandom() => seed = Environment.TickCount;
+    
         public static System.Random Instance { get { return threadLocal.Value; } }
     }
 }

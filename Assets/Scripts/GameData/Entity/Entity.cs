@@ -7,16 +7,13 @@ namespace Game
     public abstract class Entity : ScriptableObject
     {
         public List<int> Id { get => id; set => id = value; }
+        public EntitySystem Owner { get => owner; set => owner = value; }
 
         public string Name;
         public string Description;
-        
-        protected EntitySystem owner; 
-        protected List<int> id;
 
-        protected virtual void Awake() 
-        {
-        }
+        protected EntitySystem owner;
+        protected List<int> id;
 
         public virtual bool CompareId(List<int> otherId)
         {
@@ -35,16 +32,5 @@ namespace Game
 
         protected virtual void SetName() {}
         protected virtual void SetId() {}
-
-        public virtual void SetOwner(EntitySystem owner) 
-        {
-            if(owner == null)
-                return;
-            else
-                this.owner = owner;
-        }
-
-        public virtual EntitySystem GetOwner() => owner;
-        
     }
 }

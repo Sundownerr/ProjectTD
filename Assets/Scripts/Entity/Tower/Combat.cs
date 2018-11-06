@@ -128,7 +128,7 @@ namespace Game.Tower.System
                 
             hitAction += bullet.AOEShotRange > 0 ? tower.SpecialSystem.DamageInAOE : (HitAction)ApplyDamage;
             hitAction += isChainShot ? tower.SpecialSystem.SetChainTarget : (HitAction)SetTargetReached;
-            
+
             hitAction?.Invoke(bullet);
             hitAction = null;           
 

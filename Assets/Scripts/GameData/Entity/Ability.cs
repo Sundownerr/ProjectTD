@@ -13,7 +13,8 @@ namespace Game.Data
     {
         public bool IsNeedStack { get => isNeedStack; set => isNeedStack = value; }
         public bool IsOnCooldown { get => isOnCooldown; set => isOnCooldown = value; }
-        
+        public EntitySystem Target { get => target; set => target = value; }
+
         public string AbilityName, AbilityDescription;
         public float Cooldown, TriggerChance;
         public int ManaCost;
@@ -25,68 +26,48 @@ namespace Game.Data
         private EntitySystem target;
         private StateMachine state;
         private int effectCount;
-        private float timer;
-
-        protected override void Awake()
-        {
-            base.Awake();   
-        }
 
         protected override void SetId() 
         {
-            var tempId = new List<int>();
-
-            if (owner is Creep.CreepSystem ownerCreep)
+            if (Owner is Creep.CreepSystem ownerCreep)
             {
-                tempId.AddRange(ownerCreep.Stats.Id);   
-                tempId.Add(ownerCreep.Stats.AbilityList.IndexOf(this));           
+                Id.AddRange(ownerCreep.Stats.Id);   
+                Id.Add(ownerCreep.Stats.AbilityList.IndexOf(this));           
             }
-            else if(owner is Tower.TowerSystem ownerTower)
+            else if(Owner is Tower.TowerSystem ownerTower)
             {
-                tempId.AddRange(ownerTower.Stats.Id);   
-                tempId.Add(ownerTower.Stats.AbilityList.IndexOf(this));
+                Id.AddRange(ownerTower.Stats.Id);   
+                Id.Add(ownerTower.Stats.AbilityList.IndexOf(this));
             }
-
-            Id = tempId;
         }
 
         public void Init() => state.Update();
-
-        public EntitySystem GetTarget() => target;
         
-        public override void SetOwner(EntitySystem owner)
-        {           
-            base.SetOwner(owner);
+        public void SetOwner(EntitySystem owner)
+        {                 
+            Owner = owner;
 
-            if(owner == null)
-                return;
-            else
-            {
-                for (int i = 0; i < EffectList.Count; i++)
-                    EffectList[i].SetOwner(owner);
+            for (int i = 0; i < EffectList.Count; i++)
+                EffectList[i].Owner = owner;
 
-                EffectList[EffectList.Count - 1].NextInterval = 0.01f;
+            EffectList[EffectList.Count - 1].NextInterval = 0.01f;
 
-                CheckStackable();           
+            CheckStackable();           
 
-                state = new StateMachine();
-                state.ChangeState(new SetEffectState(this));
-            }
+            state = new StateMachine();
+            state.ChangeState(new SetEffectState(this));         
         }
 
         public void SetTarget(EntitySystem target)
         {
-            this.target = target;
+            this.Target = target;
             SetEffectsTarget(target);
         }       
 
         private void SetEffectsTarget(EntitySystem target)
         {
             for (int i = 0; i < EffectList.Count; i++)
-                if(EffectList[i].IsStackable)
-                    EffectList[i].SetTarget(target, true);
-                else 
-                    EffectList[i].SetTarget(target, false);
+                EffectList[i].SetTarget(target, EffectList[i].IsStackable);            
         }
 
         public void StackReset()
@@ -100,7 +81,6 @@ namespace Game.Data
 
         public void CooldownReset()
         {
-            timer = 0;
             effectCount = 0;          
 
             for (int i = 0; i < EffectList.Count; i++)
@@ -127,13 +107,11 @@ namespace Game.Data
         {
             for (int i = 0; i < EffectList.Count; i++)
                 if (!EffectList[i].IsEnded)
-                    return false;
-            
+                    return false;        
             return true;
         }
 
-        public bool CheckAllEffectsSet() => 
-            effectCount >= EffectList.Count - 1 ? true : false;         
+        public bool CheckAllEffectsSet() => effectCount >= EffectList.Count - 1;         
         
         public bool CheckNeedStack()
         {
@@ -159,27 +137,27 @@ namespace Game.Data
         protected class SetEffectState : IState
         {
             private readonly Ability o;
+            private float timer;
 
             public SetEffectState(Ability o) => this.o = o; 
 
-            public void Enter() { }
+            public void Enter() => timer = 0;
 
             public void Execute()
             {
-                o.timer += Time.deltaTime;
+                timer += Time.deltaTime;
 
                 for (int i = 0; i <= o.effectCount; i++)
                     o.EffectList[i].Init();  
 
-                if(!o.isStacked)
-                    if(!o.IsOnCooldown)
-                        GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
+                if(!o.isStacked && !o.IsOnCooldown)
+                    GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
 
                 if (!o.CheckAllEffectsSet())
-                    if (o.timer > o.EffectList[o.effectCount].NextInterval)
+                    if (timer > o.EffectList[o.effectCount].NextInterval)
                     {
                         o.effectCount++;
-                        o.timer = 0;
+                        timer = 0;
                     }
             }
 

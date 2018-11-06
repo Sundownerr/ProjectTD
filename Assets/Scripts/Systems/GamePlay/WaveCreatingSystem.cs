@@ -16,28 +16,22 @@ namespace Game.Systems
             for (int raceId = 0; raceId < allCreepList.Count; raceId++)
                 if(raceId == (int)race)
                     for (int i = 0; i < allCreepList[raceId].CreepList.Count; i++)
-                    {
-                        var isCreepOk =
-                            allCreepList[raceId].CreepList[i].WaveLevel >= GM.Instance.WaveSystem.WaveNumber;
-
-                        if(isCreepOk)
+                        if(allCreepList[raceId].CreepList[i].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
                             fittingCreepList.Add(allCreepList[raceId].CreepList[i]);                  
-                    }   
-
+                    
             return GetFittingCreepList(fittingCreepList, wave);
         }
 
         private List<CreepData> GetFittingCreepList(List<CreepData> fittingCreepList, Wave wave)
         {
-            var fittingCreepIndexList = new List<int>();
             var tempCreepList = new List<CreepData>();
-
-            var smallCreep      = GetFittingCreepOfType(CreepType.Small, fittingCreepList);
-            var normalCreep     = GetFittingCreepOfType(CreepType.Normal, fittingCreepList);
-            var commanderCreep  = GetFittingCreepOfType(CreepType.Commander, fittingCreepList);
-            var bossCreep       = GetFittingCreepOfType(CreepType.Boss, fittingCreepList);
-
-            var creepList = new List<CreepData>() {smallCreep, normalCreep, commanderCreep, bossCreep};
+            var creepList = new CreepData[]
+            {
+                GetFittingCreepOfType(CreepType.Small, fittingCreepList), 
+                GetFittingCreepOfType(CreepType.Normal, fittingCreepList), 
+                GetFittingCreepOfType(CreepType.Commander, fittingCreepList), 
+                GetFittingCreepOfType(CreepType.Boss, fittingCreepList)
+            };
  
             for (int i = 0; i < wave.CreepTypeList.Count; i++)        
                 tempCreepList.Add(GetFittingCreep(wave.CreepTypeList[i], creepList));                     
@@ -45,9 +39,9 @@ namespace Game.Systems
             return tempCreepList;
         }
 
-        private CreepData GetFittingCreep(CreepType neededType, List<CreepData> creepList)
+        private CreepData GetFittingCreep(CreepType neededType, CreepData[] creepList)
         {
-            for (int i = 0; i < creepList.Count; i++)          
+            for (int i = 0; i < creepList.Length; i++)          
                 if(creepList[i].Type == neededType)
                     return creepList[i];
             
@@ -69,7 +63,6 @@ namespace Game.Systems
                                 tempCreepOfTypeList.Add(fittingCreepList[i]);  
                                 break;
                             }
-
             return tempCreepOfTypeList.Count > 0 ? tempCreepOfTypeList[StaticRandom.Instance.Next(0, tempCreepOfTypeList.Count)] : null;                                                                   
         }
     }
