@@ -20,10 +20,10 @@ namespace Game.Data.Effects
 
         public override void Apply()
         {
-            if (target != null)
+            if (Target != null)
             {
-                effectPrefab = Instantiate(EffectPrefab, target.gameObject.transform.position, Quaternion.identity, target.gameObject.transform);
-                target.IsOn = false;
+                effectPrefab = Instantiate(EffectPrefab, Target.gameObject.transform.position, Quaternion.identity, Target.gameObject.transform);
+                Target.IsOn = false;
             }
 
             base.Apply();
@@ -32,8 +32,8 @@ namespace Game.Data.Effects
 
         public override void End()
         {
-            if(target != null)
-                target.IsOn = true;
+            if(Target != null)
+                Target.IsOn = true;
             
             Destroy(effectPrefab);
 

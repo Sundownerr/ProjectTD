@@ -14,6 +14,7 @@ namespace Game.Data
         public bool IsNeedStack { get => isNeedStack; set => isNeedStack = value; }
         public bool IsOnCooldown { get => isOnCooldown; set => isOnCooldown = value; }
         public EntitySystem Target { get => target; set => target = value; }
+        public bool IsStacked { get => isStacked; set => isStacked = value; }
 
         public string AbilityName, AbilityDescription;
         public float Cooldown, TriggerChance;
@@ -72,7 +73,7 @@ namespace Game.Data
 
         public void StackReset()
         {
-            isStacked = true;
+            IsStacked = true;
 
             for (int i = 0; i < EffectList.Count; i++)
                 if(EffectList[i].IsStackable)
@@ -84,7 +85,7 @@ namespace Game.Data
             effectCount = 0;          
 
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].ApplyReset();
+                EffectList[i].ApplyRestart();
         }
 
         private void CheckStackable()
@@ -150,7 +151,7 @@ namespace Game.Data
                 for (int i = 0; i <= o.effectCount; i++)
                     o.EffectList[i].Init();  
 
-                if(!o.isStacked && !o.IsOnCooldown)
+                if(!o.IsStacked && !o.IsOnCooldown)
                     GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
 
                 if (!o.CheckAllEffectsSet())

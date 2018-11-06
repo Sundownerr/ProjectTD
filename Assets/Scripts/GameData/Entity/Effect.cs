@@ -55,16 +55,11 @@ namespace Game.Data
 
         public virtual void End() => IsEnded = true;
 
-        public virtual void ApplyReset()
+        private delegate void resetAction();  
+        public virtual void ApplyRestart()
         {
-            if (IsStackable)
-            {
-                RestartState();
-            }
-            else if (IsEnded)
-            {
-                RestartState();
-            }
+            resetAction reset = IsStackable ? RestartState : isEnded ? RestartState : (resetAction)null;
+            reset?.Invoke();          
         }
 
         public virtual void RestartState()
@@ -89,13 +84,7 @@ namespace Game.Data
             Continue();
         }
 
-        public virtual void SetTarget(EntitySystem target, bool isForceSet)
-        {
-            if (isForceSet)
-                this.Target = target;
-            else
-                if (this.Target == null)
-                this.Target = target;
-        }
+        public virtual void SetTarget(EntitySystem newTarget, bool isEffectStackable) =>     
+            Target = isEffectStackable ? newTarget : Target ?? newTarget;               
     }
 }

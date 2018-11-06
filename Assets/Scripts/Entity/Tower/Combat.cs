@@ -27,18 +27,20 @@ namespace Game.Tower.System
 
         public void Set()
         {
+            timer = tower.Stats.AttackSpeed;
             bulletList      = new List<GameObject>();
-            bulletDataList  = new List<BulletSystem>();
+            bulletDataList  = new List<BulletSystem>();         
+            defaultBullet = tower.Bullet.GetComponent<BulletSystem>();
 
-            bulletPool  = new ObjectPool();
-            bulletPool.PoolObject = tower.Bullet;
-            bulletPool.Parent = tower.transform;
+            bulletPool = new ObjectPool() {
+                PoolObject = tower.Bullet,
+                Parent = tower.transform
+            };
+
             bulletPool.Initialize();
 
             State = new StateMachine();
-            State.ChangeState(new ShootState(this));
-            timer = tower.Stats.AttackSpeed;
-            defaultBullet = tower.Bullet.GetComponent<BulletSystem>();
+            State.ChangeState(new ShootState(this));           
         }
 
         private void CreateBullet(EntitySystem target)
@@ -81,7 +83,11 @@ namespace Game.Tower.System
                                 HitTarget(bulletDataList[i]);
                             else
                             {
-                                var randVec = new Vector3(UnityEngine.Random.Range(-10, 10), UnityEngine.Random.Range(-10, 10), UnityEngine.Random.Range(-10, 10));
+                                var randVec = new Vector3(
+                                    UnityEngine.Random.Range(-10, 10), 
+                                    UnityEngine.Random.Range(-10, 10), 
+                                    UnityEngine.Random.Range(-10, 10));
+
                                 bulletList[i].transform.LookAt(bulletDataList[i].Target.transform.position + offset);
                                 bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed + randVec, Space.Self);
                             }
@@ -118,8 +124,7 @@ namespace Game.Tower.System
         }
            
         private delegate void HitAction(BulletSystem bullet);
-        HitAction hitAction;
-        
+        HitAction hitAction;      
         private void HitTarget(BulletSystem bullet)
         {                              
             var isChainShot =
@@ -147,6 +152,7 @@ namespace Game.Tower.System
         protected class ShootState : IState
         {
             private readonly Combat o;
+            private float timer;
 
             public ShootState(Combat o) => this.o = o;
 
@@ -154,13 +160,13 @@ namespace Game.Tower.System
 
             public void Execute()
             {
-                o.timer += Time.deltaTime;
+                timer += Time.deltaTime;
                 o.MoveBullet();
 
-                if (o.timer > o.tower.Stats.AttackSpeed)
+                if (timer > o.tower.Stats.AttackSpeed)
                 {
                     o.ShotBullet();
-                    o.timer = 0;
+                    timer = 0;
                 }     
             }
 

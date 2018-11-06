@@ -20,8 +20,8 @@ namespace Game.Data.Effects
             {
                 tick++;
 
-                if (this.target is Creep.CreepSystem target)
-                    target.GetDamage(DamagePerTick, (Tower.TowerSystem)owner);
+                if (this.Target is Creep.CreepSystem target)
+                    target.GetDamage(DamagePerTick, (Tower.TowerSystem)Owner);
                 else
                 {
                     End();
@@ -35,7 +35,7 @@ namespace Game.Data.Effects
 
         public override void Apply()
         {
-            if (this.target is Creep.CreepSystem target)
+            if (this.Target is Creep.CreepSystem target)
             {
                 if(target != null)
                 {
