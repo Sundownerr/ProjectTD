@@ -144,6 +144,7 @@
      <Compile Include="Assets\Scripts\Editor\CreepDataBaseEditor.cs" />
      <Compile Include="Assets\Scripts\Editor\ExpandableAttributeDrawer.cs" />
      <Compile Include="Assets\Scripts\Editor\TowerDataBaseEditor.cs" />
+     <Compile Include="Assets\Scripts\Editor\TowerEditorWindow.cs" />
      <None Include="Assets\ImportedAssets\Plugins\NaughtyAttributes\Scripts\Editor\CodeGeneration\Templates\FieldDrawerDatabaseTemplate.txt" />
      <None Include="Assets\ImportedAssets\Plugins\NaughtyAttributes\Scripts\Editor\CodeGeneration\Templates\MethodDrawerDatabaseTemplate.txt" />
      <None Include="Assets\ImportedAssets\Plugins\NaughtyAttributes\Scripts\Editor\CodeGeneration\Templates\PropertyValidatorDatabaseTemplate.txt" />

@@ -20,13 +20,16 @@ namespace Game.Data.Effects
 
         public override void Apply()
         {
-            if (Target != null)
-            {
-                effectPrefab = Instantiate(EffectPrefab, Target.gameObject.transform.position, Quaternion.identity, Target.gameObject.transform);
-                Target.IsOn = false;
-            }
-
             base.Apply();
+
+            effectPrefab = Instantiate(EffectPrefab, 
+                            Target.gameObject.transform.position, 
+                            Quaternion.identity, 
+                            Target.gameObject.transform);
+
+            Target.IsOn = false;
+
+            Target.EffectSystem.ApplyEffect(this);
             EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
         }
 

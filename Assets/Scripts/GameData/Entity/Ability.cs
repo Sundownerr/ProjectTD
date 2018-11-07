@@ -22,7 +22,7 @@ namespace Game.Data
         [Expandable]
         public List<Effect> EffectList;
 
-        private bool isStackable, isStacked, isNeedStack, isOnCooldown;
+        private bool isStacked, isNeedStack, isOnCooldown;
         private EntitySystem target;
         private StateMachine state;
         private int effectCount;
@@ -44,7 +44,7 @@ namespace Game.Data
         private void SetEffectsTarget(EntitySystem target)
         {
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].SetTarget(target, EffectList[i].IsStackable);            
+                EffectList[i].SetTarget(target, true);            
         }
 
         public override void SetId() 
@@ -71,9 +71,7 @@ namespace Game.Data
             for (int i = 0; i < EffectList.Count; i++)           
                 EffectList[i].SetOwner(owner, this);
             
-            EffectList[EffectList.Count - 1].NextInterval = 0.01f;
-
-            CheckStackable();             
+            EffectList[EffectList.Count - 1].NextInterval = 0.01f;           
             state.ChangeState(new SetEffectState(this));         
         }    
 
@@ -85,12 +83,12 @@ namespace Game.Data
             SetId();
         
             for (int i = 0; i < EffectList.Count; i++)
-                if(EffectList[i].IsStackable)
-                {
-                    EffectList[i] = Instantiate(EffectList[i]);  
-                    EffectList[i].SetOwner(owner, this);
-                }                              
-                
+            {
+                EffectList[i] = Instantiate(EffectList[i]);   
+                EffectList[i].SetOwner(owner, this);
+            }                     
+            
+            EffectList[EffectList.Count - 1].NextInterval = 0.01f;   
             state.ChangeState(new SetEffectState(this));    
         }
 
@@ -99,25 +97,9 @@ namespace Game.Data
             effectCount = 0;          
 
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].ApplyRestart();
+                EffectList[i].ApplyRestart();     
 
-            isOnCooldown = false;
-        }
-
-        private void CheckStackable()
-        {
-            var allEffectsInterval = 0f;
-            var allEffectsDuration = 0f;
-
-            for (int i = 0; i < EffectList.Count; i++)
-            {
-                allEffectsInterval += EffectList[i].NextInterval;
-                allEffectsDuration += EffectList[i].Duration;
-            }
-
-            isStackable = 
-                allEffectsInterval >= Cooldown ? true : 
-                allEffectsDuration >= Cooldown ? true : false;
+            SetTarget(null);  
         }
 
         public bool CheckAllEffectsEnded()
@@ -127,16 +109,13 @@ namespace Game.Data
                     return false;        
             return true;
         }
-
-        public bool CheckAllEffectsSet() => effectCount >= EffectList.Count - 1;         
-        
+ 
         public bool CheckNeedStack()
         {
-            if (isStackable)
-                for (int i = 0; i < EffectList.Count; i++)
-                    if (EffectList[i].IsStackable)
-                        if (!EffectList[i].IsEnded)
-                            return true;
+            for (int i = 0; i < EffectList.Count; i++)
+                if (EffectList[i].IsStackable)
+                    if (!EffectList[i].IsEnded)
+                        return true;
             return false;         
         }
 
@@ -148,6 +127,7 @@ namespace Game.Data
            
             isNeedStack = CheckNeedStack();
             CooldownReset();          
+            isOnCooldown = false;
         }
      
         protected class SetEffectState : IState
@@ -169,7 +149,7 @@ namespace Game.Data
                 if(!o.isStacked && !o.isOnCooldown)
                     GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
 
-                if (!o.CheckAllEffectsSet())
+                if (!(o.effectCount >= o.EffectList.Count - 1))
                     if (nextEffectTimer > o.EffectList[o.effectCount].NextInterval)
                     {
                         o.effectCount++;

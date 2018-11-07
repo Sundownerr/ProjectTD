@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Game.Systems;
+using Game.Creep;
+using Game.Tower;
 
 namespace Game.Data.Effects
 {
@@ -20,8 +22,8 @@ namespace Game.Data.Effects
             {
                 tick++;
 
-                if (this.Target is Creep.CreepSystem target)
-                    target.GetDamage(DamagePerTick, (Tower.TowerSystem)Owner);
+                if (Target is CreepSystem creep)
+                    creep.GetDamage(DamagePerTick, (TowerSystem)Owner);
                 else
                 {
                     End();
@@ -35,25 +37,18 @@ namespace Game.Data.Effects
 
         public override void Apply()
         {
-            if (this.Target is Creep.CreepSystem target)
-            {
-                if(target != null)
-                {
-                    effectPrefab = Instantiate(EffectPrefab,
-                                    target.gameObject.transform.position + Vector3.up * 20,
-                                    Quaternion.identity,
-                                    target.gameObject.transform);
-
-                    psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-
-                    Show(true);
-                }
-                else
-                    End();
-            }
-
             base.Apply();
 
+            Target.EffectSystem.ApplyEffect(this);  
+            
+            effectPrefab = Instantiate(EffectPrefab,
+                            Target.gameObject.transform.position + Vector3.up * 20,
+                            Quaternion.identity,
+                            Target.gameObject.transform);
+
+            psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
+            Show(true);     
+            
             EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
         }
 

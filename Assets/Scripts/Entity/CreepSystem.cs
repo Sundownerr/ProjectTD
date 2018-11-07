@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using Game.Systems;
 using Game.Tower;
-
+using System.Collections;
+using System.Collections.Generic;
+using Game.Data;
 
 namespace Game.Creep
 {
@@ -23,9 +25,10 @@ namespace Game.Creep
         private bool isKilled;
 
         protected override void Awake()
-        {
+        {       
             base.Awake();
 
+            effectSystem = new EffectSystem();
             creepTransform = transform;
             creepTransform.position = GM.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
 

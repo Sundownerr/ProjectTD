@@ -13,7 +13,7 @@ namespace Game
         public string Description;
 
         protected EntitySystem owner;
-        protected List<int> id;
+        protected List<int> id;     
 
         public virtual bool CompareId(List<int> otherId)
         {

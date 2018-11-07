@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Game.Systems;
+using NaughtyAttributes;
+using System;
+using Game.Creep;
+using Game.Tower;
 
 namespace Game.Data
 {
+    [Serializable]
     public abstract class Effect : Entity
     {
         public bool IsEnded { get => isEnded; set => isEnded = value; }
@@ -13,41 +18,44 @@ namespace Game.Data
         public float Duration, NextInterval;
         public bool IsStackable;
 
-        protected bool isSet, isEnded;
-        private EntitySystem target;
+        [ShowIf("IsStackable")]
+        [MinValue(1), MaxValue(1000)]
+        public int MaxStackCount;
+
+        protected bool isSet, isEnded, isMaxStackCount;
+        protected EntitySystem target;
         private Ability ownerAbility;
         protected Coroutine EffectCoroutine;
-        protected List<EntitySystem> AffectedTargetList;
 
-        public override void SetId() 
+        private void Awake()
         {
-            id = new List<int>();
-
-            if (Owner is Creep.CreepSystem creep)
-            {
-                id.AddRange(creep.Stats.Id);  
-                id.Add(creep.Stats.AbilityList[creep.Stats.AbilityList.IndexOf(OwnerAbility)].EffectList.IndexOf(this));         
-            }
-            else if(Owner is Tower.TowerSystem tower)
-            {
-               
-                id.AddRange(tower.Stats.Id);  
-                id.Add(ownerAbility.EffectList.IndexOf(this));
-            }
+            if(!IsStackable)
+                MaxStackCount = 1;
         }
 
-        public void SetOwner(EntitySystem owner, Ability ownerAbility)
+        public virtual void Init()
         {
-            this.owner = owner;
-            this.ownerAbility = ownerAbility;
-            SetId();
+            if (!isSet)
+                Apply();
+            
+            Continue();
         }
 
         public virtual void Apply()
         {
             if (Target == null)
+            {
                 End();   
-               
+                return;
+            }
+    
+            if(Target.EffectSystem.CountOf(this) >= MaxStackCount)
+            {
+                isMaxStackCount = true;
+                End();
+                return;
+            }           
+           
             isSet = true;
             IsEnded = false;
         }
@@ -62,36 +70,58 @@ namespace Game.Data
                 }
         }
 
-        public virtual void End() => IsEnded = true;
-
-        private delegate void resetAction();  
+        public virtual void End() 
+        {
+            if(Target != null)
+                if(!isMaxStackCount)              
+                    if(Target.EffectSystem.CountOf(this) > 0)
+                        Target.EffectSystem.RemoveEffect(this);
+                    
+            IsEnded = true;
+        } 
+        
         public virtual void ApplyRestart()
         {
-            resetAction reset = IsStackable ? RestartState : isEnded ? RestartState : (resetAction)null;
-            reset?.Invoke();          
-            reset = null;
+            if(IsStackable)
+                RestartState();
+            else if(isEnded)
+                RestartState();     
         }
 
         public virtual void RestartState()
         {
-            if (AffectedTargetList != null)
-                AffectedTargetList.Clear();
-
             if (EffectCoroutine != null)
                 GM.Instance.StopCoroutine(EffectCoroutine);
 
+            isMaxStackCount = false;
             End();
-
+            
             IsEnded = false;
             isSet = false;
         }    
 
-        public virtual void Init()
+        public override void SetId() 
         {
-            if (!isSet)
-                Apply();
-            
-            Continue();
+            id = new List<int>();
+
+            if (Owner is Creep.CreepSystem creep)
+            {
+                id.AddRange(creep.Stats.Id);  
+                id.Add(creep.Stats.AbilityList[creep.Stats.AbilityList.IndexOf(OwnerAbility)].EffectList.IndexOf(this));         
+            }
+            else if(Owner is Tower.TowerSystem tower)
+            {               
+                id.AddRange(tower.Stats.Id);  
+                id.Add(ownerAbility.EffectList.IndexOf(this));
+            }
+        }
+
+        public void SetOwner(EntitySystem owner, Ability ownerAbility)
+        {
+            this.owner = owner;
+            this.ownerAbility = ownerAbility;
+            SetId();
+            MaxStackCount = MaxStackCount >= 1 ? MaxStackCount : 1;
         }
 
         public virtual void SetTarget(EntitySystem newTarget, bool isEffectStackable) =>     

@@ -10,9 +10,8 @@ namespace Game.Tower.System
         public StateMachine State;
 
         private TowerSystem tower;
-        private List<Ability> abilityList, abilityStackList, singleEffectAbilityList;
+        private List<Ability> abilityList, abilityStackList;
         private bool isAllEffectsEnded, isInContinueState;
-        private int stackAbilityId, stackEffectId;
 
         public AbilitySystem(TowerSystem ownerTower)
         {
@@ -26,7 +25,6 @@ namespace Game.Tower.System
         {
             abilityList = tower.Stats.AbilityList;
             abilityStackList        = new List<Ability>();
-            singleEffectAbilityList = new List<Ability>();
         }
 
         private bool CheckTargetInRange(EntitySystem target)
@@ -38,23 +36,6 @@ namespace Game.Tower.System
             return false;
         }
 
-        private bool CheckStackEffectTarget(EntitySystem target)
-        {    
-                      
-            for (int i = 0; i < singleEffectAbilityList.Count; i++)
-                for (int j = 0; j < singleEffectAbilityList[i].EffectList.Count; j++)
-                {
-                    var effect = singleEffectAbilityList[i].EffectList[j];
-
-                    if (effect.Target == target)               
-                        for (int k = 0; k < singleEffectAbilityList[k].EffectList.Count; k++)       
-                            if(effect.CompareId(singleEffectAbilityList[i].EffectList[k].Id))
-                                return true;                                                              
-                }
-                
-            return false;                  
-        }
-
         private void Init(Ability ability, bool condition)
         {                        
             if (ability.Target != null && condition)
@@ -62,34 +43,31 @@ namespace Game.Tower.System
                 isAllEffectsEnded = false;
                 ability.Init();                  
             }
-            else if (!ability.IsStacked) 
-            {
-                if(!isInContinueState)
-                    ability.SetTarget(tower.GetCreepInRangeList()[0]);                       
+            else            
+            { 
+                if (!ability.IsStacked)                 
+                    if(!isInContinueState)
+                        ability.SetTarget(tower.GetCreepInRangeList()[0]);                       
+                    else
+                        ability.CooldownReset();                              
                 else
-                    ability.CooldownReset();                 
-            }
-            else
-            {
-                for (int i = 0; i < ability.EffectList.Count; i++)                       
-                    Object.Destroy(ability.EffectList[i]);
-                                    
-                ability.EffectList.Clear();
-                Object.Destroy(ability);
-                abilityStackList.Remove(ability);
-            }                  
+                {
+                    for (int i = 0; i < ability.EffectList.Count; i++)                       
+                        Object.Destroy(ability.EffectList[i]);
+                                        
+                    ability.EffectList.Clear();                   
+                    abilityStackList.Remove(ability);
+                    Object.Destroy(ability);
+                }          
+
+                isAllEffectsEnded = true; 
+            }            
         }
 
-        private void CheckContinueEffects(Entity entity) 
-        {
-            var isNeedToContinue = 
-                entity is Ability ability ? !ability.CheckAllEffectsEnded() :
-                entity is Effect effect ? !effect.IsEnded : false;
-            
-            isAllEffectsEnded = !isNeedToContinue;
-
-            if(isNeedToContinue)
-                State.ChangeState(new ContinueEffectState(this));                 
+        private void CheckContinueEffects(Ability ability) 
+        {                   
+            if(!ability.CheckAllEffectsEnded())        
+                State.ChangeState(new ContinueEffectState(this));                           
         }
 
         protected class LookForCreepState : IState
@@ -98,7 +76,7 @@ namespace Game.Tower.System
 
             public LookForCreepState(AbilitySystem o) => this.o = o;
 
-            public void Enter() { }
+            public void Enter() {Debug.Log("look state"); }
 
             public void Execute()
             {
@@ -109,53 +87,27 @@ namespace Game.Tower.System
             public void Exit() { }
         }
 
-        protected enum Stack
-        {
-            Ability,
-            Effect
-        }
-
         protected class CreateStackState : IState
         {
             private readonly AbilitySystem o;
-            private Stack stackType;
+            private int stackAbilityId;
 
-            public CreateStackState(AbilitySystem o, Stack stackType) 
+            public CreateStackState(AbilitySystem o, int stackAbilityId) 
             {
                 this.o = o;
-                this.stackType = stackType;
+                this.stackAbilityId = stackAbilityId;
             }
 
             public void Enter()
-            {
-                if(stackType == Stack.Ability)
-                {
-                    var stackList = o.abilityStackList;
-                    var stack = Object.Instantiate(o.abilityList[o.stackAbilityId]);
-                                 
-                    stack.StackReset(o.tower);           
-                    stack.SetTarget(o.abilityList[o.stackAbilityId].Target);
+            {             
+                var stack = Object.Instantiate(o.abilityList[stackAbilityId]);
+                                
+                stack.StackReset(o.tower);           
+                stack.SetTarget(o.abilityList[stackAbilityId].Target);
 
-                    stackList.Add(stack);                 
-
-                    o.abilityList[o.stackAbilityId].IsNeedStack = false;
-                }
-                else
-                {
-                    var stackAbility = ScriptableObject.CreateInstance<Ability>();                    
-                    var stackEffect = Object.Instantiate(o.abilityList[o.stackAbilityId].EffectList[o.stackEffectId]);
-
-                    stackAbility.IsStacked = true;
-                    stackAbility.SetOwner(o.tower);
-
-                    stackEffect.RestartState();
-                    stackEffect.SetOwner(o.tower, stackAbility);                    
-                    stackAbility.SetTarget(o.abilityList[o.stackAbilityId].Target);
-
-                    stackAbility.EffectList.Add(stackEffect);                             
-                    o.singleEffectAbilityList.Add(stackAbility);
-                }
-
+                o.abilityStackList.Add(stack);                 
+                o.abilityList[stackAbilityId].IsNeedStack = false;
+            
                 o.State.ChangeState(new CombatState(o));
             }
 
@@ -171,52 +123,25 @@ namespace Game.Tower.System
 
             public CombatState(AbilitySystem o) => this.o = o;
 
-            public void Enter() { o.isInContinueState = false;}
+            public void Enter() 
+            { 
+                o.isInContinueState = false;       
+            }
 
             public void Execute()
             {
                 if (o.tower.GetCreepInRangeList().Count > 0)
                 {
                     for (int i = 0; i < o.abilityList.Count; i++)
-                    {                  
-                        
-                        o.Init(o.abilityList[i], o.CheckTargetInRange(o.abilityList[i].Target));   
-
-                        if (!o.abilityList[i].IsOnCooldown)
-                        {
-
-                            for (int j = 0; j < o.abilityList[i].EffectList.Count; j++)
-                                if (!o.abilityList[i].EffectList[j].IsStackable)
-                                {
-                                    var effect = o.abilityList[i].EffectList[j];
-
-                                    Debug.Log(effect.Target);
-
-                                    var isNotAbilityTarget = 
-                                        !o.CheckTargetInRange(effect.Target) || 
-                                        effect.Target != o.abilityList[i].Target;
-                                        
-                                    if (isNotAbilityTarget && !o.CheckStackEffectTarget(o.abilityList[i].Target))
-                                    {
-                                        o.stackAbilityId = i;
-                                        o.stackEffectId = j;
-                                        o.State.ChangeState(new CreateStackState(o, Stack.Effect));
-                                    }
-                                }      
-                        }                                                  
-
-                        if (o.abilityList[i].IsNeedStack)
-                        {
-                            o.stackAbilityId = i;
-                            o.State.ChangeState(new CreateStackState(o, Stack.Ability));
-                        }                                     
+                    {                   
+                        o.Init(o.abilityList[i], o.CheckTargetInRange(o.abilityList[i].Target));       
+                                                                                                                                
+                        if (o.abilityList[i].IsNeedStack)                       
+                            o.State.ChangeState(new CreateStackState(o, i));                                    
                     }                  
                       
                     for (int i = 0; i < o.abilityStackList.Count; i++)
-                        o.Init(o.abilityStackList[i], !o.abilityStackList[i].CheckAllEffectsEnded());                          
-                
-                    for (int i = 0; i < o.singleEffectAbilityList.Count; i++)
-                        o.Init(o.singleEffectAbilityList[i], !o.singleEffectAbilityList[i].CheckAllEffectsEnded());                                            
+                        o.Init(o.abilityStackList[i], !o.abilityStackList[i].CheckAllEffectsEnded());                                                               
                 }
                 else
                 {
@@ -227,10 +152,7 @@ namespace Game.Tower.System
                                                               
                     for (int i = 0; i < o.abilityStackList.Count; i++)
                         o.CheckContinueEffects(o.abilityStackList[i]);
-                                           
-                    for (int i = 0; i < o.singleEffectAbilityList.Count; i++)
-                        o.CheckContinueEffects(o.singleEffectAbilityList[i]);              
-
+                                   
                     if (o.isAllEffectsEnded)
                         o.State.ChangeState(new LookForCreepState(o));
                 }
@@ -253,8 +175,11 @@ namespace Game.Tower.System
             
             public void Execute()
             {         
-                if (o.tower.GetCreepInRangeList().Count > 0 || o.isAllEffectsEnded)
+                if(o.tower.GetCreepInRangeList().Count > 0)
                     o.State.ChangeState(new CombatState(o));
+
+                if (o.isAllEffectsEnded)
+                    o.State.ChangeState(new LookForCreepState(o));
                 else
                 {
                     o.isAllEffectsEnded = true;
@@ -263,10 +188,7 @@ namespace Game.Tower.System
                         o.Init(o.abilityList[i], !o.abilityList[i].CheckAllEffectsEnded());                   
                    
                     for (int i = 0; i < o.abilityStackList.Count; i++)
-                        o.Init(o.abilityStackList[i], !o.abilityStackList[i].CheckAllEffectsEnded());                           
-                
-                    for (int i = 0; i < o.singleEffectAbilityList.Count; i++)
-                        o.Init(o.singleEffectAbilityList[i], !o.singleEffectAbilityList[i].CheckAllEffectsEnded());
+                        o.Init(o.abilityStackList[i], !o.abilityStackList[i].CheckAllEffectsEnded());                        
                 }
             }
 

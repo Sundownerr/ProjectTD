@@ -175,6 +175,7 @@
      <Compile Include="Assets\Scripts\Entity\Cell\Cell.cs" />
      <Compile Include="Assets\Scripts\Entity\Cell\CellExpandSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\CreepSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\EffectSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\EntitySystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Tower\AbilitySystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Tower\Combat.cs" />
