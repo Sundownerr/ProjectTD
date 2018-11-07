@@ -103,7 +103,7 @@ namespace Game.Creep
 
         public void OnValuesChanged() => AddToDataBase();
 
-        protected override void SetId() => Id = new List<int>
+        public override void SetId() => id = new List<int>
                                                 {
                                                     (int)Race,
                                                     (int)Type,

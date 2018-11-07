@@ -16,7 +16,6 @@ namespace Game.Data
         public EntitySystem Target { get => target; set => target = value; }
         public bool IsStacked { get => isStacked; set => isStacked = value; }
 
-        public string AbilityName, AbilityDescription;
         public float Cooldown, TriggerChance;
         public int ManaCost;
 
@@ -28,42 +27,19 @@ namespace Game.Data
         private StateMachine state;
         private int effectCount;
 
-        protected override void SetId() 
+        private void Awake()
         {
-            if (Owner is Creep.CreepSystem ownerCreep)
-            {
-                Id.AddRange(ownerCreep.Stats.Id);   
-                Id.Add(ownerCreep.Stats.AbilityList.IndexOf(this));           
-            }
-            else if(Owner is Tower.TowerSystem ownerTower)
-            {
-                Id.AddRange(ownerTower.Stats.Id);   
-                Id.Add(ownerTower.Stats.AbilityList.IndexOf(this));
-            }
+            state = new StateMachine();
+            
         }
 
         public void Init() => state.Update();
-        
-        public void SetOwner(EntitySystem owner)
-        {                 
-            Owner = owner;
-
-            for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].Owner = owner;
-
-            EffectList[EffectList.Count - 1].NextInterval = 0.01f;
-
-            CheckStackable();           
-
-            state = new StateMachine();
-            state.ChangeState(new SetEffectState(this));         
-        }
 
         public void SetTarget(EntitySystem target)
         {
-            this.Target = target;
+            this.target = target;
             SetEffectsTarget(target);
-        }       
+        } 
 
         private void SetEffectsTarget(EntitySystem target)
         {
@@ -71,13 +47,51 @@ namespace Game.Data
                 EffectList[i].SetTarget(target, EffectList[i].IsStackable);            
         }
 
-        public void StackReset()
+        public override void SetId() 
         {
-            IsStacked = true;
+            id = new List<int>();
 
+            if (Owner is Creep.CreepSystem ownerCreep)
+            {
+                id.AddRange(ownerCreep.Stats.Id);   
+                id.Add(ownerCreep.Stats.AbilityList.IndexOf(this));           
+            }
+            else if(Owner is Tower.TowerSystem ownerTower)
+            {
+                id.AddRange(ownerTower.Stats.Id);   
+                id.Add(ownerTower.Stats.AbilityList.IndexOf(this));
+            }
+        }       
+        
+        public void SetOwner(EntitySystem owner)
+        {                 
+            this.owner = owner;
+            SetId();
+
+            for (int i = 0; i < EffectList.Count; i++)           
+                EffectList[i].SetOwner(owner, this);
+            
+            EffectList[EffectList.Count - 1].NextInterval = 0.01f;
+
+            CheckStackable();             
+            state.ChangeState(new SetEffectState(this));         
+        }    
+
+        public void StackReset(EntitySystem owner)
+        {
+            isStacked = true;
+
+            this.owner = owner;
+            SetId();
+        
             for (int i = 0; i < EffectList.Count; i++)
                 if(EffectList[i].IsStackable)
-                    EffectList[i] = Instantiate(EffectList[i]);                    
+                {
+                    EffectList[i] = Instantiate(EffectList[i]);  
+                    EffectList[i].SetOwner(owner, this);
+                }                              
+                
+            state.ChangeState(new SetEffectState(this));    
         }
 
         public void CooldownReset()
@@ -86,6 +100,8 @@ namespace Game.Data
 
             for (int i = 0; i < EffectList.Count; i++)
                 EffectList[i].ApplyRestart();
+
+            isOnCooldown = false;
         }
 
         private void CheckStackable()
@@ -126,39 +142,38 @@ namespace Game.Data
 
         private IEnumerator StartCooldown(float delay)
         {
-            IsOnCooldown = true;
+            isOnCooldown = true;
 
             yield return new WaitForSeconds(delay);
            
-            IsNeedStack = CheckNeedStack();
-            CooldownReset();
-            IsOnCooldown = false;
+            isNeedStack = CheckNeedStack();
+            CooldownReset();          
         }
      
         protected class SetEffectState : IState
         {
             private readonly Ability o;
-            private float timer;
+            private float nextEffectTimer;
 
             public SetEffectState(Ability o) => this.o = o; 
 
-            public void Enter() => timer = 0;
+            public void Enter() => nextEffectTimer = 0;
 
             public void Execute()
             {
-                timer += Time.deltaTime;
+                nextEffectTimer += Time.deltaTime;
 
                 for (int i = 0; i <= o.effectCount; i++)
                     o.EffectList[i].Init();  
 
-                if(!o.IsStacked && !o.IsOnCooldown)
+                if(!o.isStacked && !o.isOnCooldown)
                     GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
 
                 if (!o.CheckAllEffectsSet())
-                    if (timer > o.EffectList[o.effectCount].NextInterval)
+                    if (nextEffectTimer > o.EffectList[o.effectCount].NextInterval)
                     {
                         o.effectCount++;
-                        timer = 0;
+                        nextEffectTimer = 0;
                     }
             }
 

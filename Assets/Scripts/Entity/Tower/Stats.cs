@@ -18,7 +18,9 @@ namespace Game.Tower.System
    
         public void Set()
         {
+            
             CurrentStats = UnityEngine.Object.Instantiate(CurrentStats);
+            CurrentStats.SetId();
 
             for (int i = 0; i < CurrentStats.AbilityList.Count; i++)
             {

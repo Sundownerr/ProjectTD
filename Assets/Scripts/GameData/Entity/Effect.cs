@@ -8,37 +8,46 @@ namespace Game.Data
     {
         public bool IsEnded { get => isEnded; set => isEnded = value; }
         public EntitySystem Target { get => target; set => target = value; }
+        public Ability OwnerAbility { get => ownerAbility; set => ownerAbility = value; }
 
         public float Duration, NextInterval;
         public bool IsStackable;
 
         protected bool isSet, isEnded;
         private EntitySystem target;
-        protected Ability ownerAbility;
+        private Ability ownerAbility;
         protected Coroutine EffectCoroutine;
         protected List<EntitySystem> AffectedTargetList;
 
-        protected override void SetId() 
+        public override void SetId() 
         {
-            if (Owner is Creep.CreepSystem ownerCreep)
+            id = new List<int>();
+
+            if (Owner is Creep.CreepSystem creep)
             {
-                var stats = ownerCreep.Stats;
-                Id.AddRange(stats.Id);  
-                Id.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));         
+                id.AddRange(creep.Stats.Id);  
+                id.Add(creep.Stats.AbilityList[creep.Stats.AbilityList.IndexOf(OwnerAbility)].EffectList.IndexOf(this));         
             }
-            else if(Owner is Tower.TowerSystem ownerTower)
+            else if(Owner is Tower.TowerSystem tower)
             {
-                var stats = ownerTower.Stats;
-                Id.AddRange(stats.Id);  
-                Id.Add(stats.AbilityList[stats.AbilityList.IndexOf(ownerAbility)].EffectList.IndexOf(this));
+               
+                id.AddRange(tower.Stats.Id);  
+                id.Add(ownerAbility.EffectList.IndexOf(this));
             }
+        }
+
+        public void SetOwner(EntitySystem owner, Ability ownerAbility)
+        {
+            this.owner = owner;
+            this.ownerAbility = ownerAbility;
+            SetId();
         }
 
         public virtual void Apply()
         {
             if (Target == null)
-                End();
-
+                End();   
+               
             isSet = true;
             IsEnded = false;
         }
@@ -60,6 +69,7 @@ namespace Game.Data
         {
             resetAction reset = IsStackable ? RestartState : isEnded ? RestartState : (resetAction)null;
             reset?.Invoke();          
+            reset = null;
         }
 
         public virtual void RestartState()

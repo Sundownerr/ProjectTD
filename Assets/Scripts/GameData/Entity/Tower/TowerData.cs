@@ -60,8 +60,10 @@ namespace Game.Tower.Data
         private bool isInstanced;
        
         protected void Awake()
-        {                  
-            AddToDataBase();       
+        {             
+            if(!isInstanced)     
+                AddToDataBase();   
+             
             
             if(DamageToRace == null)
                 for (int i = 0; i < 5; i++)
@@ -74,7 +76,7 @@ namespace Game.Tower.Data
         [Button("Add to DataBase")]
         private void AddToDataBase()
         {
-            if(!IsGradeTower && !IsInstanced)
+            if(!IsGradeTower)
             {
                 var database = Resources.Load("TowerDataBase");
                 if(database is TowerDataBase dataBase)     
@@ -118,7 +120,7 @@ namespace Game.Tower.Data
 
         private void OnValuesChanged() => SetId();
 
-        protected override void SetId() => Id = new List<int>
+        public override void SetId() => id = new List<int>
                                                 {
                                                     (int)Element,
                                                     (int)Rarity,
