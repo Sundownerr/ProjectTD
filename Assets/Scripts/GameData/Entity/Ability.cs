@@ -99,7 +99,7 @@ namespace Game.Data
             for (int i = 0; i < EffectList.Count; i++)
                 EffectList[i].ApplyRestart();     
 
-            SetTarget(null);  
+        
         }
 
         public bool CheckAllEffectsEnded()

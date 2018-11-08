@@ -134,10 +134,10 @@ namespace Game.Tower.System
                 {
                     for (int i = 0; i < o.abilityList.Count; i++)
                     {                   
-                        o.Init(o.abilityList[i], o.CheckTargetInRange(o.abilityList[i].Target));       
-                                                                                                                                
                         if (o.abilityList[i].IsNeedStack)                       
-                            o.State.ChangeState(new CreateStackState(o, i));                                    
+                            o.State.ChangeState(new CreateStackState(o, i));     
+                            
+                        o.Init(o.abilityList[i], o.CheckTargetInRange(o.abilityList[i].Target));                                     
                     }                  
                       
                     for (int i = 0; i < o.abilityStackList.Count; i++)

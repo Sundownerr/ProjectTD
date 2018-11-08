@@ -29,7 +29,7 @@ namespace Game.Systems
 			for (int i = 0; i < appliedEffectList.Count; i++)			
 				if(effect.CompareId(appliedEffectList[i].Id)) 			
 					count++;
-				
+			
 			return count;
 		}		
 	}

@@ -38,9 +38,6 @@ namespace Game.Data.Effects
         public override void Apply()
         {
             base.Apply();
-
-            Target.EffectSystem.ApplyEffect(this);  
-            
             effectPrefab = Instantiate(EffectPrefab,
                             Target.gameObject.transform.position + Vector3.up * 20,
                             Quaternion.identity,
@@ -49,6 +46,7 @@ namespace Game.Data.Effects
             psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
             Show(true);     
             
+            Target.EffectSystem.ApplyEffect(this);  
             EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
         }
 

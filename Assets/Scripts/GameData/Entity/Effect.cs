@@ -43,16 +43,16 @@ namespace Game.Data
 
         public virtual void Apply()
         {
-            if (Target == null)
+            if (target == null)
             {
                 End();   
                 return;
             }
     
-            if(Target.EffectSystem.CountOf(this) >= MaxStackCount)
+            if(target.EffectSystem.CountOf(this) >= MaxStackCount)
             {
                 isMaxStackCount = true;
-                End();
+                EndMaxStack();
                 return;
             }           
            
@@ -62,8 +62,8 @@ namespace Game.Data
 
         public virtual void Continue()
         {
-            if (!IsEnded)
-                if (Target == null)
+            if (!isEnded)
+                if (target == null)
                 {
                     End();
                     GM.Instance.StopCoroutine(EffectCoroutine);
@@ -71,14 +71,24 @@ namespace Game.Data
         }
 
         public virtual void End() 
-        {
-            if(Target != null)
+        {             
+            if(target != null)
                 if(!isMaxStackCount)              
-                    if(Target.EffectSystem.CountOf(this) > 0)
-                        Target.EffectSystem.RemoveEffect(this);
-                    
+                    if(target.EffectSystem.CountOf(this) > 0)
+                        target.EffectSystem.RemoveEffect(this);
+
             IsEnded = true;
         } 
+
+        public virtual void EndMaxStack()
+        {       
+            if(target != null)
+                if(!isMaxStackCount)              
+                    if(target.EffectSystem.CountOf(this) > MaxStackCount)
+                        target.EffectSystem.RemoveEffect(this);
+
+            IsEnded = true;
+        }
         
         public virtual void ApplyRestart()
         {
@@ -93,9 +103,9 @@ namespace Game.Data
             if (EffectCoroutine != null)
                 GM.Instance.StopCoroutine(EffectCoroutine);
 
-            isMaxStackCount = false;
-            End();
             
+            End();
+            isMaxStackCount = false;
             IsEnded = false;
             isSet = false;
         }    
