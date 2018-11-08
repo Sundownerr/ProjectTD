@@ -1,16 +1,19 @@
-﻿using UnityEngine;
 using Game.Systems;
+using UnityEngine;
 
 namespace Game.Cells
 {
 
     public class Cell : ExtendedMonoBehaviour
     {
-        [HideInInspector]
-        public bool IsBusy, IsChosen;
-
-        [HideInInspector]
-        public Renderer CellRenderer;
+        
+        public bool IsBusy { get => isBusy; set => isBusy = value; }
+        public bool IsChosen { get => isChosen; set => isChosen = value; }
+        public Renderer CellRenderer { get => cellRenderer; set => cellRenderer = value; }
+        public bool IsExpanded { get => isExpanded; set => isExpanded = value; }
+        
+        private bool isChosen, isBusy, isExpanded;
+        private Renderer cellRenderer;
 
         protected override void Awake()
         {
@@ -18,12 +21,10 @@ namespace Game.Cells
 
             GM.Instance.CellList.Add(gameObject);
             GM.Instance.CellStateList.Add(this);
-            transform.parent = GM.Instance.CellParent;
+            transform.SetParent(GM.Instance.CellParent);
 
-            CellRenderer = GetComponent<Renderer>();
-            CellRenderer.material.color = new Color(0, 0, 0, 0);        
-
-            new CellExpandSystem(gameObject, GM.Instance.CellPrefab, GM.Instance.CellAreaList);
+            cellRenderer = GetComponent<Renderer>();
+            cellRenderer.material.color = new Color(0, 0, 0, 0);      
         }
     }
 }

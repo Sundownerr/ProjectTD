@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using Game.Systems;
 using System;
+using Game.Systems;
 using Game.Tower.Data;
+using UnityEngine;
 
 namespace Game.Tower.System
 {
     [Serializable]
-    public class Stats 
+    public class Stats
     {
         public TowerData CurrentStats { get => currentStats; set => currentStats = value; }
         public TowerData BaseStats { get => baseStats; set => baseStats = value; }
@@ -14,11 +14,11 @@ namespace Game.Tower.System
         private TowerSystem tower;
         private TowerData currentStats, baseStats;
 
-        public Stats(TowerSystem ownerTower) => tower = ownerTower;    
-   
+        public Stats(TowerSystem ownerTower) => tower = ownerTower;
+
         public void Set()
         {
-            
+
             CurrentStats = UnityEngine.Object.Instantiate(CurrentStats);
             CurrentStats.SetId();
 
@@ -38,7 +38,7 @@ namespace Game.Tower.System
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)
         {
             CurrentStats = UnityEngine.Object.Instantiate(newBaseStats);
-                       
+
             CurrentStats.Level = currentStats.Level;
             CurrentStats.Exp = currentStats.Exp;
 
@@ -51,7 +51,7 @@ namespace Game.Tower.System
         }
 
         private void UpgradeSpecial(TowerData newBaseStats)
-        {          
+        {
             for (int i = 0; i < newBaseStats.SpecialList.Length; i++)
                 CurrentStats.SpecialList[i] = UnityEngine.Object.Instantiate(CurrentStats.SpecialList[i]);
         }
@@ -59,11 +59,11 @@ namespace Game.Tower.System
         private void IncreaseStatsPerLevel()
         {
             CurrentStats.Level++;
-            CurrentStats.Damage.Value       += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage.Value));
-            CurrentStats.AttackSpeed        -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
-            CurrentStats.CritChance         += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
-            CurrentStats.SpellCritChance    += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
-            
+            CurrentStats.Damage.Value += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage.Value));
+            CurrentStats.AttackSpeed -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
+            CurrentStats.CritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
+            CurrentStats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
+
             tower.SpecialSystem.IncreaseStatsPerLevel();
         }
 
@@ -74,18 +74,18 @@ namespace Game.Tower.System
             for (int i = CurrentStats.Level; i < 25; i++)
                 if (CurrentStats.Exp >= GM.ExpToLevelUp[CurrentStats.Level] && CurrentStats.Level < 25)
                 {
-                    IncreaseStatsPerLevel();                   
-                    
+                    IncreaseStatsPerLevel();
+
                     var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, tower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
-                }           
+                }
             UpdateUI();
         }
 
         public void UpdateUI()
         {
             if (GM.Instance.PlayerInputSystem.ChoosedTower == tower.gameObject)
-                GM.Instance.TowerUISystem.UpdateValues();           
+                GM.Instance.TowerUISystem.UpdateValues();
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using Game.Systems;
+using System.Collections.Generic;
 using Game.Creep;
+using Game.Systems;
+using UnityEngine;
 
 namespace Game.Tower.System
 {
     public class Range : ExtendedMonoBehaviour
     {
-        
+
         public List<CreepSystem> CreepSystemList { get => creepSystemList; set => creepSystemList = value; }
         public List<GameObject> CreepList { get => creepList; set => creepList = value; }
 
@@ -19,13 +19,13 @@ namespace Game.Tower.System
 
         protected override void Awake()
         {
-            base.Awake();     
+            base.Awake();
 
-            CreepList       = new List<GameObject>();
+            CreepList = new List<GameObject>();
             CreepSystemList = new List<Creep.CreepSystem>();
             rend = GetComponent<Renderer>();
 
-            transform.position += new Vector3(0, -5, 0);         
+            transform.position += new Vector3(0, -5, 0);
 
             transparent = new Color(0f, 0f, 0f, 0f);
             notTransparent = new Color(0, 0.5f, 0, 0.2f);
@@ -38,9 +38,9 @@ namespace Game.Tower.System
                 if (other.gameObject == GM.Instance.CreepList[i])
                 {
                     CreepSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
-                    CreepList.Add(other.gameObject);                    
-                }                               
-        }    
+                    CreepList.Add(other.gameObject);
+                }
+        }
 
         private void OnTriggerExit(Collider other)
         {
@@ -61,8 +61,8 @@ namespace Game.Tower.System
                 }
         }
 
-        private void Show(bool show) 
-        {    
+        private void Show(bool show)
+        {
             isRangeShowed = show ? true : false;
             rend.material.color = show ? notTransparent : transparent;
         }
@@ -76,12 +76,12 @@ namespace Game.Tower.System
             if (isChoosedTower)
             {
                 if (!isRangeShowed)
-                    Show(true);                                
+                    Show(true);
             }
-            else if (isRangeShowed)            
-                Show(false);                        
+            else if (isRangeShowed)
+                Show(false);
         }
 
-        public void SetShow(bool show) => Show(show);              
+        public void SetShow(bool show) => Show(show);
     }
 }

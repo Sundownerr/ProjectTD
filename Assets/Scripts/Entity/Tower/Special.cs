@@ -1,4 +1,4 @@
-﻿using Game.Systems;
+using Game.Systems;
 using UnityEngine;
 
 namespace Game.Tower.System
@@ -6,10 +6,10 @@ namespace Game.Tower.System
     public class Special
     {
         public bool IsHaveChainTargets { get => isHaveChainTargets; set => isHaveChainTargets = value; }
-        
+
         private bool isHaveChainTargets;
         private TowerSystem tower;
-  
+
         public Special(TowerSystem ownerTower) => tower = ownerTower;
 
         public void Set()
@@ -23,12 +23,12 @@ namespace Game.Tower.System
             var creepList = tower.GetCreepInRangeList();
             var requiredShotCount = 1 + tower.Bullet.GetComponent<BulletSystem>().MultishotCount;
 
-            return creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;         
+            return creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;
         }
 
         public void SetChainTarget(BulletSystem bullet)
         {
-       
+
             var hitTargetList = new Collider[20];
             var layer = 1 << 12;
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, 150, hitTargetList, layer);
@@ -43,19 +43,19 @@ namespace Game.Tower.System
                 for (int i = 0; i < hitTargetCount; i++)
                 {
                     var randomCreep = hitTargetList[UnityEngine.Random.Range(0, hitTargetCount)].gameObject;
-                    if(bullet.Target != randomCreep)
+                    if (bullet.Target != randomCreep)
                     {
                         isNewTargetFound = true;
                         bullet.Target = randomCreep;
-                        break;                  
-                    }                  
-                }   
+                        break;
+                    }
+                }
 
-                if(!isNewTargetFound)
-                    bullet.Target = null;       
- 
+                if (!isNewTargetFound)
+                    bullet.Target = null;
+
                 bullet.RemainingBounceCount--;
-            }       
+            }
         }
 
         public void DamageInAOE(BulletSystem bullet)
@@ -73,7 +73,7 @@ namespace Game.Tower.System
             var specialList = tower.Stats.SpecialList;
 
             for (int i = 0; i < specialList.Length; i++)
-                specialList[i].IncreaseStatsPerLevel();            
+                specialList[i].IncreaseStatsPerLevel();
         }
     }
 }

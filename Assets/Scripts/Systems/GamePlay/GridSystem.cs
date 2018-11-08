@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Game.Cells;
 using UnityEngine;
 
 namespace Game.Systems
@@ -9,15 +10,17 @@ namespace Game.Systems
 
         private bool isGridBuilded;
         private Color blue, red, green;
+        private CellExpandSystem cellExpandSystem;
 
         public GridSystem()
         {
-            GM.Instance.StartCoroutine(BuildTimer());
             GM.Instance.GridSystem = this;
 
+            CreateGrid();
+ 
             red = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             green = new Color(0.1f, 0.3f, 0.1f, 0.5f);
-            blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);
+            blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);         
         }       
 
         public void Update()
@@ -38,18 +41,22 @@ namespace Game.Systems
             }
         }
 
-        private IEnumerator BuildTimer()
+        private void CreateGrid()
         {
-            CreateGrid(GM.Instance.CellAreaList.Length);
-            
-            yield return new WaitForSeconds(1f);
+            cellExpandSystem = new CellExpandSystem();
+
+            CreateMainCell();
+
+            for (int i = 0; i < GM.Instance.CellStateList.Count; i++)        
+                if(!GM.Instance.CellStateList[i].IsExpanded)
+                    cellExpandSystem.Expand(GM.Instance.CellStateList[i]);     
 
             IsGridBuilded = true;
         }
 
-        private void CreateGrid(int count)
-        {
-            for (var i = 0; i < count; i++)
+        private void CreateMainCell()
+        {          
+            for (var i = 0; i < GM.Instance.CellAreaList.Length; i++)
             {
                 var ray = new Ray(GM.Instance.CellAreaList[i].transform.position, Vector3.up);
                 var layerMask = 1 << 15;
@@ -59,7 +66,7 @@ namespace Game.Systems
                     var spawnPos = GM.Instance.CellAreaList[i].transform.position + 
                         new Vector3(0, GM.Instance.CellAreaList[i].transform.localScale.y / 1.9f, 0);
 
-                    Object.Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);            
+                    Object.Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);                       
                 }
             }
         }
