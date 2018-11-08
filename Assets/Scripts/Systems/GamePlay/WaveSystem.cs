@@ -4,6 +4,7 @@ using Game.Creep;
 using UnityEngine;
 using System;
 using Game.Creep.Data;
+using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
@@ -66,7 +67,7 @@ namespace Game.Systems
 
         private CreepData CalculateStats(CreepData stats, Armor.ArmorType armor, int waveCount)
         {
-            var tempStats = UnityEngine.Object.Instantiate(stats);
+            var tempStats = U.Instantiate(stats);
            
             tempStats.ArmorType         = armor;
             tempStats.ArmorValue        = waveCount;
@@ -97,7 +98,7 @@ namespace Game.Systems
 
         private void SpawnCreep(CreepData creepStats)
         {
-            var creep = UnityEngine.Object.Instantiate(creepStats.Prefab, GM.Instance.CreepParent);  
+            var creep = U.Instantiate(creepStats.Prefab, GM.Instance.CreepParent);  
             creep.GetComponent<CreepSystem>().Stats = CalculateStats(creepStats, creepStats.ArmorType, waveNumber);
 
             creepWaveList[creepWaveList.Count - 1].Add(creep);

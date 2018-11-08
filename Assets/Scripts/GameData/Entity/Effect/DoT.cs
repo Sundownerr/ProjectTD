@@ -54,7 +54,7 @@ namespace Game.Data.Effects
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Show(true);     
                 
-                target.EffectSystem.ApplyEffect(this);  
+                target.EffectSystem.Add(this);  
                 effectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));               
             }
         }

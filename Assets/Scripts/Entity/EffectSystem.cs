@@ -13,12 +13,9 @@ namespace Game.Systems
 
 		private List<Effect> appliedEffectList = new List<Effect>();
 
-        public void ApplyEffect(Effect effect)
-		{
-			appliedEffectList.Add(effect);
-		}
+        public void Add(Effect effect) => appliedEffectList.Add(effect);	
 
-		public void RemoveEffect(Effect effect)
+		public void Remove(Effect effect)
 		{
 			for (int i = 0; i < appliedEffectList.Count; i++)			
 				if(effect.CompareId(appliedEffectList[i].Id)) 
@@ -32,10 +29,8 @@ namespace Game.Systems
 		{
 			var count = 0;
 			for (int i = 0; i < appliedEffectList.Count; i++)			
-				if(effect.CompareId(appliedEffectList[i].Id)) 
-				{			
-					count++;
-				}
+				if(effect.CompareId(appliedEffectList[i].Id)) 						
+					count++;			
 			return count;
 		}		
 	}

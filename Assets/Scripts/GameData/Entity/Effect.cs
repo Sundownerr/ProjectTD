@@ -69,7 +69,7 @@ namespace Game.Data
         public virtual void End() 
         {        
             if(!isMaxStackCount)     
-                target?.EffectSystem.RemoveEffect(this);
+                target?.EffectSystem.Remove(this);
 
             IsEnded = true;         
         } 

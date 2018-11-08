@@ -8,28 +8,28 @@ namespace Game.Tower
 {
     public class TowerSystem : EntitySystem
     {
-        public Transform RangeTransform { get => rangeTransform; set => rangeTransform = value; }
-        public Transform MovingPartTransform { get => movingPartTransform; set => movingPartTransform = value; }
-        public Transform StaticPartTransform { get => staticPartTransform; set => staticPartTransform = value; }
-        public Transform ShootPointTransform { get => shootPointTransform; set => shootPointTransform = value; }
-        public GameObject OcuppiedCell { get => ocuppiedCell; set => ocuppiedCell = value; }
-        public GameObject Bullet { get => bullet; set => bullet = value; }
-        public GameObject Range { get => range; set => range = value; }
-        public Range RangeSystem { private get => rangeSystem; set => rangeSystem = value; }
-        public Special SpecialSystem { get => specialSystem; set => specialSystem = value; }
-        public Combat CombatSystem { private get => combatSystem; set => combatSystem = value; }
-        public AbilitySystem AbilitySystem { private get => abilitySystem; set => abilitySystem = value; }
-        public Stats StatsSystem { private get => statsSystem; set => statsSystem = value; }
-        public TowerData Stats { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
+        public Transform RangeTransform         { get => rangeTransform; set => rangeTransform = value; }
+        public Transform MovingPartTransform    { get => movingPartTransform; set => movingPartTransform = value; }
+        public Transform StaticPartTransform    { get => staticPartTransform; set => staticPartTransform = value; }
+        public Transform ShootPointTransform    { get => shootPointTransform; set => shootPointTransform = value; }
+        public GameObject OcuppiedCell          { get => ocuppiedCell; set => ocuppiedCell = value; }
+        public GameObject Bullet            { get => bullet; set => bullet = value; }
+        public GameObject Range             { get => range; set => range = value; }
+        public Range RangeSystem            { private get => rangeSystem; set => rangeSystem = value; }
+        public Special SpecialSystem        { get => specialSystem; set => specialSystem = value; }
+        public Combat CombatSystem          { private get => combatSystem; set => combatSystem = value; }
+        public AbilitySystem AbilitySystem  { private get => abilitySystem; set => abilitySystem = value; }
+        public Stats StatsSystem            { private get => statsSystem; set => statsSystem = value; }
+        public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
 
         private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
         private GameObject ocuppiedCell, bullet, target, range;
         private Renderer[] rendererList;
-        private System.Range rangeSystem;
-        private System.Special specialSystem;
-        private System.Combat combatSystem;
-        private System.AbilitySystem abilitySystem;
-        private System.Stats statsSystem;
+        private Range rangeSystem;
+        private Special specialSystem;
+        private Combat combatSystem;
+        private AbilitySystem abilitySystem;
+        private Stats statsSystem;
         private StateMachine state;
         private bool isTowerPlaced;
 
@@ -42,11 +42,11 @@ namespace Game.Tower
             shootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
             bullet = transform.GetChild(2).gameObject;
 
-            statsSystem = new Stats(this);
-            specialSystem = new Special(this);
-            combatSystem = new Combat(this);
-            abilitySystem = new AbilitySystem(this);
-            effectSystem = new EffectSystem();
+            statsSystem     = new Stats(this);
+            specialSystem   = new Special(this);
+            combatSystem    = new Combat(this);
+            abilitySystem   = new AbilitySystem(this);
+            effectSystem    = new EffectSystem();
 
             isVulnerable = false;
             state = new StateMachine();
@@ -60,9 +60,9 @@ namespace Game.Tower
             combatSystem.Set();
             abilitySystem.Set();
 
-            range = Instantiate(GM.Instance.RangePrefab, transform);
-            rangeSystem = range.GetComponent<System.Range>();
+            range = Instantiate(GM.Instance.RangePrefab, transform);           
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
+            rangeSystem = range.GetComponent<System.Range>();
             rangeSystem.SetShow();
 
             rendererList = GetComponentsInChildren<Renderer>();
@@ -78,7 +78,7 @@ namespace Game.Tower
                 state.Update();
 
                 if (isTowerPlaced)
-                    abilitySystem.State.Update();
+                    abilitySystem.Update();
             }
 
             rangeSystem.SetShow();
@@ -98,7 +98,7 @@ namespace Game.Tower
 
         private void EndPlacing()
         {
-            transform.position = OcuppiedCell.transform.position;
+            transform.position = ocuppiedCell.transform.position;
 
             SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
@@ -122,7 +122,7 @@ namespace Game.Tower
 
             var towerRotation = Quaternion.LookRotation(offset);
 
-            MovingPartTransform.rotation = Quaternion.Lerp(MovingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
+            movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
         }
 
         public List<Creep.CreepSystem> GetCreepInRangeList() => RangeSystem.CreepSystemList;

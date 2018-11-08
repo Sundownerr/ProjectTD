@@ -7,8 +7,7 @@ namespace Game.Tower.System
 {
     public class AbilitySystem
     {
-        public StateMachine State;
-
+        private StateMachine state;
         private TowerSystem tower;
         private List<Ability> abilityList, abilityStackList;
         private bool isAllEffectsEnded, isInContinueState;
@@ -17,8 +16,8 @@ namespace Game.Tower.System
         {
             tower = ownerTower;
 
-            State = new StateMachine();
-            State.ChangeState(new LookForCreepState(this));
+            state = new StateMachine();
+            state.ChangeState(new LookForCreepState(this));
         }
 
         public void Set()
@@ -26,6 +25,8 @@ namespace Game.Tower.System
             abilityList = tower.Stats.AbilityList;
             abilityStackList = new List<Ability>();
         }
+
+        public void Update() => state.Update();
 
         private bool CheckTargetInRange(EntitySystem target)
         {
@@ -67,7 +68,7 @@ namespace Game.Tower.System
         private void CheckContinueEffects(Ability ability)
         {
             if (!ability.CheckAllEffectsEnded())
-                State.ChangeState(new ContinueEffectState(this));
+                state.ChangeState(new ContinueEffectState(this));
         }
 
         protected class LookForCreepState : IState
@@ -81,7 +82,7 @@ namespace Game.Tower.System
             public void Execute()
             {
                 if (o.tower.GetCreepInRangeList().Count > 0)
-                    o.State.ChangeState(new CombatState(o));
+                    o.state.ChangeState(new CombatState(o));
             }
 
             public void Exit() { }
@@ -108,7 +109,7 @@ namespace Game.Tower.System
                 o.abilityStackList.Add(stack);
                 o.abilityList[stackAbilityId].IsNeedStack = false;
 
-                o.State.ChangeState(new CombatState(o));
+                o.state.ChangeState(new CombatState(o));
             }
 
             public void Execute() { }
@@ -134,7 +135,7 @@ namespace Game.Tower.System
                     for (int i = 0; i < o.abilityList.Count; i++)
                     {
                         if (o.abilityList[i].IsNeedStack)
-                            o.State.ChangeState(new CreateStackState(o, i));
+                            o.state.ChangeState(new CreateStackState(o, i));
 
                         o.Init(o.abilityList[i], o.CheckTargetInRange(o.abilityList[i].Target));
                     }
@@ -153,7 +154,7 @@ namespace Game.Tower.System
                         o.CheckContinueEffects(o.abilityStackList[i]);
 
                     if (o.isAllEffectsEnded)
-                        o.State.ChangeState(new LookForCreepState(o));
+                        o.state.ChangeState(new LookForCreepState(o));
                 }
             }
 
@@ -175,10 +176,10 @@ namespace Game.Tower.System
             public void Execute()
             {
                 if (o.tower.GetCreepInRangeList().Count > 0)
-                    o.State.ChangeState(new CombatState(o));
+                    o.state.ChangeState(new CombatState(o));
 
                 if (o.isAllEffectsEnded)
-                    o.State.ChangeState(new LookForCreepState(o));
+                    o.state.ChangeState(new LookForCreepState(o));
                 else
                 {
                     o.isAllEffectsEnded = true;
