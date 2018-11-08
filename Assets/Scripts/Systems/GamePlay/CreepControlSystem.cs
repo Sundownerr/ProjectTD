@@ -59,15 +59,13 @@ namespace Game.Systems
 
         public static void GiveResources(CreepSystem creep)
         {
-             var tower = creep.LastDamageDealer as TowerSystem;
-
-                if (tower != null)
-                {
-                    tower.AddExp(creep.Stats.Exp);
-                    GM.Instance.ResourceSystem.AddGold(creep.Stats.Gold);
-                }
-              
-                DestroyCreep(creep);
+            if (creep.LastDamageDealer is TowerSystem tower)
+            {
+                tower.AddExp(creep.Stats.Exp);
+                GM.Instance.ResourceSystem.AddGold(creep.Stats.Gold);
+            }
+            
+            DestroyCreep(creep);
         }
 	}
 }

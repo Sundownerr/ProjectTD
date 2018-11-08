@@ -32,14 +32,15 @@ namespace Game.Systems
 
         private void GetTower(int id)
         {
-            var allTowerList = GM.Instance.TowerDataBase.AllTowerList;        
+            var allTowerList = GM.Instance.TowerDataBase.AllTowerList;     
+            var elementList = allTowerList.ElementsList;
 
-            for (int i = 0; i < allTowerList.ElementsList[id].RarityList.Count; i++)
-                for (int j = 0; j < allTowerList.ElementsList[id].RarityList[i].TowerList.Count; j++)           
-                    if (allTowerList.ElementsList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
+            for (int i = 0; i < elementList[id].RarityList.Count; i++)
+                for (int j = 0; j < elementList[id].RarityList[i].TowerList.Count; j++)           
+                    if (elementList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
                     {
-                        GM.Instance.AvailableTowerList.Add(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);    
-                        GM.Instance.BuildUISystem.AddTowerButton(allTowerList.ElementsList[id].RarityList[i].TowerList[j]);                 
+                        GM.Instance.AvailableTowerList.Add(elementList[id].RarityList[i].TowerList[j]);    
+                        GM.Instance.BuildUISystem.AddTowerButton(elementList[id].RarityList[i].TowerList[j]);                 
                     }      
 
             GM.Instance.BuildUISystem.UpdateAvailableElement();

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Creep;
 using Game.Creep.Data;
 using Game.Data;
+using UnityEngine;
 
 namespace Game.Systems
 {
@@ -10,60 +12,62 @@ namespace Game.Systems
     {
         public List<CreepData> CreateWave(RaceType race, int WaveCount, Wave wave)
         {
-            var allCreepList = GM.Instance.CreepDataBase.AllCreepList;       
+            var raceList = GM.Instance.CreepDataBase.AllCreepList;       
             var fittingCreepList = new List<CreepData>();      
 
-            for (int raceId = 0; raceId < allCreepList.Count; raceId++)
+            for (int raceId = 0; raceId < raceList.Count; raceId++)
                 if(raceId == (int)race)
-                    for (int i = 0; i < allCreepList[raceId].CreepList.Count; i++)
-                        if(allCreepList[raceId].CreepList[i].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
-                            fittingCreepList.Add(allCreepList[raceId].CreepList[i]);                  
+                    for (int i = 0; i < raceList[raceId].CreepList.Count; i++)
+                        if(raceList[raceId].CreepList[i].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
+                            fittingCreepList.Add(raceList[raceId].CreepList[i]);                  
                     
+             
             return GetFittingCreepList(fittingCreepList, wave);
         }
 
         private List<CreepData> GetFittingCreepList(List<CreepData> fittingCreepList, Wave wave)
         {
-            var tempCreepList = new List<CreepData>();
-            var creepList = new CreepData[]
+            var sortedCreepList = new List<CreepData>();
+            var choosedCreepList = new CreepData[]
             {
-                GetFittingCreepOfType(CreepType.Small, fittingCreepList), 
-                GetFittingCreepOfType(CreepType.Normal, fittingCreepList), 
-                GetFittingCreepOfType(CreepType.Commander, fittingCreepList), 
-                GetFittingCreepOfType(CreepType.Boss, fittingCreepList)
+                ChooseCreep<Small>(fittingCreepList), 
+                ChooseCreep<Normal>(fittingCreepList), 
+                ChooseCreep<Commander>(fittingCreepList), 
+                ChooseCreep<Boss>(fittingCreepList)
             };
- 
+
+            CreepData GetCreepOfType(CreepType type)
+            {         
+                for (int i = 0; i < choosedCreepList.Length; i++)
+                    if(choosedCreepList[i].Type == type)
+                        return choosedCreepList[i];        
+                return null;
+            }
+
             for (int i = 0; i < wave.CreepTypeList.Count; i++)        
-                tempCreepList.Add(GetFittingCreep(wave.CreepTypeList[i], creepList));                     
+                sortedCreepList.Add(GetCreepOfType(wave.CreepTypeList[i]));                     
 
-            return tempCreepList;
+            return sortedCreepList;
         }
 
-        private CreepData GetFittingCreep(CreepType neededType, CreepData[] creepList)
-        {
-            for (int i = 0; i < creepList.Length; i++)          
-                if(creepList[i].Type == neededType)
-                    return creepList[i];
-            
-            return null;
-        }
-
-        private CreepData GetFittingCreepOfType(CreepType type, List<CreepData> fittingCreepList)
-        {
-            var tempCreepOfTypeList = new List<CreepData>();           
+        private CreepData ChooseCreep<T> (List<CreepData> fittingCreepList) where T : CreepData
+        {        
+            var choosedCreepList = new List<CreepData>();           
     
-            for (int i = 0; i < fittingCreepList.Count; i++)
-                if(fittingCreepList[i].Type == type)
-                    if(tempCreepOfTypeList.Count < 2)
-                        tempCreepOfTypeList.Add(fittingCreepList[i]);
+            for (int i = 0; i < fittingCreepList.Count; i++)           
+                if(fittingCreepList[i] is T fittingCreep)
+                    if(choosedCreepList.Count < 2)
+                        choosedCreepList.Add(fittingCreep);
                     else
-                        for (int j = 0; j < tempCreepOfTypeList.Count; j++)
-                            if(fittingCreepList[i] != tempCreepOfTypeList[j])
+                        for (int j = 0; j < choosedCreepList.Count; j++)
+                            if(fittingCreep != choosedCreepList[j])
                             {
-                                tempCreepOfTypeList.Add(fittingCreepList[i]);  
+                                choosedCreepList.Add(fittingCreep);  
                                 break;
                             }
-            return tempCreepOfTypeList.Count > 0 ? tempCreepOfTypeList[StaticRandom.Instance.Next(0, tempCreepOfTypeList.Count)] : null;                                                                   
+
+            var random = StaticRandom.Instance.Next(0, choosedCreepList.Count);
+            return choosedCreepList.Count > 0 ? choosedCreepList[random] : null;                                                                   
         }
     }
 }

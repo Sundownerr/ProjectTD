@@ -52,16 +52,18 @@ namespace Game.Systems
             for (int i = 0; i < waveAmount; i++)
             {
                 waveRandomList.Add(StaticRandom.Instance.Next(0, waveList.Count));
-                armorRandomList.Add(StaticRandom.Instance.Next(0, armorTypeList.Length));        
+                armorRandomList.Add(StaticRandom.Instance.Next(0, armorTypeList.Length));      
+
+                Debug.Log(waveRandomList[i]);  
             }
 
             for (int waveId = 0; waveId < waveAmount; waveId++)
             {
                 var race    = RaceType.Humanoid;
                 var armor   = (Armor.ArmorType)armorTypeList.GetValue(armorRandomList[waveId]);
-                var wave    = GM.Instance.WaveDataBase.WaveList[waveRandomList[waveId]];
+                var wave    = waveList[waveRandomList[waveId]];
                 
-                tempWaveList.Add(waveCreatingSystem.CreateWave(race, waveId + 1, wave));
+                tempWaveList.Add(waveCreatingSystem.CreateWave(race, waveId, wave));               
             }   
             return tempWaveList;
         }
@@ -83,13 +85,9 @@ namespace Game.Systems
 
         private void HandleCreeps()
         {
-            var sys = new CreepControlSystem();
-
             var creepList = GM.Instance.CreepSystemList;
-            for (int i = 0; i < creepList.Count; i++)
-            {
-                CreepControlSystem.MoveToNextWaypoint(creepList[i]);
-            }
+            for (int i = 0; i < creepList.Count; i++)            
+                CreepControlSystem.MoveToNextWaypoint(creepList[i]);      
         }
         
         private void AddMagicCrystalAfterWaveEnd()
