@@ -138,7 +138,7 @@ namespace Game.Data
 
             public void Execute()
             {
-                nextEffectTimer += Time.deltaTime;
+                nextEffectTimer = nextEffectTimer > o.EffectList[o.effectCount].NextInterval ? 0 : nextEffectTimer += Time.deltaTime;
 
                 for (int i = 0; i <= o.effectCount; i++)
                     o.EffectList[i].Init();  
@@ -147,11 +147,8 @@ namespace Game.Data
                     GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
 
                 if (!(o.effectCount >= o.EffectList.Count - 1))
-                    if (nextEffectTimer > o.EffectList[o.effectCount].NextInterval)
-                    {
-                        o.effectCount++;
-                        nextEffectTimer = 0;
-                    }
+                    if (nextEffectTimer > o.EffectList[o.effectCount].NextInterval)                  
+                        o.effectCount++;             
             }
 
             public void Exit() { }

@@ -53,8 +53,6 @@ namespace Game.Systems
             {
                 waveRandomList.Add(StaticRandom.Instance.Next(0, waveList.Count));
                 armorRandomList.Add(StaticRandom.Instance.Next(0, armorTypeList.Length));      
-
-                Debug.Log(waveRandomList[i]);  
             }
 
             for (int waveId = 0; waveId < waveAmount; waveId++)

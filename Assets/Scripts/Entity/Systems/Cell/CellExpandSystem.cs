@@ -54,26 +54,26 @@ namespace Game.Cells
             else
             {                      
                 if(isForwardHit)
-                    Fill(forward, ownerCell, rayDistance, spacing);
+                    Fill(forward);
 
                 if(isBackHit)
-                    Fill(back, ownerCell, rayDistance, spacing);
+                    Fill(back);
 
                 if(isLeftHit)
-                    Fill(left, ownerCell, rayDistance, spacing);
+                    Fill(left);
 
                 if(isRightHit)
-                    Fill(right, ownerCell, rayDistance, spacing);         
+                    Fill(right);         
             }
-        }
 
-        private void Fill(Vector3 spawnDirection, Cell ownerCell, float rayDistance, float spacing)
-        {
-            if (!Physics.Raycast(ownerCell.gameObject.transform.position, spawnDirection, rayDistance, buildLayerMask))
+            void Fill(Vector3 spawnDirection)
             {
-                ownerCell.IsExpanded = true;
-                Object.Instantiate(GM.Instance.CellPrefab, ownerCell.gameObject.transform.position + spawnDirection * spacing, Quaternion.identity);    
-            }   
+                if (!Physics.Raycast(ownerCell.gameObject.transform.position, spawnDirection, rayDistance, buildLayerMask))
+                {
+                    ownerCell.IsExpanded = true;
+                    Object.Instantiate(GM.Instance.CellPrefab, ownerCell.gameObject.transform.position + spawnDirection * spacing, Quaternion.identity);    
+                }   
+            }
         }
     }
 }

@@ -43,8 +43,6 @@ namespace Game.Data
 
         public virtual void Apply()
         {         
-            Debug.Log(target.EffectSystem.CountOf(this));
-
             if(IsStackable)
                 if(target.EffectSystem.CountOf(this) >= MaxStackCount)
                 {

@@ -92,8 +92,8 @@ namespace Game.Tower.System
                                 bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed + randVec, Space.Self);
                             }
                         }
-            else
-                HitTarget(bulletDataList[i]);
+                    else
+                        HitTarget(bulletDataList[i]);
         }
 
         public bool CheckAllBulletInactive()
@@ -131,6 +131,7 @@ namespace Game.Tower.System
                 bullet.ChainshotCount > 0 &&
                 bullet.RemainingBounceCount > 0;
 
+        
             hitAction += bullet.AOEShotRange > 0 ? tower.SpecialSystem.DamageInAOE : (HitAction)ApplyDamage;
             hitAction += isChainShot ? tower.SpecialSystem.SetChainTarget : (HitAction)SetTargetReached;
 
