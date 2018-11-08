@@ -48,7 +48,7 @@ namespace Game.Data
 
         public override void SetId() 
         {
-            id = new List<int>();
+            base.SetId();
 
             if (Owner is Creep.CreepSystem creep)
             {

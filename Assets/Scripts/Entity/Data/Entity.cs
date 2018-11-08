@@ -31,7 +31,11 @@ namespace Game
         }
 
         protected virtual void SetName() {}
-        public virtual void SetId() {}
+
+        public virtual void SetId() 
+        {
+            id = new List<int>(); 
+        }
 
         public virtual string GetId()
         {

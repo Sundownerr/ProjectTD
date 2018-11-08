@@ -9,7 +9,7 @@ using Game.Tower;
 namespace Game.Data
 {
     [Serializable]
-    public abstract class Effect : Entity
+    public class Effect : Entity
     {
         public bool IsEnded { get => isEnded; set => isEnded = value; }
         public EntitySystem Target { get => target; set => target = value; }
@@ -95,7 +95,7 @@ namespace Game.Data
 
         public override void SetId() 
         {
-            id = new List<int>();
+            base.SetId();
 
             if (Owner is Creep.CreepSystem creep)
             {

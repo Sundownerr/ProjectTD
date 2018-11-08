@@ -120,7 +120,7 @@ namespace Game.Tower.System
         private void ApplyDamage(BulletSystem bullet)
         {
             if (bullet.Target != null)
-                bullet.Target.GetComponent<Creep.CreepSystem>().GetDamage(tower.Stats.Damage.Value, tower);
+                DamageSystem.DoDamage(bullet.Target.GetComponent<Creep.CreepSystem>(), tower.Stats.Damage.Value, tower);
         }
 
         private delegate void HitAction(BulletSystem bullet);

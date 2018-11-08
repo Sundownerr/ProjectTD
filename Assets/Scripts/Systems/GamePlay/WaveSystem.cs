@@ -36,7 +36,8 @@ namespace Game.Systems
         {
             state.Update();
 
-            AddMagicCrystalAfterWaveEnd();                      
+            AddMagicCrystalAfterWaveEnd();      
+            HandleCreeps();                
         }
 
         private List<List<CreepData>> CreateWaveList(int waveAmount)
@@ -79,6 +80,17 @@ namespace Game.Systems
             tempStats.IsInstanced = true;
             return tempStats;
         }
+
+        private void HandleCreeps()
+        {
+            var sys = new CreepControlSystem();
+
+            var creepList = GM.Instance.CreepSystemList;
+            for (int i = 0; i < creepList.Count; i++)
+            {
+                CreepControlSystem.MoveToNextWaypoint(creepList[i]);
+            }
+        }
         
         private void AddMagicCrystalAfterWaveEnd()
         {
@@ -87,7 +99,7 @@ namespace Game.Systems
                 {
                     for (int creepId = 0; creepId < creepWaveList[waveId].Count; creepId++)
                         if (creepWaveList[waveId][creepId] == null)
-                            creepWaveList[waveId].RemoveAt(creepId);
+                            creepWaveList[waveId].RemoveAt(creepId);                    
                 }
                 else
                 {

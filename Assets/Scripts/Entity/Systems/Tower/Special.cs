@@ -65,7 +65,7 @@ namespace Game.Tower.System
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, bullet.AOEShotRange, hitTargetList, layer);
 
             for (int i = 0; i < hitTargetCount; i++)
-                hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>().GetDamage(tower.Stats.Damage.Value, tower);
+                DamageSystem.DoDamage(hitTargetList[i].gameObject.GetComponent<Creep.CreepSystem>(), tower.Stats.Damage.Value, tower);
         }
 
         public void IncreaseStatsPerLevel()

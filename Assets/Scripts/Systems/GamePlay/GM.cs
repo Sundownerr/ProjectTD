@@ -5,6 +5,8 @@ using System;
 using Game.Data;
 using Game.Tower.Data;
 using System.Threading;
+using Game.Cells;
+using Game.Creep;
 
 namespace Game.Systems
 {
@@ -28,10 +30,7 @@ namespace Game.Systems
         public List<GameObject> CreepList, CellList, PlacedTowerList;
 
         [NaughtyAttributes.BoxGroup("List")]
-        public List<TowerData> AvailableTowerList;
-
-        [NaughtyAttributes.BoxGroup("List")]
-        public List<Cells.Cell> CellStateList;
+        public List<TowerData> AvailableTowerList;     
 
         [NaughtyAttributes.BoxGroup("Prefab")]
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint, LevelUpEffect;
@@ -65,6 +64,8 @@ namespace Game.Systems
         public ElementUISystem ElementUISystem { get => elementUISystem; set => elementUISystem = value; }
         public TowerCreatingSystem TowerCreatingSystem { get => towerCreatingSystem; set => towerCreatingSystem = value; }
         public BuildUISystem BuildUISystem { get => buildUISystem; set => buildUISystem = value; }
+        public List<Cell> CellStateList { get => cellStateList; set => cellStateList = value; }
+        public List<CreepSystem> CreepSystemList { get => creepSystemList; set => creepSystemList = value; }
 
         private TowerPlaceSystem towerPlaceSystem;
         private GridSystem gridSystem;
@@ -77,6 +78,8 @@ namespace Game.Systems
         private ElementUISystem elementUISystem;
         private TowerCreatingSystem towerCreatingSystem;
         private BuildUISystem buildUISystem;
+        private List<Cells.Cell> cellStateList = new List<Cell>();
+        private List<CreepSystem> creepSystemList = new List<CreepSystem>();
 
         public Canvas UICanvas;
 

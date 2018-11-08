@@ -192,6 +192,7 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\Cell.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\CellExpandSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\CreepSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\DamageSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\EffectSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\EntitySystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\AbilitySystem.cs" />
@@ -206,6 +207,7 @@
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\TowerDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\WaveDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\Waves\Wave.cs" />
+     <Compile Include="Assets\Scripts\Systems\GamePlay\CreepControlSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\ElementSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\GM.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\GridSystem.cs" />

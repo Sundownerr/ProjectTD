@@ -23,7 +23,7 @@ namespace Game.Data.Effects
                 tick++;
 
                 if (target is CreepSystem creep)
-                    creep.GetDamage(DamagePerTick, (TowerSystem)Owner);
+                    DamageSystem.DoDamage(creep, DamagePerTick, (TowerSystem)Owner);
                 else
                 {
                     End();
