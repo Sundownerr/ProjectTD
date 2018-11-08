@@ -22,21 +22,26 @@ namespace Game.Data.Effects
         {
             base.Apply();
 
-            effectPrefab = Instantiate(EffectPrefab, 
-                            Target.gameObject.transform.position, 
-                            Quaternion.identity, 
-                            Target.gameObject.transform);
+            if(target == null)
+                End();
+            else
+            {
+                effectPrefab = Instantiate(EffectPrefab, 
+                                target.gameObject.transform.position, 
+                                Quaternion.identity, 
+                                Target.gameObject.transform);
 
-            Target.IsOn = false;
+                target.IsOn = false;
 
-            Target.EffectSystem.ApplyEffect(this);
-            EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
+                target.EffectSystem.ApplyEffect(this);
+                effectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
+            }
         }
 
         public override void End()
         {
-            if(Target != null)
-                Target.IsOn = true;
+            if(target != null)
+                target.IsOn = true;
             
             Destroy(effectPrefab);
 

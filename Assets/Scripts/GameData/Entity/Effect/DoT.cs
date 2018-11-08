@@ -22,7 +22,7 @@ namespace Game.Data.Effects
             {
                 tick++;
 
-                if (Target is CreepSystem creep)
+                if (target is CreepSystem creep)
                     creep.GetDamage(DamagePerTick, (TowerSystem)Owner);
                 else
                 {
@@ -38,16 +38,25 @@ namespace Game.Data.Effects
         public override void Apply()
         {
             base.Apply();
-            effectPrefab = Instantiate(EffectPrefab,
-                            Target.gameObject.transform.position + Vector3.up * 20,
-                            Quaternion.identity,
-                            Target.gameObject.transform);
 
-            psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
-            Show(true);     
-            
-            Target.EffectSystem.ApplyEffect(this);  
-            EffectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
+            if(isMaxStackCount || target == null)
+            {
+                End();
+                return;
+            }           
+            else
+            {
+                effectPrefab = Instantiate(EffectPrefab,
+                                target.gameObject.transform.position + Vector3.up * 20,
+                                Quaternion.identity,
+                                target.gameObject.transform);
+
+                psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
+                Show(true);     
+                
+                target.EffectSystem.ApplyEffect(this);  
+                effectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));               
+            }
         }
 
         public override void End()
@@ -55,6 +64,7 @@ namespace Game.Data.Effects
             Destroy(effectPrefab);
             tick = 0;
 
+        
             base.End();
         }
 

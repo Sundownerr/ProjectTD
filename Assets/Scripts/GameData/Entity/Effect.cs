@@ -24,8 +24,8 @@ namespace Game.Data
 
         protected bool isSet, isEnded, isMaxStackCount;
         protected EntitySystem target;
-        private Ability ownerAbility;
-        protected Coroutine EffectCoroutine;
+        protected Ability ownerAbility;
+        protected Coroutine effectCoroutine;
 
         private void Awake()
         {
@@ -42,20 +42,16 @@ namespace Game.Data
         }
 
         public virtual void Apply()
-        {
-            if (target == null)
-            {
-                End();   
-                return;
-            }
-    
-            if(target.EffectSystem.CountOf(this) >= MaxStackCount)
-            {
-                isMaxStackCount = true;
-                EndMaxStack();
-                return;
-            }           
-           
+        {         
+            Debug.Log(target.EffectSystem.CountOf(this));
+
+            if(IsStackable)
+                if(target.EffectSystem.CountOf(this) >= MaxStackCount)
+                {
+                    isMaxStackCount = true;                
+                    return;
+                }           
+            
             isSet = true;
             IsEnded = false;
         }
@@ -66,30 +62,18 @@ namespace Game.Data
                 if (target == null)
                 {
                     End();
-                    GM.Instance.StopCoroutine(EffectCoroutine);
+                    GM.Instance.StopCoroutine(effectCoroutine);
                 }
         }
 
         public virtual void End() 
-        {             
-            if(target != null)
-                if(!isMaxStackCount)              
-                    if(target.EffectSystem.CountOf(this) > 0)
-                        target.EffectSystem.RemoveEffect(this);
+        {        
+            if(!isMaxStackCount)     
+                target?.EffectSystem.RemoveEffect(this);
 
-            IsEnded = true;
+            IsEnded = true;         
         } 
-
-        public virtual void EndMaxStack()
-        {       
-            if(target != null)
-                if(!isMaxStackCount)              
-                    if(target.EffectSystem.CountOf(this) > MaxStackCount)
-                        target.EffectSystem.RemoveEffect(this);
-
-            IsEnded = true;
-        }
-        
+  
         public virtual void ApplyRestart()
         {
             if(IsStackable)
@@ -100,10 +84,9 @@ namespace Game.Data
 
         public virtual void RestartState()
         {
-            if (EffectCoroutine != null)
-                GM.Instance.StopCoroutine(EffectCoroutine);
-
-            
+            if (effectCoroutine != null)
+                GM.Instance.StopCoroutine(effectCoroutine);
+          
             End();
             isMaxStackCount = false;
             IsEnded = false;
@@ -134,7 +117,7 @@ namespace Game.Data
             MaxStackCount = MaxStackCount >= 1 ? MaxStackCount : 1;
         }
 
-        public virtual void SetTarget(EntitySystem newTarget, bool isEffectStackable) =>     
-            Target = isEffectStackable ? newTarget : Target ?? newTarget;               
+        public virtual void SetTarget(EntitySystem newTarget) =>     
+            Target = Target ?? newTarget;               
     }
 }

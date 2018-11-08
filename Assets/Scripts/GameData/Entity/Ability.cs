@@ -29,8 +29,7 @@ namespace Game.Data
 
         private void Awake()
         {
-            state = new StateMachine();
-            
+            state = new StateMachine();           
         }
 
         public void Init() => state.Update();
@@ -44,22 +43,22 @@ namespace Game.Data
         private void SetEffectsTarget(EntitySystem target)
         {
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].SetTarget(target, true);            
+                EffectList[i].SetTarget(target);            
         }
 
         public override void SetId() 
         {
             id = new List<int>();
 
-            if (Owner is Creep.CreepSystem ownerCreep)
+            if (Owner is Creep.CreepSystem creep)
             {
-                id.AddRange(ownerCreep.Stats.Id);   
-                id.Add(ownerCreep.Stats.AbilityList.IndexOf(this));           
+                id.AddRange(creep.Stats.Id);   
+                id.Add(creep.Stats.AbilityList.IndexOf(this));           
             }
-            else if(Owner is Tower.TowerSystem ownerTower)
+            else if(Owner is Tower.TowerSystem tower)
             {
-                id.AddRange(ownerTower.Stats.Id);   
-                id.Add(ownerTower.Stats.AbilityList.IndexOf(this));
+                id.AddRange(tower.Stats.Id);   
+                id.Add(tower.Stats.AbilityList.IndexOf(this));
             }
         }       
         
@@ -73,23 +72,16 @@ namespace Game.Data
             
             EffectList[EffectList.Count - 1].NextInterval = 0.01f;           
             state.ChangeState(new SetEffectState(this));         
-        }    
+        }
 
         public void StackReset(EntitySystem owner)
         {
             isStacked = true;
 
-            this.owner = owner;
-            SetId();
-        
-            for (int i = 0; i < EffectList.Count; i++)
-            {
-                EffectList[i] = Instantiate(EffectList[i]);   
-                EffectList[i].SetOwner(owner, this);
-            }                     
-            
-            EffectList[EffectList.Count - 1].NextInterval = 0.01f;   
-            state.ChangeState(new SetEffectState(this));    
+            for (int i = 0; i < EffectList.Count; i++)         
+                EffectList[i] = Instantiate(EffectList[i]);              
+                               
+            SetOwner(owner);  
         }
 
         public void CooldownReset()
@@ -97,9 +89,7 @@ namespace Game.Data
             effectCount = 0;          
 
             for (int i = 0; i < EffectList.Count; i++)
-                EffectList[i].ApplyRestart();     
-
-        
+                EffectList[i].ApplyRestart();         
         }
 
         public bool CheckAllEffectsEnded()
@@ -114,8 +104,14 @@ namespace Game.Data
         {
             for (int i = 0; i < EffectList.Count; i++)
                 if (EffectList[i].IsStackable)
+                {
                     if (!EffectList[i].IsEnded)
                         return true;
+                }
+                else
+                    if (EffectList[i].Target != target)
+                        return true;
+
             return false;         
         }
 
@@ -126,6 +122,7 @@ namespace Game.Data
             yield return new WaitForSeconds(delay);
            
             isNeedStack = CheckNeedStack();
+
             CooldownReset();          
             isOnCooldown = false;
         }
