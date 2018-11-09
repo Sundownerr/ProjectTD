@@ -35,7 +35,7 @@ namespace Game.Tower.System
 
             BaseStats = UnityEngine.Object.Instantiate(CurrentStats);
 
-            StatsChanged?.Invoke(this, new EventArgs());
+            OnStatsChanged();
         }
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)
@@ -52,7 +52,7 @@ namespace Game.Tower.System
             for (int i = 1; i < CurrentStats.Level; i++)
                 IncreaseStatsPerLevel();
 
-            StatsChanged?.Invoke(this, new EventArgs());
+            OnStatsChanged();
         }
 
         private void UpgradeSpecial(TowerData newBaseStats)
@@ -70,7 +70,7 @@ namespace Game.Tower.System
             CurrentStats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
 
             tower.SpecialSystem.IncreaseStatsPerLevel();
-            StatsChanged?.Invoke(this, new EventArgs());
+            OnStatsChanged();
         }
 
         public void AddExp(int amount)
@@ -85,9 +85,12 @@ namespace Game.Tower.System
                     var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, tower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }
-            StatsChanged?.Invoke(this, new EventArgs());         
+            OnStatsChanged();
         }
-        
-       
+
+        public void OnStatsChanged()
+        {
+            StatsChanged?.Invoke(this, new EventArgs());  
+        }    
     }
 }

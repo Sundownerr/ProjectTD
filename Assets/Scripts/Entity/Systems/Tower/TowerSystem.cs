@@ -70,9 +70,7 @@ namespace Game.Tower
             rendererList = GetComponentsInChildren<Renderer>();
 
             bullet.SetActive(false);
-
             
-            //statsSystem.UpdateUI();
         }
 
         private void Update()
@@ -149,7 +147,8 @@ namespace Game.Tower
                 upgradedTowerSystem.SetSystem();
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
-                               
+                statsSystem.OnStatsChanged();
+                
                 Destroy(gameObject);
             }
         }
@@ -180,11 +179,7 @@ namespace Game.Tower
                     o.state.ChangeState(new LookForCreepState(o));
             }
 
-            public void Exit()
-            {
-                o.EndPlacing();
-                //o.StatsSystem.UpdateUI();
-            }
+            public void Exit() => o.EndPlacing();           
         }
 
         protected class LookForCreepState : IState
