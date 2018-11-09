@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game.Systems;
 using Game.Tower.Data;
@@ -15,12 +16,13 @@ namespace Game.Tower
         public GameObject OcuppiedCell          { get => ocuppiedCell; set => ocuppiedCell = value; }
         public GameObject Bullet            { get => bullet; set => bullet = value; }
         public GameObject Range             { get => range; set => range = value; }
-        public Range RangeSystem            { private get => rangeSystem; set => rangeSystem = value; }
+        public Range RangeSystem            {  get => rangeSystem; private set => rangeSystem = value; }
         public Special SpecialSystem        { get => specialSystem; set => specialSystem = value; }
-        public Combat CombatSystem          { private get => combatSystem; set => combatSystem = value; }
-        public AbilitySystem AbilitySystem  { private get => abilitySystem; set => abilitySystem = value; }
-        public Stats StatsSystem            { private get => statsSystem; set => statsSystem = value; }
+        public Combat CombatSystem          { get => combatSystem; private set => combatSystem = value; }
+        public AbilitySystem AbilitySystem  { get => abilitySystem; private set => abilitySystem = value; }
+        public Stats StatsSystem            { get => statsSystem;  private set => statsSystem = value; }
         public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
+       
 
         private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
         private GameObject ocuppiedCell, bullet, target, range;
@@ -68,7 +70,9 @@ namespace Game.Tower
             rendererList = GetComponentsInChildren<Renderer>();
 
             bullet.SetActive(false);
-            statsSystem.UpdateUI();
+
+            
+            //statsSystem.UpdateUI();
         }
 
         private void Update()
@@ -144,7 +148,7 @@ namespace Game.Tower
                 upgradedTowerSystem.OcuppiedCell = OcuppiedCell;
                 upgradedTowerSystem.SetSystem();
 
-                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerPrefab;
+                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
 
                 Destroy(gameObject);
             }
@@ -179,7 +183,7 @@ namespace Game.Tower
             public void Exit()
             {
                 o.EndPlacing();
-                o.StatsSystem.UpdateUI();
+                //o.StatsSystem.UpdateUI();
             }
         }
 

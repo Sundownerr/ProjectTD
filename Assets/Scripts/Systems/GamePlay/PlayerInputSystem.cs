@@ -4,19 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Game.Tower.Data;
+using System;
+using Game.Tower;
 
 namespace Game.Systems
 {
     public class PlayerInputSystem : ExtendedMonoBehaviour
     {
-        public GameObject ChoosedTower { get => choosedTower; set => choosedTower = value; }
+        public TowerSystem ChoosedTower { get => choosedTower; set => choosedTower = value; }
         public TowerData NewTowerData { get => newTowerData; set => newTowerData = value; }
 
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
+        public event EventHandler MouseOnTower = delegate {};
         
-        private Tower.Data.TowerData newTowerData;
-        private GameObject choosedTower;
+        private TowerData newTowerData;
+        private TowerSystem choosedTower;
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
         private StateMachine state;
@@ -36,8 +39,29 @@ namespace Game.Systems
             state.ChangeState(new GetInputState(this));
         }
 
+        private void Start()
+        {
+            GM.Instance.TowerUISystem.Selling += SellTower;
+            GM.Instance.TowerUISystem.Upgrading += UpgradeTower;
+        }
+
         private void Update() => state.Update();
 
+        private void SellTower(object sender, EventArgs e) => ChoosedTower.Sell();                 
+
+        private void UpgradeTower(object sender, EventArgs e) => ChoosedTower.Upgrade();    
+
+        private void ActivateTowerUI()
+        {             
+            ChoosedTower = hit.transform.gameObject.GetComponent<TowerSystem>();   
+            GM.Instance.TowerUISystem.gameObject.SetActive(true);
+
+            if (GM.PlayerState != State.PlacingTower && GM.PlayerState != State.PreparePlacingTower)
+                GM.PlayerState = State.ChoosedTower;
+
+            MouseOnTower?.Invoke(this, new EventArgs());
+        }       
+        
         protected class GetInputState : IState
         {
             private readonly PlayerInputSystem o;
@@ -77,7 +101,7 @@ namespace Game.Systems
                             o.hit.transform.gameObject.layer == 9;
 
                         if (isMouseOnTower)
-                            o.state.ChangeState(new MouseOnTowerState(o));
+                            o.ActivateTowerUI();
 
                         if (isMouseNotOnUI)
                             o.state.ChangeState(new MouseNotOnUIState(o));
@@ -90,44 +114,10 @@ namespace Game.Systems
                     o.isHitUI = false;
                 }
 
-                if(GM.Instance.TowerUISystem.IsSellig)
-                    o.state.ChangeState(new SellTowerState(o));
-
-                if (GM.Instance.TowerUISystem.IsUpgrading)
-                    o.state.ChangeState(new UpgradeTowerState(o));
-
                 if (GM.Instance.BuildUISystem.IsChoosedNewTower)
                     o.state.ChangeState(new CreateNewTowerState(o));
             }
             
-            public void Exit() { }
-        }
-
-        protected class MouseOnTowerState : IState
-        {
-            private readonly PlayerInputSystem o;
-
-            public MouseOnTowerState(PlayerInputSystem o) => this.o = o; 
-
-            public void Enter()
-            {
-                var towerUI = GM.Instance.TowerUISystem;
-
-                o.ChoosedTower = o.hit.transform.gameObject;
-
-                if (!towerUI.gameObject.activeSelf)
-                    towerUI.gameObject.SetActive(true);
-
-                o.StartCoroutine(towerUI.RefreshUI());
-
-                if (GM.PlayerState != State.PlacingTower && GM.PlayerState != State.PreparePlacingTower)
-                    GM.PlayerState = State.ChoosedTower;
-
-                o.state.ChangeState(new GetInputState(o));
-            }
-
-            public void Execute() { }
-
             public void Exit() { }
         }
 
@@ -151,47 +141,6 @@ namespace Game.Systems
             public void Execute() { }
 
             public void Exit() { }
-        }
-
-        protected class SellTowerState : IState
-        {
-            private readonly PlayerInputSystem o;
-
-            public SellTowerState(PlayerInputSystem o) => this.o = o; 
-
-            public void Enter()
-            {
-                o.ChoosedTower.GetComponent<Tower.TowerSystem>().Sell();
-                o.state.ChangeState(new GetInputState(o));
-            }
-
-            public void Execute() { }
-
-            public void Exit()
-            {
-                GM.Instance.TowerUISystem.IsSellig = false;
-                GM.Instance.TowerUISystem.gameObject.SetActive(false);
-            }
-        }
-
-        protected class UpgradeTowerState : IState
-        {
-            private readonly PlayerInputSystem o;
-
-            public UpgradeTowerState(PlayerInputSystem o) => this.o = o; 
-
-            public void Enter()
-            {
-                o.ChoosedTower.GetComponent<Tower.TowerSystem>().Upgrade();
-                o.state.ChangeState(new GetInputState(o));
-            }
-
-            public void Execute() { }
-
-            public void Exit()
-            {
-                GM.Instance.TowerUISystem.IsUpgrading = false;                
-            }
         }
 
         protected class CreateNewTowerState : IState

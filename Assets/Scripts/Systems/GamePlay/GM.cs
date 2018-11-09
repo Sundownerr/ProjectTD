@@ -86,8 +86,7 @@ namespace Game.Systems
         public static GM Instance;       
         public static State PlayerState;
         public static int[] ExpToLevelUp;
-     
-        
+           
         protected override void Awake()
         {
             base.Awake();

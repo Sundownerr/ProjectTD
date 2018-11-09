@@ -3,68 +3,77 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Game.Tower;
+using System;
 
 namespace Game.Systems
 {
     public class TowerUISystem : ExtendedMonoBehaviour
     {
-        public bool IsSellig { get => isSellig; set => isSellig = value; }
-        public bool IsUpgrading { get => isUpgrading; set => isUpgrading = value; }
-        
         public TextMeshProUGUI Damage, Range, Mana, AttackSpeed, TriggerChance, SpellDamage, SpellCritChance;
         public TextMeshProUGUI TowerName, CritChance, Level;
         public Button SellButton, UpgradeButton;
+        public event EventHandler Selling = delegate{};
+        public event EventHandler Upgrading = delegate{};
 
-        private GameObject choosedTower;
-        private bool isSellig, isUpgrading;  
+        private TowerSystem choosedTower;
 
         protected override void Awake()
         {
             base.Awake();
 
             GM.Instance.TowerUISystem = this;
-            gameObject.SetActive(false);
+            
             SellButton.onClick.AddListener(Sell);
-            UpgradeButton.onClick.AddListener(Upgrade);
+            UpgradeButton.onClick.AddListener(Upgrade);         
         }
 
-        private void OnEnable() => UpdateValues();
-    
-        public IEnumerator RefreshUI()
+        private void Start()
         {
+            GM.Instance.PlayerInputSystem.MouseOnTower += UpdateValues;   
+            gameObject.SetActive(false);         
+        }
+
+        private void OnDisable()
+        {
+            if(GM.Instance.PlayerInputSystem?.ChoosedTower != null)
+                GM.Instance.PlayerInputSystem.ChoosedTower.StatsSystem.StatsChanged -= UpdateValues;
+        }
+
+        private void Sell()
+        {
+            Selling?.Invoke(this, new EventArgs());
             gameObject.SetActive(false);
-            yield return new WaitForFixedUpdate();
-            gameObject.SetActive(true);
-        }
-
-        private void Sell() => IsSellig = true;
-
-        private void Upgrade() => IsUpgrading = true;
-
-        public void UpdateValues()
+        } 
+        
+        private void Upgrade() => Upgrading?.Invoke(this, new EventArgs());
+        
+        private void UpdateValues(object sender, EventArgs e)
         {
-            choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;
-            var choosedTowerStats = choosedTower.GetComponent<TowerSystem>().Stats;
+            choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;  
 
-            TowerName.text = choosedTowerStats.Name;
-            Level.text              = KiloFormat(choosedTowerStats.Level);
-            Damage.text             = KiloFormat(choosedTowerStats.Damage.Value);
-            Range.text              = KiloFormat(choosedTowerStats.Range);
-            Mana.text               = KiloFormat(choosedTowerStats.Mana);
-            AttackSpeed.text        = KiloFormat(choosedTowerStats.AttackSpeed);
-            TriggerChance.text      = KiloFormat(choosedTowerStats.TriggerChance) + "%";
-            SpellCritChance.text    = KiloFormat(choosedTowerStats.SpellCritChance) + "%";
-            SpellDamage.text        = KiloFormat(choosedTowerStats.SpellDamage) + "%";
-            CritChance.text         = KiloFormat(choosedTowerStats.CritChance) + "%";
+            choosedTower.StatsSystem.StatsChanged += UpdateValues;
+
+            TowerName.text = choosedTower.Stats.Name;
+            Level.text              = KiloFormat(choosedTower.Stats.Level);
+            Damage.text             = KiloFormat(choosedTower.Stats.Damage.Value);
+            Range.text              = KiloFormat(choosedTower.Stats.Range);
+            Mana.text               = KiloFormat(choosedTower.Stats.Mana);
+            AttackSpeed.text        = KiloFormat(choosedTower.Stats.AttackSpeed);
+            TriggerChance.text      = KiloFormat(choosedTower.Stats.TriggerChance) + "%";
+            SpellCritChance.text    = KiloFormat(choosedTower.Stats.SpellCritChance) + "%";
+            SpellDamage.text        = KiloFormat(choosedTower.Stats.SpellDamage) + "%";
+            CritChance.text         = KiloFormat(choosedTower.Stats.CritChance) + "%";
 
             var isHaveUpgrade =
-              choosedTowerStats.GradeList.Count > 0;          
+              choosedTower.Stats.GradeList.Count > 0;          
 
             if (isHaveUpgrade)
                 UpgradeButton.gameObject.SetActive(true);
             else
                 UpgradeButton.gameObject.SetActive(false);
-        }       
+        }
+
+        private void OnDestroy() => GM.Instance.PlayerInputSystem.ChoosedTower.StatsSystem.StatsChanged -= UpdateValues;       
     }
 }
 

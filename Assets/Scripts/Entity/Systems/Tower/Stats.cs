@@ -10,7 +10,8 @@ namespace Game.Tower.System
     {
         public TowerData CurrentStats { get => currentStats; set => currentStats = value; }
         public TowerData BaseStats { get => baseStats; set => baseStats = value; }
-
+        public event EventHandler StatsChanged = delegate {};
+        
         private TowerSystem tower;
         private TowerData currentStats, baseStats;
 
@@ -33,6 +34,8 @@ namespace Game.Tower.System
             }
 
             BaseStats = UnityEngine.Object.Instantiate(CurrentStats);
+
+            StatsChanged?.Invoke(this, new EventArgs());
         }
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)
@@ -48,6 +51,8 @@ namespace Game.Tower.System
 
             for (int i = 1; i < CurrentStats.Level; i++)
                 IncreaseStatsPerLevel();
+
+            StatsChanged?.Invoke(this, new EventArgs());
         }
 
         private void UpgradeSpecial(TowerData newBaseStats)
@@ -65,6 +70,7 @@ namespace Game.Tower.System
             CurrentStats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
 
             tower.SpecialSystem.IncreaseStatsPerLevel();
+            StatsChanged?.Invoke(this, new EventArgs());
         }
 
         public void AddExp(int amount)
@@ -79,13 +85,14 @@ namespace Game.Tower.System
                     var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, tower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }
-            UpdateUI();
+            StatsChanged?.Invoke(this, new EventArgs());
+          //  UpdateUI();
         }
 
-        public void UpdateUI()
-        {
-            if (GM.Instance.PlayerInputSystem.ChoosedTower == tower.gameObject)
-                GM.Instance.TowerUISystem.UpdateValues();
-        }
+        // public void UpdateUI()
+        // {
+        //     if (GM.Instance.PlayerInputSystem.ChoosedTower == tower.gameObject)
+        //         GM.Instance.TowerUISystem.UpdateValues();
+        // }
     }
 }
