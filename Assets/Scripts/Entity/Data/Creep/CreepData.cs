@@ -39,17 +39,14 @@ namespace Game.Creep
         {
             AddToDataBase();                   
             
-            if(Owner == null)
-                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();      
+            Owner = Owner ?? Prefab.GetComponent<Tower.TowerSystem>();      
         }
 
         [Button]
         public void AddToDataBase()
         {
-            if(!IsInstanced)
-            {
-                var database = Resources.Load("CreepDataBase");
-                if(database is CreepDataBase dataBase)     
+            if(!IsInstanced)      
+                if(Resources.Load("CreepDataBase") is CreepDataBase dataBase)     
                 {            
                     var raceList = dataBase.AllCreepList;
                     for (int i = 0; i < raceList.Count; i++)
@@ -68,8 +65,7 @@ namespace Game.Creep
                             UnityEditor.EditorUtility.SetDirty(dataBase);
                             return;
                         }
-                }
-            }           
+                }                   
         }
 
         private void RemoveFromDataBase()

@@ -149,7 +149,7 @@ namespace Game.Tower
                 upgradedTowerSystem.SetSystem();
 
                 GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
-
+                               
                 Destroy(gameObject);
             }
         }

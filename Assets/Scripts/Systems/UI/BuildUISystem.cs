@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Game.Tower.Data.Stats;
 using Game.Tower.Data;
+using System;
 
 namespace Game.Systems
 {
@@ -14,6 +15,7 @@ namespace Game.Systems
         public ElementType ChoosedElement;
         public GameObject Rarity;
         public bool IsChoosedNewTower;
+        public event EventHandler NeedToBuildTower = delegate{};
 
         private List<TowerData> availableTowerList;      
         private List<GameObject> towerButtonGOList;
@@ -69,6 +71,8 @@ namespace Game.Systems
                 ElementButtonList[(int)availableTowerList[i].Element].interactable = true;
         }      
 
+        public void BuildNewTower() => NeedToBuildTower?.Invoke(this, new EventArgs());
+        
         public void ShowRarity(Button elementButton)
         {
             var rarity = Rarity.gameObject;

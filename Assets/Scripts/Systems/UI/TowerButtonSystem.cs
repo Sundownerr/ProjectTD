@@ -25,8 +25,8 @@ namespace Game.Systems
         {          
             if (GM.PlayerState != State.PlacingTower && GM.PlayerState != State.PreparePlacingTower)
             {
-                GM.Instance.BuildUISystem.IsChoosedNewTower = true;
                 GM.Instance.PlayerInputSystem.NewTowerData = TowerData;
+                GM.Instance.BuildUISystem.BuildNewTower();           
                 Count--;
                 towerCountText.text = Count.ToString();
                 

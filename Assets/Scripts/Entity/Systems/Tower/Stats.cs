@@ -11,7 +11,7 @@ namespace Game.Tower.System
         public TowerData CurrentStats { get => currentStats; set => currentStats = value; }
         public TowerData BaseStats { get => baseStats; set => baseStats = value; }
         public event EventHandler StatsChanged = delegate {};
-        
+
         private TowerSystem tower;
         private TowerData currentStats, baseStats;
 
@@ -85,14 +85,9 @@ namespace Game.Tower.System
                     var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, tower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }
-            StatsChanged?.Invoke(this, new EventArgs());
-          //  UpdateUI();
+            StatsChanged?.Invoke(this, new EventArgs());         
         }
-
-        // public void UpdateUI()
-        // {
-        //     if (GM.Instance.PlayerInputSystem.ChoosedTower == tower.gameObject)
-        //         GM.Instance.TowerUISystem.UpdateValues();
-        // }
+        
+       
     }
 }
