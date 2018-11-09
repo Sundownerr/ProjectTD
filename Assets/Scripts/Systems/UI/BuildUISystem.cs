@@ -16,13 +16,12 @@ namespace Game.Systems
         public GameObject Rarity;
         public bool IsChoosedNewTower;
         public event EventHandler NeedToBuildTower = delegate{};
+        
 
         private List<TowerData> availableTowerList;      
         private List<GameObject> towerButtonGOList;
         private List<TowerButtonSystem> towerButtonList;
         private RectTransform rarityTransform;
-
-        private delegate void Act();
 
         protected override void Awake()
         {
@@ -53,19 +52,28 @@ namespace Game.Systems
             availableTowerList = GM.Instance.AvailableTowerList;                 
         }
 
-        private List<Button> DisableButtonList(List<Button> list)
+        private void Start()
         {
-            var tempList = list;
+            GM.Instance.PlayerInputSystem.StartedTowerBuild += UpdateUI;
+            GM.Instance.TowerCreatingSystem.AddedNewAvailableTower += UpdateUI;
+            GM.Instance.TowerPlaceSystem.TowerStateChanged += UpdateUI;
+        }
 
-            for (int i = 0; i < tempList.Count; i++)
-                tempList[i].interactable = false;
+        public void UpdateUI(object sender, ElementType element)
+        {
+            UpdateAvailableElement();
+            UpdateRarity(element);
+        }
 
-            return tempList;
+        private void DisableButtonList(ref List<Button> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+                list[i].interactable = false;
         }
 
         public void UpdateAvailableElement()
         {           
-            DisableButtonList(ElementButtonList);          
+            DisableButtonList(ref ElementButtonList);          
 
             for (int i = 0; i < availableTowerList.Count; i++)
                 ElementButtonList[(int)availableTowerList[i].Element].interactable = true;
@@ -74,29 +82,27 @@ namespace Game.Systems
         public void BuildNewTower() => NeedToBuildTower?.Invoke(this, new EventArgs());
         
         public void ShowRarity(Button elementButton)
-        {
-            var rarity = Rarity.gameObject;
-            
-            rarity.SetActive(true);
+        {           
+            Rarity.gameObject.SetActive(true);
             rarityTransform.SetParent(elementButton.GetComponent<RectTransform>());
             rarityTransform.localPosition = Vector2.zero;
 
-            UpdateRarity(ChoosedElement);                           
+            UpdateRarity(ChoosedElement);                       
         }
 
         public void UpdateRarity(ElementType element)
         {
+            void SetTowerButtonsActive(bool set, int towerIndex)
+            {
+                var rarityButton = RarityButtonList[(int)availableTowerList[towerIndex].Rarity];
+                rarityButton.interactable = set;
+
+                for (int j = 0; j < rarityButton.transform.childCount; j++)
+                    rarityButton.transform.GetChild(j).gameObject.SetActive(set);
+            }
+
             for (int i = 0; i < availableTowerList.Count; i++)
                 SetTowerButtonsActive(availableTowerList[i].Element == element, i);          
-        }
-
-        private void SetTowerButtonsActive(bool set, int towerIndex)
-        {
-            var rarityButton = RarityButtonList[(int)availableTowerList[towerIndex].Rarity];
-            rarityButton.interactable = set;
-
-            for (int j = 0; j < rarityButton.transform.childCount; j++)
-                rarityButton.transform.GetChild(j).gameObject.SetActive(set);
         }
 
         public void RemoveTowerButton(TowerButtonSystem towerButton)
@@ -109,6 +115,15 @@ namespace Game.Systems
         {
             var towerCount = 0;
 
+            void AddTowerAmount(int index)
+            {
+                var towerButton = towerButtonList[index];  
+                var towerButtonText = towerButton.gameObject.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+                
+                towerButton.Count++;
+                towerButtonText.text = towerButton.Count.ToString();       
+            }
+
             for (int i = 0; i < availableTowerList.Count; i++)                                   
                 if(towerData.Element == availableTowerList[i].Element)
                 {                 
@@ -118,7 +133,7 @@ namespace Game.Systems
                         if(towerData == towerButtonList[j].TowerData)
                         {                      
                             isSameTower = true; 
-                            AddTowerCount(j);                                                   
+                            AddTowerAmount(j);                                                   
                             break;
                         }                     
                     
@@ -128,15 +143,6 @@ namespace Game.Systems
                     if(towerData != availableTowerList[i])
                         towerCount++;
                 }                                   
-        }
-
-        private void AddTowerCount(int index)
-        {
-            var towerButton = towerButtonList[index];  
-            var towerButtonText = towerButton.gameObject.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
-            
-            towerButton.Count++;
-            towerButtonText.text = towerButton.Count.ToString();       
         }
 
         private void CreateTowerButton(TowerData towerData, int towerCount)

@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using Game.Tower.Data;
 using System;
 using Game.Tower;
+using Game.Tower.Data.Stats;
 
 namespace Game.Systems
 {
@@ -17,6 +18,7 @@ namespace Game.Systems
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
         public event EventHandler MouseOnTower = delegate {};
+        public event EventHandler<ElementType> StartedTowerBuild = delegate {};
         
         private TowerData newTowerData;
         private TowerSystem choosedTower;
@@ -59,12 +61,11 @@ namespace Game.Systems
                 GM.PlayerState != State.PreparePlacingTower;
 
             if(active)
-            {
-                ChoosedTower = hit.transform.gameObject.GetComponent<TowerSystem>();   
-                
+            {                            
                 if (isNotPlacingTower)
                     GM.PlayerState = State.ChoosedTower;
-
+                    
+                ChoosedTower = hit.transform.gameObject.GetComponent<TowerSystem>();  
                 MouseOnTower?.Invoke(this, new EventArgs());
             }
             else        
@@ -85,8 +86,7 @@ namespace Game.Systems
                     break;
                 }
             
-            GM.Instance.BuildUISystem.UpdateAvailableElement();
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
+            StartedTowerBuild?.Invoke(this, GM.Instance.PlayerInputSystem.NewTowerData.Element);
        }
        
         protected class GetInputState : IState

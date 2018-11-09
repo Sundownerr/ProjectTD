@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Game.Tower.Data.Stats;
 
 namespace Game.Systems
 {
     public class TowerCreatingSystem 
     {      
+        public event EventHandler<ElementType> AddedNewAvailableTower = delegate{};
+
         public TowerCreatingSystem() 
         {           
             GM.Instance.TowerCreatingSystem = this;
@@ -43,8 +47,7 @@ namespace Game.Systems
                         GM.Instance.BuildUISystem.AddTowerButton(elementList[id].RarityList[i].TowerList[j]);                 
                     }      
 
-            GM.Instance.BuildUISystem.UpdateAvailableElement();
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.BuildUISystem.ChoosedElement);
+            AddedNewAvailableTower.Invoke(this, GM.Instance.BuildUISystem.ChoosedElement);
         }
     }
 }

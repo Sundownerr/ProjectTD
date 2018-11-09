@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Game.Tower.Data.Stats;
 using UnityEngine;
+using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
@@ -9,6 +12,7 @@ namespace Game.Systems
         public Vector3 GhostedTowerPos { get => ghostedTowerPos; set => ghostedTowerPos = value; }
         public Color GhostedTowerColor { get => ghostedTowerColor; set => ghostedTowerColor = value; }
         public bool IsTowerLimitOk { get => isTowerLimitOk; set => isTowerLimitOk = value; }
+        public event EventHandler<ElementType> TowerStateChanged = delegate{};
 
         private bool isTowerLimitOk;
         private Color transparentRed, transparentGreen, towerColor, ghostedTowerColor;
@@ -52,7 +56,7 @@ namespace Game.Systems
             {
                 GM.PlayerState = State.PlacingTower;
 
-                var newTower = Object.Instantiate(
+                var newTower = U.Instantiate(
                     GM.Instance.PlayerInputSystem.NewTowerData.Prefab, 
                     Vector3.zero - Vector3.up * 10, 
                     Quaternion.identity, 
@@ -61,7 +65,7 @@ namespace Game.Systems
                 var newTowerSystem = newTower.GetComponent<Tower.TowerSystem>();
                 lastTower = newTowerSystem;
 
-                newTowerSystem.Stats = Object.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData);
+                newTowerSystem.Stats = U.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData);
                 newTowerSystem.Stats.IsInstanced = true;
                 newTowerSystem.SetSystem();
 
@@ -70,8 +74,7 @@ namespace Game.Systems
                 GM.Instance.ResourceSystem.AddTowerLimit(newTowerLimit);
                 GM.Instance.ResourceSystem.AddGold(-newGoldCost);
 
-                GM.Instance.BuildUISystem.UpdateAvailableElement();
-                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);      
+                TowerStateChanged?.Invoke(this, GM.Instance.PlayerInputSystem.NewTowerData.Element);
             }        
         }
 
@@ -135,14 +138,13 @@ namespace Game.Systems
             GM.Instance.ResourceSystem.AddTowerLimit(-newTowerLimit);
             GM.Instance.ResourceSystem.AddGold(newGoldCost);
 
-            Object.Destroy(GM.Instance.PlacedTowerList[lastTowerIndex]);
+            U.Destroy(GM.Instance.PlacedTowerList[lastTowerIndex]);
             GM.Instance.PlacedTowerList.RemoveAt(lastTowerIndex);
 
             GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);
             GM.Instance.BuildUISystem.AddTowerButton(GM.Instance.PlayerInputSystem.NewTowerData); 
 
-            GM.Instance.BuildUISystem.UpdateAvailableElement();
-            GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);     
+            TowerStateChanged?.Invoke(this, GM.Instance.PlayerInputSystem.NewTowerData.Element);   
         }
 
         protected class GetCellDataState : IState
@@ -230,8 +232,7 @@ namespace Game.Systems
             public void Enter()
             {
                 o.PlaceTower();
-                GM.Instance.BuildUISystem.UpdateAvailableElement();
-                GM.Instance.BuildUISystem.UpdateRarity(GM.Instance.PlayerInputSystem.NewTowerData.Element);
+                o.TowerStateChanged?.Invoke(o, GM.Instance.PlayerInputSystem.NewTowerData.Element);
 
                 o.state.ChangeState(new GetInputState(o));      
             }

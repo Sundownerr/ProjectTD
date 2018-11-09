@@ -50,7 +50,6 @@ namespace Game.Systems
         private void UpdateValues(object sender, EventArgs e)
         {
             choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;  
-
             choosedTower.StatsSystem.StatsChanged += UpdateValues;
 
             TowerName.text = choosedTower.Stats.Name;
@@ -63,17 +62,9 @@ namespace Game.Systems
             SpellCritChance.text    = KiloFormat(choosedTower.Stats.SpellCritChance) + "%";
             SpellDamage.text        = KiloFormat(choosedTower.Stats.SpellDamage) + "%";
             CritChance.text         = KiloFormat(choosedTower.Stats.CritChance) + "%";
-
-            var isHaveUpgrade =
-              choosedTower.Stats.GradeList.Count > 0;          
-
-            if (isHaveUpgrade)
-                UpgradeButton.gameObject.SetActive(true);
-            else
-                UpgradeButton.gameObject.SetActive(false);
-        }
-
-        private void OnDestroy() => GM.Instance.PlayerInputSystem.ChoosedTower.StatsSystem.StatsChanged -= UpdateValues;       
+      
+            UpgradeButton.gameObject.SetActive(choosedTower.Stats.GradeList.Count > 0);          
+        }            
     }
 }
 
