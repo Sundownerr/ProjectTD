@@ -1,5 +1,6 @@
 ﻿using UnityEngine.UI;
 using TMPro;
+using System;
 
 namespace Game.Systems
 {
@@ -9,6 +10,7 @@ namespace Game.Systems
         public bool IsWaveStarted, IsPlayerReady;
         public int WaveTimer;
         public TextMeshProUGUI Gold, MagicCrystals, TowerLimit;
+   
 
         protected override void Awake()
         {
@@ -19,22 +21,27 @@ namespace Game.Systems
             LearnForceButton.onClick.AddListener(LearnForce);
             GetTowerButton.onClick.AddListener(GetTower);
 
-            UpdateResourceValues();
+            UpdateUI(this, new EventArgs());
 
             GM.Instance.BaseUISystem = this;
+            
         }
 
-        public void UpdateResourceValues()
+        public void Start()
         {
-            Gold.text = KiloFormat(GM.Instance.PlayerData.Gold);
-            MagicCrystals.text = KiloFormat(GM.Instance.PlayerData.MagicCrystals);
-            TowerLimit.text = GM.Instance.PlayerData.CurrentTowerLimit + "/" + GM.Instance.PlayerData.MaxTowerLimit;
+            GM.Instance.ResourceSystem.ResourcesChanged += UpdateUI;
+        }
+
+        public void UpdateUI(object sender, EventArgs e)
+        {
+            Gold.text           = KiloFormat(GM.Instance.PlayerData.Gold);
+            MagicCrystals.text  = KiloFormat(GM.Instance.PlayerData.MagicCrystals);
+            TowerLimit.text     = GM.Instance.PlayerData.CurrentTowerLimit + "/" + GM.Instance.PlayerData.MaxTowerLimit;
         }
 
         private void StartWave()
         {
-            if(GM.Instance.WaveSystem.WaveNumber <= GM.Instance.WaveAmount)
-                IsWaveStarted = true;
+            IsWaveStarted = GM.Instance.WaveSystem.WaveNumber <= GM.Instance.WaveAmount;
         }
 
         private void LearnForce()

@@ -64,11 +64,11 @@ namespace Game.Systems
             {                            
                 if (isNotPlacingTower)
                     GM.PlayerState = State.ChoosedTower;
-                    
+
                 ChoosedTower = hit.transform.gameObject.GetComponent<TowerSystem>();  
                 MouseOnTower?.Invoke(this, new EventArgs());
             }
-            else        
+            else 
                 if (isNotPlacingTower)
                     GM.PlayerState = State.Idle;           
 
