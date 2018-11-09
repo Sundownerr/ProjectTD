@@ -11,7 +11,6 @@ namespace Game.Systems
         public int WaveTimer;
         public TextMeshProUGUI Gold, MagicCrystals, TowerLimit;
    
-
         protected override void Awake()
         {
             base.Awake();
@@ -23,8 +22,7 @@ namespace Game.Systems
 
             UpdateUI(this, new EventArgs());
 
-            GM.Instance.BaseUISystem = this;
-            
+            GM.Instance.BaseUISystem = this;   
         }
 
         public void Start()

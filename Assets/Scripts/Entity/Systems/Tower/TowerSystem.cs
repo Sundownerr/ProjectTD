@@ -69,8 +69,7 @@ namespace Game.Tower
 
             rendererList = GetComponentsInChildren<Renderer>();
 
-            bullet.SetActive(false);
-            
+            bullet.SetActive(false);          
         }
 
         private void Update()
@@ -92,31 +91,6 @@ namespace Game.Tower
                 rendererList[i].material.color = color;
         }
 
-        private void StartPlacing()
-        {
-            SetTowerColor(GM.Instance.TowerPlaceSystem.GhostedTowerColor);
-            transform.position = GM.Instance.TowerPlaceSystem.GhostedTowerPos;
-        }
-
-        private void EndPlacing()
-        {
-            transform.position = ocuppiedCell.transform.position;
-
-            SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
-
-            var placeEffect = Instantiate(GM.Instance.ElementPlaceEffectList[(int)Stats.Element],
-                transform.position + Vector3.up * 5,
-                Quaternion.identity);
-
-            Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
-
-            gameObject.layer = 14;
-            rangeSystem.SetShow(false);
-
-            GM.Instance.PlayerInputSystem.NewTowerData = null;
-            isTowerPlaced = true;
-        }
-
         private void RotateAtCreep(GameObject target)
         {
             var offset = target.transform.position - transform.position;
@@ -131,38 +105,6 @@ namespace Game.Tower
 
         public void AddExp(int amount) => StatsSystem.AddExp(amount);
 
-        public void Upgrade()
-        {
-            var isGradeCountOk =
-                Stats.GradeList.Count > 0 &&
-                Stats.GradeCount < Stats.GradeList.Count;
-
-            if (isGradeCountOk)
-            {
-                var upgradedTowerPrefab = Instantiate(Stats.GradeList[0].Prefab, transform.position, Quaternion.identity, GM.Instance.TowerParent);
-                var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
-
-                upgradedTowerSystem.StatsSystem.Upgrade(Stats, Stats.GradeList[0]);
-                upgradedTowerSystem.OcuppiedCell = OcuppiedCell;
-                upgradedTowerSystem.SetSystem();
-
-                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
-                statsSystem.OnStatsChanged();
-                
-                Destroy(gameObject);
-            }
-        }
-
-        public void Sell()
-        {
-            GM.Instance.ResourceSystem.AddTowerLimit(-Stats.TowerLimit);
-            GM.Instance.ResourceSystem.AddGold(Stats.GoldCost);
-
-            ocuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
-            GM.Instance.PlacedTowerList.Remove(gameObject);
-            Destroy(gameObject);
-        }
-
         protected class SpawnState : IState
         {
             private readonly TowerSystem o;
@@ -173,13 +115,41 @@ namespace Game.Tower
 
             public void Execute()
             {
+                void StartPlacing()
+                {
+                    o.SetTowerColor(GM.Instance.TowerPlaceSystem.GhostedTowerColor);
+                    o.transform.position = GM.Instance.TowerPlaceSystem.GhostedTowerPos;
+                }
+
                 if (GM.PlayerState == State.PlacingTower)
-                    o.StartPlacing();
+                    StartPlacing();
                 else
                     o.state.ChangeState(new LookForCreepState(o));
             }
 
-            public void Exit() => o.EndPlacing();           
+            public void Exit() 
+            {
+                void EndPlacing()
+                {
+                    o.transform.position = o.ocuppiedCell.transform.position;
+
+                    o.SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
+
+                    var placeEffect = Instantiate(GM.Instance.ElementPlaceEffectList[(int)o.Stats.Element],
+                        o.transform.position + Vector3.up * 5,
+                        Quaternion.identity);
+
+                    Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
+
+                    o.gameObject.layer = 14;
+                    o.rangeSystem.SetShow(false);
+
+                    GM.Instance.PlayerInputSystem.NewTowerData = null;
+                    o.isTowerPlaced = true;
+                }
+
+                EndPlacing();  
+            }          
         }
 
         protected class LookForCreepState : IState

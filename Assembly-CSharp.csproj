@@ -195,6 +195,7 @@
      <Compile Include="Assets\Scripts\Entity\Systems\DamageSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\EffectSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\EntitySystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Iterfaces.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\AbilitySystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Combat.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Range.cs" />

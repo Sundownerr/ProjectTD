@@ -50,9 +50,37 @@ namespace Game.Systems
 
         private void Update() => state.Update();
 
-        private void SellTower(object sender, EventArgs e) => ChoosedTower.Sell();                 
+        private void SellTower(object sender, EventArgs e)
+        {
+            GM.Instance.ResourceSystem.AddTowerLimit(-ChoosedTower.Stats.TowerLimit);
+            GM.Instance.ResourceSystem.AddGold(ChoosedTower.Stats.GoldCost);
 
-        private void UpgradeTower(object sender, EventArgs e) => ChoosedTower.Upgrade();    
+            ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
+            GM.Instance.PlacedTowerList.Remove(ChoosedTower.gameObject);
+            Destroy(ChoosedTower.gameObject);
+        }                 
+
+        private void UpgradeTower(object sender, EventArgs e) 
+        {
+            var isGradeCountOk =
+                ChoosedTower.Stats.GradeList.Count > 0 &&
+                ChoosedTower.Stats.GradeCount < ChoosedTower.Stats.GradeList.Count;
+
+            if (isGradeCountOk)
+            {
+                var upgradedTowerPrefab = Instantiate(ChoosedTower.Stats.GradeList[0].Prefab, ChoosedTower.transform.position, Quaternion.identity, GM.Instance.TowerParent);
+                var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
+
+                upgradedTowerSystem.StatsSystem.Upgrade(ChoosedTower.Stats, ChoosedTower.Stats.GradeList[0]);
+                upgradedTowerSystem.OcuppiedCell = ChoosedTower.OcuppiedCell;
+                upgradedTowerSystem.SetSystem();
+
+                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
+                ChoosedTower.StatsSystem.OnStatsChanged();
+                
+                Destroy(gameObject);
+            }
+        }
 
         private void ActivateTowerUI(bool active)
         {             

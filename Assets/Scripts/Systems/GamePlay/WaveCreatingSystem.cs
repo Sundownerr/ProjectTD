@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Game.Systems
 {
-
     public class WaveCreatingSystem
     {
         public List<CreepData> CreateWave(RaceType race, int WaveCount, Wave wave)
