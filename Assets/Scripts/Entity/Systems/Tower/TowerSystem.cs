@@ -91,16 +91,6 @@ namespace Game.Tower
                 rendererList[i].material.color = color;
         }
 
-        private void RotateAtCreep(GameObject target)
-        {
-            var offset = target.transform.position - transform.position;
-            offset.y = 0;
-
-            var towerRotation = Quaternion.LookRotation(offset);
-
-            movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, towerRotation, Time.deltaTime * 9f);
-        }
-
         public List<Creep.CreepSystem> GetCreepInRangeList() => RangeSystem.CreepSystemList;
 
         public void AddExp(int amount) => StatsSystem.AddExp(amount);
@@ -178,7 +168,7 @@ namespace Game.Tower
             public void Enter() { }
 
             public void Execute()
-            {
+            {              
                 o.combatSystem.State.Update();
 
                 for (int i = 0; i < o.GetCreepInRangeList().Count; i++)
@@ -194,7 +184,16 @@ namespace Game.Tower
                     o.target = o.GetCreepInRangeList()[0].gameObject;
 
                 if (o.target != null)
-                    o.RotateAtCreep(o.target);
+                    RotateAtCreep();
+
+                void RotateAtCreep()
+                {
+                    var offset = o.target.transform.position - o.transform.position;
+                    offset.y = 0;
+                    o.movingPartTransform.rotation = Quaternion.Lerp(o.movingPartTransform.rotation, 
+                                                                    Quaternion.LookRotation(offset), 
+                                                                    Time.deltaTime * 9f);
+                }
             }
 
             public void Exit() { }

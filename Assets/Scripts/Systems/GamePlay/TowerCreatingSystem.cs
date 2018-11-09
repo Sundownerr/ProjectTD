@@ -8,10 +8,7 @@ namespace Game.Systems
     {      
         public event EventHandler<ElementType> AddedNewAvailableTower = delegate{};
 
-        public TowerCreatingSystem() 
-        {           
-            GM.Instance.TowerCreatingSystem = this;
-        }
+        public TowerCreatingSystem() => GM.Instance.TowerCreatingSystem = this;      
 
         public void CreateRandomTower()
         {
@@ -31,23 +28,23 @@ namespace Game.Systems
             for (int i = 0; i < leveledElementList.Count; i++)
                 for (int j = 0; j < GM.Instance.TowerDataBase.AllTowerList.ElementsList.Count; j++)
                     if (j == i) 
-                        GetTower(leveledElementList[i]);                                           
+                        GetTower(leveledElementList[i]);  
+
+            void GetTower(int id)
+            {
+                var allTowerList = GM.Instance.TowerDataBase.AllTowerList;     
+                var elementList = allTowerList.ElementsList;
+
+                for (int i = 0; i < elementList[id].RarityList.Count; i++)
+                    for (int j = 0; j < elementList[id].RarityList[i].TowerList.Count; j++)           
+                        if (elementList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
+                        {
+                            GM.Instance.AvailableTowerList.Add(elementList[id].RarityList[i].TowerList[j]);    
+                            GM.Instance.BuildUISystem.AddTowerButton(elementList[id].RarityList[i].TowerList[j]);                 
+                        }      
+
+                AddedNewAvailableTower.Invoke(this, GM.Instance.BuildUISystem.ChoosedElement);
+            }                                         
         }
-
-        private void GetTower(int id)
-        {
-            var allTowerList = GM.Instance.TowerDataBase.AllTowerList;     
-            var elementList = allTowerList.ElementsList;
-
-            for (int i = 0; i < elementList[id].RarityList.Count; i++)
-                for (int j = 0; j < elementList[id].RarityList[i].TowerList.Count; j++)           
-                    if (elementList[id].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
-                    {
-                        GM.Instance.AvailableTowerList.Add(elementList[id].RarityList[i].TowerList[j]);    
-                        GM.Instance.BuildUISystem.AddTowerButton(elementList[id].RarityList[i].TowerList[j]);                 
-                    }      
-
-            AddedNewAvailableTower.Invoke(this, GM.Instance.BuildUISystem.ChoosedElement);
-        }
-    }
+    }    
 }

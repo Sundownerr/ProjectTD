@@ -45,7 +45,6 @@ namespace Game.Creep.Data
         Boss        = 4
     }
 
-
     [Serializable]
     public class Race
     {
