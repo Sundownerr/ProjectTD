@@ -18,9 +18,7 @@ namespace Game.Creep
         private bool isKilled;
         private Renderer creepRenderer;
         private CreepData stats;
-        private Transform creepTransform;
         private int waypointIndex;
-        private StateMachine state;
         private EntitySystem lastDamageDealer;
 
         protected override void Awake()
@@ -28,15 +26,11 @@ namespace Game.Creep
             base.Awake();
 
             effectSystem = new EffectSystem();
-            creepTransform = transform;
-            creepTransform.position = GM.Instance.CreepSpawnPoint.transform.position + new Vector3(0, creepTransform.lossyScale.y, 0);
-
             CreepRenderer = transform.GetChild(0).GetComponent<Renderer>();
     
             GM.Instance.CreepList.Add(gameObject);
             GM.Instance.CreepSystemList.Add(this);
             IsVulnerable = true;
-            IsOn = true;
         }
     }
 }

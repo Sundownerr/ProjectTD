@@ -35,6 +35,10 @@ namespace Game.Systems
                 ChooseCreep<Boss>(fittingCreepList)
             };
 
+            for (int i = 0; i < wave.CreepTypeList.Count; i++)        
+                sortedCreepList.Add(GetCreepOfType(wave.CreepTypeList[i]));                     
+            return sortedCreepList;
+
             CreepData GetCreepOfType(CreepType type)
             {         
                 for (int i = 0; i < choosedCreepList.Length; i++)
@@ -42,11 +46,6 @@ namespace Game.Systems
                         return choosedCreepList[i];        
                 return null;
             }
-
-            for (int i = 0; i < wave.CreepTypeList.Count; i++)        
-                sortedCreepList.Add(GetCreepOfType(wave.CreepTypeList[i]));                     
-
-            return sortedCreepList;
         }
 
         private CreepData ChooseCreep<T> (List<CreepData> fittingCreepList) where T : CreepData

@@ -30,7 +30,7 @@ namespace Game.Systems
                 Count--;
                 towerCountText.text = Count.ToString();
                 
-                if(Count <= 1)
+                if(Count < 1)
                 {
                     GM.Instance.BuildUISystem.RemoveTowerButton(this);
                     Destroy(gameObject);

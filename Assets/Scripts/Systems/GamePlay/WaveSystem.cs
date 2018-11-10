@@ -104,28 +104,6 @@ namespace Game.Systems
                 }                       
         }
 
-        private void SpawnCreep(CreepData creepStats)
-        {
-            var creep = U.Instantiate(creepStats.Prefab, GM.Instance.CreepParent);  
-            creep.GetComponent<CreepSystem>().Stats = CalculateStats(creepStats, creepStats.ArmorType, waveNumber);
-
-            creepWaveList[creepWaveList.Count - 1].Add(creep);
-        }
-
-        private IEnumerator SpawnCreepWave(int needToSpawn, float delay)
-        {
-            var spawned = 0;
-              
-            while (spawned < needToSpawn)
-            {
-                SpawnCreep(currentWaveCreepList[spawned]);
-                spawned++;
-                yield return new WaitForSeconds(delay);
-            }
-
-            state.ChangeState(new GetInputState(this));
-        }
-
         protected class GetInputState : IState
         {
             private readonly WaveSystem o;
@@ -176,7 +154,31 @@ namespace Game.Systems
             public void Enter() 
             {
                 o.creepWaveList.Add(new List<GameObject>());
-                GM.Instance.StartCoroutine(o.SpawnCreepWave(o.currentWaveCreepList.Count, 0.2f));
+                GM.Instance.StartCoroutine(SpawnCreepWave(0.2f));
+
+                IEnumerator SpawnCreepWave(float delay)
+                {
+                    var spawned = 0;
+                    
+                    while (spawned < o.currentWaveCreepList.Count)
+                    {
+                        SpawnCreep();
+                        spawned++;
+                        yield return new WaitForSeconds(delay);
+                    }
+                    
+                    o.state.ChangeState(new GetInputState(o));
+
+                    void SpawnCreep()
+                    {
+                        var creepList = o.creepWaveList[o.creepWaveList.Count - 1];
+                        creepList.Add(U.Instantiate(o.currentWaveCreepList[spawned].Prefab, GM.Instance.CreepParent));                     
+                        creepList[creepList.Count - 1].GetComponent<CreepSystem>().Stats = o.CalculateStats(
+                                                                                    o.currentWaveCreepList[spawned], 
+                                                                                    o.currentWaveCreepList[spawned].ArmorType, 
+                                                                                    o.waveNumber);               
+                    }
+                }
             }
 
             public void Execute() { }
