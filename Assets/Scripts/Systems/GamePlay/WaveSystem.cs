@@ -172,7 +172,13 @@ namespace Game.Systems
                     void SpawnCreep()
                     {
                         var creepList = o.creepWaveList[o.creepWaveList.Count - 1];
-                        creepList.Add(U.Instantiate(o.currentWaveCreepList[spawned].Prefab, GM.Instance.CreepParent));                     
+
+                        creepList.Add(U.Instantiate(
+                            o.currentWaveCreepList[spawned].Prefab, 
+                            GM.Instance.CreepSpawnPoint.transform.position,
+                            Quaternion.identity, 
+                            GM.Instance.CreepParent));    
+
                         creepList[creepList.Count - 1].GetComponent<CreepSystem>().Stats = o.CalculateStats(
                                                                                     o.currentWaveCreepList[spawned], 
                                                                                     o.currentWaveCreepList[spawned].ArmorType, 

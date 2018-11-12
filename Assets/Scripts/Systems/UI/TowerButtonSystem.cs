@@ -8,9 +8,10 @@ namespace Game.Systems
     {
         public int Count { get => count; set => count = value; }
         public TowerData TowerData { get => towerData; set => towerData = value; }
+        public int PositionInList { get => positionInList; set => positionInList = value; }
 
         private TowerData towerData;
-        private int count;
+        private int positionInList, count;
         private TextMeshProUGUI towerCountText;
 
         protected override void Awake()
@@ -27,9 +28,10 @@ namespace Game.Systems
             {
                 GM.Instance.PlayerInputSystem.NewTowerData = TowerData;
                 GM.Instance.BuildUISystem.BuildNewTower();           
-                Count--;
-                towerCountText.text = Count.ToString();
+                count--;
+                towerCountText.text = count.ToString();
                 
+                Debug.Log(Count);
                 if(Count < 1)
                 {
                     GM.Instance.BuildUISystem.RemoveTowerButton(this);

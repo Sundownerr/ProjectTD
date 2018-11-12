@@ -22,6 +22,8 @@ namespace Game.Systems
         private List<GameObject> towerButtonGOList;
         private List<TowerButtonSystem> towerButtonList;
         private RectTransform rarityTransform;
+        private Vector2 newTowerButtonPos;
+        private List<Vector2> towerButtonPosList;
 
         protected override void Awake()
         {
@@ -32,6 +34,13 @@ namespace Game.Systems
             towerButtonGOList   = new List<GameObject>();
             towerButtonList     = new List<TowerButtonSystem>();
             availableTowerList  = new List<TowerData>();
+            newTowerButtonPos   = new Vector2(0, 32);
+            towerButtonPosList  = new List<Vector2>();
+            availableTowerList  = GM.Instance.AvailableTowerList;
+            rarityTransform     = Rarity.GetComponent<RectTransform>();
+
+            for (int i = 1; i < 10; i++)            
+                towerButtonPosList.Add(newTowerButtonPos * i);            
 
             ElementButtonList[0].onClick.AddListener(ShowAstral);
             ElementButtonList[1].onClick.AddListener(ShowDarkness);
@@ -43,13 +52,9 @@ namespace Game.Systems
 
             UpdateAvailableElement();
 
-            rarityTransform = Rarity.GetComponent<RectTransform>();
-
             gameObject.SetActive(false);
             Rarity.gameObject.SetActive(false);
-            TowerButtonPrefab.SetActive(false);
-
-            availableTowerList = GM.Instance.AvailableTowerList;                 
+            TowerButtonPrefab.SetActive(false);                             
         }
 
         private void Start()
@@ -108,24 +113,50 @@ namespace Game.Systems
         {
             towerButtonGOList.Remove(towerButton.gameObject);
             towerButtonList.Remove(towerButton);
+            var buttonRectList = new List<RectTransform>();
+
+            for (int i = 0; i < towerButtonList.Count; i++)          
+                if(towerButtonList[i].TowerData.Element == towerButton.TowerData.Element)
+                    if(towerButtonList[i].TowerData.Rarity == towerButton.TowerData.Rarity)                                      
+                        buttonRectList.Add(towerButtonList[i].GetComponent<RectTransform>());
+
+            for (int i = 0; i < buttonRectList.Count; i++)              
+            {                             
+                var isNewPosBusy = false;
+                var newButtonPos = (Vector2)buttonRectList[i].localPosition - newTowerButtonPos;
+                
+                for (int j = 0; j < buttonRectList.Count; j++)                              
+                    if(newButtonPos.y == buttonRectList[j].localPosition.y)  
+                    {
+                        isNewPosBusy = true;
+                        break;  
+                    }                        
+                 
+                if(isNewPosBusy)
+                    break;
+                else
+                    if(newButtonPos.y > 0)
+                        buttonRectList[i].localPosition = newButtonPos;            
+            }                                                                                                        
         }
 
         public void AddTowerButton(TowerData towerData)
         {
-            var towerCount = 0;               
+            var towerCount = 1;               
             var isSameTower = false;
              
             for (int i = 0; i < towerButtonList.Count; i++)
+            {
                 if (towerButtonList[i].TowerData == towerData)
                 {          
                     isSameTower = true;            
                     AddTowerAmount(i);                                                                     
                 }  
-
-            for (int i = 0; i < towerButtonList.Count; i++)      
+            
                 if(towerButtonList[i].TowerData.Element == towerData.Element)
                     if(towerButtonList[i].TowerData.Rarity == towerData.Rarity)
                         towerCount++;
+            }
 
             if (!isSameTower)
                 CreateTowerButton();             
@@ -147,10 +178,12 @@ namespace Game.Systems
                 var towerButton = towerButtonList[towerButtonList.Count - 1];     
                 var towerButtonImage = towerButton.gameObject.transform.GetChild(0).GetComponent<Image>();
 
+                towerButton.PositionInList = towerCount;
                 towerButton.TowerData = towerData;
-                towerButton.GetComponent<RectTransform>().localPosition = new Vector2(0, 33 * (1 + towerCount));
+                towerButton.GetComponent<RectTransform>().localPosition = newTowerButtonPos * towerCount;
                 towerButtonImage.sprite = towerData.Image;
                 towerButton.Count = 1;
+               
             }        
         }
 

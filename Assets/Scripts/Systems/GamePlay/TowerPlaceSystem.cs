@@ -230,16 +230,16 @@ namespace Game.Systems
 
                 void DeleteTower()
                 {         
-                    var lastTowerIndex = GM.Instance.PlacedTowerList.Count - 1;
+                    var lastTower = GM.Instance.PlacedTowerList[GM.Instance.PlacedTowerList.Count - 1];
 
                     GM.Instance.ResourceSystem.AddTowerLimit(-o.newTowerLimit);
                     GM.Instance.ResourceSystem.AddGold(o.newGoldCost);
 
-                    U.Destroy(GM.Instance.PlacedTowerList[lastTowerIndex]);
-                    GM.Instance.PlacedTowerList.RemoveAt(lastTowerIndex);
-
-                    GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);
+                    U.Destroy(lastTower);
+                    GM.Instance.PlacedTowerList.Remove(lastTower);
+                    
                     GM.Instance.BuildUISystem.AddTowerButton(GM.Instance.PlayerInputSystem.NewTowerData); 
+                    GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);
 
                     o.TowerStateChanged?.Invoke(o, GM.Instance.PlayerInputSystem.NewTowerData.Element);   
                 }
