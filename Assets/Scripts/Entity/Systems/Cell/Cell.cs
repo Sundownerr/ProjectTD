@@ -19,9 +19,9 @@ namespace Game.Cells
         {
             base.Awake();
 
-            GM.Instance.CellList.Add(gameObject);
-            GM.Instance.CellStateList.Add(this);
-            transform.SetParent(GM.Instance.CellParent);
+            GM.I.CellList.Add(gameObject);
+            GM.I.CellStateList.Add(this);
+            transform.SetParent(GM.I.CellParent);
 
             cellRenderer = GetComponent<Renderer>();
             cellRenderer.material.color = new Color(0, 0, 0, 0);      

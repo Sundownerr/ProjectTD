@@ -26,7 +26,7 @@ namespace Game.Systems
 
         protected override void Awake()
         {
-            GM.Instance.BuildUISystem = this;  
+            GM.I.BuildUISystem = this;  
               
             base.Awake();          
 
@@ -34,7 +34,7 @@ namespace Game.Systems
             towerButtonList     = new List<TowerButtonSystem>();
             availableTowerList  = new List<TowerData>();
             newTowerButtonPos   = new Vector2(0, 32);
-            availableTowerList  = GM.Instance.AvailableTowerList;
+            availableTowerList  = GM.I.AvailableTowerList;
             rarityTransform     = Rarity.GetComponent<RectTransform>();       
 
             ElementButtonList[0].onClick.AddListener(ShowAstral);
@@ -53,9 +53,9 @@ namespace Game.Systems
 
         private void Start()
         {
-            GM.Instance.PlayerInputSystem.StartedTowerBuild         += UpdateUI;
-            GM.Instance.TowerCreatingSystem.AddedNewAvailableTower  += UpdateUI;
-            GM.Instance.TowerPlaceSystem.TowerStateChanged          += UpdateUI;
+            GM.I.PlayerInputSystem.StartedTowerBuild         += UpdateUI;
+            GM.I.TowerCreatingSystem.AddedNewAvailableTower  += UpdateUI;
+            GM.I.TowerPlaceSystem.TowerStateChanged          += UpdateUI;
         }
 
         public void UpdateUI(object sender, EventArgs e)
@@ -64,18 +64,18 @@ namespace Game.Systems
             UpdateRarity();
         }
 
-        private void DisableButtonList(ref List<Button> list)
+        private void ActivateButtonList(ref List<Button> list, bool active)
         {
-            for (int i = 0; i < list.Count; i++)
-                list[i].interactable = false;
+            for (int i = 0; i < list.Count; i++)            
+                list[i].gameObject.SetActive(active);                                   
         }
 
         private void UpdateAvailableElement()
         {           
-            DisableButtonList(ref ElementButtonList);      
+            ActivateButtonList(ref ElementButtonList, false);      
 
             for (int i = 0; i < availableTowerList.Count; i++)           
-                ElementButtonList[(int)availableTowerList[i].Element].interactable = true;
+                ElementButtonList[(int)availableTowerList[i].Element].gameObject.SetActive(true);
         }      
 
         public void BuildNewTower() => NeedToBuildTower?.Invoke(this, new EventArgs());
@@ -92,7 +92,7 @@ namespace Game.Systems
 
         private void UpdateRarity()
         {                          
-            DisableButtonList(ref RarityButtonList);
+            ActivateButtonList(ref RarityButtonList, false);
 
             for (int i = 0; i < towerButtonList.Count; i++) 
             {                        
@@ -100,7 +100,7 @@ namespace Game.Systems
                 towerButtonGOList[i].gameObject.SetActive(isButtonElementOk);  
 
                 if(isButtonElementOk)                                    
-                    RarityButtonList[(int)towerButtonList[i].TowerData.Rarity].interactable = true;                                                                          
+                    RarityButtonList[(int)towerButtonList[i].TowerData.Rarity].gameObject.SetActive(true);                                                                          
             }         
         }
 
@@ -153,15 +153,12 @@ namespace Game.Systems
                         towerCount++;
             }
 
-            Debug.Log("Creara");
-
             if (!isSameTower)
                 CreateTowerButton();             
             
             void AddTowerAmount(int index)
             {
                 towerButtonList[index].Count++;
-
                 towerButtonList[index].transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = towerButtonList[index].Count.ToString();       
             }           
 

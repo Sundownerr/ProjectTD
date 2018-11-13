@@ -47,8 +47,8 @@ namespace Game.Cells
 
             if(isNothingHit || !isDownHit)
             {
-                GM.Instance.CellList.Remove(ownerCell.gameObject);
-                GM.Instance.CellStateList.Remove(ownerCell);
+                GM.I.CellList.Remove(ownerCell.gameObject);
+                GM.I.CellStateList.Remove(ownerCell);
                 Object.Destroy(ownerCell.gameObject);
             } 
             else
@@ -71,7 +71,7 @@ namespace Game.Cells
                 if (!Physics.Raycast(ownerCell.gameObject.transform.position, spawnDirection, rayDistance, buildLayerMask))
                 {
                     ownerCell.IsExpanded = true;
-                    Object.Instantiate(GM.Instance.CellPrefab, ownerCell.gameObject.transform.position + spawnDirection * spacing, Quaternion.identity);    
+                    Object.Instantiate(GM.I.CellPrefab, ownerCell.gameObject.transform.position + spawnDirection * spacing, Quaternion.identity);    
                 }   
             }
         }

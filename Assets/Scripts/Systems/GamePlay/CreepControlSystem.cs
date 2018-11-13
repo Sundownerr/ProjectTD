@@ -14,11 +14,11 @@ namespace Game.Systems
         {
             if(creep.IsOn && creep != null)
             {
-                var waypointTransform = GM.Instance.WaypointList[creep.WaypointIndex].transform;
+                var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;
                 var creepTransform = creep.gameObject.transform;
-                var waypointReached = ExtendedMonoBehaviour.CalcDistance(creepTransform.position, waypointTransform.position) < 70;
+                var waypointReached = QoL.CalcDistance(creepTransform.position, waypointTransform.position) < 70;
 
-                if (creep.WaypointIndex < GM.Instance.WaypointList.Length - 1)
+                if (creep.WaypointIndex < GM.I.WaypointList.Length - 1)
                     if (!waypointReached)                    
                         MoveAndRotateCreep(creep);                                                     
                     else
@@ -29,8 +29,7 @@ namespace Game.Systems
         }
 
 		private static void MoveAndRotateCreep(CreepSystem creep)
-        {
-           
+        {           
             var creepTransform = creep.gameObject.transform;
             creepTransform.Translate(Vector3.forward * Time.deltaTime * creep.Stats.MoveSpeed, Space.Self);
 
@@ -43,7 +42,7 @@ namespace Game.Systems
         private static void RotateCreep(CreepSystem creep)
         {
             var creepTransform = creep.gameObject.transform;
-            var lookRotation = Quaternion.LookRotation(GM.Instance.WaypointList[creep.WaypointIndex].transform.position - creepTransform.position);
+            var lookRotation = Quaternion.LookRotation(GM.I.WaypointList[creep.WaypointIndex].transform.position - creepTransform.position);
             var rotation = Quaternion.Lerp(creepTransform.rotation, lookRotation, Time.deltaTime * 10f);
             rotation.z = 0;
             rotation.x = 0;
@@ -53,7 +52,7 @@ namespace Game.Systems
 
         private static void DestroyCreep(CreepSystem creep)
         {
-            GM.Instance.CreepList.Remove(creep.gameObject);
+            GM.I.CreepList.Remove(creep.gameObject);
             Object.Destroy(creep.gameObject);
         }
 
@@ -62,7 +61,7 @@ namespace Game.Systems
             if (creep.LastDamageDealer is TowerSystem tower)
             {
                 tower.AddExp(creep.Stats.Exp);
-                GM.Instance.ResourceSystem.AddGold(creep.Stats.Gold);
+                GM.I.ResourceSystem.AddGold(creep.Stats.Gold);
             }
             
             DestroyCreep(creep);

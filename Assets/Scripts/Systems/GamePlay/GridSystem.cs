@@ -14,20 +14,50 @@ namespace Game.Systems
 
         public GridSystem()
         {
-            GM.Instance.GridSystem = this;
+            GM.I.GridSystem = this;
 
             CreateGrid();
  
             red = new Color(0.3f, 0.1f, 0.1f, 0.6f);
             green = new Color(0.1f, 0.3f, 0.1f, 0.5f);
-            blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);         
+            blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);      
+
+            void CreateGrid()
+            {
+                cellExpandSystem = new CellExpandSystem();
+
+                CreateMainCell();
+
+                for (int i = 0; i < GM.I.CellStateList.Count; i++)        
+                    if(!GM.I.CellStateList[i].IsExpanded)
+                        cellExpandSystem.Expand(GM.I.CellStateList[i]);     
+
+                IsGridBuilded = true;
+            }   
+
+            void CreateMainCell()
+            {          
+                for (var i = 0; i < GM.I.CellAreaList.Length; i++)
+                {
+                    var ray = new Ray(GM.I.CellAreaList[i].transform.position, Vector3.up);
+                    var layerMask = 1 << 15;
+
+                    if (!Physics.Raycast(ray, 100, layerMask))
+                    {
+                        var spawnPos = GM.I.CellAreaList[i].transform.position + 
+                            new Vector3(0, GM.I.CellAreaList[i].transform.localScale.y / 1.9f, 0);
+
+                        Object.Instantiate(GM.I.CellPrefab, spawnPos, Quaternion.identity);                       
+                    }
+                }
+            }
         }       
 
         public void Update()
         {
             if (IsGridBuilded)
             {
-                var lastCell = GM.Instance.CellList[GM.Instance.CellList.Count - 1];
+                var lastCell = GM.I.CellList[GM.I.CellList.Count - 1];
 
                 if (GM.PlayerState == State.PlacingTower)
                 {
@@ -39,50 +69,20 @@ namespace Game.Systems
                 else if (lastCell.activeSelf)
                     SetCellsActive(false);
             }
-        }
 
-        private void CreateGrid()
-        {
-            cellExpandSystem = new CellExpandSystem();
-
-            CreateMainCell();
-
-            for (int i = 0; i < GM.Instance.CellStateList.Count; i++)        
-                if(!GM.Instance.CellStateList[i].IsExpanded)
-                    cellExpandSystem.Expand(GM.Instance.CellStateList[i]);     
-
-            IsGridBuilded = true;
-        }
-
-        private void CreateMainCell()
-        {          
-            for (var i = 0; i < GM.Instance.CellAreaList.Length; i++)
+            void SetCellsActive(bool active)
             {
-                var ray = new Ray(GM.Instance.CellAreaList[i].transform.position, Vector3.up);
-                var layerMask = 1 << 15;
-
-                if (!Physics.Raycast(ray, 100, layerMask))
-                {
-                    var spawnPos = GM.Instance.CellAreaList[i].transform.position + 
-                        new Vector3(0, GM.Instance.CellAreaList[i].transform.localScale.y / 1.9f, 0);
-
-                    Object.Instantiate(GM.Instance.CellPrefab, spawnPos, Quaternion.identity);                       
-                }
+                for (int i = 0; i < GM.I.CellList.Count; i++)
+                    GM.I.CellList[i].SetActive(active);
             }
-        }
 
-        private void SetCellsActive(bool active)
-        {
-            for (int i = 0; i < GM.Instance.CellList.Count; i++)
-                GM.Instance.CellList[i].SetActive(active);
-        }
-
-        private void SetCellsColors()
-        {
-            for (int i = 0; i < GM.Instance.CellStateList.Count; i++)
+            void SetCellsColors()
             {
-                var cell = GM.Instance.CellStateList[i];
-                cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? green : blue;              
+                for (int i = 0; i < GM.I.CellStateList.Count; i++)
+                {
+                    var cell = GM.I.CellStateList[i];
+                    cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? green : blue;              
+                }
             }
         }
     }

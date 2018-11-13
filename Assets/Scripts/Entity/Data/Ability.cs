@@ -144,7 +144,7 @@ namespace Game.Data
                     o.EffectList[i].Init();  
 
                 if(!o.isStacked && !o.isOnCooldown)
-                    GM.Instance.StartCoroutine(o.StartCooldown(o.Cooldown)); 
+                    GM.I.StartCoroutine(o.StartCooldown(o.Cooldown)); 
 
                 if (!(o.effectCount >= o.EffectList.Count - 1))
                     if (nextEffectTimer > o.EffectList[o.effectCount].NextInterval)                  

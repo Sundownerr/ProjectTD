@@ -22,50 +22,50 @@ namespace Game.Systems
 
             UpdateUI(this, new EventArgs());
 
-            GM.Instance.BaseUISystem = this;   
+            GM.I.BaseUISystem = this;   
         }
 
         public void Start()
         {
-            GM.Instance.ResourceSystem.ResourcesChanged += UpdateUI;
+            GM.I.ResourceSystem.ResourcesChanged += UpdateUI;
         }
 
         public void UpdateUI(object sender, EventArgs e)
         {
-            Gold.text           = KiloFormat(GM.Instance.PlayerData.Gold);
-            MagicCrystals.text  = KiloFormat(GM.Instance.PlayerData.MagicCrystals);
-            TowerLimit.text     = GM.Instance.PlayerData.CurrentTowerLimit + "/" + GM.Instance.PlayerData.MaxTowerLimit;
+            Gold.text           = QoL.KiloFormat(GM.I.PlayerData.Gold);
+            MagicCrystals.text  = QoL.KiloFormat(GM.I.PlayerData.MagicCrystals);
+            TowerLimit.text     = GM.I.PlayerData.CurrentTowerLimit + "/" + GM.I.PlayerData.MaxTowerLimit;
         }
 
         private void StartWave()
         {
-            IsWaveStarted = GM.Instance.WaveSystem.WaveNumber <= GM.Instance.WaveAmount;
+            IsWaveStarted = GM.I.WaveSystem.WaveNumber <= GM.I.WaveAmount;
         }
 
         private void LearnForce()
         {
-            if (GM.Instance.ElementUISystem.gameObject.activeSelf)
-                GM.Instance.ElementUISystem.gameObject.SetActive(false);
+            if (GM.I.ElementUISystem.gameObject.activeSelf)
+                GM.I.ElementUISystem.gameObject.SetActive(false);
             else
             {
-                GM.Instance.ElementUISystem.gameObject.SetActive(true);
-                GM.Instance.BuildUISystem.gameObject.SetActive(false);
+                GM.I.ElementUISystem.gameObject.SetActive(true);
+                GM.I.BuildUISystem.gameObject.SetActive(false);
             }         
         }
 
         private void GetTower()
         {
-            GM.Instance.TowerCreatingSystem.CreateRandomTower();        
+            GM.I.TowerCreatingSystem.CreateRandomTower();        
         }
 
         private void BuildTower()
         {
-            if (GM.Instance.BuildUISystem.gameObject.activeSelf)
-                GM.Instance.BuildUISystem.gameObject.SetActive(false);
+            if (GM.I.BuildUISystem.gameObject.activeSelf)
+                GM.I.BuildUISystem.gameObject.SetActive(false);
             else
             {
-                GM.Instance.BuildUISystem.gameObject.SetActive(true);
-                GM.Instance.ElementUISystem.gameObject.SetActive(false);
+                GM.I.BuildUISystem.gameObject.SetActive(true);
+                GM.I.ElementUISystem.gameObject.SetActive(false);
             }         
         }
     }

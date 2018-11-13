@@ -62,7 +62,7 @@ namespace Game.Tower
             combatSystem.Set();
             abilitySystem.Set();
 
-            range = Instantiate(GM.Instance.RangePrefab, transform);           
+            range = Instantiate(GM.I.RangePrefab, transform);           
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
             rangeSystem = range.GetComponent<System.Range>();
             rangeSystem.SetShow();
@@ -107,8 +107,8 @@ namespace Game.Tower
             {
                 void StartPlacing()
                 {
-                    o.SetTowerColor(GM.Instance.TowerPlaceSystem.GhostedTowerColor);
-                    o.transform.position = GM.Instance.TowerPlaceSystem.GhostedTowerPos;
+                    o.SetTowerColor(GM.I.TowerPlaceSystem.GhostedTowerColor);
+                    o.transform.position = GM.I.TowerPlaceSystem.GhostedTowerPos;
                 }
 
                 if (GM.PlayerState == State.PlacingTower)
@@ -125,7 +125,7 @@ namespace Game.Tower
 
                     o.SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
 
-                    var placeEffect = Instantiate(GM.Instance.ElementPlaceEffectList[(int)o.Stats.Element],
+                    var placeEffect = Instantiate(GM.I.ElementPlaceEffectList[(int)o.Stats.Element],
                         o.transform.position + Vector3.up * 5,
                         Quaternion.identity);
 
@@ -134,7 +134,7 @@ namespace Game.Tower
                     o.gameObject.layer = 14;
                     o.rangeSystem.SetShow(false);
 
-                    GM.Instance.PlayerInputSystem.NewTowerData = null;
+                    GM.I.PlayerInputSystem.NewTowerData = null;
                     o.isTowerPlaced = true;
                 }
 

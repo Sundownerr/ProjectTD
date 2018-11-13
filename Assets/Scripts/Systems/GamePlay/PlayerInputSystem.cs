@@ -35,7 +35,7 @@ namespace Game.Systems
            
             results = new List<RaycastResult>();
 
-            GM.Instance.PlayerInputSystem = this;
+            GM.I.PlayerInputSystem = this;
 
             state = new StateMachine();
             state.ChangeState(new GetInputState(this));
@@ -43,20 +43,20 @@ namespace Game.Systems
 
         private void Start()
         {
-            GM.Instance.TowerUISystem.Selling += SellTower;
-            GM.Instance.TowerUISystem.Upgrading += UpgradeTower;
-            GM.Instance.BuildUISystem.NeedToBuildTower += BuildNewTower;
+            GM.I.TowerUISystem.Selling += SellTower;
+            GM.I.TowerUISystem.Upgrading += UpgradeTower;
+            GM.I.BuildUISystem.NeedToBuildTower += BuildNewTower;
         }
 
         private void Update() => state.Update();
 
         private void SellTower(object sender, EventArgs e)
         {
-            GM.Instance.ResourceSystem.AddTowerLimit(-ChoosedTower.Stats.TowerLimit);
-            GM.Instance.ResourceSystem.AddGold(ChoosedTower.Stats.GoldCost);
+            GM.I.ResourceSystem.AddTowerLimit(-ChoosedTower.Stats.TowerLimit);
+            GM.I.ResourceSystem.AddGold(ChoosedTower.Stats.GoldCost);
 
             ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
-            GM.Instance.PlacedTowerList.Remove(ChoosedTower.gameObject);
+            GM.I.PlacedTowerList.Remove(ChoosedTower.gameObject);
             Destroy(ChoosedTower.gameObject);
         }                 
 
@@ -68,14 +68,14 @@ namespace Game.Systems
 
             if (isGradeCountOk)
             {
-                var upgradedTowerPrefab = Instantiate(ChoosedTower.Stats.GradeList[0].Prefab, ChoosedTower.transform.position, Quaternion.identity, GM.Instance.TowerParent);
+                var upgradedTowerPrefab = Instantiate(ChoosedTower.Stats.GradeList[0].Prefab, ChoosedTower.transform.position, Quaternion.identity, GM.I.TowerParent);
                 var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
 
                 upgradedTowerSystem.StatsSystem.Upgrade(ChoosedTower.Stats, ChoosedTower.Stats.GradeList[0]);
                 upgradedTowerSystem.OcuppiedCell = ChoosedTower.OcuppiedCell;
                 upgradedTowerSystem.SetSystem();
 
-                GM.Instance.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
+                GM.I.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
                 ChoosedTower.StatsSystem.OnStatsChanged();
                 
                 Destroy(gameObject);
@@ -100,17 +100,17 @@ namespace Game.Systems
                 if (isNotPlacingTower)
                     GM.PlayerState = State.Idle;           
 
-            GM.Instance.TowerUISystem.gameObject.SetActive(active);
+            GM.I.TowerUISystem.gameObject.SetActive(active);
         }       
 
         private void BuildNewTower(object sender, EventArgs e)
         {
             GM.PlayerState = State.PreparePlacingTower;
 
-            for (int i = 0; i < GM.Instance.AvailableTowerList.Count; i++)
-                if (GM.Instance.AvailableTowerList[i] == NewTowerData)
+            for (int i = 0; i < GM.I.AvailableTowerList.Count; i++)
+                if (GM.I.AvailableTowerList[i] == NewTowerData)
                 {
-                    GM.Instance.AvailableTowerList.RemoveAt(i);
+                    GM.I.AvailableTowerList.RemoveAt(i);
                     break;
                 }
             

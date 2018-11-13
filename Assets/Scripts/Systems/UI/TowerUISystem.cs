@@ -21,7 +21,7 @@ namespace Game.Systems
         {
             base.Awake();
 
-            GM.Instance.TowerUISystem = this;
+            GM.I.TowerUISystem = this;
             
             SellButton.onClick.AddListener(Sell);
             UpgradeButton.onClick.AddListener(Upgrade);         
@@ -29,14 +29,14 @@ namespace Game.Systems
 
         private void Start()
         {
-            GM.Instance.PlayerInputSystem.MouseOnTower += UpdateValues;   
+            GM.I.PlayerInputSystem.MouseOnTower += UpdateValues;   
             gameObject.SetActive(false);         
         }
 
         private void OnDisable()
         {
-            if(GM.Instance.PlayerInputSystem?.ChoosedTower != null)
-                GM.Instance.PlayerInputSystem.ChoosedTower.StatsSystem.StatsChanged -= UpdateValues;
+            if(GM.I.PlayerInputSystem?.ChoosedTower != null)
+                GM.I.PlayerInputSystem.ChoosedTower.StatsSystem.StatsChanged -= UpdateValues;
         }
 
         private void Sell()
@@ -49,19 +49,19 @@ namespace Game.Systems
         
         private void UpdateValues(object sender, EventArgs e)
         {
-            choosedTower = GM.Instance.PlayerInputSystem.ChoosedTower;  
+            choosedTower = GM.I.PlayerInputSystem.ChoosedTower;  
             choosedTower.StatsSystem.StatsChanged += UpdateValues;
 
             TowerName.text = choosedTower.Stats.Name;
-            Level.text              = KiloFormat(choosedTower.Stats.Level);
-            Damage.text             = KiloFormat(choosedTower.Stats.Damage.Value);
-            Range.text              = KiloFormat(choosedTower.Stats.Range);
-            Mana.text               = KiloFormat(choosedTower.Stats.Mana);
-            AttackSpeed.text        = KiloFormat(choosedTower.Stats.AttackSpeed);
-            TriggerChance.text      = KiloFormat(choosedTower.Stats.TriggerChance) + "%";
-            SpellCritChance.text    = KiloFormat(choosedTower.Stats.SpellCritChance) + "%";
-            SpellDamage.text        = KiloFormat(choosedTower.Stats.SpellDamage) + "%";
-            CritChance.text         = KiloFormat(choosedTower.Stats.CritChance) + "%";
+            Level.text              = QoL.KiloFormat(choosedTower.Stats.Level);
+            Damage.text             = QoL.KiloFormat(choosedTower.Stats.Damage.Value);
+            Range.text              = QoL.KiloFormat(choosedTower.Stats.Range);
+            Mana.text               = QoL.KiloFormat(choosedTower.Stats.Mana);
+            AttackSpeed.text        = QoL.KiloFormat(choosedTower.Stats.AttackSpeed);
+            TriggerChance.text      = QoL.KiloFormat(choosedTower.Stats.TriggerChance) + "%";
+            SpellCritChance.text    = QoL.KiloFormat(choosedTower.Stats.SpellCritChance) + "%";
+            SpellDamage.text        = QoL.KiloFormat(choosedTower.Stats.SpellDamage) + "%";
+            CritChance.text         = QoL.KiloFormat(choosedTower.Stats.CritChance) + "%";
       
             UpgradeButton.gameObject.SetActive(choosedTower.Stats.GradeList.Count > 0);          
         }            

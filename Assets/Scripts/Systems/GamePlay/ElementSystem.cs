@@ -10,36 +10,35 @@ namespace Game.Systems
             baseLearnCost = 20;
             levelLimit = 15;
 
-            GM.Instance.ElementSystem = this;
+            GM.I.ElementSystem = this;
         }
 
         private bool CheckCanLearn(int elementLevel)
         {
-            var learnCost = elementLevel + baseLearnCost;
+            var learnCost       = elementLevel + baseLearnCost;
             var isCanLearn      = elementLevel < levelLimit;
-            var isLearnCostOk   = learnCost <= GM.Instance.PlayerData.MagicCrystals;
+            var isLearnCostOk   = learnCost <= GM.I.PlayerData.MagicCrystals;
 
-            if (!(isLearnCostOk && isCanLearn))
+            if (!isCanLearn || !isLearnCostOk)
                 return false;
-            else
-            {
-                GM.Instance.ResourceSystem.AddMagicCrystal(-learnCost);
+           
+            GM.I.ResourceSystem.AddMagicCrystal(-learnCost);
 
-                var isButtonOk =
-                    GM.Instance.BaseUISystem.GetTowerButton != null &&
-                    !GM.Instance.BaseUISystem.GetTowerButton.gameObject.activeSelf;
+            var isButtonOk =
+                GM.I.BaseUISystem.GetTowerButton != null &&
+                !GM.I.BaseUISystem.GetTowerButton.gameObject.activeSelf;
 
-                if (isButtonOk)
-                    GM.Instance.BaseUISystem.GetTowerButton.gameObject.SetActive(true);
-                
-                return true;
-            }              
+            GM.I.BaseUISystem.GetTowerButton.gameObject.SetActive(isButtonOk);         
+            return true;                    
         }
 
         public void LearnElement(int elementId)
         {
-            if (CheckCanLearn(GM.Instance.PlayerData.ElementLevelList[elementId]))
-                GM.Instance.PlayerData.ElementLevelList[elementId]++;
+            if (CheckCanLearn(GM.I.PlayerData.ElementLevelList[elementId]))
+            {
+                GM.I.PlayerData.ElementLevelList[elementId]++;
+                GM.I.ElementUISystem.UpdateUI();
+            }
         }    
     }
 }

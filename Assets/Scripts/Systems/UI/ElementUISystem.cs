@@ -10,7 +10,7 @@ namespace Game.Systems
 
         protected override void Awake()
         {
-            GM.Instance.ElementUISystem = this;
+            GM.I.ElementUISystem = this;
 
             base.Awake();
 
@@ -25,59 +25,25 @@ namespace Game.Systems
             gameObject.SetActive(false);
         }
 
-        private void OnEnable() => UpdateValues();
+        private void OnEnable() => UpdateUI();
 
-        public void UpdateValues()
+        public void UpdateUI()
         {
-            AstralLevel.text    = GM.Instance.PlayerData.ElementLevelList[0].ToString();
-            DarknessLevel.text  = GM.Instance.PlayerData.ElementLevelList[1].ToString();
-            IceLevel.text       = GM.Instance.PlayerData.ElementLevelList[2].ToString();
-            IronLevel.text      = GM.Instance.PlayerData.ElementLevelList[3].ToString();
-            StormLevel.text     = GM.Instance.PlayerData.ElementLevelList[4].ToString();
-            NatureLevel.text    = GM.Instance.PlayerData.ElementLevelList[5].ToString();
-            FireLevel.text      = GM.Instance.PlayerData.ElementLevelList[6].ToString();
+            AstralLevel.text    = GM.I.PlayerData.ElementLevelList[0].ToString();
+            DarknessLevel.text  = GM.I.PlayerData.ElementLevelList[1].ToString();
+            IceLevel.text       = GM.I.PlayerData.ElementLevelList[2].ToString();
+            IronLevel.text      = GM.I.PlayerData.ElementLevelList[3].ToString();
+            StormLevel.text     = GM.I.PlayerData.ElementLevelList[4].ToString();
+            NatureLevel.text    = GM.I.PlayerData.ElementLevelList[5].ToString();
+            FireLevel.text      = GM.I.PlayerData.ElementLevelList[6].ToString();
         }
 
-        private void LearnAstral()
-        {
-            GM.Instance.ElementSystem.LearnElement(0);
-            UpdateValues();
-        }
-
-        private void LearnDarkness()
-        {
-            GM.Instance.ElementSystem.LearnElement(1);
-            UpdateValues();
-        }
-
-        private void LearnIce()
-        {
-            GM.Instance.ElementSystem.LearnElement(2);
-            UpdateValues();
-        }
-
-        private void LearnIron()
-        {
-            GM.Instance.ElementSystem.LearnElement(3);
-            UpdateValues();
-        }
-
-        private void LearnStorm()
-        {
-            GM.Instance.ElementSystem.LearnElement(4);
-            UpdateValues();
-        }
-
-        private void LearnNature()
-        {
-            GM.Instance.ElementSystem.LearnElement(5);
-            UpdateValues();
-        }
-
-        private void LearnFire()
-        {
-            GM.Instance.ElementSystem.LearnElement(6);
-            UpdateValues();
-        }
+        private void LearnAstral()  => GM.I.ElementSystem.LearnElement(0);
+        private void LearnDarkness() => GM.I.ElementSystem.LearnElement(1);
+        private void LearnIce()     => GM.I.ElementSystem.LearnElement(2);
+        private void LearnIron()    => GM.I.ElementSystem.LearnElement(3);
+        private void LearnStorm()   => GM.I.ElementSystem.LearnElement(4);
+        private void LearnNature()  => GM.I.ElementSystem.LearnElement(5);
+        private void LearnFire()    => GM.I.ElementSystem.LearnElement(6);      
     }
 }

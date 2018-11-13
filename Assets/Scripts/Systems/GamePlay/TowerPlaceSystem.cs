@@ -27,7 +27,7 @@ namespace Game.Systems
 
         public TowerPlaceSystem()
         {
-            GM.Instance.TowerPlaceSystem = this;
+            GM.I.TowerPlaceSystem = this;
             mainCam = Camera.main;
 
             transparentRed      = Color.red - new Color(0, 0, 0, 0.8f);
@@ -49,7 +49,7 @@ namespace Game.Systems
 
             public void Execute()
             {
-                if (GM.Instance.GridSystem.IsGridBuilded)
+                if (GM.I.GridSystem.IsGridBuilded)
                     o.state.ChangeState(new GetInputState(o));
             }
 
@@ -68,11 +68,11 @@ namespace Game.Systems
             {                
                 if (GM.PlayerState == State.PreparePlacingTower)
                 {
-                    o.newTowerLimit         = GM.Instance.PlayerInputSystem.NewTowerData.TowerLimit;
-                    o.newGoldCost           = GM.Instance.PlayerInputSystem.NewTowerData.GoldCost;
-                    o.newMagicCrystalCost   = GM.Instance.PlayerInputSystem.NewTowerData.MagicCrystalReq;
+                    o.newTowerLimit         = GM.I.PlayerInputSystem.NewTowerData.TowerLimit;
+                    o.newGoldCost           = GM.I.PlayerInputSystem.NewTowerData.GoldCost;
+                    o.newMagicCrystalCost   = GM.I.PlayerInputSystem.NewTowerData.MagicCrystalReq;
                     
-                    if (GM.Instance.ResourceSystem.CheckHaveResources(o.newTowerLimit, o.newGoldCost, o.newMagicCrystalCost))
+                    if (GM.I.ResourceSystem.CheckHaveResources(o.newTowerLimit, o.newGoldCost, o.newMagicCrystalCost))
                         o.state.ChangeState(new CreateTowerState(o));
                     else
                         o.state.ChangeState(new GetInputState(o));
@@ -94,33 +94,22 @@ namespace Game.Systems
                 o.state.ChangeState(new MoveTowerState(o));
 
                 void CreateTower()
-                {
-                    if (!GM.Instance.ResourceSystem.CheckHaveResources(o.newTowerLimit, o.newGoldCost, o.newMagicCrystalCost))
-                        o.state.ChangeState(new GetInputState(o));
-                    else
-                    {
-                        GM.PlayerState = State.PlacingTower;
+                {                
+                    GM.PlayerState = State.PlacingTower;
+                    GM.I.PlacedTowerList.Add(U.Instantiate(
+                        GM.I.PlayerInputSystem.NewTowerData.Prefab, 
+                        Vector3.zero - Vector3.up * 10, 
+                        Quaternion.identity, 
+                        GM.I.TowerParent));  
 
-                        var newTower = U.Instantiate(
-                            GM.Instance.PlayerInputSystem.NewTowerData.Prefab, 
-                            Vector3.zero - Vector3.up * 10, 
-                            Quaternion.identity, 
-                            GM.Instance.TowerParent);  
+                    o.lastTower = GM.I.PlacedTowerList[GM.I.PlacedTowerList.Count - 1].GetComponent<Tower.TowerSystem>();
+                    o.lastTower.Stats = U.Instantiate(GM.I.PlayerInputSystem.NewTowerData);
+                    o.lastTower.Stats.IsInstanced = true;
+                    o.lastTower.SetSystem();
+                    GM.I.ResourceSystem.AddTowerLimit(o.newTowerLimit);
+                    GM.I.ResourceSystem.AddGold(-o.newGoldCost);
 
-                        var newTowerSystem = newTower.GetComponent<Tower.TowerSystem>();
-                        o.lastTower = newTowerSystem;
-
-                        newTowerSystem.Stats = U.Instantiate(GM.Instance.PlayerInputSystem.NewTowerData);
-                        newTowerSystem.Stats.IsInstanced = true;
-                        newTowerSystem.SetSystem();
-
-                        GM.Instance.PlacedTowerList.Add(newTower);              
-
-                        GM.Instance.ResourceSystem.AddTowerLimit(o.newTowerLimit);
-                        GM.Instance.ResourceSystem.AddGold(-o.newGoldCost);
-
-                        o.TowerStateChanged?.Invoke(o, new EventArgs());
-                    }        
+                    o.TowerStateChanged?.Invoke(o, new EventArgs());                       
                 }
             }
             
@@ -145,8 +134,8 @@ namespace Game.Systems
                 {          
                     var ray = o.mainCam.ScreenPointToRay(Input.mousePosition);
 
-                    var cellList    = GM.Instance.CellStateList;
-                    var cellGOList  = GM.Instance.CellList;
+                    var cellList    = GM.I.CellStateList;
+                    var cellGOList  = GM.I.CellList;
 
                     var terrainLayer    = 1 << 9;
                     var cellLayer       = 1 << 15;
@@ -230,16 +219,16 @@ namespace Game.Systems
 
                 void DeleteTower()
                 {         
-                    var lastTower = GM.Instance.PlacedTowerList[GM.Instance.PlacedTowerList.Count - 1];
+                    var lastTower = GM.I.PlacedTowerList[GM.I.PlacedTowerList.Count - 1];
 
-                    GM.Instance.ResourceSystem.AddTowerLimit(-o.newTowerLimit);
-                    GM.Instance.ResourceSystem.AddGold(o.newGoldCost);
+                    GM.I.ResourceSystem.AddTowerLimit(-o.newTowerLimit);
+                    GM.I.ResourceSystem.AddGold(o.newGoldCost);
 
                     U.Destroy(lastTower);
-                    GM.Instance.PlacedTowerList.Remove(lastTower);
+                    GM.I.PlacedTowerList.Remove(lastTower);
                     
-                    GM.Instance.BuildUISystem.AddTowerButton(GM.Instance.PlayerInputSystem.NewTowerData); 
-                    GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);
+                    GM.I.BuildUISystem.AddTowerButton(GM.I.PlayerInputSystem.NewTowerData); 
+                    GM.I.AvailableTowerList.Add(GM.I.PlayerInputSystem.NewTowerData);
 
                     o.TowerStateChanged?.Invoke(o, new EventArgs());   
                 }

@@ -15,19 +15,16 @@ namespace Game.Systems
             	{
 					creep.LastDamageDealer = dealer;
 					creep.Stats.Health -= CalculateDamage();
+					creep.IsKilled = creep.Stats.Health <= 0;
 
-					if (creep.Stats.Health <= 0)
-					{
-						creep.IsKilled = true;
-						CreepControlSystem.GiveResources(creep);
-					}
+					if(creep.IsKilled)
+						CreepControlSystem.GiveResources(creep);					
 				}
 			
-
 			float CalculateDamage()
 			{				
 				if(dealer is TowerSystem tower)   					
-					damage = ExtendedMonoBehaviour.GetPercentOfValue(tower.Stats.DamageToRace[(int)creep.Stats.Race], damage);
+					damage = QoL.GetPercentOfValue(tower.Stats.DamageToRace[(int)creep.Stats.Race], damage);
 
 				// add armor modificator
 

@@ -60,7 +60,7 @@ namespace Game.Data
                 if (target == null)
                 {
                     End();
-                    GM.Instance.StopCoroutine(effectCoroutine);
+                    GM.I.StopCoroutine(effectCoroutine);
                 }
         }
 
@@ -83,7 +83,7 @@ namespace Game.Data
         public virtual void RestartState()
         {
             if (effectCoroutine != null)
-                GM.Instance.StopCoroutine(effectCoroutine);
+                GM.I.StopCoroutine(effectCoroutine);
           
             End();
             isMaxStackCount = false;

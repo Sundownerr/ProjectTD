@@ -11,13 +11,13 @@ namespace Game.Systems
     {
         public List<CreepData> CreateWave(RaceType race, int WaveCount, Wave wave)
         {
-            var raceList = GM.Instance.CreepDataBase.AllCreepList;       
+            var raceList = GM.I.CreepDataBase.AllCreepList;       
             var fittingCreepList = new List<CreepData>();      
 
             for (int raceId = 0; raceId < raceList.Count; raceId++)
                 if(raceId == (int)race)
                     for (int i = 0; i < raceList[raceId].CreepList.Count; i++)
-                        if(raceList[raceId].CreepList[i].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
+                        if(raceList[raceId].CreepList[i].WaveLevel >= GM.I.WaveSystem.WaveNumber)
                             fittingCreepList.Add(raceList[raceId].CreepList[i]);                  
                     
              

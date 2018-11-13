@@ -9,7 +9,7 @@ namespace Game.Systems
     {      
         public event EventHandler AddedNewAvailableTower = delegate{};
 
-        public TowerCreatingSystem() => GM.Instance.TowerCreatingSystem = this;      
+        public TowerCreatingSystem() => GM.I.TowerCreatingSystem = this;      
 
         public void CreateRandomTower()
         {
@@ -19,8 +19,8 @@ namespace Game.Systems
             //     GM.Instance.PlayerData.StartTowerRerollCount--;
             // }
             
-            var elementLevelList = GM.Instance.PlayerData.ElementLevelList;
-            var dataBaseElementList = GM.Instance.TowerDataBase.AllTowerList.ElementsList;
+            var elementLevelList = GM.I.PlayerData.ElementLevelList;
+            var dataBaseElementList = GM.I.TowerDataBase.AllTowerList.ElementsList;
 
             for (int lvldUpElementId = 0; lvldUpElementId < elementLevelList.Count; lvldUpElementId++)
                 if (elementLevelList[lvldUpElementId] > 0)
@@ -30,15 +30,15 @@ namespace Game.Systems
         
             void GetTower(int elementId)
             {
-                var allTowerList = GM.Instance.TowerDataBase.AllTowerList;     
+                var allTowerList = GM.I.TowerDataBase.AllTowerList;     
                 var elementList = allTowerList.ElementsList;
 
                 for (int i = 0; i < elementList[elementId].RarityList.Count; i++)
                     for (int j = 0; j < elementList[elementId].RarityList[i].TowerList.Count; j++)           
-                        if (elementList[elementId].RarityList[i].TowerList[j].WaveLevel >= GM.Instance.WaveSystem.WaveNumber)
+                        if (elementList[elementId].RarityList[i].TowerList[j].WaveLevel >= GM.I.WaveSystem.WaveNumber)
                         {
-                            GM.Instance.AvailableTowerList.Add(elementList[elementId].RarityList[i].TowerList[j]);    
-                            GM.Instance.BuildUISystem.AddTowerButton(elementList[elementId].RarityList[i].TowerList[j]);                               
+                            GM.I.AvailableTowerList.Add(elementList[elementId].RarityList[i].TowerList[j]);    
+                            GM.I.BuildUISystem.AddTowerButton(elementList[elementId].RarityList[i].TowerList[j]);                               
                         }                   
             }       
             AddedNewAvailableTower?.Invoke(this, new EventArgs());                                    

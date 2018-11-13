@@ -34,8 +34,8 @@ namespace Game.Tower.System
 
         private void OnTriggerEnter(Collider other)
         {
-            for (int i = 0; i < GM.Instance.CreepList.Count; i++)
-                if (other.gameObject == GM.Instance.CreepList[i])
+            for (int i = 0; i < GM.I.CreepList.Count; i++)
+                if (other.gameObject == GM.I.CreepList[i])
                 {
                     CreepSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
                     CreepList.Add(other.gameObject);
@@ -70,8 +70,8 @@ namespace Game.Tower.System
         public void SetShow()
         {
             var isChoosedTower =
-                GM.Instance.TowerUISystem.gameObject.activeSelf &&
-                GM.Instance.PlayerInputSystem.ChoosedTower == transform.parent.gameObject;
+                GM.I.TowerUISystem.gameObject.activeSelf &&
+                GM.I.PlayerInputSystem.ChoosedTower == transform.parent.gameObject;
 
             if (isChoosedTower)
             {

@@ -54,7 +54,7 @@ namespace Game.Tower.System
 
         private void SetBulletData(BulletSystem bullet, EntitySystem target)
         {
-            bullet.Target = target.gameObject;
+            bullet.Target = target?.gameObject;
             bullet.ChainshotCount = defaultBullet.ChainshotCount;
             bullet.AOEShotRange = defaultBullet.AOEShotRange;
             bullet.transform.position = tower.ShootPointTransform.position;
@@ -77,7 +77,7 @@ namespace Game.Tower.System
                         else
                         {
                             var offset = new Vector3(0, 40, 0);
-                            var distance = ExtendedMonoBehaviour.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position + offset);
+                            var distance = QoL.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position + offset);
 
                             if (distance < 30)
                                 HitTarget(bulletDataList[i]);

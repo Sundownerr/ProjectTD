@@ -62,8 +62,7 @@ namespace Game.Tower.Data
         protected void Awake()
         {             
             if(!isInstanced)     
-                AddToDataBase();   
-             
+                AddToDataBase();                
             
             if(DamageToRace == null)
                 for (int i = 0; i < 5; i++)
@@ -125,6 +124,7 @@ namespace Game.Tower.Data
                                                     (int)Element,
                                                     (int)Rarity,
                                                     numberInList,                                                   
-                                                };            
+                                                };      
+    
     }
 }

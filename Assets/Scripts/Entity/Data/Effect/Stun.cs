@@ -34,7 +34,7 @@ namespace Game.Data.Effects
                 target.IsOn = false;
 
                 target.EffectSystem.Add(this);
-                effectCoroutine = GM.Instance.StartCoroutine(SetEffect(Duration));
+                effectCoroutine = GM.I.StartCoroutine(SetEffect(Duration));
             }
         }
 

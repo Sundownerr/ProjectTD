@@ -28,8 +28,8 @@ namespace Game.Creep
             effectSystem = new EffectSystem();
             CreepRenderer = transform.GetChild(0).GetComponent<Renderer>();
     
-            GM.Instance.CreepList.Add(gameObject);
-            GM.Instance.CreepSystemList.Add(this);
+            GM.I.CreepList.Add(gameObject);
+            GM.I.CreepSystemList.Add(this);
             IsVulnerable = true;
         }
     }

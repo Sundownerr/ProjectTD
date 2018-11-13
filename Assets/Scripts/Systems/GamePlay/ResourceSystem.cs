@@ -7,29 +7,29 @@ namespace Game.Systems
     {
         public event EventHandler ResourcesChanged = delegate{};
 
-        public ResourceSystem() => GM.Instance.ResourceSystem = this;      
+        public ResourceSystem() => GM.I.ResourceSystem = this;      
 
         public void AddMagicCrystal(int amount)
         {
-            GM.Instance.PlayerData.MagicCrystals += amount;
+            GM.I.PlayerData.MagicCrystals += amount;
             ResourcesChanged?.Invoke(this, new EventArgs());
         }
 
         public void AddGold(int amount)
         {
-            GM.Instance.PlayerData.Gold += amount;
+            GM.I.PlayerData.Gold += amount;
             ResourcesChanged?.Invoke(this, new EventArgs());
         }
 
         public void AddTowerLimit(int amount)
         {
-            GM.Instance.PlayerData.CurrentTowerLimit += amount;
+            GM.I.PlayerData.CurrentTowerLimit += amount;
             ResourcesChanged?.Invoke(this, new EventArgs());
         }
 
         public bool CheckHaveResources(int towerLimitCost, int goldCost, int magicCrystalCost) =>
-            (GM.Instance.PlayerData.CurrentTowerLimit + towerLimitCost) <= GM.Instance.PlayerData.MaxTowerLimit && 
-            goldCost <= GM.Instance.PlayerData.Gold && 
-            magicCrystalCost <= GM.Instance.PlayerData.MagicCrystals;    
+            (GM.I.PlayerData.CurrentTowerLimit + towerLimitCost) <= GM.I.PlayerData.MaxTowerLimit && 
+            goldCost <= GM.I.PlayerData.Gold && 
+            magicCrystalCost <= GM.I.PlayerData.MagicCrystals;    
     }
 }

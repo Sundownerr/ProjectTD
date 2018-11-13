@@ -64,10 +64,10 @@ namespace Game.Tower.System
         private void IncreaseStatsPerLevel()
         {
             CurrentStats.Level++;
-            CurrentStats.Damage.Value += Mathf.FloorToInt(ExtendedMonoBehaviour.GetPercentOfValue(4f, BaseStats.Damage.Value));
-            CurrentStats.AttackSpeed -= ExtendedMonoBehaviour.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
-            CurrentStats.CritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.CritChance);
-            CurrentStats.SpellCritChance += ExtendedMonoBehaviour.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
+            CurrentStats.Damage.Value   += Mathf.FloorToInt(QoL.GetPercentOfValue(4f, BaseStats.Damage.Value));
+            CurrentStats.AttackSpeed    -= QoL.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
+            CurrentStats.CritChance     += QoL.GetPercentOfValue(0.2f, BaseStats.CritChance);
+            CurrentStats.SpellCritChance += QoL.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
 
             tower.SpecialSystem.IncreaseStatsPerLevel();
             OnStatsChanged();
@@ -82,7 +82,7 @@ namespace Game.Tower.System
                 {
                     IncreaseStatsPerLevel();
 
-                    var effect = UnityEngine.Object.Instantiate(GM.Instance.LevelUpEffect, tower.transform.position, Quaternion.identity);
+                    var effect = UnityEngine.Object.Instantiate(GM.I.LevelUpEffect, tower.transform.position, Quaternion.identity);
                     UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }
             OnStatsChanged();

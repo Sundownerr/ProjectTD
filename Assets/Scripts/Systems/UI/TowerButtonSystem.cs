@@ -19,27 +19,26 @@ namespace Game.Systems
             base.Awake();
   
             transform.GetChild(0).GetComponent<Button>().onClick.AddListener(ClickTowerButton);
-            towerCountText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
-            gameObject.name = towerData.Name;
-           
+            towerCountText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();       
         }
 
         private void ClickTowerButton()
         {          
-            if (GM.PlayerState != State.PlacingTower && GM.PlayerState != State.PreparePlacingTower)
-            {
-                GM.Instance.PlayerInputSystem.NewTowerData = towerData;
-                GM.Instance.BuildUISystem.BuildNewTower();           
-                count--;              
-                
-                if(count >= 1)
-                    towerCountText.text = count.ToString();     
-                else
+            if (GM.PlayerState != State.PlacingTower && GM.PlayerState != State.PreparePlacingTower) 
+                if (GM.I.ResourceSystem.CheckHaveResources(towerData.TowerLimit, towerData.GoldCost, towerData.MagicCrystalReq))
                 {
-                    GM.Instance.BuildUISystem.RemoveTowerButton(this);
-                    Destroy(gameObject);
-                }             
-            }           
+                    GM.I.PlayerInputSystem.NewTowerData = towerData;              
+                    GM.I.BuildUISystem.BuildNewTower();           
+                    count--;              
+                
+                    if(count >= 1)
+                        towerCountText.text = count.ToString();     
+                    else
+                    {
+                        GM.I.BuildUISystem.RemoveTowerButton(this);
+                        Destroy(gameObject);
+                    }
+                }                                 
         }
     }
 }
