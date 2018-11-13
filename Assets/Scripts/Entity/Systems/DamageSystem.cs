@@ -6,20 +6,12 @@ using UnityEngine;
 
 namespace Game.Systems
 {
-	public class DamageSystem 
+	public static class DamageSystem 
 	{
 		public static void DoDamage(EntitySystem target, float damage, EntitySystem dealer)
 		{
-			if(target is CreepSystem creep)			
-				if (!creep.IsKilled)
-            	{
-					creep.LastDamageDealer = dealer;
-					creep.Stats.Health -= CalculateDamage();
-					creep.IsKilled = creep.Stats.Health <= 0;
-
-					if(creep.IsKilled)
-						CreepControlSystem.GiveResources(creep);					
-				}
+			if(target is CreepSystem creep)							
+				creep.HealthSystem.ChangeHealth(dealer, CalculateDamage());													
 			
 			float CalculateDamage()
 			{				

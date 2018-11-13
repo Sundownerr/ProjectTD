@@ -54,11 +54,14 @@ namespace Game.Tower.System
 
         private void SetBulletData(BulletSystem bullet, EntitySystem target)
         {
-            bullet.Target = target?.gameObject;
-            bullet.ChainshotCount = defaultBullet.ChainshotCount;
-            bullet.AOEShotRange = defaultBullet.AOEShotRange;
-            bullet.transform.position = tower.ShootPointTransform.position;
-            bullet.transform.rotation = tower.MovingPartTransform.rotation;
+            if(target != null)
+            {
+                bullet.Target = target.gameObject;
+                bullet.ChainshotCount = defaultBullet.ChainshotCount;
+                bullet.AOEShotRange = defaultBullet.AOEShotRange;
+                bullet.transform.position = tower.ShootPointTransform.position;
+                bullet.transform.rotation = tower.MovingPartTransform.rotation;
+            }
         }
 
         private void SetTargetReached(BulletSystem bullet)

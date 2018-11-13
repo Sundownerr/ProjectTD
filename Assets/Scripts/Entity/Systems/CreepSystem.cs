@@ -25,12 +25,18 @@ namespace Game.Creep
         {       
             base.Awake();
 
-            effectSystem = new EffectSystem();
+            effectSystem = new EffectSystem();         
             CreepRenderer = transform.GetChild(0).GetComponent<Renderer>();
     
             GM.I.CreepList.Add(gameObject);
             GM.I.CreepSystemList.Add(this);
             IsVulnerable = true;
+            
+        }
+
+        private void Start()
+        {
+            healthSystem = new HealthSystem(this);
         }
     }
 }

@@ -77,7 +77,7 @@ namespace Game.Tower.System
 
             public LookForCreepState(AbilitySystem o) => this.o = o;
 
-            public void Enter() { Debug.Log("look state"); }
+            public void Enter() { }
 
             public void Execute()
             {

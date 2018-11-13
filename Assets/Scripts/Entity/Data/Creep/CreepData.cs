@@ -20,6 +20,7 @@ namespace Game.Creep
         public float ArmorValue { get => armorValue; set => armorValue = value; }
         public Armor.ArmorType ArmorType    { get => armorType; set => armorType = value; }
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
+        public float HealthRegen { get => healthRegen; set => healthRegen = value; }
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
@@ -27,6 +28,7 @@ namespace Game.Creep
   
         public RaceType Race;
 
+        protected float healthRegen;
         protected Armor.ArmorType armorType;
         protected float armorValue;
         protected int gold, exp, numberInList;
