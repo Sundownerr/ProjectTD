@@ -54,19 +54,19 @@ namespace Game.Tower.Data.Stats
     public struct Damage
     {
         [SerializeField]
-        public DamageType Type;
+        public Type ThisType;
 
         [SerializeField]
         public float Value;
 
         [Serializable]
-        public enum DamageType
+        public enum Type
         {
             Spell,
             Decay,
             Energy,
             Physical,
-            Elemental
+            Elemental,
         }
     }
 
@@ -79,7 +79,7 @@ namespace Game.Tower.Data.Stats
         Iron        = 3,
         Storm       = 4,
         Nature      = 5,
-        Fire        = 6
+        Fire        = 6,
     }
 
     [Serializable]

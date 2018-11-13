@@ -12,7 +12,7 @@ namespace Game.Systems
         public Vector3 GhostedTowerPos { get => ghostedTowerPos; set => ghostedTowerPos = value; }
         public Color GhostedTowerColor { get => ghostedTowerColor; set => ghostedTowerColor = value; }
         public bool IsTowerLimitOk { get => isTowerLimitOk; set => isTowerLimitOk = value; }
-        public event EventHandler<ElementType> TowerStateChanged = delegate{};
+        public event EventHandler TowerStateChanged = delegate{};
 
         private bool isTowerLimitOk;
         private Color transparentRed, transparentGreen, towerColor, ghostedTowerColor;
@@ -119,7 +119,7 @@ namespace Game.Systems
                         GM.Instance.ResourceSystem.AddTowerLimit(o.newTowerLimit);
                         GM.Instance.ResourceSystem.AddGold(-o.newGoldCost);
 
-                        o.TowerStateChanged?.Invoke(o, GM.Instance.PlayerInputSystem.NewTowerData.Element);
+                        o.TowerStateChanged?.Invoke(o, new EventArgs());
                     }        
                 }
             }
@@ -201,7 +201,7 @@ namespace Game.Systems
             public void Enter()
             {
                 PlaceTower();
-                o.TowerStateChanged?.Invoke(o, GM.Instance.PlayerInputSystem.NewTowerData.Element);
+                o.TowerStateChanged?.Invoke(o, new EventArgs());
 
                 o.state.ChangeState(new GetInputState(o));      
 
@@ -241,7 +241,7 @@ namespace Game.Systems
                     GM.Instance.BuildUISystem.AddTowerButton(GM.Instance.PlayerInputSystem.NewTowerData); 
                     GM.Instance.AvailableTowerList.Add(GM.Instance.PlayerInputSystem.NewTowerData);
 
-                    o.TowerStateChanged?.Invoke(o, GM.Instance.PlayerInputSystem.NewTowerData.Element);   
+                    o.TowerStateChanged?.Invoke(o, new EventArgs());   
                 }
             }
 

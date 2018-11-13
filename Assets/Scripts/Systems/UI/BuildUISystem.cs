@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Game.Tower.Data.Stats;
 using Game.Tower.Data;
 using System;
+using TMPro;
 
 namespace Game.Systems
 {
@@ -57,7 +58,7 @@ namespace Game.Systems
             GM.Instance.TowerPlaceSystem.TowerStateChanged          += UpdateUI;
         }
 
-        public void UpdateUI(object sender, ElementType element)
+        public void UpdateUI(object sender, EventArgs e)
         {
             UpdateAvailableElement();
             UpdateRarity();
@@ -79,8 +80,9 @@ namespace Game.Systems
 
         public void BuildNewTower() => NeedToBuildTower?.Invoke(this, new EventArgs());
         
-        private void ShowRarity()
+        private void ShowRarity(ElementType element)
         {           
+            ChoosedElement = element;
             Rarity.gameObject.SetActive(true);
             rarityTransform.SetParent(ElementButtonList[(int)ChoosedElement].GetComponent<RectTransform>());
             rarityTransform.localPosition = Vector2.zero;
@@ -151,14 +153,17 @@ namespace Game.Systems
                         towerCount++;
             }
 
+            Debug.Log("Creara");
+
             if (!isSameTower)
                 CreateTowerButton();             
             
             void AddTowerAmount(int index)
             {
                 towerButtonList[index].Count++;
-                towerButtonList[index].TowerCountText.text = towerButtonList[index].Count.ToString();       
-            }            
+
+                towerButtonList[index].transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = towerButtonList[index].Count.ToString();       
+            }           
 
             void CreateTowerButton()
             {
@@ -175,46 +180,12 @@ namespace Game.Systems
             }        
         }
 
-        private void ShowAstral()
-        {
-            ChoosedElement = ElementType.Astral;
-            ShowRarity();
-        }
-
-        private void ShowDarkness()
-        {
-            ChoosedElement = ElementType.Darkness;
-            ShowRarity();            
-        }
-
-        private void ShowIce()
-        {
-            ChoosedElement = ElementType.Ice;
-            ShowRarity();        
-        }
-
-        private void ShowIron()
-        {
-            ChoosedElement = ElementType.Iron;
-            ShowRarity();         
-        }
-
-        private void ShowStorm()
-        {
-            ChoosedElement = ElementType.Storm;
-            ShowRarity();       
-        }
-
-        private void ShowNature()
-        {
-            ChoosedElement = ElementType.Nature;
-            ShowRarity();        
-        }
-
-        private void ShowFire()
-        {
-            ChoosedElement = ElementType.Fire;
-            ShowRarity();          
-        }
+        private void ShowAstral()   => ShowRarity(ElementType.Astral);     
+        private void ShowDarkness() => ShowRarity(ElementType.Darkness);                
+        private void ShowIce()      => ShowRarity(ElementType.Ice);               
+        private void ShowIron()     => ShowRarity(ElementType.Iron);               
+        private void ShowStorm()    => ShowRarity(ElementType.Storm);             
+        private void ShowNature()   => ShowRarity(ElementType.Nature);        
+        private void ShowFire()     => ShowRarity(ElementType.Fire);                 
     }
 }

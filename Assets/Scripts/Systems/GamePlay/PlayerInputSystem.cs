@@ -18,7 +18,7 @@ namespace Game.Systems
         public GraphicRaycaster GraphicRaycaster;
         public EventSystem EventSystem;
         public event EventHandler MouseOnTower = delegate {};
-        public event EventHandler<ElementType> StartedTowerBuild = delegate {};
+        public event EventHandler StartedTowerBuild = delegate {};
         
         private TowerData newTowerData;
         private TowerSystem choosedTower;
@@ -114,7 +114,7 @@ namespace Game.Systems
                     break;
                 }
             
-            StartedTowerBuild?.Invoke(this, GM.Instance.PlayerInputSystem.NewTowerData.Element);
+            StartedTowerBuild?.Invoke(this, new EventArgs());
        }
        
         protected class GetInputState : IState

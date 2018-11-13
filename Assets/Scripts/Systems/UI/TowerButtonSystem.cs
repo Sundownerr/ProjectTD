@@ -17,9 +17,11 @@ namespace Game.Systems
         protected override void Awake()
         {
             base.Awake();
-
+  
             transform.GetChild(0).GetComponent<Button>().onClick.AddListener(ClickTowerButton);
             towerCountText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+            gameObject.name = towerData.Name;
+           
         }
 
         private void ClickTowerButton()
