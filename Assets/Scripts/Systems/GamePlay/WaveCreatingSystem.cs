@@ -32,6 +32,7 @@ namespace Game.Systems
                 ChooseCreep<Small>(fittingCreepList), 
                 ChooseCreep<Normal>(fittingCreepList), 
                 ChooseCreep<Commander>(fittingCreepList), 
+                ChooseCreep<Flying>(fittingCreepList), 
                 ChooseCreep<Boss>(fittingCreepList)
             };
 

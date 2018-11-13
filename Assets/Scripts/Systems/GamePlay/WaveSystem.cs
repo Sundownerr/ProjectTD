@@ -172,7 +172,7 @@ namespace Game.Systems
                     void SpawnCreep()
                     {
                         var creepList = o.creepWaveList[o.creepWaveList.Count - 1];
-
+                        
                         creepList.Add(U.Instantiate(
                             o.currentWaveCreepList[spawned].Prefab, 
                             GM.Instance.CreepSpawnPoint.transform.position,
