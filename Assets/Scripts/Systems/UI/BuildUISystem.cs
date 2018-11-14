@@ -10,7 +10,8 @@ namespace Game.Systems
 {
     public class BuildUISystem : ExtendedMonoBehaviour
     {
-        public List<Button> ElementButtonList, RarityButtonList;
+        public List<Button> ElementButtonList;
+        public List<GameObject> RarityGOList;
         public GameObject TowerButtonPrefab;
         public StateMachine State;
         public ElementType ChoosedElement;
@@ -92,16 +93,8 @@ namespace Game.Systems
 
         private void UpdateRarity()
         {                          
-            ActivateButtonList(ref RarityButtonList, false);
-
-            for (int i = 0; i < towerButtonList.Count; i++) 
-            {                        
-                var isButtonElementOk = towerButtonList[i].TowerData.Element == ChoosedElement;
-                towerButtonGOList[i].gameObject.SetActive(isButtonElementOk);  
-
-                if(isButtonElementOk)                                    
-                    RarityButtonList[(int)towerButtonList[i].TowerData.Rarity].gameObject.SetActive(true);                                                                          
-            }         
+            for (int i = 0; i < towerButtonList.Count; i++)                      
+                towerButtonGOList[i].gameObject.SetActive(towerButtonList[i].TowerData.Element == ChoosedElement);                                                                                                    
         }
 
         public void RemoveTowerButton(TowerButtonSystem towerButton)
@@ -137,7 +130,7 @@ namespace Game.Systems
 
         public void AddTowerButton(TowerData towerData)
         {
-            var towerCount = 1;               
+            var towerCount = 0;               
             var isSameTower = false;
              
             for (int i = 0; i < towerButtonList.Count; i++)
@@ -164,7 +157,7 @@ namespace Game.Systems
 
             void CreateTowerButton()
             {
-                towerButtonGOList.Add(Instantiate(TowerButtonPrefab, RarityButtonList[(int)towerData.Rarity].GetComponent<RectTransform>()));                      
+                towerButtonGOList.Add(Instantiate(TowerButtonPrefab, RarityGOList[(int)towerData.Rarity].transform));                      
                 towerButtonList.Add(towerButtonGOList[towerButtonGOList.Count - 1].GetComponent<TowerButtonSystem>());
 
                 var towerButton = towerButtonList[towerButtonList.Count - 1];     

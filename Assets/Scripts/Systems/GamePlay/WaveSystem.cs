@@ -14,8 +14,7 @@ namespace Game.Systems
 
         private int waveNumber;
         private StateMachine state;
-        private WaveCreatingSystem waveCreatingSystem;
-        private List<List<GameObject>> creepWaveList;
+        private List<List<CreepSystem>> creepWaveList;
         private List<List<CreepData>> waveList;
         private List<CreepData> currentWaveCreepList;
 
@@ -24,9 +23,8 @@ namespace Game.Systems
             GM.I.WaveSystem = this;
 
             currentWaveCreepList    = new List<CreepData>();
-            creepWaveList           = new List<List<GameObject>>();           
+            creepWaveList           = new List<List<CreepSystem>>();           
             waveList                = new List<List<CreepData>>();
-            waveCreatingSystem      = new WaveCreatingSystem();
 
             state = new StateMachine();
             state.ChangeState(new GenerateWavesState(this, GM.I.WaveAmount));    
@@ -56,12 +54,11 @@ namespace Game.Systems
             }
 
             for (int waveId = 0; waveId < waveAmount; waveId++)
-            {
-                var race    = RaceType.Humanoid;
-                var armor   = (Armor.ArmorType)armorTypeList.GetValue(armorRandomList[waveId]);
-                var wave    = waveList[waveRandomList[waveId]];
-                
-                tempWaveList.Add(waveCreatingSystem.CreateWave(race, waveId, wave));               
+            {             
+                tempWaveList.Add(
+                    WaveCreatingSystem.CreateWave(
+                        RaceType.Humanoid,
+                        waveList[waveRandomList[waveId]]));               
             }   
             return tempWaveList;
         }
@@ -153,7 +150,7 @@ namespace Game.Systems
 
             public void Enter() 
             {
-                o.creepWaveList.Add(new List<GameObject>());
+                o.creepWaveList.Add(new List<CreepSystem>());
                 GM.I.StartCoroutine(SpawnCreepWave(0.2f));
 
                 IEnumerator SpawnCreepWave(float delay)
@@ -171,18 +168,26 @@ namespace Game.Systems
 
                     void SpawnCreep()
                     {
-                        var creepList = o.creepWaveList[o.creepWaveList.Count - 1];
-                        
-                        creepList.Add(U.Instantiate(
+                        var creep = U.Instantiate(
                             o.currentWaveCreepList[spawned].Prefab, 
                             GM.I.CreepSpawnPoint.transform.position,
                             Quaternion.identity, 
-                            GM.I.CreepParent));    
+                            GM.I.CreepParent);
+                            
+                        var creepSystem = creep.GetComponent<CreepSystem>();                          
 
-                        creepList[creepList.Count - 1].GetComponent<CreepSystem>().Stats = o.CalculateStats(
-                                                                                    o.currentWaveCreepList[spawned], 
-                                                                                    o.currentWaveCreepList[spawned].ArmorType, 
-                                                                                    o.waveNumber);               
+                        creepSystem.Stats = o.CalculateStats(
+                            o.currentWaveCreepList[spawned], 
+                            o.currentWaveCreepList[spawned].ArmorType, 
+                            o.waveNumber); 
+
+                        creepSystem.HealthSystem = new HealthSystem(creepSystem);
+                        creepSystem.EffectSystem = new EffectSystem();             
+                        creepSystem.IsVulnerable = true;  
+
+                        GM.I.CreepList.Add(creep);
+                        GM.I.CreepSystemList.Add(creepSystem);    
+                        o.creepWaveList[o.creepWaveList.Count - 1].Add(creepSystem);                                             
                     }
                 }
             }

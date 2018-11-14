@@ -57,6 +57,7 @@ namespace Game.Systems
 
             ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
             GM.I.PlacedTowerList.Remove(ChoosedTower.gameObject);
+            Destroy(ChoosedTower.Stats);
             Destroy(ChoosedTower.gameObject);
         }                 
 
@@ -78,7 +79,8 @@ namespace Game.Systems
                 GM.I.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
                 ChoosedTower.StatsSystem.OnStatsChanged();
                 
-                Destroy(gameObject);
+                Destroy(ChoosedTower.Stats);
+                Destroy(ChoosedTower.gameObject);
             }
         }
 

@@ -8,13 +8,14 @@ using Game.Data;
 
 namespace Game.Systems
 {
-	public class CreepControlSystem 
+	public static class CreepControlSystem 
 	{	
         public static void MoveToNextWaypoint(CreepSystem creep)
         {
             if(creep != null)
             {
-                creep.HealthSystem?.Update();
+                if(creep.HealthSystem != null)
+                    creep.HealthSystem.Update();
                 if(creep.IsOn)
                 {
                     var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;
@@ -55,6 +56,7 @@ namespace Game.Systems
 
         public static void DestroyCreep(CreepSystem creep)
         {
+            Object.Destroy(creep.Stats);
             GM.I.CreepList.Remove(creep.gameObject);
             Object.Destroy(creep.gameObject);
         }    

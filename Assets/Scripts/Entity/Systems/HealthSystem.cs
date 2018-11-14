@@ -26,9 +26,7 @@ public class HealthSystem
 			healthRegen = creep.Stats.HealthRegen;
 
 			if(health <= 0)
-			{
-				GiveResources();
-			}
+				GiveResources();		
 			else
 			{		
 				if(health < maxHealth)
@@ -58,8 +56,7 @@ public class HealthSystem
 	public void ChangeHealth(EntitySystem changer, float damage)
 	{
 		if(owner is CreepSystem creep)
-		{
-			
+		{			
 			creep.LastDamageDealer = changer;
 			creep.Stats.Health -= damage;
 		}

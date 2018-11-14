@@ -181,10 +181,11 @@ namespace Game.Tower
                 if (o.GetCreepInRangeList().Count < 1)
                     o.state.ChangeState(new MoveRemainingBulletState(o));
                 else
-                    o.target = o.GetCreepInRangeList()[0].gameObject;
-
-                if (o.target != null)
-                    RotateAtCreep();
+                    if (o.GetCreepInRangeList()[0] != null)
+                    {
+                        o.target = o.GetCreepInRangeList()[0].gameObject;
+                        RotateAtCreep();
+                    }
 
                 void RotateAtCreep()
                 {
