@@ -57,7 +57,7 @@ namespace Game.Systems
 
             ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
             GM.I.PlacedTowerList.Remove(ChoosedTower.gameObject);
-            Destroy(ChoosedTower.Stats);
+            ChoosedTower.Stats.Destroy();
             Destroy(ChoosedTower.gameObject);
         }                 
 
@@ -69,6 +69,7 @@ namespace Game.Systems
 
             if (isGradeCountOk)
             {
+                Debug.Log( ChoosedTower);
                 var upgradedTowerPrefab = Instantiate(ChoosedTower.Stats.GradeList[0].Prefab, ChoosedTower.transform.position, Quaternion.identity, GM.I.TowerParent);
                 var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
 
@@ -76,11 +77,11 @@ namespace Game.Systems
                 upgradedTowerSystem.OcuppiedCell = ChoosedTower.OcuppiedCell;
                 upgradedTowerSystem.SetSystem();
 
-                GM.I.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
-                ChoosedTower.StatsSystem.OnStatsChanged();
-                
-                Destroy(ChoosedTower.Stats);
+                ChoosedTower.Stats.Destroy();
                 Destroy(ChoosedTower.gameObject);
+
+                GM.I.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
+                ChoosedTower.StatsSystem.OnStatsChanged();      
             }
         }
 
@@ -91,11 +92,11 @@ namespace Game.Systems
                 GM.PlayerState != State.PreparePlacingTower;
 
             if(active)
-            {                            
+            {  
+                ChoosedTower = hit.transform.GetComponent<TowerSystem>();                            
                 if (isNotPlacingTower)
                     GM.PlayerState = State.ChoosedTower;
-
-                ChoosedTower = hit.transform.gameObject.GetComponent<TowerSystem>();  
+                
                 MouseOnTower?.Invoke(this, new EventArgs());
             }
             else 
@@ -153,9 +154,9 @@ namespace Game.Systems
                             !o.isHitUI &&
                             o.hit.transform.gameObject.layer == 9;
 
-                        if(isMouseOnTower)
-                            o.ActivateTowerUI(true);
-
+                        if(isMouseOnTower)                                          
+                            o.ActivateTowerUI(true);                          
+                        
                         if(isMouseNotOnUI)
                             o.ActivateTowerUI(false);
                     }

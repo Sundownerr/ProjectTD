@@ -125,6 +125,18 @@ namespace Game.Tower.Data
                                                     (int)Rarity,
                                                     numberInList,                                                   
                                                 };      
-    
+        public void Destroy()
+        {
+            if(isInstanced)
+            {
+                for (int i = 0; i < AbilityList.Count; i++)     
+                {      
+                    for (int j = 0; j < AbilityList[i].EffectList.Count; j++)
+                        Destroy(AbilityList[i].EffectList[j]);
+                    Destroy(AbilityList[i]);
+                }
+                Destroy(this);                  
+            }
+        }
     }
 }

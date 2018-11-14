@@ -45,7 +45,11 @@ namespace Game.Systems
             gameObject.SetActive(false);
         } 
         
-        private void Upgrade() => Upgrading?.Invoke(this, new EventArgs());
+        private void Upgrade() 
+        {
+            Upgrading?.Invoke(this, new EventArgs());
+            UpdateValues(this, new EventArgs());
+        } 
         
         private void UpdateValues(object sender, EventArgs e)
         {
