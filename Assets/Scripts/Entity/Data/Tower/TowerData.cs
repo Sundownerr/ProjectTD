@@ -61,30 +61,30 @@ namespace Game.Tower.Data
        
         protected void Awake()
         {             
-            if(!isInstanced)     
+            if (!isInstanced)     
                 AddToDataBase();                
             
-            if(DamageToRace == null)
+            if (DamageToRace == null)
                 for (int i = 0; i < 5; i++)
                     DamageToRace.Add(100f);    
 
-            if(Owner == null)
+            if (Owner == null)
                 Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();               
         }
 
         [Button("Add to DataBase")]
         private void AddToDataBase()
         {
-            if(!IsGradeTower)
+            if (!IsGradeTower)
             {
                 var database = Resources.Load("TowerDataBase");
-                if(database is TowerDataBase dataBase)     
+                if (database is TowerDataBase dataBase)     
                 {            
                     var elementList = dataBase.AllTowerList.ElementsList;
                     for (int i = 0; i < elementList.Count; i++)
-                        if((int)Element == i)                    
+                        if ((int)Element == i)                    
                             for (int j = 0; j < elementList[i].RarityList.Count; j++)
-                                if((int)Rarity == j)
+                                if ((int)Rarity == j)
                                 {
                                     var towerList = elementList[i].RarityList[j].TowerList;
                                     for (int k = 0; k < towerList.Count; k++)
@@ -103,13 +103,12 @@ namespace Game.Tower.Data
 
         private void RemoveFromDataBase()
         {
-            if(!IsGradeTower && !IsInstanced)
+            if (!IsGradeTower && !IsInstanced)
             {
                 var database = Resources.Load("TowerDataBase");
-                if(database is TowerDataBase dataBase)            
+                if (database is TowerDataBase dataBase)            
                 {                
                     dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.Remove(this);  
-
                     UnityEditor.EditorUtility.SetDirty(dataBase);
                 }
             }          
@@ -127,7 +126,7 @@ namespace Game.Tower.Data
                                                 };      
         public void Destroy()
         {
-            if(isInstanced)
+            if (isInstanced)
             {
                 for (int i = 0; i < AbilityList.Count; i++)     
                 {      

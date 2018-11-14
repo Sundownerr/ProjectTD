@@ -2,6 +2,7 @@ using System;
 using Game.Systems;
 using Game.Tower.Data;
 using UnityEngine;
+using U = UnityEngine.Object;
 
 namespace Game.Tower.System
 {
@@ -19,55 +20,56 @@ namespace Game.Tower.System
 
         public void Set()
         {
+            currentStats = U.Instantiate(currentStats);
+            currentStats.IsInstanced = true;
+            currentStats.SetId();
 
-            CurrentStats = UnityEngine.Object.Instantiate(CurrentStats);
-            CurrentStats.SetId();
-
-            for (int i = 0; i < CurrentStats.AbilityList.Count; i++)
+            for (int i = 0; i < currentStats.AbilityList.Count; i++)
             {
-                CurrentStats.AbilityList[i] = UnityEngine.Object.Instantiate(CurrentStats.AbilityList[i]);
+                currentStats.AbilityList[i] = U.Instantiate(currentStats.AbilityList[i]);
 
-                for (int j = 0; j < CurrentStats.AbilityList[i].EffectList.Count; j++)
-                    CurrentStats.AbilityList[i].EffectList[j] = UnityEngine.Object.Instantiate(CurrentStats.AbilityList[i].EffectList[j]);
+                for (int j = 0; j < currentStats.AbilityList[i].EffectList.Count; j++)
+                    currentStats.AbilityList[i].EffectList[j] = U.Instantiate(currentStats.AbilityList[i].EffectList[j]);
 
-                CurrentStats.AbilityList[i].SetOwner(tower);
+                currentStats.AbilityList[i].SetOwner(tower);
             }
 
-            BaseStats = UnityEngine.Object.Instantiate(CurrentStats);
-
+            baseStats = U.Instantiate(currentStats);
             OnStatsChanged();
         }
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)
         {
-            CurrentStats = UnityEngine.Object.Instantiate(newBaseStats);
+            currentStats = U.Instantiate(newBaseStats);
+            currentStats.IsInstanced = true;
 
-            CurrentStats.Level = currentStats.Level;
-            CurrentStats.Exp = currentStats.Exp;
+            currentStats.Level = currentStats.Level;
+            currentStats.Exp = currentStats.Exp;
 
-            UpgradeSpecial(newBaseStats);
+            UpgradeSpecial();
 
-            BaseStats = UnityEngine.Object.Instantiate(newBaseStats);
+            baseStats = U.Instantiate(newBaseStats);
+            baseStats.IsInstanced = true;
 
-            for (int i = 1; i < CurrentStats.Level; i++)
+            for (int i = 1; i < currentStats.Level; i++)
                 IncreaseStatsPerLevel();
 
             OnStatsChanged();
-        }
 
-        private void UpgradeSpecial(TowerData newBaseStats)
-        {
-            for (int i = 0; i < newBaseStats.SpecialList.Length; i++)
-                CurrentStats.SpecialList[i] = UnityEngine.Object.Instantiate(CurrentStats.SpecialList[i]);
+            void UpgradeSpecial()
+            {
+                for (int i = 0; i < newBaseStats.SpecialList.Length; i++)
+                    currentStats.SpecialList[i] = U.Instantiate(currentStats.SpecialList[i]);
+            }
         }
-
+        
         private void IncreaseStatsPerLevel()
         {
-            CurrentStats.Level++;
-            CurrentStats.Damage.Value   += Mathf.FloorToInt(QoL.GetPercentOfValue(4f, BaseStats.Damage.Value));
-            CurrentStats.AttackSpeed    -= QoL.GetPercentOfValue(1.2f, BaseStats.AttackSpeed);
-            CurrentStats.CritChance     += QoL.GetPercentOfValue(0.2f, BaseStats.CritChance);
-            CurrentStats.SpellCritChance += QoL.GetPercentOfValue(0.2f, BaseStats.SpellCritChance);
+            currentStats.Level++;
+            currentStats.Damage.Value    += Mathf.FloorToInt(QoL.GetPercentOfValue(4f, baseStats.Damage.Value));
+            currentStats.AttackSpeed     -= QoL.GetPercentOfValue(1.2f, baseStats.AttackSpeed);
+            currentStats.CritChance      += QoL.GetPercentOfValue(0.2f, baseStats.CritChance);
+            currentStats.SpellCritChance += QoL.GetPercentOfValue(0.2f, baseStats.SpellCritChance);
 
             tower.SpecialSystem.IncreaseStatsPerLevel();
             OnStatsChanged();
@@ -75,15 +77,15 @@ namespace Game.Tower.System
 
         public void AddExp(int amount)
         {
-            CurrentStats.Exp += amount;
+            currentStats.Exp += amount;
 
-            for (int i = CurrentStats.Level; i < 25; i++)
-                if (CurrentStats.Exp >= GM.ExpToLevelUp[CurrentStats.Level] && CurrentStats.Level < 25)
+            for (int i = currentStats.Level; i < 25; i++)
+                if (currentStats.Exp >= GM.ExpToLevelUp[currentStats.Level] && currentStats.Level < 25)
                 {
                     IncreaseStatsPerLevel();
 
-                    var effect = UnityEngine.Object.Instantiate(GM.I.LevelUpEffect, tower.transform.position, Quaternion.identity);
-                    UnityEngine.Object.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
+                    var effect = U.Instantiate(GM.I.LevelUpEffect, tower.transform.position, Quaternion.identity);
+                    U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
                 }
             OnStatsChanged();
         }

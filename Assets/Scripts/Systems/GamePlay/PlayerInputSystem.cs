@@ -91,7 +91,7 @@ namespace Game.Systems
                 GM.PlayerState != State.PlacingTower && 
                 GM.PlayerState != State.PreparePlacingTower;
 
-            if(active)
+            if (active)
             {  
                 ChoosedTower = hit.transform.GetComponent<TowerSystem>();                            
                 if (isNotPlacingTower)
