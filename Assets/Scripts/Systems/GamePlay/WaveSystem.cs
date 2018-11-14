@@ -11,6 +11,7 @@ namespace Game.Systems
     public class WaveSystem 
     {
         public int WaveNumber { get => waveNumber; set => waveNumber = value > 0 ? value : 1; }
+        public event EventHandler WaveChanged = delegate{};
 
         private int waveNumber;
         private StateMachine state;
@@ -107,7 +108,7 @@ namespace Game.Systems
 
             public GetInputState(WaveSystem o) => this.o = o; 
 
-            public void Enter() { }
+            public void Enter() {o.WaveChanged?.Invoke(o, new EventArgs());}
 
             public void Execute()
             {
@@ -132,8 +133,8 @@ namespace Game.Systems
             public void Enter() 
             {
                 o.waveList = o.CreateWaveList(waveAmount);
-                o.WaveNumber = 1;
-                o.currentWaveCreepList = o.waveList[0];
+                o.waveNumber = 1;
+                o.currentWaveCreepList = o.waveList[0];           
                 o.state.ChangeState(new GetInputState(o));
             }
 
@@ -173,7 +174,7 @@ namespace Game.Systems
                             GM.I.CreepSpawnPoint.transform.position,
                             Quaternion.identity, 
                             GM.I.CreepParent);
-                            
+
                         var creepSystem = creep.GetComponent<CreepSystem>();                          
 
                         creepSystem.Stats = o.CalculateStats(

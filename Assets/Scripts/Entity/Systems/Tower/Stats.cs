@@ -39,30 +39,25 @@ namespace Game.Tower.System
         }
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)
-        {
-            currentStats = U.Instantiate(newBaseStats);
-            currentStats.IsInstanced = true;
+        {   
+            this.currentStats = U.Instantiate(newBaseStats);
+            this.currentStats.IsInstanced = true;
 
-            currentStats.Level = currentStats.Level;
-            currentStats.Exp = currentStats.Exp;
+            this.currentStats.Level = currentStats.Level;
+            this.currentStats.Exp = currentStats.Exp;
 
-            UpgradeSpecial();
+            for (int i = 0; i < newBaseStats.SpecialList.Length; i++)
+                this.currentStats.SpecialList[i] = U.Instantiate(newBaseStats.SpecialList[i]);
 
             baseStats = U.Instantiate(newBaseStats);
             baseStats.IsInstanced = true;
 
-            for (int i = 1; i < currentStats.Level; i++)
+            for (int i = 1; i < this.currentStats.Level; i++)
                 IncreaseStatsPerLevel();
 
             OnStatsChanged();
-
-            void UpgradeSpecial()
-            {
-                for (int i = 0; i < newBaseStats.SpecialList.Length; i++)
-                    currentStats.SpecialList[i] = U.Instantiate(currentStats.SpecialList[i]);
-            }
         }
-        
+
         private void IncreaseStatsPerLevel()
         {
             currentStats.Level++;
@@ -90,9 +85,6 @@ namespace Game.Tower.System
             OnStatsChanged();
         }
 
-        public void OnStatsChanged()
-        {
-            StatsChanged?.Invoke(this, new EventArgs());  
-        }    
+        public void OnStatsChanged() => StatsChanged?.Invoke(this, new EventArgs());            
     }
 }
