@@ -228,6 +228,7 @@
      <Compile Include="Assets\Scripts\Systems\UI\ReadyButtonTextChange.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\TowerButtonSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\UI\TowerUISystem.cs" />
+     <Compile Include="Assets\Scripts\Systems\UI\WaveUISystem.cs" />
      <None Include="Assets\ImportedAssets\PostProcessing\Resources\Shaders\DepthOfField.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\ImportedAssets\Map\Free_Rocks\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />

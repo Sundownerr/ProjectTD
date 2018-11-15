@@ -66,12 +66,14 @@ namespace Game.Systems
         public BuildUISystem BuildUISystem { get => buildUISystem; set => buildUISystem = value; }
         public List<Cell> CellStateList { get => cellStateList; set => cellStateList = value; }
         public List<CreepSystem> CreepSystemList { get => creepSystemList; set => creepSystemList = value; }
+        public WaveUISystem WaveUISystem { get => waveUISystem; set => waveUISystem = value; }
 
         private TowerPlaceSystem towerPlaceSystem;
         private GridSystem gridSystem;
         private WaveSystem waveSystem;
         private PlayerInputSystem playerInputSystem;
         private BaseUISystem baseUISystem;
+        private WaveUISystem waveUISystem;
         private TowerUISystem towerUISystem;
         private ResourceSystem resourceSystem;
         private ElementSystem elementSystem;
@@ -97,11 +99,12 @@ namespace Game.Systems
                 Debug.Log("Warning: multiple " + this + " in scene!");
 
             GridSystem          = new GridSystem();
+            ResourceSystem      = new ResourceSystem();
             TowerPlaceSystem    = new TowerPlaceSystem();
             TowerCreatingSystem = new TowerCreatingSystem();
             WaveSystem          = new WaveSystem();
             ElementSystem       = new ElementSystem();
-            ResourceSystem      = new ResourceSystem();
+            
             
             PlayerState = State.Idle;
         

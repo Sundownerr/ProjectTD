@@ -11,6 +11,7 @@ namespace Game.Systems
     public class WaveSystem 
     {
         public int WaveNumber { get => waveNumber; set => waveNumber = value > 0 ? value : 1; }
+        public List<CreepData> CurrentWaveCreepList { get => currentWaveCreepList; set => currentWaveCreepList = value; }
         public event EventHandler WaveChanged = delegate{};
 
         private int waveNumber;
@@ -34,7 +35,6 @@ namespace Game.Systems
         public void Update()
         {
             state.Update();
-
             AddMagicCrystalAfterWaveEnd();      
             HandleCreeps();                
         }
@@ -113,7 +113,7 @@ namespace Game.Systems
             public void Execute()
             {
                 if (GM.I.BaseUISystem.IsWaveStarted)                                    
-                    o.state.ChangeState(new SpawnCreepsState(o));              
+                    o.state.ChangeState(new SpawnCreepsState(o));   
             }
 
             public void Exit() => GM.I.BaseUISystem.StartWaveButton.gameObject.SetActive(false);                   
@@ -134,8 +134,9 @@ namespace Game.Systems
             {
                 o.waveList = o.CreateWaveList(waveAmount);
                 o.waveNumber = 1;
-                o.currentWaveCreepList = o.waveList[0];           
+                o.currentWaveCreepList = o.waveList[0];       
                 o.state.ChangeState(new GetInputState(o));
+                GM.I.WaveUISystem.UpdateWaveUI(this, new EventArgs());
             }
 
             public void Execute() { }
@@ -197,12 +198,12 @@ namespace Game.Systems
 
             public void Exit()
             {
-                if(o.WaveNumber <= GM.I.WaveAmount)
+                if(o.waveNumber <= GM.I.WaveAmount)
                 {
-                    o.currentWaveCreepList = o.waveList[o.WaveNumber];
+                    o.currentWaveCreepList = o.waveList[o.waveNumber];
                     GM.I.BaseUISystem.IsWaveStarted = false;
                     GM.I.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
-                    o.WaveNumber++;
+                    o.waveNumber++;
                 }
             }
         }    
