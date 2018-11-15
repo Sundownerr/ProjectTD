@@ -147,6 +147,12 @@ namespace Game.Systems
             GridSystem.Update();
             WaveSystem.Update();
         }
+
+        private void Start()
+        {
+            WaveUISystem.Set();     
+            WaveUISystem.UpdateWaveUI(WaveUISystem, new EventArgs());
+        }
     }
 
     public static class StaticRandom

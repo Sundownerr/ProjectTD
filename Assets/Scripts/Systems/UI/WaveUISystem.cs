@@ -12,19 +12,19 @@ namespace Game.Systems
     {
         public TextMeshProUGUI CreepTypes, Race, Armor, Specials;
 
-        protected void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             GM.I.WaveUISystem = this;
         }
 
-        private void Start()
+        public void Set()
         {          
             GM.I.WaveSystem.WaveChanged += UpdateWaveUI;            
         }
 
         public void UpdateWaveUI(object sender, EventArgs e)
         {
-            Debug.Log("asd");
             var tempString = new StringBuilder();
             var creepList = GM.I.WaveSystem.CurrentWaveCreepList;
             Race.text = creepList[0].Race.ToString();
