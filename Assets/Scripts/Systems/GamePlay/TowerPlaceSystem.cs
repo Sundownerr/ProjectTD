@@ -9,20 +9,17 @@ namespace Game.Systems
 {
     public class TowerPlaceSystem
     {
-        public GameObject NewBusyCell { get => newBusyCell; set => newBusyCell = value; }
-        public Vector3 GhostedTowerPos { get => ghostedTowerPos; set => ghostedTowerPos = value; }
-        public Color GhostedTowerColor { get => ghostedTowerColor; set => ghostedTowerColor = value; }
+        public GameObject NewBusyCell { get => newBusyCell; set => newBusyCell = value; }      
         public bool IsTowerLimitOk { get => isTowerLimitOk; set => isTowerLimitOk = value; }
         public event EventHandler TowerStateChanged = delegate{};
 
         private bool isTowerLimitOk;
-        private Color transparentRed, transparentGreen, towerColor, ghostedTowerColor;
+        private Color transparentRed, transparentGreen;
         private GameObject newBusyCell;
         private Tower.TowerSystem lastTower;
         private RaycastHit hit;
         private Camera mainCam;
         private StateMachine state;
-        private Vector3 towerPos, ghostedTowerPos;
         private Cells.Cell chosenCell;
         private int newTowerLimit, newGoldCost, newMagicCrystalCost;
 

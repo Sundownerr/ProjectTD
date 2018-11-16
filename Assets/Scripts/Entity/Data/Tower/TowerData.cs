@@ -4,6 +4,7 @@ using UnityEngine;
 using NaughtyAttributes;
 using Game.Tower.Data.Stats;
 using Game.Data;
+using UnityEditor;
 
 namespace Game.Tower.Data
 {
@@ -94,7 +95,7 @@ namespace Game.Tower.Data
                                     elementList[i].RarityList[j].TowerList.Add(this);
                                     numberInList = towerList.Count - 1;
                                     SetId();
-                                    UnityEditor.EditorUtility.SetDirty(dataBase);
+                                    EditorUtility.SetDirty(dataBase);
                                     return;
                                 }     
                 }  
@@ -109,7 +110,7 @@ namespace Game.Tower.Data
                 if (database is TowerDataBase dataBase)            
                 {                
                     dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.Remove(this);  
-                    UnityEditor.EditorUtility.SetDirty(dataBase);
+                    EditorUtility.SetDirty(dataBase);
                 }
             }          
         }

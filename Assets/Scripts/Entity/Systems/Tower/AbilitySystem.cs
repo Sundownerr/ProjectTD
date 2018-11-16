@@ -30,8 +30,8 @@ namespace Game.Tower.System
 
         private bool CheckTargetInRange(EntitySystem target)
         {
-            for (int i = 0; i < tower.GetCreepInRangeList().Count; i++)
-                if (target == tower.GetCreepInRangeList()[i])
+            for (int i = 0; i < tower.CreepInRangeList.Count; i++)
+                if (target == tower.CreepInRangeList[i])
                     return true;
 
             return false;
@@ -48,7 +48,7 @@ namespace Game.Tower.System
             {
                 if (!ability.IsStacked)
                     if (!isInContinueState)
-                        ability.SetTarget(tower.GetCreepInRangeList()[0]);
+                        ability.SetTarget(tower.CreepInRangeList[0]);
                     else
                         ability.CooldownReset();
                 else
@@ -81,7 +81,7 @@ namespace Game.Tower.System
 
             public void Execute()
             {
-                if (o.tower.GetCreepInRangeList().Count > 0)
+                if (o.tower.CreepInRangeList.Count > 0)
                     o.state.ChangeState(new CombatState(o));
             }
 
@@ -130,7 +130,7 @@ namespace Game.Tower.System
 
             public void Execute()
             {
-                if (o.tower.GetCreepInRangeList().Count > 0)
+                if (o.tower.CreepInRangeList.Count > 0)
                 {
                     for (int i = 0; i < o.abilityList.Count; i++)
                     {
@@ -175,7 +175,7 @@ namespace Game.Tower.System
 
             public void Execute()
             {
-                if (o.tower.GetCreepInRangeList().Count > 0)
+                if (o.tower.CreepInRangeList.Count > 0)
                     o.state.ChangeState(new CombatState(o));
 
                 if (o.isAllEffectsEnded)

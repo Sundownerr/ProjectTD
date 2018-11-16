@@ -10,8 +10,8 @@ namespace Game.Systems
         public TowerData TowerData { get => towerData; set => towerData = value; }
         public TextMeshProUGUI TowerCountText { get => towerCountText; set => towerCountText = value; }
 
-        private TowerData towerData;
         private int count;
+        private TowerData towerData;
         private TextMeshProUGUI towerCountText;
 
         protected override void Awake()
