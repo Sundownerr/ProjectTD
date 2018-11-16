@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Game.Tower;
 using Game.Tower.Data.Stats;
 using UnityEngine;
 using U = UnityEngine.Object;
@@ -38,6 +39,13 @@ namespace Game.Systems
         }
 
         public void Update() => state.Update();
+
+        private void SetTowerColor(TowerSystem tower, Color color)
+        {
+            for (int i = 0; i < tower.RendererList.Length; i++)
+                tower.RendererList[i].material.color = color;
+        }
+
   
         protected class GetCellDataState : IState
         {
@@ -146,8 +154,8 @@ namespace Game.Systems
 
                     if (Physics.Raycast(ray, out o.hit, 5000, layerMask))
                     {              
-                        o.towerPos = o.hit.point;
-                        o.towerColor = o.transparentRed;             
+                        o.lastTower.transform.position = o.hit.point;
+                        o.SetTowerColor(o.lastTower, o.transparentRed);        
 
                         for (int i = 0; i < cellGOList.Count; i++)
                         {                   
@@ -159,22 +167,14 @@ namespace Game.Systems
                             {
                                 o.chosenCell = cellList[i];
             
-                                o.towerPos = o.chosenCell.transform.position;
-                                o.towerColor = o.transparentGreen;                   
+                                o.lastTower.transform.position = o.chosenCell.transform.position;
+                                o.SetTowerColor(o.lastTower, o.transparentGreen);                 
 
                                 if (Input.GetMouseButtonDown(0))
                                     o.state.ChangeState(new PlaceTowerState(o));
                             } 
-                        }           
-
-                        SetTowerColorAndPosition();
-                    }
-
-                    void SetTowerColorAndPosition()
-                    {
-                        o.GhostedTowerPos     = o.towerPos;
-                        o.GhostedTowerColor   = o.towerColor;
-                    }
+                        }                                  
+                    }                  
                 }     
             }
 
@@ -191,13 +191,26 @@ namespace Game.Systems
             {
                 PlaceTower();
                 o.TowerStateChanged?.Invoke(o, new EventArgs());
-
                 o.state.ChangeState(new GetInputState(o));      
 
                 void PlaceTower()
                 {
+                    o.lastTower.SetSystem();
                     o.lastTower.OcuppiedCell = o.chosenCell.gameObject;
-                    o.chosenCell.IsBusy = true;              
+                    o.chosenCell.IsBusy = true;      
+                    
+                    o.lastTower.transform.position = o.lastTower.OcuppiedCell.transform.position;         
+
+                    var placeEffect = U.Instantiate(GM.I.ElementPlaceEffectList[(int)o.lastTower.Stats.Element],
+                        o.lastTower.transform.position + Vector3.up * 5,
+                        Quaternion.identity);
+                    U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
+
+                    o.SetTowerColor(o.lastTower, Color.white - new Color(0.2f, 0.2f, 0.2f));
+                    o.lastTower.gameObject.layer = 14;                      
+
+                    GM.I.PlayerInputSystem.NewTowerData = null;
+                    o.lastTower.IsTowerPlaced = true;                 
                 }
             }
 
@@ -229,7 +242,7 @@ namespace Game.Systems
                     
                     GM.I.BuildUISystem.AddTowerButton(GM.I.PlayerInputSystem.NewTowerData); 
                     GM.I.AvailableTowerList.Add(GM.I.PlayerInputSystem.NewTowerData);
-
+                   
                     o.TowerStateChanged?.Invoke(o, new EventArgs());   
                 }
             }

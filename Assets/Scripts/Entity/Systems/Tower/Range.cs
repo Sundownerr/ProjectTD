@@ -29,7 +29,6 @@ namespace Game.Tower.System
 
             transparent = new Color(0f, 0f, 0f, 0f);
             notTransparent = new Color(0, 0.5f, 0, 0.2f);
-            isRangeShowed = true;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -63,7 +62,7 @@ namespace Game.Tower.System
 
         private void Show(bool show)
         {
-            isRangeShowed = show ? true : false;
+            isRangeShowed = show;
             rend.material.color = show ? notTransparent : transparent;
         }
 
@@ -71,7 +70,7 @@ namespace Game.Tower.System
         {
             var isChoosedTower =
                 GM.I.TowerUISystem.gameObject.activeSelf &&
-                GM.I.PlayerInputSystem.ChoosedTower == transform.parent.gameObject;
+                GM.I.PlayerInputSystem.ChoosedTower == transform.parent.GetComponent<TowerSystem>();
 
             if (isChoosedTower)
             {

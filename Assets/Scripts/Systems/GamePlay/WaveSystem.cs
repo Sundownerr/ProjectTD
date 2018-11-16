@@ -134,10 +134,8 @@ namespace Game.Systems
             {
                 o.waveList = o.CreateWaveList(waveAmount);
                 o.waveNumber = 1;
-                o.currentWaveCreepList = o.waveList[0];  
-                
-                o.state.ChangeState(new GetInputState(o));
-           
+                o.currentWaveCreepList = o.waveList[0];                
+                o.state.ChangeState(new GetInputState(o));          
             }
 
             public void Execute() { }

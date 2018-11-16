@@ -217,6 +217,7 @@
      <Compile Include="Assets\Scripts\Systems\GamePlay\PoolSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\ResourceSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\StateMachine.cs" />
+     <Compile Include="Assets\Scripts\Systems\GamePlay\TowerControlSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\TowerCreatingSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\TowerPlaceSystem.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\WaveCreatingSystem.cs" />

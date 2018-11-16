@@ -71,7 +71,6 @@ namespace Game.Systems
             {
                 var upgradedTowerPrefab = Instantiate(ChoosedTower.Stats.GradeList[0].Prefab, ChoosedTower.transform.position, Quaternion.identity, GM.I.TowerParent);
                 var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
-
                 
                 upgradedTowerSystem.StatsSystem.Upgrade(ChoosedTower.Stats, ChoosedTower.Stats.GradeList[0]);
                 upgradedTowerSystem.OcuppiedCell = ChoosedTower.OcuppiedCell;
