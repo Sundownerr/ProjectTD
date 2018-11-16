@@ -70,30 +70,30 @@ namespace Game.Tower
 
             bullet.SetActive(false);              
         }
+        
+        public void AddExp(int amount) => StatsSystem.AddExp(amount);
 
         private void Update()
         {
             rangeSystem.SetShow();
 
-            if (isOn)
-            {
-                if (IsTowerPlaced)              
+            if (isOn)           
+                if (IsTowerPlaced)          
+                {    
+                    abilitySystem.Update();
+
                     if (CreepInRangeList.Count < 1)
                     {
                         if (!combatSystem.CheckAllBulletInactive())
                             combatSystem.MoveBullet();                   
                     }
                     else
-                    {
-                        abilitySystem.Update();
-                        combatSystem.State.Update();                            
+                    {                  
+                        combatSystem.Update();                            
                         
                         if (CreepInRangeList[0] != null)
-                        {
-                            target = CreepInRangeList[0].gameObject;
                             RotateAtCreep();
-                        }
-
+                        
                         for (int i = 0; i < CreepInRangeList.Count; i++)
                             if (CreepInRangeList[i] == null)
                             {
@@ -103,16 +103,14 @@ namespace Game.Tower
 
                         void RotateAtCreep()
                         {
-                            var offset = target.transform.position - transform.position;
+                            var offset = CreepInRangeList[0].gameObject.transform.position - transform.position;
                             offset.y = 0;
                             movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, 
                                                                             Quaternion.LookRotation(offset), 
                                                                             Time.deltaTime * 9f);
                         }        
-                    }                                      
-            }          
-        }
-
-        public void AddExp(int amount) => StatsSystem.AddExp(amount);
+                    }    
+                }                                                     
+        }      
     }
 }

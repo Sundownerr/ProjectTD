@@ -20,7 +20,7 @@ namespace Game.Tower.System
 
         public int CalculateShotCount()
         {
-            var creepList = tower.GetCreepInRangeList();
+            var creepList = tower.CreepInRangeList;
             var requiredShotCount = 1 + tower.Bullet.GetComponent<BulletSystem>().MultishotCount;
 
             return creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;
