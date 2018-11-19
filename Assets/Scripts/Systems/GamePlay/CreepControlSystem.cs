@@ -24,8 +24,9 @@ namespace Game.Systems
                     creepList.Remove(creep);
                 else
                 {
-                    // if(creep.HealthSystem != null)
-                    //     creep.HealthSystem.Update();
+                    if(creep.HealthSystem != null)
+                        creep.HealthSystem.Update();
+                        
                     if(creep.IsOn)
                     {
                         var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;

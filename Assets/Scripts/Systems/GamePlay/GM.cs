@@ -100,13 +100,13 @@ namespace Game.Systems
             else
                 Debug.Log("Warning: multiple " + this + " in scene!");
 
-            GridSystem          = new GridSystem();
-            ResourceSystem      = new ResourceSystem();
-            TowerPlaceSystem    = new TowerPlaceSystem();
-            TowerCreatingSystem = new TowerCreatingSystem();
-            WaveSystem          = new WaveSystem();     
-            TowerControlSystem  = new TowerControlSystem();    
-            CreepControlSystem  = new CreepControlSystem();
+            gridSystem          = new GridSystem();
+            resourceSystem      = new ResourceSystem();
+            towerPlaceSystem    = new TowerPlaceSystem();
+            towerCreatingSystem = new TowerCreatingSystem();
+            waveSystem          = new WaveSystem();     
+            towerControlSystem  = new TowerControlSystem();    
+            creepControlSystem  = new CreepControlSystem();
             
             PlayerState = State.Idle;
         
@@ -145,28 +145,17 @@ namespace Game.Systems
 
         private void Update()
         {
-            TowerPlaceSystem.UpdateSystem();
-            GridSystem.UpdateSystem();
-            WaveSystem.UpdateSystem();
-            RunSystem2();
-           // RunSystem1();
-
-        }
-
-        private void RunSystem1()
-        {
-            CreepControlSystem.UpdateSystem();
-        }
-
-         private void RunSystem2()
-        {
-             TowerControlSystem.UpdateSystem();
+            towerPlaceSystem.UpdateSystem();
+            gridSystem.UpdateSystem();
+            waveSystem.UpdateSystem();
+            creepControlSystem.UpdateSystem();
+            towerControlSystem.UpdateSystem();
         }
 
         private void Start()
         {
-            WaveUISystem.Set();     
-            WaveUISystem.UpdateWaveUI(WaveUISystem, new EventArgs());
+            waveUISystem.Set();     
+            waveUISystem.UpdateWaveUI(waveUISystem, new EventArgs());
         }
     }
 

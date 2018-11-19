@@ -110,7 +110,7 @@ namespace Game.Systems
                     o.lastTower.Stats = GM.I.PlayerInputSystem.NewTowerData;                   
                     GM.I.ResourceSystem.AddTowerLimit(o.newTowerLimit);
                     GM.I.ResourceSystem.AddGold(-o.newGoldCost);
-                     o.lastTower.SetSystem();
+                    o.lastTower.SetSystem();
 
                     o.TowerStateChanged?.Invoke(o, new EventArgs());                       
                 }

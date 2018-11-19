@@ -18,50 +18,42 @@ namespace Game.Tower.System
 
         public Stats(TowerSystem ownerTower) => tower = ownerTower;
 
-        public void Set()
+        public void Set() => Set(currentStats);
+
+        public void Set(TowerData stats)
         {
-            currentStats = U.Instantiate(currentStats);
-            currentStats.SetId();
+            currentStats = U.Instantiate(stats);            
             currentStats.SetData();
 
-            for (int i = 0; i < currentStats.AbilityList.Count; i++)
+            for (int i = 0; i < stats.AbilityList.Count; i++)
             {
-                currentStats.AbilityList[i] = U.Instantiate(currentStats.AbilityList[i]);
+                currentStats.AbilityList[i] = U.Instantiate(stats.AbilityList[i]);
 
-                for (int j = 0; j < currentStats.AbilityList[i].EffectList.Count; j++)
-                    currentStats.AbilityList[i].EffectList[j] = U.Instantiate(currentStats.AbilityList[i].EffectList[j]);
+                for (int j = 0; j < stats.AbilityList[i].EffectList.Count; j++)
+                    currentStats.AbilityList[i].EffectList[j] = U.Instantiate(stats.AbilityList[i].EffectList[j]);
 
                 currentStats.AbilityList[i].SetOwner(tower);
             }
 
-            baseStats = U.Instantiate(currentStats);
+            baseStats = U.Instantiate(stats);
             baseStats.IsInstanced = true;
             OnStatsChanged();
         }
 
-        public void Upgrade(TowerData currentStats, TowerData newBaseStats)
-        {   
-            this.currentStats = U.Instantiate(newBaseStats);
-            this.currentStats.SetData();
+        public void Upgrade(TowerData previousStats, TowerData newStats)
+        {            
+            Set(newStats);
+            currentStats.ParentTowerName = previousStats.ParentTowerName;          
+            currentStats.GradeCount = previousStats.GradeCount + 1;
+            currentStats.Level = previousStats.Level;
+            currentStats.Exp = previousStats.Exp;
+            Debug.Log(currentStats.GradeCount);
 
-            if(currentStats.ParentTowerName == null)
-                this.currentStats.ParentTowerName = currentStats.Name;
-            else
-                this.currentStats.ParentTowerName = currentStats.ParentTowerName;
-            
-            this.currentStats.GradeCount = currentStats.GradeCount + 1;
-            this.currentStats.Level = currentStats.Level;
-            this.currentStats.Exp = currentStats.Exp;
+            for (int i = 0; i < newStats.SpecialList.Length; i++)
+                currentStats.SpecialList[i] = U.Instantiate(newStats.SpecialList[i]);           
 
-            for (int i = 0; i < newBaseStats.SpecialList.Length; i++)
-                this.currentStats.SpecialList[i] = U.Instantiate(newBaseStats.SpecialList[i]);
-
-            baseStats = U.Instantiate(newBaseStats);
-            baseStats.IsInstanced = true;
-
-            for (int i = 1; i < this.currentStats.Level; i++)
-                IncreaseStatsPerLevel();
-
+            for (int i = 1; i < currentStats.Level; i++)
+                IncreaseStatsPerLevel();         
             OnStatsChanged();
         }
 
@@ -74,7 +66,8 @@ namespace Game.Tower.System
             currentStats.SpellCritChance += QoL.GetPercentOfValue(0.2f, baseStats.SpellCritChance);
 
             tower.SpecialSystem.IncreaseStatsPerLevel();
-            OnStatsChanged();
+            var effect = U.Instantiate(GM.I.LevelUpEffect, tower.transform.position, Quaternion.identity);
+            U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);    
         }
 
         public void AddExp(int amount)
@@ -83,13 +76,8 @@ namespace Game.Tower.System
 
             for (int i = currentStats.Level; i < 25; i++)
                 if (currentStats.Exp >= GM.ExpToLevelUp[currentStats.Level] && currentStats.Level < 25)
-                {
-                    IncreaseStatsPerLevel();
-
-                    var effect = U.Instantiate(GM.I.LevelUpEffect, tower.transform.position, Quaternion.identity);
-                    U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);
-                }
-            OnStatsChanged();
+                    IncreaseStatsPerLevel();      
+            OnStatsChanged();                       
         }
 
         public void OnStatsChanged() => StatsChanged?.Invoke(this, new EventArgs());            

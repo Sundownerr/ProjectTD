@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Creep;
 using Game.Systems;
 using UnityEngine;
 
@@ -40,7 +41,7 @@ namespace Game.Tower.System
             bulletPool.Initialize();
         }
 
-        private void CreateBullet(EntitySystem target)
+        private void CreateBullet(CreepSystem target)
         {
             bulletList.Add(bulletPool.GetObject());
             bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<BulletSystem>());
@@ -50,14 +51,13 @@ namespace Game.Tower.System
 
             void SetBulletData(BulletSystem bullet)
             {
-                if(target != null)
-                {
-                    bullet.Target = target.gameObject;
-                    bullet.ChainshotCount = defaultBullet.ChainshotCount;
-                    bullet.AOEShotRange = defaultBullet.AOEShotRange;
-                    bullet.transform.position = tower.ShootPointTransform.position;
-                    bullet.transform.rotation = tower.MovingPartTransform.rotation;
-                }
+                if(target != null)                
+                    bullet.Target = target;                  
+                
+                bullet.ChainshotCount = defaultBullet.ChainshotCount;
+                bullet.AOEShotRange = defaultBullet.AOEShotRange;
+                bullet.transform.position = tower.ShootPointTransform.position;
+                bullet.transform.rotation = tower.MovingPartTransform.rotation;
             }
         }
 
@@ -117,29 +117,30 @@ namespace Game.Tower.System
             bulletDataList.Remove(bullet);
             bulletList.Remove(bullet.gameObject);
         }
- 
-        private delegate void HitAction(BulletSystem bullet);
-        HitAction hitAction;
+
         private void HitTarget(BulletSystem bullet)
         {
-            var isChainShot =
-                bullet.ChainshotCount > 0 &&
-                bullet.RemainingBounceCount > 0;
-
-        
-            hitAction += bullet.AOEShotRange > 0 ? tower.SpecialSystem.DamageInAOE : (HitAction)ApplyDamage;
-            hitAction += isChainShot ? tower.SpecialSystem.SetChainTarget : (HitAction)SetTargetReached;
-
-            hitAction?.Invoke(bullet);
-            hitAction = null;
-
             if (bullet.Target == null)
                 SetTargetReached(bullet);
+
+            var isChainShot =
+                bullet.ChainshotCount > 0 &&
+                bullet.RemainingBounceCount > 0;        
+
+            if(bullet.AOEShotRange > 0)
+                tower.SpecialSystem.DamageInAOE(bullet);
+            else
+                ApplyDamage(bullet);
+
+            if(isChainShot)
+                tower.SpecialSystem.SetChainTarget(bullet);
+            else
+                SetTargetReached(bullet);         
 
             void ApplyDamage(BulletSystem bulletе)
             {
                 if (bulletе.Target != null)
-                    DamageSystem.DoDamage(bulletе.Target.GetComponent<Creep.CreepSystem>(), tower.Stats.Damage.Value, tower);
+                    DamageSystem.DoDamage(bulletе.Target, tower.Stats.Damage.Value, tower);
             }
         }
 

@@ -61,19 +61,12 @@ namespace Game.Tower.Data
         private int level, exp, gradeCount, numberInList;
         private bool isInstanced;
         private string parentTowerName;
-       
-        protected void Awake()
-        {             
-            if (!isInstanced)     
-                AddToDataBase();        
-            GradeCount = -1;            
-            ParentTowerName = Name;               
-        }
 
         public void SetData()
-        {
-            isInstanced = true;
-            IsGradeTower = false;
+        {                  
+            
+            isInstanced = true;           
+            GradeCount = -1;
             
             if (DamageToRace == null)
                 for (int i = 0; i < 5; i++)
@@ -81,18 +74,18 @@ namespace Game.Tower.Data
 
             for (int i = 0; i < GradeList.Count; i++)                
                 GradeList[i].Destroy();    
-
             GradeList.Clear();
 
             if (Owner == null)
-                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();         
+                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();     
+            SetId();    
         }
 
         [Button("Add to DataBase")]
         private void AddToDataBase()
         {
             if (!IsGradeTower && !IsInstanced)
-            {
+            {           
                 var database = Resources.Load("TowerDataBase");
                 if (database is TowerDataBase dataBase)     
                 {            
@@ -104,12 +97,11 @@ namespace Game.Tower.Data
                                 {
                                     var towerList = elementList[i].RarityList[j].TowerList;
                                     for (int k = 0; k < towerList.Count; k++)
-                                        if(CompareId(towerList[k].Id) || Name == towerList[k].Name)
+                                        if(CompareId(towerList[k].Id))
                                             return;
                                     
                                     elementList[i].RarityList[j].TowerList.Add(this);
-                                    numberInList = towerList.Count - 1;
-                                    SetId();
+                                    numberInList = towerList.Count - 1;                                  
                                     EditorUtility.SetDirty(dataBase);
                                     return;
                                 }     
@@ -148,7 +140,9 @@ namespace Game.Tower.Data
                 {      
                     for (int j = 0; j < AbilityList[i].EffectList.Count; j++)
                         Destroy(AbilityList[i].EffectList[j]);
+                    AbilityList[i].EffectList.Clear();
                     Destroy(AbilityList[i]);
+                    AbilityList.Clear();
                 }
                 Destroy(this);                  
             }

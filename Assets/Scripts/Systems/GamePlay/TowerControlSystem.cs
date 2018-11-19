@@ -13,6 +13,7 @@ namespace Game.Systems
 		
         public void UpdateSystem()
         {
+            
             for (int i = 0; i < towerSystemList.Count; i++)
             {
                 var tower = towerSystemList[i];

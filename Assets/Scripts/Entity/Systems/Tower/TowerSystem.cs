@@ -28,7 +28,7 @@ namespace Game.Tower
         public List<CreepSystem> CreepInRangeList => rangeSystem.CreepSystemList;
 
         private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
-        private GameObject ocuppiedCell, bullet, target, range;
+        private GameObject ocuppiedCell, bullet, range;
         private Renderer[] rendererList;
         private Range rangeSystem;
         private Special specialSystem;
@@ -51,17 +51,19 @@ namespace Game.Tower
             combatSystem    = new Combat(this);
             abilitySystem   = new AbilitySystem(this);
             effectSystem    = new EffectSystem();         
-
-            
+         
             bullet.SetActive(false);   
-
             isVulnerable = false;                           
         }
 
         public void SetSystem()
         {
-            statsSystem.Set();
-            specialSystem.Set();
+            if(!Stats.IsGradeTower)
+            {
+                statsSystem.Set();
+                specialSystem.Set();
+            }
+            
             combatSystem.Set();
             abilitySystem.Set();
 
@@ -69,9 +71,7 @@ namespace Game.Tower
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
             rangeSystem = range.GetComponent<System.Range>();
 
-            RendererList = GetComponentsInChildren<Renderer>();
-                  
-                           
+            RendererList = GetComponentsInChildren<Renderer>();                       
         }
         
         public void AddExp(int amount) => StatsSystem.AddExp(amount);      
