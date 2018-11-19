@@ -8,31 +8,42 @@ using Game.Data;
 
 namespace Game.Systems
 {
-	public static class CreepControlSystem 
+	public class CreepControlSystem 
 	{	
-        public static void MoveToNextWaypoint(CreepSystem creep)
-        {
-            if(creep != null)
-            {
-                if(creep.HealthSystem != null)
-                    creep.HealthSystem.Update();
-                if(creep.IsOn)
-                {
-                    var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;
-                    var creepTransform = creep.gameObject.transform;
-                    var waypointReached = QoL.CalcDistance(creepTransform.position, waypointTransform.position) < 70;
+        private List<CreepSystem> creepList = new List<CreepSystem>();
 
-                    if (creep.WaypointIndex < GM.I.WaypointList.Length - 1)
-                        if (!waypointReached)                    
-                            MoveAndRotateCreep();                                                     
+        public void AddCreep(CreepSystem creep) => creepList.Add(creep);
+
+        public void UpdateSystem()
+        {
+            for (int i = 0; i < creepList.Count; i++)
+            {
+                var creep = creepList[i];             
+                
+                if(creep == null)
+                    creepList.Remove(creep);
+                else
+                {
+                    // if(creep.HealthSystem != null)
+                    //     creep.HealthSystem.Update();
+                    if(creep.IsOn)
+                    {
+                        var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;
+                        var creepTransform = creep.gameObject.transform;
+                        var waypointReached = QoL.CalcDistance(creepTransform.position, waypointTransform.position) < 70;
+
+                        if (creep.WaypointIndex < GM.I.WaypointList.Length - 1)
+                            if (!waypointReached)                    
+                                MoveAndRotateCreep(creep);                                                     
+                            else
+                                creep.WaypointIndex++;                    
                         else
-                            creep.WaypointIndex++;                    
-                    else
-                        DestroyCreep(creep);
+                            DestroyCreep(creep);
+                    }
                 }
             }
 
-            void MoveAndRotateCreep()
+            void MoveAndRotateCreep(CreepSystem creep)
             {           
                 var creepTransform = creep.gameObject.transform;
                 creepTransform.Translate(Vector3.forward * Time.deltaTime * creep.Stats.MoveSpeed, Space.Self);
@@ -55,10 +66,13 @@ namespace Game.Systems
         }
 
         public static void DestroyCreep(CreepSystem creep)
-        {
-            Object.Destroy(creep.Stats);
-            GM.I.CreepList.Remove(creep.gameObject);
-            Object.Destroy(creep.gameObject);
+        {                     
+            if(creep != null)
+            {
+                GM.I.CreepList.Remove(creep.gameObject);
+                Object.Destroy(creep.Stats);
+                Object.Destroy(creep.gameObject);
+            }
         }    
 	}
 }

@@ -56,6 +56,7 @@ namespace Game.Systems
             GM.I.ResourceSystem.AddGold(ChoosedTower.Stats.GoldCost);
 
             ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
+
             GM.I.PlacedTowerList.Remove(ChoosedTower.gameObject);
             ChoosedTower.Stats.Destroy();
             Destroy(ChoosedTower.gameObject);
@@ -63,25 +64,33 @@ namespace Game.Systems
 
         private void UpgradeTower(object sender, EventArgs e) 
         {
+            var towerDBList = GM.I.TowerDataBase.AllTowerList.ElementsList[(int)choosedTower.Stats.Element].RarityList[(int)choosedTower.Stats.Rarity].TowerList;
+            var gradeList = towerDBList.Find(tower => tower.Name == choosedTower.Stats.ParentTowerName).GradeList;
+          
             var isGradeCountOk =
-                ChoosedTower.Stats.GradeList.Count > 0 &&
-                ChoosedTower.Stats.GradeCount < ChoosedTower.Stats.GradeList.Count;
-
+                gradeList.Count > 0 &&
+                choosedTower.Stats.GradeCount <= gradeList.Count;
+               Debug.Log(choosedTower.Stats.ParentTowerName);
             if (isGradeCountOk)
-            {
-                var upgradedTowerPrefab = Instantiate(ChoosedTower.Stats.GradeList[0].Prefab, ChoosedTower.transform.position, Quaternion.identity, GM.I.TowerParent);
+            {              
+
+                var upgradedTowerPrefab = Instantiate(gradeList[choosedTower.Stats.GradeCount + 1].Prefab, choosedTower.transform.position, Quaternion.identity, GM.I.TowerParent);
                 var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
+                upgradedTowerPrefab.layer = 14;   
                 
-                upgradedTowerSystem.StatsSystem.Upgrade(ChoosedTower.Stats, ChoosedTower.Stats.GradeList[0]);
-                upgradedTowerSystem.OcuppiedCell = ChoosedTower.OcuppiedCell;
+                upgradedTowerSystem.StatsSystem.Upgrade(choosedTower.Stats, gradeList[choosedTower.Stats.GradeCount + 1]);
+                upgradedTowerSystem.OcuppiedCell = choosedTower.OcuppiedCell;
                 upgradedTowerSystem.SetSystem();
-
-                ChoosedTower.Stats.Destroy();
-                Destroy(ChoosedTower.gameObject);
-
-                GM.I.PlayerInputSystem.ChoosedTower = upgradedTowerSystem;
-                ChoosedTower.StatsSystem.OnStatsChanged();      
+               
+                choosedTower.Stats.Destroy();
+                Destroy(choosedTower.gameObject);
+                
+                choosedTower = upgradedTowerSystem;
+                choosedTower.StatsSystem.OnStatsChanged();      
+                GM.I.TowerControlSystem.AddTower(choosedTower);
             }
+
+            GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(isGradeCountOk);
         }
 
         private void ActivateTowerUI(bool active)
@@ -92,9 +101,18 @@ namespace Game.Systems
 
             if (active)
             {  
-                ChoosedTower = hit.transform.GetComponent<TowerSystem>();                            
+                choosedTower = hit.transform.GetComponent<TowerSystem>();                            
                 if (isNotPlacingTower)
                     GM.PlayerState = State.ChoosedTower;
+
+                var towerDBList = GM.I.TowerDataBase.AllTowerList.ElementsList[(int)choosedTower.Stats.Element].RarityList[(int)choosedTower.Stats.Rarity].TowerList;
+                var gradeList = towerDBList.Find(tower => tower.Name == choosedTower.Stats.ParentTowerName).GradeList;
+
+                var isGradeCountOk =
+                    gradeList.Count > 0 &&
+                    choosedTower.Stats.GradeCount <= gradeList.Count;
+
+                GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(isGradeCountOk);
                 
                 MouseOnTower?.Invoke(this, new EventArgs());
             }
@@ -102,7 +120,8 @@ namespace Game.Systems
                 if (isNotPlacingTower)
                     GM.PlayerState = State.Idle;           
 
-            GM.I.TowerUISystem.gameObject.SetActive(active);
+          
+            GM.I.TowerUISystem.gameObject.SetActive(active);           
         }       
 
         private void BuildNewTower(object sender, EventArgs e)

@@ -11,13 +11,15 @@ using Game.Creep;
 namespace Game.Systems
 {
     public enum State
-        {
-            Idle,
-            ChoosedCreep,
-            ChoosedTower,
-            PlacingTower,
-            PreparePlacingTower
-        }
+    {
+        Idle,
+        ChoosedCreep,
+        ChoosedTower,
+        PlacingTower,
+        PreparePlacingTower
+    }
+
+    
 
 
     [Serializable]
@@ -27,7 +29,7 @@ namespace Game.Systems
         public GameObject[] WaypointList, CellAreaList, ElementPlaceEffectList;
 
         [NaughtyAttributes.BoxGroup("List")]
-        public List<GameObject> CreepList, CellList, PlacedTowerList;
+        public List<GameObject> CreepList, PlacedTowerList;
 
         [NaughtyAttributes.BoxGroup("List")]
         public List<TowerData> AvailableTowerList;     
@@ -59,14 +61,14 @@ namespace Game.Systems
         public PlayerInputSystem PlayerInputSystem { get => playerInputSystem; set => playerInputSystem = value; }
         public BaseUISystem BaseUISystem { get => baseUISystem; set => baseUISystem = value; }
         public TowerUISystem TowerUISystem { get => towerUISystem; set => towerUISystem = value; }
-        public ResourceSystem ResourceSystem { get => resourceSystem; set => resourceSystem = value; }
-        public ElementSystem ElementSystem { get => elementSystem; set => elementSystem = value; }
+        public ResourceSystem ResourceSystem { get => resourceSystem; set => resourceSystem = value; }     
         public ElementUISystem ElementUISystem { get => elementUISystem; set => elementUISystem = value; }
         public TowerCreatingSystem TowerCreatingSystem { get => towerCreatingSystem; set => towerCreatingSystem = value; }
         public BuildUISystem BuildUISystem { get => buildUISystem; set => buildUISystem = value; }
-        public List<Cell> CellStateList { get => cellStateList; set => cellStateList = value; }
         public List<CreepSystem> CreepSystemList { get => creepSystemList; set => creepSystemList = value; }
         public WaveUISystem WaveUISystem { get => waveUISystem; set => waveUISystem = value; }
+        public TowerControlSystem TowerControlSystem { get => towerControlSystem; set => towerControlSystem = value; }
+        public CreepControlSystem CreepControlSystem { get => creepControlSystem; set => creepControlSystem = value; }
 
         private TowerPlaceSystem towerPlaceSystem;
         private GridSystem gridSystem;
@@ -76,11 +78,11 @@ namespace Game.Systems
         private WaveUISystem waveUISystem;
         private TowerUISystem towerUISystem;
         private ResourceSystem resourceSystem;
-        private ElementSystem elementSystem;
+        private TowerControlSystem towerControlSystem;
+        private CreepControlSystem creepControlSystem;
         private ElementUISystem elementUISystem;
         private TowerCreatingSystem towerCreatingSystem;
         private BuildUISystem buildUISystem;
-        private List<Cells.Cell> cellStateList = new List<Cell>();
         private List<CreepSystem> creepSystemList = new List<CreepSystem>();
 
         public Canvas UICanvas;
@@ -102,9 +104,9 @@ namespace Game.Systems
             ResourceSystem      = new ResourceSystem();
             TowerPlaceSystem    = new TowerPlaceSystem();
             TowerCreatingSystem = new TowerCreatingSystem();
-            WaveSystem          = new WaveSystem();
-            ElementSystem       = new ElementSystem();
-            
+            WaveSystem          = new WaveSystem();     
+            TowerControlSystem  = new TowerControlSystem();    
+            CreepControlSystem  = new CreepControlSystem();
             
             PlayerState = State.Idle;
         
@@ -143,9 +145,22 @@ namespace Game.Systems
 
         private void Update()
         {
-            TowerPlaceSystem.Update();
-            GridSystem.Update();
-            WaveSystem.Update();
+            TowerPlaceSystem.UpdateSystem();
+            GridSystem.UpdateSystem();
+            WaveSystem.UpdateSystem();
+            RunSystem2();
+           // RunSystem1();
+
+        }
+
+        private void RunSystem1()
+        {
+            CreepControlSystem.UpdateSystem();
+        }
+
+         private void RunSystem2()
+        {
+             TowerControlSystem.UpdateSystem();
         }
 
         private void Start()

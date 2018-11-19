@@ -54,9 +54,18 @@ namespace Game.Data.Effects
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Show(true);     
                 
-                target.EffectSystem.Add(this);  
-                effectCoroutine = GM.I.StartCoroutine(SetEffect(Duration));               
+                target.EffectSystem.Add(this);                            
             }
+        }
+
+        public override void Continue()
+        {
+            base.Continue();
+            
+            //if(effectTimer % 10 == 0)
+            
+
+           
         }
 
         public override void End()

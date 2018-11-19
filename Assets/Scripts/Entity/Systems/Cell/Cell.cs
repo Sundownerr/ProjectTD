@@ -18,10 +18,8 @@ namespace Game.Cells
         protected override void Awake()
         {
             base.Awake();
-
-            GM.I.CellList.Add(gameObject);
-            GM.I.CellStateList.Add(this);
-            transform.SetParent(GM.I.CellParent);
+        
+            GM.I.GridSystem.CellList.Add(this);
 
             cellRenderer = GetComponent<Renderer>();
             cellRenderer.material.color = new Color(0, 0, 0, 0);      

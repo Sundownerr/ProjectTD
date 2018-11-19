@@ -1,20 +1,12 @@
 ﻿
 namespace Game.Systems
 {
-    public class ElementSystem
+    public static class ElementSystem
     {
-        private int baseLearnCost, levelLimit;
-
-        public ElementSystem()
+        private static bool CheckCanLearn(int elementLevel)
         {
-            baseLearnCost = 20;
-            levelLimit = 15;
-
-            GM.I.ElementSystem = this;
-        }
-
-        private bool CheckCanLearn(int elementLevel)
-        {
+            var baseLearnCost   = 20;
+            var levelLimit      = 15;
             var learnCost       = elementLevel + baseLearnCost;
             var isCanLearn      = elementLevel < levelLimit;
             var isLearnCostOk   = learnCost <= GM.I.PlayerData.MagicCrystals;
@@ -32,7 +24,7 @@ namespace Game.Systems
             return true;                    
         }
 
-        public void LearnElement(int elementId)
+        public static void LearnElement(int elementId)
         {
             if (CheckCanLearn(GM.I.PlayerData.ElementLevelList[elementId]))
             {

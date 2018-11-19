@@ -35,15 +35,14 @@ namespace Game.Systems
             state.ChangeState(new GetCellDataState(this));
         }
 
-        public void Update() => state.Update();
+        public void UpdateSystem() => state.Update();
 
         private void SetTowerColor(TowerSystem tower, Color color)
         {
             for (int i = 0; i < tower.RendererList.Length; i++)
                 tower.RendererList[i].material.color = color;
         }
-
-  
+ 
         protected class GetCellDataState : IState
         {
             private readonly TowerPlaceSystem o;
@@ -108,11 +107,10 @@ namespace Game.Systems
                         GM.I.TowerParent));  
 
                     o.lastTower = GM.I.PlacedTowerList[GM.I.PlacedTowerList.Count - 1].GetComponent<Tower.TowerSystem>();
-                    o.lastTower.Stats = U.Instantiate(GM.I.PlayerInputSystem.NewTowerData);
-                    o.lastTower.Stats.IsInstanced = true;
-                    o.lastTower.SetSystem();
+                    o.lastTower.Stats = GM.I.PlayerInputSystem.NewTowerData;                   
                     GM.I.ResourceSystem.AddTowerLimit(o.newTowerLimit);
                     GM.I.ResourceSystem.AddGold(-o.newGoldCost);
+                     o.lastTower.SetSystem();
 
                     o.TowerStateChanged?.Invoke(o, new EventArgs());                       
                 }
@@ -139,8 +137,7 @@ namespace Game.Systems
                 {          
                     var ray = o.mainCam.ScreenPointToRay(Input.mousePosition);
 
-                    var cellList    = GM.I.CellStateList;
-                    var cellGOList  = GM.I.CellList;
+                    var cellList    = GM.I.GridSystem.CellList;
 
                     var terrainLayer    = 1 << 9;
                     var cellLayer       = 1 << 15;
@@ -154,9 +151,9 @@ namespace Game.Systems
                         o.lastTower.transform.position = o.hit.point;
                         o.SetTowerColor(o.lastTower, o.transparentRed);        
 
-                        for (int i = 0; i < cellGOList.Count; i++)
+                        for (int i = 0; i < cellList.Count; i++)
                         {                   
-                            var isHitCell           = o.hit.transform.gameObject == cellGOList[i];
+                            var isHitCell           = o.hit.transform.gameObject == cellList[i].gameObject;
                             var isHitCellNotBusy    = isHitCell && !cellList[i].IsBusy;
                             cellList[i].IsChosen = isHitCellNotBusy;
                         
@@ -192,7 +189,7 @@ namespace Game.Systems
 
                 void PlaceTower()
                 {
-                    o.lastTower.SetSystem();
+                   
                     o.lastTower.OcuppiedCell = o.chosenCell.gameObject;
                     o.chosenCell.IsBusy = true;      
                     
@@ -207,7 +204,8 @@ namespace Game.Systems
                     o.lastTower.gameObject.layer = 14;                      
 
                     GM.I.PlayerInputSystem.NewTowerData = null;
-                    o.lastTower.IsTowerPlaced = true;                 
+                    o.lastTower.IsTowerPlaced = true;           
+                    GM.I.TowerControlSystem.AddTower(o.lastTower);      
                 }
             }
 

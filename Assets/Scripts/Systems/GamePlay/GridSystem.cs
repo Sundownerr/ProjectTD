@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Game.Cells;
 using UnityEngine;
 
@@ -7,14 +8,17 @@ namespace Game.Systems
     public class GridSystem 
     {
         public bool IsGridBuilded { get => isGridBuilded; set => isGridBuilded = value; }
+        public List<Cell> CellList { get => cellList; set => cellList = value; }
 
         private bool isGridBuilded;
         private Color blue, red, green;
         private CellExpandSystem cellExpandSystem;
+        private List<Cell> cellList;
 
         public GridSystem()
         {
             GM.I.GridSystem = this;
+            cellList = new List<Cell>();
 
             CreateGrid();
  
@@ -28,11 +32,11 @@ namespace Game.Systems
 
                 CreateMainCell();
 
-                for (int i = 0; i < GM.I.CellStateList.Count; i++)        
-                    if(!GM.I.CellStateList[i].IsExpanded)
-                        cellExpandSystem.Expand(GM.I.CellStateList[i]);     
+                for (int i = 0; i < cellList.Count; i++)        
+                    if(!cellList[i].IsExpanded)
+                        cellExpandSystem.Expand(cellList[i]);     
 
-                IsGridBuilded = true;
+                IsGridBuilded = true;            
             }   
 
             void CreateMainCell()
@@ -47,40 +51,40 @@ namespace Game.Systems
                         var spawnPos = GM.I.CellAreaList[i].transform.position + 
                             new Vector3(0, GM.I.CellAreaList[i].transform.localScale.y / 1.9f, 0);
 
-                        Object.Instantiate(GM.I.CellPrefab, spawnPos, Quaternion.identity);                       
+                        Object.Instantiate(GM.I.CellPrefab, spawnPos, Quaternion.identity, GM.I.CellParent);                       
                     }
                 }
             }
         }       
 
-        public void Update()
+        public void UpdateSystem()
         {
             if (IsGridBuilded)
             {
-                var lastCell = GM.I.CellList[GM.I.CellList.Count - 1];
+                var lastCell = cellList[cellList.Count - 1];
 
                 if (GM.PlayerState == State.PlacingTower)
                 {
-                    if (!lastCell.activeSelf)
+                    if (!lastCell.gameObject.activeSelf)
                         SetCellsActive(true);
 
                     SetCellsColors();
                 }
-                else if (lastCell.activeSelf)
+                else if (lastCell.gameObject.activeSelf)
                     SetCellsActive(false);
             }
 
             void SetCellsActive(bool active)
             {
-                for (int i = 0; i < GM.I.CellList.Count; i++)
-                    GM.I.CellList[i].SetActive(active);
+                for (int i = 0; i < cellList.Count; i++)
+                    cellList[i].gameObject.SetActive(active);
             }
 
             void SetCellsColors()
             {
-                for (int i = 0; i < GM.I.CellStateList.Count; i++)
+                for (int i = 0; i < cellList.Count; i++)
                 {
-                    var cell = GM.I.CellStateList[i];
+                    var cell = cellList[i];
                     cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? green : blue;              
                 }
             }

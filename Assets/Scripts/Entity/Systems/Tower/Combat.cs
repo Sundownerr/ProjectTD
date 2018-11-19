@@ -13,6 +13,7 @@ namespace Game.Tower.System
 
         private List<BulletSystem> bulletDataList;
         private List<GameObject> bulletList;
+        private List<float> bulletRemoveTimerList;
         private TowerSystem tower;
         private ObjectPool bulletPool;
         private float timer;
@@ -27,6 +28,7 @@ namespace Game.Tower.System
             timer = tower.Stats.AttackSpeed;
             bulletList = new List<GameObject>();
             bulletDataList = new List<BulletSystem>();
+            bulletRemoveTimerList = new List<float>();
             defaultBullet = tower.Bullet.GetComponent<BulletSystem>();
 
             bulletPool = new ObjectPool()
@@ -62,7 +64,11 @@ namespace Game.Tower.System
         private void SetTargetReached(BulletSystem bullet)
         {
             if (!bullet.IsTargetReached)
-                bullet.StartCoroutine(RemoveBullet(bullet));
+            {
+                bullet.IsTargetReached = true;
+                bullet.Show(false);
+                bulletRemoveTimerList.Add(bulletDataList[bulletList.Count - 1].Lifetime);
+            }              
         }
 
         public void MoveBullet()
@@ -105,13 +111,8 @@ namespace Game.Tower.System
             return true;
         }
 
-        private IEnumerator RemoveBullet(BulletSystem bullet)
-        {
-            bullet.IsTargetReached = true;
-            bullet.Show(false);
-
-            yield return new WaitForSeconds(bullet.Lifetime);
-
+        private void RemoveBullet(BulletSystem bullet)
+        {      
             bullet.gameObject.SetActive(false);
             bulletDataList.Remove(bullet);
             bulletList.Remove(bullet.gameObject);
@@ -142,7 +143,7 @@ namespace Game.Tower.System
             }
         }
 
-        public void Update()
+        public void UpdateSystem()
         {
             timer = timer > tower.Stats.AttackSpeed ? 0 : timer += Time.deltaTime;
             MoveBullet();
@@ -156,6 +157,17 @@ namespace Game.Tower.System
 
                 for (int i = 0; i < shotCount; i++)
                     CreateBullet(tower.CreepInRangeList[i]);
+            }
+
+            for (int i = 0; i < bulletRemoveTimerList.Count; i++)
+            {
+                if(bulletRemoveTimerList[i] > 0)
+                    bulletRemoveTimerList[i] -= Time.deltaTime;
+                else
+                {
+                    RemoveBullet(bulletDataList[0]);
+                    bulletRemoveTimerList.RemoveAt(i);
+                }
             }
         }   
     }

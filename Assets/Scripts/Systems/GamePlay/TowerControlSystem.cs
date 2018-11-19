@@ -1,155 +1,63 @@
-﻿// using System.Collections;
-// using System.Collections.Generic;
-// using Game.Tower;
-// using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Game.Tower;
+using UnityEngine;
 
-// namespace Game.Systems
-// {
-// 	public class TowerControlSystem 
-// 	{		
-// 		private List<StateMachine> stateMachineList;
-// 		private List<TowerSystem> towerSystemList;
+namespace Game.Systems
+{
+	public class TowerControlSystem 
+	{		
+		private List<TowerSystem> towerSystemList = new List<TowerSystem>();
 
-// 		public void OnTowerCreated(GameObject tower)
-// 		{
-// 			towerSystemList.Add(new TowerSystem(tower));
-// 			stateMachineList.Add(new StateMachine());
-// 			stateMachineList[stateMachineList.Count - 1].ChangeState(new SpawnState(towerSystemList[towerSystemList.Count - 1]));
-// 		}		
+		public void AddTower(TowerSystem tower) => towerSystemList.Add(tower);			
 		
-// 		private void SetTowerColor(Color color)
-//         {
-//             for (int i = 0; i < rendererList.Length; i++)
-//                 rendererList[i].material.color = color;
-//         }
+        public void UpdateSystem()
+        {
+            for (int i = 0; i < towerSystemList.Count; i++)
+            {
+                var tower = towerSystemList[i];
+                if(tower == null)
+                    towerSystemList.Remove(tower);
+                else
+                {                        
+                    tower.RangeSystem.SetShow();
+                    if (tower.IsOn)           
+                        if (tower.IsTowerPlaced)          
+                        {                  
+                            tower.AbilitySystem.Update();
 
-// 		protected class SpawnState : IState
-//         {
-//             private readonly TowerSystem o;
+                            if (tower.CreepInRangeList.Count < 1)
+                            {
+                                if (!tower.CombatSystem.CheckAllBulletInactive())
+                                    tower.CombatSystem.MoveBullet();                   
+                            }
+                            else
+                            {                  
+                                tower.CombatSystem.UpdateSystem();                            
+                                
+                                if (tower.CreepInRangeList[0] != null)
+                                    RotateAtCreep();
+                                
+                                for (int j = 0; j < tower.CreepInRangeList.Count; j++)
+                                    if (tower.CreepInRangeList[j] == null)
+                                    {
+                                        tower.RangeSystem.CreepList.RemoveAt(j);
+                                        tower.RangeSystem.CreepSystemList.RemoveAt(j);
+                                    }
 
-//             public SpawnState(TowerSystem o) => this.o = o;
-
-//             public void Enter() { }
-
-//             public void Execute()
-//             {
-//                 void StartPlacing()
-//                 {
-//                     o.SetTowerColor(GM.I.TowerPlaceSystem.GhostedTowerColor);
-//                     o.transform.position = GM.I.TowerPlaceSystem.GhostedTowerPos;
-//                 }
-
-//                 if (GM.PlayerState == State.PlacingTower)
-//                     StartPlacing();
-//                 else
-//                     o.state.ChangeState(new LookForCreepState(o));
-//             }
-
-//             public void Exit() 
-//             {
-//                 void EndPlacing()
-//                 {
-//                     o.transform.position = o.ocuppiedCell.transform.position;
-
-//                     o.SetTowerColor(Color.white - new Color(0.2f, 0.2f, 0.2f));
-
-//                     var placeEffect = Instantiate(GM.I.ElementPlaceEffectList[(int)o.Stats.Element],
-//                         o.transform.position + Vector3.up * 5,
-//                         Quaternion.identity);
-
-//                     Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
-
-//                     o.gameObject.layer = 14;
-//                     o.rangeSystem.SetShow(false);
-
-//                     GM.I.PlayerInputSystem.NewTowerData = null;
-//                     o.isTowerPlaced = true;
-//                 }
-
-//                 EndPlacing();  
-//             }          
-//         }
-
-//         protected class LookForCreepState : IState
-//         {
-//             private readonly TowerSystem o;
-
-//             public LookForCreepState(TowerSystem o) => this.o = o;
-
-//             public void Enter() { }
-
-//             public void Execute()
-//             {
-//                 if (o.rangeSystem.CreepList.Count > 0)
-//                     o.state.ChangeState(new CombatState(o));
-//             }
-
-//             public void Exit() { }
-//         }
-
-//         protected class CombatState : IState
-//         {
-//             private readonly TowerSystem o;
-
-//             public CombatState(TowerSystem o) => this.o = o;
-
-//             public void Enter() { }
-
-//             public void Execute()
-//             {              
-//                 o.combatSystem.State.Update();
-
-//                 for (int i = 0; i < o.GetCreepInRangeList().Count; i++)
-//                     if (o.GetCreepInRangeList()[i] == null)
-//                     {
-//                         o.rangeSystem.CreepList.RemoveAt(i);
-//                         o.rangeSystem.CreepSystemList.RemoveAt(i);
-//                     }
-
-//                 if (o.GetCreepInRangeList().Count < 1)
-//                     o.state.ChangeState(new MoveRemainingBulletState(o));
-//                 else
-//                     if (o.GetCreepInRangeList()[0] != null)
-//                     {
-//                         o.target = o.GetCreepInRangeList()[0].gameObject;
-//                         RotateAtCreep();
-//                     }
-
-//                 void RotateAtCreep()
-//                 {
-//                     var offset = o.target.transform.position - o.transform.position;
-//                     offset.y = 0;
-//                     o.movingPartTransform.rotation = Quaternion.Lerp(o.movingPartTransform.rotation, 
-//                                                                     Quaternion.LookRotation(offset), 
-//                                                                     Time.deltaTime * 9f);
-//                 }
-//             }
-
-//             public void Exit() { }
-//         }
-
-//         protected class MoveRemainingBulletState : IState
-//         {
-//             private readonly TowerSystem o;
-
-//             public MoveRemainingBulletState(TowerSystem o) => this.o = o;
-
-//             public void Enter() { }
-
-//             public void Execute()
-//             {
-//                 if (o.rangeSystem.CreepList.Count > 0)
-//                     o.state.ChangeState(new CombatState(o));
-//                 else
-//                 if (!o.combatSystem.CheckAllBulletInactive())
-//                     o.combatSystem.MoveBullet();
-//                 else
-//                     o.state.ChangeState(new LookForCreepState(o));
-//             }
-
-//             public void Exit() { }
-//         }
-// 	}
-
-	
-// }
+                                void RotateAtCreep()
+                                {
+                                    var offset = tower.CreepInRangeList[0].gameObject.transform.position - tower.transform.position;
+                                    offset.y = 0;
+                                    tower.MovingPartTransform.rotation = Quaternion.Lerp(tower.MovingPartTransform.rotation, 
+                                                                                    Quaternion.LookRotation(offset), 
+                                                                                    Time.deltaTime * 9f);
+                                }        
+                            }    
+                        }        
+                }
+            }                                             
+        }      
+    }
+}
+		

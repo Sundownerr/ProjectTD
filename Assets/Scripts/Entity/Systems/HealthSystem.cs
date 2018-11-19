@@ -23,23 +23,30 @@ public class HealthSystem
 		if(owner is CreepSystem creep)
 		{
 			var health = creep.Stats.Health;
-			healthRegen = creep.Stats.HealthRegen;
+			healthRegen = creep.Stats.HealthRegen;				
+				
+			if(health < maxHealth)
+			{
+				regenTimer = regenTimer > 1 ? 0 : regenTimer += Time.deltaTime;
 
-			if(health <= 0)
-				GiveResources();		
+				if(regenTimer == 1)
+					health += healthRegen;
+			}				
 			else
-			{		
-				if(health < maxHealth)
-				{
-					regenTimer = regenTimer > 1 ? 0 : regenTimer += Time.deltaTime;
+				if(health > maxHealth)
+					health = maxHealth;			
+		}		
+	}
 
-					if(regenTimer == 1)
-						health += healthRegen;
-				}				
-				else
-					if(health > maxHealth)
-						health = maxHealth;
-			}
+	public void ChangeHealth(EntitySystem changer, float damage)
+	{
+		if(owner is CreepSystem creep)
+		{			
+			creep.LastDamageDealer = changer;
+			creep.Stats.Health -= damage;
+			
+			if(creep.Stats.Health <= 0)
+				GiveResources();			
 		}
 
 		void GiveResources()
@@ -51,14 +58,5 @@ public class HealthSystem
             }
             CreepControlSystem.DestroyCreep(creep);
         }
-	}
-
-	public void ChangeHealth(EntitySystem changer, float damage)
-	{
-		if(owner is CreepSystem creep)
-		{			
-			creep.LastDamageDealer = changer;
-			creep.Stats.Health -= damage;
-		}
 	}
 }

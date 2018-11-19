@@ -50,9 +50,12 @@ namespace Game.Tower
             specialSystem   = new Special(this);
             combatSystem    = new Combat(this);
             abilitySystem   = new AbilitySystem(this);
-            effectSystem    = new EffectSystem();
+            effectSystem    = new EffectSystem();         
 
-            isVulnerable = false;               
+            
+            bullet.SetActive(false);   
+
+            isVulnerable = false;                           
         }
 
         public void SetSystem()
@@ -65,52 +68,12 @@ namespace Game.Tower
             range = Instantiate(GM.I.RangePrefab, transform);           
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
             rangeSystem = range.GetComponent<System.Range>();
-           
-            RendererList = GetComponentsInChildren<Renderer>();
 
-            bullet.SetActive(false);              
+            RendererList = GetComponentsInChildren<Renderer>();
+                  
+                           
         }
         
-        public void AddExp(int amount) => StatsSystem.AddExp(amount);
-
-        private void Update()
-        {
-            rangeSystem.SetShow();
-
-            if (isOn)           
-                if (IsTowerPlaced)          
-                {    
-                    abilitySystem.Update();
-
-                    if (CreepInRangeList.Count < 1)
-                    {
-                        if (!combatSystem.CheckAllBulletInactive())
-                            combatSystem.MoveBullet();                   
-                    }
-                    else
-                    {                  
-                        combatSystem.Update();                            
-                        
-                        if (CreepInRangeList[0] != null)
-                            RotateAtCreep();
-                        
-                        for (int i = 0; i < CreepInRangeList.Count; i++)
-                            if (CreepInRangeList[i] == null)
-                            {
-                                rangeSystem.CreepList.RemoveAt(i);
-                                rangeSystem.CreepSystemList.RemoveAt(i);
-                            }
-
-                        void RotateAtCreep()
-                        {
-                            var offset = CreepInRangeList[0].gameObject.transform.position - transform.position;
-                            offset.y = 0;
-                            movingPartTransform.rotation = Quaternion.Lerp(movingPartTransform.rotation, 
-                                                                            Quaternion.LookRotation(offset), 
-                                                                            Time.deltaTime * 9f);
-                        }        
-                    }    
-                }                                                     
-        }      
+        public void AddExp(int amount) => StatsSystem.AddExp(amount);      
     }
 }

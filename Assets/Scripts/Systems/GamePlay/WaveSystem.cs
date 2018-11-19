@@ -19,6 +19,7 @@ namespace Game.Systems
         private List<List<CreepSystem>> creepWaveList;
         private List<List<CreepData>> waveList;
         private List<CreepData> currentWaveCreepList;
+        
 
         public WaveSystem()
         {
@@ -27,16 +28,16 @@ namespace Game.Systems
             currentWaveCreepList    = new List<CreepData>();
             creepWaveList           = new List<List<CreepSystem>>();           
             waveList                = new List<List<CreepData>>();
+          
 
             state = new StateMachine();
             state.ChangeState(new GenerateWavesState(this, GM.I.WaveAmount));    
         }
 
-        public void Update()
+        public void UpdateSystem()
         {
             state.Update();
-            AddMagicCrystalAfterWaveEnd();      
-            HandleCreeps();                
+            AddMagicCrystalAfterWaveEnd();                     
         }
 
         private List<List<CreepData>> CreateWaveList(int waveAmount)
@@ -79,12 +80,6 @@ namespace Game.Systems
             return tempStats;
         }
 
-        private void HandleCreeps()
-        {
-            var creepList = GM.I.CreepSystemList;
-            for (int i = 0; i < creepList.Count; i++)            
-                CreepControlSystem.MoveToNextWaypoint(creepList[i]);      
-        }
         
         private void AddMagicCrystalAfterWaveEnd()
         {
@@ -188,7 +183,8 @@ namespace Game.Systems
 
                         GM.I.CreepList.Add(creep);
                         GM.I.CreepSystemList.Add(creepSystem);    
-                        o.creepWaveList[o.creepWaveList.Count - 1].Add(creepSystem);                                             
+                        o.creepWaveList[o.creepWaveList.Count - 1].Add(creepSystem);    
+                        GM.I.CreepControlSystem.AddCreep(creepSystem);                                  
                     }
                 }
             }

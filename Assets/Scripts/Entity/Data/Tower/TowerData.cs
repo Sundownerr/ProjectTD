@@ -16,6 +16,7 @@ namespace Game.Tower.Data
         public int Level { get => level; set => level = value > 25 ? 25 : value < 0 ? 0 : value; }
         public int GradeCount { get => gradeCount; set => gradeCount = value; }
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
+        public string ParentTowerName { get => parentTowerName; set => parentTowerName = value; }
 
         [HideInInspector]
         public List<float> DamageToRace;     
@@ -59,24 +60,38 @@ namespace Game.Tower.Data
 
         private int level, exp, gradeCount, numberInList;
         private bool isInstanced;
+        private string parentTowerName;
        
         protected void Awake()
         {             
             if (!isInstanced)     
-                AddToDataBase();                
+                AddToDataBase();        
+            GradeCount = -1;            
+            ParentTowerName = Name;               
+        }
+
+        public void SetData()
+        {
+            isInstanced = true;
+            IsGradeTower = false;
             
             if (DamageToRace == null)
                 for (int i = 0; i < 5; i++)
                     DamageToRace.Add(100f);    
 
+            for (int i = 0; i < GradeList.Count; i++)                
+                GradeList[i].Destroy();    
+
+            GradeList.Clear();
+
             if (Owner == null)
-                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();               
+                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();         
         }
 
         [Button("Add to DataBase")]
         private void AddToDataBase()
         {
-            if (!IsGradeTower)
+            if (!IsGradeTower && !IsInstanced)
             {
                 var database = Resources.Load("TowerDataBase");
                 if (database is TowerDataBase dataBase)     
@@ -138,5 +153,7 @@ namespace Game.Tower.Data
                 Destroy(this);                  
             }
         }
+
+ 
     }
 }

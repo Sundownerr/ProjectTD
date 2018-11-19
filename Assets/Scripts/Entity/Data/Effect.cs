@@ -23,6 +23,7 @@ namespace Game.Data
         public int MaxStackCount;
 
         protected bool isSet, isEnded, isMaxStackCount;
+        protected float effectTimer;
         protected EntitySystem target;
         protected Ability ownerAbility;
         protected Coroutine effectCoroutine;
@@ -56,12 +57,14 @@ namespace Game.Data
 
         public virtual void Continue()
         {
+             effectTimer = effectTimer > Duration ? -1 : effectTimer += Time.deltaTime;
+
+            if(effectTimer == -1)
+                End();
+
             if (!isEnded)
                 if (target == null)
-                {
-                    End();
-                    GM.I.StopCoroutine(effectCoroutine);
-                }
+                    End();            
         }
 
         public virtual void End() 

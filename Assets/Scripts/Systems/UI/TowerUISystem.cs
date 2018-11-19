@@ -66,8 +66,7 @@ namespace Game.Systems
             SpellCritChance.text    = QoL.KiloFormat(choosedTower.Stats.SpellCritChance) + "%";
             SpellDamage.text        = QoL.KiloFormat(choosedTower.Stats.SpellDamage) + "%";
             CritChance.text         = QoL.KiloFormat(choosedTower.Stats.CritChance) + "%";
-      
-            UpgradeButton.gameObject.SetActive(choosedTower.Stats.GradeList.Count > 0);          
+           
         }            
     }
 }

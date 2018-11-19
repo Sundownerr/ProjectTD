@@ -21,8 +21,8 @@ namespace Game.Tower.System
         public void Set()
         {
             currentStats = U.Instantiate(currentStats);
-            currentStats.IsInstanced = true;
             currentStats.SetId();
+            currentStats.SetData();
 
             for (int i = 0; i < currentStats.AbilityList.Count; i++)
             {
@@ -35,14 +35,21 @@ namespace Game.Tower.System
             }
 
             baseStats = U.Instantiate(currentStats);
+            baseStats.IsInstanced = true;
             OnStatsChanged();
         }
 
         public void Upgrade(TowerData currentStats, TowerData newBaseStats)
         {   
             this.currentStats = U.Instantiate(newBaseStats);
-            this.currentStats.IsInstanced = true;
+            this.currentStats.SetData();
 
+            if(currentStats.ParentTowerName == null)
+                this.currentStats.ParentTowerName = currentStats.Name;
+            else
+                this.currentStats.ParentTowerName = currentStats.ParentTowerName;
+            
+            this.currentStats.GradeCount = currentStats.GradeCount + 1;
             this.currentStats.Level = currentStats.Level;
             this.currentStats.Exp = currentStats.Exp;
 
