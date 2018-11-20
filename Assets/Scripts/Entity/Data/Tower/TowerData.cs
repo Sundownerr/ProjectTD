@@ -62,9 +62,13 @@ namespace Game.Tower.Data
         private bool isInstanced;
         private string parentTowerName;
 
+        protected void Awake()
+        {
+            GradeList = new List<TowerData>();
+        }
+
         public void SetData()
-        {                  
-            
+        {                            
             isInstanced = true;           
             GradeCount = -1;
             
@@ -101,7 +105,8 @@ namespace Game.Tower.Data
                                             return;
                                     
                                     elementList[i].RarityList[j].TowerList.Add(this);
-                                    numberInList = towerList.Count - 1;                                  
+                                    numberInList = towerList.Count - 1;      
+                                    SetId();                                
                                     EditorUtility.SetDirty(dataBase);
                                     return;
                                 }     
