@@ -7,7 +7,28 @@ namespace Game.Systems
     {
         public event EventHandler ResourcesChanged = delegate{};
 
-        public ResourceSystem() => GM.I.ResourceSystem = this;      
+        public ResourceSystem() 
+        {
+            GM.I.ResourceSystem = this;                
+        }
+
+        public void SetSystem()
+        {
+            GM.I.TowerPlaceSystem.TowerDeleted += OnTowerDeleted;
+            GM.I.TowerPlaceSystem.TowerCreated += OnTowerCreated;
+        }
+
+        private void OnTowerDeleted(object sender, TowerDeleteEventArgs e)
+        {
+            AddGold(e.GoldCost);
+            AddTowerLimit(-e.TowerLimit);
+        }
+
+        private void OnTowerCreated(object sender, TowerCreateEventArgs e)
+        {
+            AddGold(-e.GoldCost);
+            AddTowerLimit(e.TowerLimit);
+        }
 
         public void AddMagicCrystal(int amount)
         {

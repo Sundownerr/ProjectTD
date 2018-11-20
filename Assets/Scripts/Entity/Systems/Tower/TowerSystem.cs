@@ -71,6 +71,8 @@ namespace Game.Tower
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
             rangeSystem = range.GetComponent<System.Range>();
 
+            gameObject.layer = 14;
+
             RendererList = GetComponentsInChildren<Renderer>();                       
         }
         

@@ -9,7 +9,14 @@ namespace Game.Systems
     {      
         public event EventHandler AddedNewAvailableTower = delegate{};
 
-        public TowerCreatingSystem() => GM.I.TowerCreatingSystem = this;      
+        public TowerCreatingSystem() => GM.I.TowerCreatingSystem = this;   
+
+        public void SetSystem()
+        {
+            GM.I.TowerPlaceSystem.TowerDeleted += OnTowerDeleted;
+        }   
+
+        private void OnTowerDeleted(object sender, TowerDeleteEventArgs e) => GM.I.AvailableTowerList.Add(e.Tower);          
 
         public void CreateRandomTower()
         {

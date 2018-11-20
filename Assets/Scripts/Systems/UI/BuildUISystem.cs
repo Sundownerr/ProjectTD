@@ -57,9 +57,12 @@ namespace Game.Systems
             GM.I.PlayerInputSystem.StartedTowerBuild         += UpdateUI;
             GM.I.TowerCreatingSystem.AddedNewAvailableTower  += UpdateUI;
             GM.I.TowerPlaceSystem.TowerStateChanged          += UpdateUI;
+            GM.I.TowerPlaceSystem.TowerDeleted               += OnTowerDeleted;
         }
 
-        public void UpdateUI(object sender, EventArgs e)
+        private void OnTowerDeleted(object sender, TowerDeleteEventArgs e) => AddTowerButton(e.Tower);
+ 
+        private void UpdateUI(object sender, EventArgs e)
         {
             UpdateAvailableElement();
             UpdateRarity();

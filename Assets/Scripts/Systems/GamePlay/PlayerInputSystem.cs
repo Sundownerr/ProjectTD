@@ -63,7 +63,7 @@ namespace Game.Systems
             Destroy(ChoosedTower.gameObject);
         }         
 
-        private bool CheckGradeOk(out List<TowerData> gradeList)
+        private bool CheckGradeListOk(out List<TowerData> gradeList)
         {
             var towerDBList = GM.I.TowerDataBase.AllTowerList.ElementsList[(int)choosedTower.Stats.Element].RarityList[(int)choosedTower.Stats.Rarity].TowerList;
             gradeList = towerDBList.Find(tower => tower.CompareId(choosedTower.Stats.Id)).GradeList;
@@ -74,11 +74,10 @@ namespace Game.Systems
 
         private void UpgradeTower(object sender, EventArgs e) 
         {           
-            if (CheckGradeOk(out List<TowerData> gradeList))
+            if (CheckGradeListOk(out List<TowerData> gradeList))
             {              
                 var upgradedTowerPrefab = Instantiate(gradeList[choosedTower.Stats.GradeCount + 1].Prefab, choosedTower.transform.position, Quaternion.identity, GM.I.TowerParent);
-                var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>();
-                upgradedTowerPrefab.layer = 14;   
+                var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>(); 
                 
                 upgradedTowerSystem.StatsSystem.Upgrade(choosedTower.Stats, gradeList[choosedTower.Stats.GradeCount + 1]);
                 upgradedTowerSystem.OcuppiedCell = choosedTower.OcuppiedCell;
@@ -92,7 +91,6 @@ namespace Game.Systems
                 choosedTower.StatsSystem.OnStatsChanged();      
                 GM.I.TowerControlSystem.AddTower(choosedTower);
             }
-
             GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(choosedTower.Stats.GradeCount < gradeList.Count - 1);
         }
 
@@ -108,15 +106,13 @@ namespace Game.Systems
                 if (isNotPlacingTower)
                     GM.PlayerState = State.ChoosedTower;
 
-                GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(CheckGradeOk(out _));
-                
+                GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(CheckGradeListOk(out _));           
                 MouseOnTower?.Invoke(this, new EventArgs());
             }
             else 
                 if (isNotPlacingTower)
                     GM.PlayerState = State.Idle;           
-
-          
+        
             GM.I.TowerUISystem.gameObject.SetActive(active);           
         }       
 
@@ -129,8 +125,7 @@ namespace Game.Systems
                 {
                     GM.I.AvailableTowerList.RemoveAt(i);
                     break;
-                }
-            
+                }           
             StartedTowerBuild?.Invoke(this, new EventArgs());
        }
        

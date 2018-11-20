@@ -155,6 +155,8 @@ namespace Game.Systems
         private void Start()
         {
             waveUISystem.Set();     
+            resourceSystem.SetSystem();
+            towerCreatingSystem.SetSystem();
             waveUISystem.UpdateWaveUI(waveUISystem, new EventArgs());
         }
     }
