@@ -60,7 +60,7 @@ namespace Game.Systems
             GM.I.TowerPlaceSystem.TowerDeleted               += OnTowerDeleted;
         }
 
-        private void OnTowerDeleted(object sender, TowerDeleteEventArgs e) => AddTowerButton(e.Tower);
+        private void OnTowerDeleted(object sender, TowerEventArgs e) => AddTowerButton(e.Stats);
  
         private void UpdateUI(object sender, EventArgs e)
         {

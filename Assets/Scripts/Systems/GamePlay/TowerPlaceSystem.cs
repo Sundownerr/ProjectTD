@@ -8,37 +8,39 @@ using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
-    public class TowerDeleteEventArgs
+    public class TowerEventArgs
     {
         public int TowerLimit, GoldCost;
-        public TowerData Tower;
+        public TowerData Stats;
+        public TowerSystem System;
 
-        public TowerDeleteEventArgs(TowerData tower, int towerLimit, int goldCost) : base()
+        public TowerEventArgs(TowerData stats, int towerLimit, int goldCost) : base()
         {
-            Tower = tower;
+            Stats = stats;
             TowerLimit = towerLimit;
             GoldCost = goldCost;
         }
-    }
 
-    public class TowerCreateEventArgs
-    {
-        public int TowerLimit, GoldCost;
-     
-        public TowerCreateEventArgs(int towerLimit, int goldCost) : base()
-        {
+        public TowerEventArgs(int towerLimit, int goldCost) : base()
+        {        
             TowerLimit = towerLimit;
             GoldCost = goldCost;
         }
+
+        public TowerEventArgs(TowerSystem tower) : base() => System = tower;        
+        
+        public TowerEventArgs(TowerData stats) : base() => Stats = stats;               
     }
+
 
     public class TowerPlaceSystem
     {
         public GameObject NewBusyCell { get => newBusyCell; set => newBusyCell = value; }      
         public bool IsTowerLimitOk { get => isTowerLimitOk; set => isTowerLimitOk = value; }
         public event EventHandler TowerStateChanged = delegate{};
-        public event EventHandler<TowerDeleteEventArgs> TowerDeleted = delegate{};
-        public event EventHandler<TowerCreateEventArgs> TowerCreated = delegate{};
+        public event EventHandler<TowerEventArgs> TowerDeleted = delegate{};
+        public event EventHandler<TowerEventArgs> TowerCreated = delegate{};
+        public event EventHandler<TowerEventArgs> TowerPlaced = delegate{};
 
         private bool isTowerLimitOk;
         private Color transparentRed, transparentGreen;
@@ -138,7 +140,7 @@ namespace Game.Systems
                     o.lastTower.Stats = GM.I.PlayerInputSystem.NewTowerData;                   
                     o.lastTower.SetSystem();
                     
-                    o.TowerCreated?.Invoke(o, new TowerCreateEventArgs(o.newTowerLimit, o.newGoldCost));
+                    o.TowerCreated?.Invoke(o, new TowerEventArgs(o.newTowerLimit, o.newGoldCost));
                     o.TowerStateChanged?.Invoke(o, new EventArgs());                       
                 }
             }
@@ -219,8 +221,7 @@ namespace Game.Systems
                     o.lastTower.OcuppiedCell = o.chosenCell.gameObject;
                     o.chosenCell.IsBusy = true;      
                     
-                    o.lastTower.transform.position = o.lastTower.OcuppiedCell.transform.position;   
-                    o.lastTower.IsTowerPlaced = true;          
+                    o.lastTower.transform.position = o.lastTower.OcuppiedCell.transform.position;          
 
                     var placeEffect = U.Instantiate(GM.I.ElementPlaceEffectList[(int)o.lastTower.Stats.Element],
                         o.lastTower.transform.position + Vector3.up * 5,
@@ -228,10 +229,9 @@ namespace Game.Systems
                     U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
 
                     o.SetTowerColor(o.lastTower, Color.white - new Color(0.2f, 0.2f, 0.2f));                  
-
-                    GM.I.PlayerInputSystem.NewTowerData = null;                      
-                    GM.I.TowerControlSystem.AddTower(o.lastTower);    
                     
+                    GM.I.TowerControlSystem.AddTower(o.lastTower);    
+                    o.TowerPlaced?.Invoke(o, new TowerEventArgs(o.lastTower));
                     o.TowerStateChanged?.Invoke(o, new EventArgs());  
                 }
             }
@@ -259,7 +259,7 @@ namespace Game.Systems
                     U.Destroy(lastTower);
                     GM.I.PlacedTowerList.Remove(lastTower);
                     
-                    o.TowerDeleted?.Invoke(o, new TowerDeleteEventArgs(GM.I.PlayerInputSystem.NewTowerData, o.newTowerLimit, o.newGoldCost));
+                    o.TowerDeleted?.Invoke(o, new TowerEventArgs(GM.I.PlayerInputSystem.NewTowerData, o.newTowerLimit, o.newGoldCost));
                     o.TowerStateChanged?.Invoke(o, new EventArgs());   
                 }
             }

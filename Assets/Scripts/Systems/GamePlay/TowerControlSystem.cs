@@ -9,6 +9,14 @@ namespace Game.Systems
 	{		
 		private List<TowerSystem> towerSystemList = new List<TowerSystem>();
 
+        public void SetSystem()
+        {
+            GM.I.TowerPlaceSystem.TowerPlaced += OnNewTower;
+            GM.I.PlayerInputSystem.TowerUpgraded += OnNewTower;
+        }
+
+        private void OnNewTower(object sender, TowerEventArgs e) => AddTower(e.System);
+        
 		public void AddTower(TowerSystem tower) 
         {
             tower.IsTowerPlaced = true;
@@ -16,8 +24,7 @@ namespace Game.Systems
         }
 		
         public void UpdateSystem()
-        {
-            
+        {           
             for (int i = 0; i < towerSystemList.Count; i++)
             {
                 var tower = towerSystemList[i];

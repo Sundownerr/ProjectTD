@@ -19,13 +19,13 @@ namespace Game.Systems
             GM.I.PlayerInputSystem.TowerSold += OnTowerDeleted;
         }
 
-        private void OnTowerDeleted(object sender, TowerDeleteEventArgs e)
+        private void OnTowerDeleted(object sender, TowerEventArgs e)
         {
             AddGold(e.GoldCost);
             AddTowerLimit(-e.TowerLimit);
         }
 
-        private void OnTowerCreated(object sender, TowerCreateEventArgs e)
+        private void OnTowerCreated(object sender, TowerEventArgs e)
         {
             AddGold(-e.GoldCost);
             AddTowerLimit(e.TowerLimit);

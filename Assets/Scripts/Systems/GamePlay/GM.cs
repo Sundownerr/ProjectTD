@@ -154,10 +154,10 @@ namespace Game.Systems
 
         private void Start()
         {
-            waveUISystem.Set();     
+            waveUISystem.SetSystem();     
             resourceSystem.SetSystem();
-            towerCreatingSystem.SetSystem();
-            waveUISystem.UpdateWaveUI(waveUISystem, new EventArgs());
+            towerControlSystem.SetSystem();
+            towerCreatingSystem.SetSystem();         
         }
     }
 

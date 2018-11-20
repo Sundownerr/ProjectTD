@@ -16,7 +16,7 @@ namespace Game.Systems
             GM.I.TowerPlaceSystem.TowerDeleted += OnTowerDeleted;
         }   
 
-        private void OnTowerDeleted(object sender, TowerDeleteEventArgs e) => GM.I.AvailableTowerList.Add(e.Tower);          
+        private void OnTowerDeleted(object sender, TowerEventArgs e) => GM.I.AvailableTowerList.Add(e.Stats);          
 
         public void CreateRandomTower()
         {

@@ -19,7 +19,8 @@ namespace Game.Systems
         public EventSystem EventSystem;
         public event EventHandler MouseOnTower = delegate {};
         public event EventHandler StartedTowerBuild = delegate {};
-        public event EventHandler<TowerDeleteEventArgs> TowerSold = delegate{};
+        public event EventHandler<TowerEventArgs> TowerSold = delegate{};
+        public event EventHandler<TowerEventArgs> TowerUpgraded = delegate{};
         
         private TowerData newTowerData;
         private TowerSystem choosedTower;
@@ -88,7 +89,7 @@ namespace Game.Systems
 
         private void SellTower(object sender, EventArgs e)
         {
-            TowerSold?.Invoke(this, new TowerDeleteEventArgs(ChoosedTower.Stats, ChoosedTower.Stats.TowerLimit, ChoosedTower.Stats.GoldCost));
+            TowerSold?.Invoke(this, new TowerEventArgs(ChoosedTower.Stats, ChoosedTower.Stats.TowerLimit, ChoosedTower.Stats.GoldCost));
             ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;          
             GM.I.PlacedTowerList.Remove(ChoosedTower.gameObject);
             ChoosedTower.Stats.Destroy();
@@ -118,7 +119,7 @@ namespace Game.Systems
                 upgradedTower.StatsSystem.Upgrade(choosedTower, gradeList[choosedTower.Stats.GradeCount + 1]);                            
                 upgradedTower.SetSystem();   
                             
-                GM.I.TowerControlSystem.AddTower(upgradedTower);
+                TowerUpgraded?.Invoke(this, new TowerEventArgs(upgradedTower));
                 choosedTower = upgradedTower;
             }
             GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(choosedTower.Stats.GradeCount < gradeList.Count - 1);

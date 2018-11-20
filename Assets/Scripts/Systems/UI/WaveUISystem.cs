@@ -18,9 +18,10 @@ namespace Game.Systems
             GM.I.WaveUISystem = this;
         }
 
-        public void Set()
+        public void SetSystem()
         {          
-            GM.I.WaveSystem.WaveChanged += UpdateWaveUI;            
+            GM.I.WaveSystem.WaveChanged += UpdateWaveUI;          
+            UpdateWaveUI(this, new EventArgs());  
         }
 
         public void UpdateWaveUI(object sender, EventArgs e)
