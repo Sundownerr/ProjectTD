@@ -152,7 +152,5 @@ namespace Game.Tower.Data
                 Destroy(this);                  
             }
         }
-
- 
     }
 }

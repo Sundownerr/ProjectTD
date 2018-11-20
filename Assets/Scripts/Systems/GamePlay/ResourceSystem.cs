@@ -16,6 +16,7 @@ namespace Game.Systems
         {
             GM.I.TowerPlaceSystem.TowerDeleted += OnTowerDeleted;
             GM.I.TowerPlaceSystem.TowerCreated += OnTowerCreated;
+            GM.I.PlayerInputSystem.TowerSold += OnTowerDeleted;
         }
 
         private void OnTowerDeleted(object sender, TowerDeleteEventArgs e)

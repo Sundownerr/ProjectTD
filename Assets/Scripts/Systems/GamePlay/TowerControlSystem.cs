@@ -9,7 +9,11 @@ namespace Game.Systems
 	{		
 		private List<TowerSystem> towerSystemList = new List<TowerSystem>();
 
-		public void AddTower(TowerSystem tower) => towerSystemList.Add(tower);			
+		public void AddTower(TowerSystem tower) 
+        {
+            tower.IsTowerPlaced = true;
+            towerSystemList.Add(tower);			
+        }
 		
         public void UpdateSystem()
         {

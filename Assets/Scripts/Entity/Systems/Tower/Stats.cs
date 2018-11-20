@@ -37,24 +37,27 @@ namespace Game.Tower.System
 
             baseStats = U.Instantiate(stats);
             baseStats.IsInstanced = true;
-            OnStatsChanged();
+            ChangedStats();
         }
 
-        public void Upgrade(TowerData previousStats, TowerData newStats)
+        public void Upgrade(TowerSystem previousTower, TowerData newStats)
         {            
             Set(newStats);
-            currentStats.ParentTowerName = previousStats.ParentTowerName;          
-            currentStats.GradeCount = previousStats.GradeCount + 1;
-            currentStats.Level = previousStats.Level;
-            currentStats.Exp = previousStats.Exp;
-            Debug.Log(currentStats.GradeCount);
+            currentStats.ParentTowerName    = previousTower.Stats.ParentTowerName;          
+            currentStats.GradeCount         = previousTower.Stats.GradeCount + 1;
+            currentStats.Level              = previousTower.Stats.Level;
+            currentStats.Exp                = previousTower.Stats.Exp;
+            tower.OcuppiedCell              = previousTower.OcuppiedCell;   
 
             for (int i = 0; i < newStats.SpecialList.Length; i++)
                 currentStats.SpecialList[i] = U.Instantiate(newStats.SpecialList[i]);           
 
             for (int i = 1; i < currentStats.Level; i++)
-                IncreaseStatsPerLevel();         
-            OnStatsChanged();
+                IncreaseStatsPerLevel();        
+            
+            previousTower.Stats.Destroy();        
+            U.Destroy(previousTower.gameObject);          
+            ChangedStats();
         }
 
         private void IncreaseStatsPerLevel()
@@ -68,6 +71,7 @@ namespace Game.Tower.System
             tower.SpecialSystem.IncreaseStatsPerLevel();
             var effect = U.Instantiate(GM.I.LevelUpEffect, tower.transform.position, Quaternion.identity);
             U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);    
+            
         }
 
         public void AddExp(int amount)
@@ -77,9 +81,11 @@ namespace Game.Tower.System
             for (int i = currentStats.Level; i < 25; i++)
                 if (currentStats.Exp >= GM.ExpToLevelUp[currentStats.Level] && currentStats.Level < 25)
                     IncreaseStatsPerLevel();      
-            OnStatsChanged();                       
+            
+            if(GM.I.PlayerInputSystem.ChoosedTower == tower)
+                ChangedStats();    
         }
 
-        public void OnStatsChanged() => StatsChanged?.Invoke(this, new EventArgs());            
+        public void ChangedStats() => StatsChanged?.Invoke(this, new EventArgs());            
     }
 }

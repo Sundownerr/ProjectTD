@@ -19,15 +19,16 @@ namespace Game.Systems
         public EventSystem EventSystem;
         public event EventHandler MouseOnTower = delegate {};
         public event EventHandler StartedTowerBuild = delegate {};
+        public event EventHandler<TowerDeleteEventArgs> TowerSold = delegate{};
         
         private TowerData newTowerData;
         private TowerSystem choosedTower;
         private PointerEventData pointerEventData;
         private List<RaycastResult> results;
-        private StateMachine state;
         private RaycastHit hit;
         private Ray WorldRay;
         private bool isHitUI;
+        private int terrainLayer, creepLayer, towerLayer, layerMask;
        
         protected override void Awake()
         {
@@ -37,8 +38,10 @@ namespace Game.Systems
 
             GM.I.PlayerInputSystem = this;
 
-            state = new StateMachine();
-            state.ChangeState(new GetInputState(this));
+            terrainLayer    = 1 << 9;
+            creepLayer      = 1 << 12;
+            towerLayer      = 1 << 14;           
+            layerMask = terrainLayer | creepLayer | towerLayer;
         }
 
         private void Start()
@@ -48,16 +51,45 @@ namespace Game.Systems
             GM.I.BuildUISystem.NeedToBuildTower += BuildNewTower;
         }
 
-        private void Update() => state.Update();
-  
+        private void Update() 
+        {      
+            if (Input.GetMouseButtonDown(0))
+                {                   
+                    WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    pointerEventData = new PointerEventData(EventSystem);
+                    pointerEventData.position = Input.mousePosition;
+                    GraphicRaycaster.Raycast(pointerEventData, results);
+                    isHitUI = results.Count > 0;
+
+                    if (Physics.Raycast(WorldRay, out hit, 10000, layerMask))
+                    {
+                        var isMouseOnTower =
+                            !isHitUI &&
+                            hit.transform.gameObject.layer == 14;
+
+                        var isMouseNotOnUI =
+                            !isHitUI &&
+                            hit.transform.gameObject.layer == 9;
+
+                        if(isMouseOnTower)                                          
+                            ActivateTowerUI(true);                          
+                        
+                        if(isMouseNotOnUI)
+                            ActivateTowerUI(false);
+                    }
+                }
+
+                if (isHitUI)
+                {
+                    results.Clear();
+                    isHitUI = false;
+                }
+        }
 
         private void SellTower(object sender, EventArgs e)
         {
-            GM.I.ResourceSystem.AddTowerLimit(-ChoosedTower.Stats.TowerLimit);
-            GM.I.ResourceSystem.AddGold(ChoosedTower.Stats.GoldCost);
-
-            ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;
-
+            TowerSold?.Invoke(this, new TowerDeleteEventArgs(ChoosedTower.Stats, ChoosedTower.Stats.TowerLimit, ChoosedTower.Stats.GoldCost));
+            ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;          
             GM.I.PlacedTowerList.Remove(ChoosedTower.gameObject);
             ChoosedTower.Stats.Destroy();
             Destroy(ChoosedTower.gameObject);
@@ -76,20 +108,18 @@ namespace Game.Systems
         {           
             if (CheckGradeListOk(out List<TowerData> gradeList))
             {              
-                var upgradedTowerPrefab = Instantiate(gradeList[choosedTower.Stats.GradeCount + 1].Prefab, choosedTower.transform.position, Quaternion.identity, GM.I.TowerParent);
-                var upgradedTowerSystem = upgradedTowerPrefab.GetComponent<TowerSystem>(); 
+                var upgradedTowerPrefab = Instantiate(
+                    gradeList[choosedTower.Stats.GradeCount + 1].Prefab, 
+                    choosedTower.transform.position, 
+                    Quaternion.identity, 
+                    GM.I.TowerParent);
+                var upgradedTower = upgradedTowerPrefab.GetComponent<TowerSystem>(); 
                 
-                upgradedTowerSystem.StatsSystem.Upgrade(choosedTower.Stats, gradeList[choosedTower.Stats.GradeCount + 1]);
-                upgradedTowerSystem.OcuppiedCell = choosedTower.OcuppiedCell;
-                upgradedTowerSystem.SetSystem();   
-                upgradedTowerSystem.IsTowerPlaced = true;
-                      
-                choosedTower.Stats.Destroy();
-                Destroy(choosedTower.gameObject);
-                
-                choosedTower = upgradedTowerSystem;
-                choosedTower.StatsSystem.OnStatsChanged();      
-                GM.I.TowerControlSystem.AddTower(choosedTower);
+                upgradedTower.StatsSystem.Upgrade(choosedTower, gradeList[choosedTower.Stats.GradeCount + 1]);                            
+                upgradedTower.SetSystem();   
+                            
+                GM.I.TowerControlSystem.AddTower(upgradedTower);
+                choosedTower = upgradedTower;
             }
             GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(choosedTower.Stats.GradeCount < gradeList.Count - 1);
         }
@@ -127,58 +157,6 @@ namespace Game.Systems
                     break;
                 }           
             StartedTowerBuild?.Invoke(this, new EventArgs());
-       }
-       
-        protected class GetInputState : IState
-        {
-            private readonly PlayerInputSystem o;
-
-            public GetInputState(PlayerInputSystem o) => this.o = o; 
-
-            public void Enter() { }
-
-            public void Execute()
-            {
-                var terrainLayer    = 1 << 9;
-                var creepLayer      = 1 << 12;
-                var towerLayer      = 1 << 14;
-                var layerMask       = terrainLayer | creepLayer | towerLayer;
-
-                o.WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                o.pointerEventData = new PointerEventData(o.EventSystem);
-                o.pointerEventData.position = Input.mousePosition;
-
-                if (Input.GetMouseButtonDown(0))
-                {
-                    o.GraphicRaycaster.Raycast(o.pointerEventData, o.results);
-                    o.isHitUI = o.results.Count > 0;
-
-                    if (Physics.Raycast(o.WorldRay, out o.hit, 10000, layerMask))
-                    {
-                        var isMouseOnTower =
-                            !o.isHitUI &&
-                            o.hit.transform.gameObject.layer == 14;
-
-                        var isMouseNotOnUI =
-                            !o.isHitUI &&
-                            o.hit.transform.gameObject.layer == 9;
-
-                        if(isMouseOnTower)                                          
-                            o.ActivateTowerUI(true);                          
-                        
-                        if(isMouseNotOnUI)
-                            o.ActivateTowerUI(false);
-                    }
-                }
-
-                if (o.isHitUI)
-                {
-                    o.results.Clear();
-                    o.isHitUI = false;
-                }
-            }
-            
-            public void Exit() { }
-        }
+       }    
     }
 }
