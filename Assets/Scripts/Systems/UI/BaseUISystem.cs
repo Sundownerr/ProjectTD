@@ -1,6 +1,7 @@
 ﻿using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine;
 
 namespace Game.Systems
 {
@@ -20,7 +21,7 @@ namespace Game.Systems
             LearnForceButton.onClick.AddListener(LearnForce);
             GetTowerButton.onClick.AddListener(GetTower);
 
-            UpdateUI(this, new EventArgs());
+            
 
             GM.I.BaseUISystem = this;   
         }
@@ -28,6 +29,7 @@ namespace Game.Systems
         public void Start()
         {
             GM.I.ResourceSystem.ResourcesChanged += UpdateUI;
+            UpdateUI(this, new EventArgs());
         }
 
         public void UpdateUI(object sender, EventArgs e)

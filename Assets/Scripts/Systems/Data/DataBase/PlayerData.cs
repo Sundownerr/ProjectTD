@@ -2,34 +2,21 @@
 using System.Collections.Generic;
 using Game.Tower.Data.Stats;
 using UnityEngine;
+using Newtonsoft.Json;
+using System.IO;
+using Game.Systems;
 
 namespace Game.Data
 {
     [CreateAssetMenu(fileName = "Player Data", menuName = "Data/Player Data")]
     
     [Serializable]
-    public class PlayerData : ScriptableObject
+    public class PlayerData
     {
-        public int MagicCrystals, Gold, CurrentTowerLimit, MaxTowerLimit;
-        public int StartTowerRerollCount;
+        [SerializeField]
+        public int MagicCrystals, Gold, CurrentTowerLimit, MaxTowerLimit, StartTowerRerollCount;
 
         [SerializeField]
-        public List<int> ElementLevelList;
-
-        private void Awake()
-        {
-            if(ElementLevelList == null)
-            {
-                ElementLevelList = new List<int>();
-                var elementAmount = Enum.GetValues(typeof(ElementType)).Length;
-
-                for (int i = 0; i < elementAmount; i++)
-                    ElementLevelList.Add(0);         
-            } 
-
-            MaxTowerLimit = 500;
-            StartTowerRerollCount = 3;
-            MagicCrystals = 100;
-        }
+        public List<int> ElementLevelList; 
     }
 }

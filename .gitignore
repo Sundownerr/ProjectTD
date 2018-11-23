@@ -297,3 +297,5 @@ __pycache__/
 /.vscode
 /GICache/
 Assets/JsonDotNet
+playerData.json
+playerData.json

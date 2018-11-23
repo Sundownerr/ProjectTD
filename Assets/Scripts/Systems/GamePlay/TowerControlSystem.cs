@@ -24,8 +24,8 @@ namespace Game.Systems
 		public void AddTower(TowerSystem tower) 
         {           
             towerSystemList.Add(tower);
-            tower.Prefab.layer = 14;
-            tower.IsTowerPlaced = true;    
+            tower.OcuppiedCell.GetComponent<Cell>().IsBusy = true;
+            tower.Prefab.layer = 14;  
             tower.IsOn = true;
             tower.IsVulnerable = false;			
         }
@@ -48,40 +48,39 @@ namespace Game.Systems
                 else
                 {                        
                     tower.RangeSystem.SetShow();
-                    if (tower.IsOn)           
-                        if (tower.IsTowerPlaced)          
+                    if (tower.IsOn)                                       
+                    {                  
+                        tower.AbilitySystem.Update();
+
+                        if (tower.CreepInRangeList.Count < 1)
+                        {
+                            if (!tower.CombatSystem.CheckAllBulletInactive())
+                                tower.CombatSystem.MoveBullet();                   
+                        }
+                        else
                         {                  
-                            tower.AbilitySystem.Update();
-
-                            if (tower.CreepInRangeList.Count < 1)
-                            {
-                                if (!tower.CombatSystem.CheckAllBulletInactive())
-                                    tower.CombatSystem.MoveBullet();                   
-                            }
-                            else
-                            {                  
-                                tower.CombatSystem.UpdateSystem();                            
-                                
-                                if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)
-                                    RotateAtCreep();
-                                
-                                for (int j = 0; j < tower.CreepInRangeList.Count; j++)
-                                    if (tower.CreepInRangeList[j] == null)
-                                    {
-                                        tower.RangeSystem.CreepList.RemoveAt(j);
-                                        tower.RangeSystem.CreepSystemList.RemoveAt(j);
-                                    }
-
-                                void RotateAtCreep()
+                            tower.CombatSystem.UpdateSystem();                            
+                            
+                            if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)
+                                RotateAtCreep();
+                            
+                            for (int j = 0; j < tower.CreepInRangeList.Count; j++)
+                                if (tower.CreepInRangeList[j] == null)
                                 {
-                                    var offset = tower.CreepInRangeList[0].Prefab.transform.position - tower.Prefab.transform.position;
-                                    offset.y = 0;
-                                    tower.MovingPartTransform.rotation = Quaternion.Lerp(tower.MovingPartTransform.rotation, 
-                                                                                    Quaternion.LookRotation(offset), 
-                                                                                    Time.deltaTime * 9f);
-                                }        
-                            }    
-                        }        
+                                    tower.RangeSystem.CreepList.RemoveAt(j);
+                                    tower.RangeSystem.CreepSystemList.RemoveAt(j);
+                                }
+
+                            void RotateAtCreep()
+                            {
+                                var offset = tower.CreepInRangeList[0].Prefab.transform.position - tower.Prefab.transform.position;
+                                offset.y = 0;
+                                tower.MovingPart.rotation = Quaternion.Lerp(tower.MovingPart.rotation, 
+                                                                                Quaternion.LookRotation(offset), 
+                                                                                Time.deltaTime * 9f);
+                            }        
+                        }    
+                    }        
                 }
             }                                             
         }      

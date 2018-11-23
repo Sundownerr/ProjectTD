@@ -20,9 +20,6 @@ namespace Game.Systems
         PreparePlacingTower
     }
 
-    
-
-
     [Serializable]
     public class GM : ExtendedMonoBehaviour
     {
@@ -42,9 +39,6 @@ namespace Game.Systems
 
         [NaughtyAttributes.BoxGroup("Parent")]
         public Transform CellParent, TowerParent, CreepParent;
-
-        [NaughtyAttributes.BoxGroup("Data")]
-        public PlayerData PlayerData;
 
         [NaughtyAttributes.BoxGroup("Data")]
         public TowerDataBase TowerDataBase;
@@ -72,7 +66,9 @@ namespace Game.Systems
         public WaveUISystem WaveUISystem { get => waveUISystem; set => waveUISystem = value; }
         public TowerControlSystem TowerControlSystem { get => towerControlSystem; set => towerControlSystem = value; }
         public CreepControlSystem CreepControlSystem { get => creepControlSystem; set => creepControlSystem = value; }
+        public PlayerData PlayerData { get => playerData; set => playerData = value; }
 
+        private PlayerData playerData;
         private TowerPlaceSystem towerPlaceSystem;
         private GridSystem gridSystem;
         private WaveSystem waveSystem;
@@ -110,6 +106,8 @@ namespace Game.Systems
             waveSystem          = new WaveSystem();     
             towerControlSystem  = new TowerControlSystem();    
             creepControlSystem  = new CreepControlSystem();
+
+            PlayerData = DataLoadingSystem.LoadPlayerData();
             
             PlayerState = State.Idle;
         
@@ -146,15 +144,6 @@ namespace Game.Systems
             ExpToLevelUp[24]    = 649;
         }
 
-        private void Update()
-        {
-            towerPlaceSystem.UpdateSystem();
-            gridSystem.UpdateSystem();
-            waveSystem.UpdateSystem();
-            creepControlSystem.UpdateSystem();
-            towerControlSystem.UpdateSystem();
-        }
-
         private void Start()
         {
             waveUISystem.SetSystem();     
@@ -162,6 +151,15 @@ namespace Game.Systems
             towerControlSystem.SetSystem();
             towerCreatingSystem.SetSystem();         
         }
+
+        private void Update()
+        {
+            towerPlaceSystem.UpdateSystem();
+            gridSystem.UpdateSystem();
+            waveSystem.UpdateSystem();
+            creepControlSystem.UpdateSystem();
+            towerControlSystem.UpdateSystem();
+        }      
     }
 
     public static class StaticRandom

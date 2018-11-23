@@ -54,8 +54,7 @@ namespace Game.Tower.System
             for (int i = 1; i < currentStats.Level; i++)
                 IncreaseStatsPerLevel();        
             
-            previousTower.Stats.Destroy();        
-            U.Destroy(previousTower.Prefab);          
+                  
             ChangedStats();
         }
 

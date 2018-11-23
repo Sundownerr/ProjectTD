@@ -117,10 +117,11 @@ namespace Game.Systems
                 var upgradedTower = new TowerSystem(upgradedTowerPrefab); 
                 
                 upgradedTower.StatsSystem.Upgrade(choosedTower, gradeList[choosedTower.Stats.GradeCount + 1]);                            
-                upgradedTower.SetSystem();   
-                            
+                upgradedTower.SetSystem();                             
+               
+                TowerUpgraded?.Invoke(this, new TowerEventArgs(upgradedTower));      
+                TowerSold?.Invoke(this, new TowerEventArgs(choosedTower));      
                 choosedTower = upgradedTower;
-                TowerUpgraded?.Invoke(this, new TowerEventArgs(upgradedTower));             
             }
             GM.I.TowerUISystem.ActivateUpgradeButton(choosedTower.Stats.GradeCount < gradeList.Count - 1);
         }

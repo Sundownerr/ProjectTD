@@ -11,21 +11,20 @@ namespace Game.Tower
 {
     public class TowerSystem : EntitySystem
     {
-        public Transform RangeTransform         { get => rangeTransform; set => rangeTransform = value; }
-        public Transform MovingPartTransform    { get => movingPartTransform; set => movingPartTransform = value; }
-        public Transform StaticPartTransform    { get => staticPartTransform; set => staticPartTransform = value; }
-        public Transform ShootPointTransform    { get => shootPointTransform; set => shootPointTransform = value; }
-        public GameObject OcuppiedCell          { get => ocuppiedCell; set => ocuppiedCell = value; }
-        public GameObject Bullet            { get => bullet; set => bullet = value; }
-        public GameObject Range             { get => range; set => range = value; }
-        public Range RangeSystem            { get => rangeSystem; private set => rangeSystem = value; }
-        public Special SpecialSystem        { get => specialSystem; set => specialSystem = value; }
-        public Combat CombatSystem          { get => combatSystem; private set => combatSystem = value; }
-        public AbilitySystem AbilitySystem  { get => abilitySystem; private set => abilitySystem = value; }
-        public Stats StatsSystem            { get => statsSystem;  private set => statsSystem = value; }
+        public Transform RangeTransform     { get => rangeTransform;        private set => rangeTransform = value; }
+        public Transform MovingPart         { get => movingPartTransform;   private set => movingPartTransform = value; }
+        public Transform StaticPart         { get => staticPartTransform;   private set => staticPartTransform = value; }
+        public Transform ShootPoint         { get => shootPointTransform;   private set => shootPointTransform = value; }
+        public GameObject OcuppiedCell      { get => ocuppiedCell;          set => ocuppiedCell = value; }
+        public GameObject Bullet            { get => bullet;                private set => bullet = value; }
+        public GameObject Range             { get => range;                 private set => range = value; }
+        public Range RangeSystem            { get => rangeSystem;           private set => rangeSystem = value; }
+        public Special SpecialSystem        { get => specialSystem;         private set => specialSystem = value; }
+        public Combat CombatSystem          { get => combatSystem;          private set => combatSystem = value; }
+        public AbilitySystem AbilitySystem  { get => abilitySystem;         private set => abilitySystem = value; }
+        public Stats StatsSystem            { get => statsSystem;           private set => statsSystem = value; }
         public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
-        public Renderer[] RendererList      { get => rendererList; set => rendererList = value; }
-        public bool IsTowerPlaced           { get => isTowerPlaced; set => isTowerPlaced = value; }
+        public Renderer[] RendererList      { get => rendererList;          private set => rendererList = value; }
         public List<CreepSystem> CreepInRangeList => rangeSystem.CreepSystemList;
 
         private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
@@ -36,14 +35,14 @@ namespace Game.Tower
         private Combat combatSystem;
         private AbilitySystem abilitySystem;
         private Stats statsSystem;
-        private bool isTowerPlaced;
+
 
         public TowerSystem(GameObject ownerPrefab)
         {         
             prefab = ownerPrefab;
             movingPartTransform = ownerPrefab.transform.GetChild(0);
             staticPartTransform = ownerPrefab.transform.GetChild(1);
-            shootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
+            shootPointTransform = MovingPart.GetChild(0).GetChild(0);
             bullet = ownerPrefab.transform.GetChild(2).gameObject;
 
             statsSystem     = new Stats(this);

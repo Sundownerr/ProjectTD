@@ -55,8 +55,7 @@ namespace Game.Systems
 
         public void UpdateSystem() 
         {
-            if (GM.I.GridSystem.IsGridBuilded)
-            {
+            if (GM.I.GridSystem.IsGridBuilded)          
                 if (GM.PlayerState == State.PreparePlacingTower)
                 {
                     newTowerLimit         = GM.I.PlayerInputSystem.NewTowerData.TowerLimit;
@@ -66,10 +65,9 @@ namespace Game.Systems
                     if (GM.I.ResourceSystem.CheckHaveResources(newTowerLimit, newGoldCost, newMagicCrystalCost))
                         CreateTower();                    
                 }
-
-                if(GM.PlayerState == State.PlacingTower)
-                    MoveTower();              
-            }
+                else
+                    if(GM.PlayerState == State.PlacingTower)
+                        MoveTower();                       
   
             void CreateTower()
             {                
@@ -86,16 +84,13 @@ namespace Game.Systems
                 lastTower.SetSystem();
                 GM.I.PlacedTowerList.Add(lastTower);  
                 
-                TowerCreated?.Invoke(this, new TowerEventArgs(lastTower));
+                TowerCreated?.Invoke(this, new TowerEventArgs(lastTower, lastTower.Stats));
                 TowerStateChanged?.Invoke(this, new EventArgs());                       
             }
 
             void MoveTower()
             {          
                 var ray = mainCam.ScreenPointToRay(Input.mousePosition);
-
-                var cellList    = GM.I.GridSystem.CellList;
-
                 var terrainLayer    = 1 << 9;
                 var cellLayer       = 1 << 15;
                 var layerMask       = terrainLayer | cellLayer;
@@ -110,7 +105,7 @@ namespace Game.Systems
                     
                     if(hit.transform.gameObject.layer == 15)
                     {
-                        var cell = cellList.Find(hitCell => hitCell.gameObject == hit.transform.gameObject);          
+                        var cell = GM.I.GridSystem.CellList.Find(hitCell => hitCell.gameObject == hit.transform.gameObject);          
                     
                         if(!cell.IsBusy)
                         {
@@ -128,9 +123,7 @@ namespace Game.Systems
 
             void PlaceTower()
             {                  
-                lastTower.OcuppiedCell = chosenCell.gameObject;
-                chosenCell.IsBusy = true;      
-                
+                lastTower.OcuppiedCell = chosenCell.gameObject;                       
                 lastTower.Prefab.transform.position = lastTower.OcuppiedCell.transform.position;          
 
                 var placeEffect = U.Instantiate(GM.I.ElementPlaceEffectList[(int)lastTower.Stats.Element],

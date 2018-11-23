@@ -56,8 +56,8 @@ namespace Game.Tower.System
                 
                 bullet.ChainshotCount = defaultBullet.ChainshotCount;
                 bullet.AOEShotRange = defaultBullet.AOEShotRange;
-                bullet.transform.position = tower.ShootPointTransform.position;
-                bullet.transform.rotation = tower.MovingPartTransform.rotation;
+                bullet.transform.position = tower.ShootPoint.position;
+                bullet.transform.rotation = tower.MovingPart.rotation;
             }
         }
 

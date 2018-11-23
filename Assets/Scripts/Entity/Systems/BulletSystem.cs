@@ -30,7 +30,6 @@ namespace Game.Tower
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 5f);
             Lifetime = particleSystemList[0].main.startLifetime.constant;           
-
         }
 
         private void OnEnable()
@@ -42,8 +41,7 @@ namespace Game.Tower
 
         private void OnDisable()
         {
-            Show(false);  
-                          
+            Show(false);                         
         }
 
         public void Show(bool enabled)
