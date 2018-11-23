@@ -16,5 +16,10 @@ namespace Game.Creep
         private CreepData stats;
         private int waypointIndex;
         private EntitySystem lastDamageDealer;
+
+        public CreepSystem(GameObject ownerPrefab)
+        {
+            prefab = ownerPrefab;
+        }
     }
 }

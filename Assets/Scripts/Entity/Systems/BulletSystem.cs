@@ -28,7 +28,7 @@ namespace Game.Tower
             particleSystemList = GetComponentsInChildren<ParticleSystem>(true);
 
             Speed = 10f;
-            Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 10f);
+            Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 5f);
             Lifetime = particleSystemList[0].main.startLifetime.constant;           
 
         }

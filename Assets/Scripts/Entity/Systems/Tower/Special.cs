@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Tower.System
 {
-    public class Special
+    public class Special : ITowerSystem
     {
         public bool IsHaveChainTargets { get => isHaveChainTargets; set => isHaveChainTargets = value; }
 
@@ -46,11 +46,11 @@ namespace Game.Tower.System
               
                 if(bullet.Target != null)
                     for (int i = 0; i < hitTargetCount; i++)                                                    
-                        if(bullet.Target.gameObject == chainShotColliderList[i].gameObject)
+                        if(bullet.Target.Prefab == chainShotColliderList[i].gameObject)
                         {
                             bullet.Target = 
-                                i - 1 >= 0              ? chainShotColliderList[i - 1].GetComponent<Creep.CreepSystem>() :
-                                i + 1 < hitTargetCount  ? chainShotColliderList[i + 1].GetComponent<Creep.CreepSystem>() : 
+                                i - 1 >= 0              ? GM.I.CreepSystemList.Find(creep => creep.Prefab == chainShotColliderList[i - 1].transform.gameObject) :
+                                i + 1 < hitTargetCount  ? GM.I.CreepSystemList.Find(creep => creep.Prefab == chainShotColliderList[i + 1].transform.gameObject) :
                                 bullet.Target;     
                             break; 
                         }      
@@ -64,7 +64,7 @@ namespace Game.Tower.System
             var hitTargetCount = Physics.OverlapSphereNonAlloc(bullet.transform.position, bullet.AOEShotRange, aoeColliderList, creepLayer);
 
             for (int i = 0; i < hitTargetCount; i++)
-                DamageSystem.DoDamage(aoeColliderList[i].gameObject.GetComponent<Creep.CreepSystem>(), tower.Stats.Damage.Value, tower);
+                DamageSystem.DoDamage(GM.I.CreepSystemList.Find(creep => creep.Prefab == aoeColliderList[i].transform.gameObject), tower.Stats.Damage.Value, tower);
         }
 
         public void IncreaseStatsPerLevel()

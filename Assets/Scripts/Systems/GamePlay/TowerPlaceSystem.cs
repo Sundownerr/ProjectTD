@@ -10,28 +10,21 @@ namespace Game.Systems
 {
     public class TowerEventArgs
     {
-        public int TowerLimit, GoldCost;
+     
         public TowerData Stats;
         public TowerSystem System;
 
-        public TowerEventArgs(TowerData stats, int towerLimit, int goldCost) : base()
+
+        public TowerEventArgs(TowerSystem system, TowerData stats) : base()
         {
             Stats = stats;
-            TowerLimit = towerLimit;
-            GoldCost = goldCost;
-        }
-
-        public TowerEventArgs(int towerLimit, int goldCost) : base()
-        {        
-            TowerLimit = towerLimit;
-            GoldCost = goldCost;
+            System = system;         
         }
 
         public TowerEventArgs(TowerSystem tower) : base() => System = tower;        
         
         public TowerEventArgs(TowerData stats) : base() => Stats = stats;               
     }
-
 
     public class TowerPlaceSystem
     {
@@ -48,11 +41,9 @@ namespace Game.Systems
         private Tower.TowerSystem lastTower;
         private RaycastHit hit;
         private Camera mainCam;
-        private StateMachine state;
         private Cells.Cell chosenCell;
         private int newTowerLimit, newGoldCost, newMagicCrystalCost;
-
-       
+  
         public TowerPlaceSystem()
         {
             GM.I.TowerPlaceSystem = this;
@@ -60,213 +51,112 @@ namespace Game.Systems
 
             transparentRed      = Color.red - new Color(0, 0, 0, 0.8f);
             transparentGreen    = Color.green - new Color(0, 0, 0, 0.8f);        
-
-            state = new StateMachine();
-            state.ChangeState(new GetCellDataState(this));
         }
 
-        public void UpdateSystem() => state.Update();
-
-        private void SetTowerColor(TowerSystem tower, Color color)
+        public void UpdateSystem() 
         {
-            for (int i = 0; i < tower.RendererList.Length; i++)
-                tower.RendererList[i].material.color = color;
-        }
- 
-        protected class GetCellDataState : IState
-        {
-            private readonly TowerPlaceSystem o;
-
-            public GetCellDataState(TowerPlaceSystem o) => this.o = o; 
-
-            public void Enter() { }
-
-            public void Execute()
+            if (GM.I.GridSystem.IsGridBuilded)
             {
-                if (GM.I.GridSystem.IsGridBuilded)
-                    o.state.ChangeState(new GetInputState(o));
-            }
-
-            public void Exit() { }
-        }
-
-        protected class GetInputState : IState
-        {
-            private readonly TowerPlaceSystem o;
-
-            public GetInputState(TowerPlaceSystem o) => this.o = o; 
-
-            public void Enter() => GM.PlayerState = State.Idle;
-
-            public void Execute()
-            {                
                 if (GM.PlayerState == State.PreparePlacingTower)
                 {
-                    o.newTowerLimit         = GM.I.PlayerInputSystem.NewTowerData.TowerLimit;
-                    o.newGoldCost           = GM.I.PlayerInputSystem.NewTowerData.GoldCost;
-                    o.newMagicCrystalCost   = GM.I.PlayerInputSystem.NewTowerData.MagicCrystalReq;
+                    newTowerLimit         = GM.I.PlayerInputSystem.NewTowerData.TowerLimit;
+                    newGoldCost           = GM.I.PlayerInputSystem.NewTowerData.GoldCost;
+                    newMagicCrystalCost   = GM.I.PlayerInputSystem.NewTowerData.MagicCrystalReq;
                     
-                    if (GM.I.ResourceSystem.CheckHaveResources(o.newTowerLimit, o.newGoldCost, o.newMagicCrystalCost))
-                        o.state.ChangeState(new CreateTowerState(o));
-                    else
-                        o.state.ChangeState(new GetInputState(o));
+                    if (GM.I.ResourceSystem.CheckHaveResources(newTowerLimit, newGoldCost, newMagicCrystalCost))
+                        CreateTower();                    
                 }
+
+                if(GM.PlayerState == State.PlacingTower)
+                    MoveTower();              
+            }
+  
+            void CreateTower()
+            {                
+                GM.PlayerState = State.PlacingTower;
+
+                var lastTowerPrefab = U.Instantiate(
+                    GM.I.PlayerInputSystem.NewTowerData.Prefab, 
+                    Vector3.zero - Vector3.up * 10, 
+                    Quaternion.identity, 
+                    GM.I.TowerParent);                 
+
+                lastTower = new TowerSystem(lastTowerPrefab);
+                lastTower.Stats = GM.I.PlayerInputSystem.NewTowerData;                   
+                lastTower.SetSystem();
+                GM.I.PlacedTowerList.Add(lastTower);  
+                
+                TowerCreated?.Invoke(this, new TowerEventArgs(lastTower));
+                TowerStateChanged?.Invoke(this, new EventArgs());                       
             }
 
-            public void Exit() { }
-        }
+            void MoveTower()
+            {          
+                var ray = mainCam.ScreenPointToRay(Input.mousePosition);
 
-        protected class CreateTowerState : IState
-        {
-            private readonly TowerPlaceSystem o;
+                var cellList    = GM.I.GridSystem.CellList;
 
-            public CreateTowerState(TowerPlaceSystem o) => this.o = o; 
+                var terrainLayer    = 1 << 9;
+                var cellLayer       = 1 << 15;
+                var layerMask       = terrainLayer | cellLayer;
 
-            public void Enter() 
+                if (Input.GetMouseButtonDown(1))
+                    DeleteTower();
+
+                if (Physics.Raycast(ray, out hit, 5000, layerMask))
+                {              
+                    lastTower.Prefab.transform.position = hit.point;
+                    SetTowerColor(lastTower, transparentRed);   
+                    
+                    if(hit.transform.gameObject.layer == 15)
+                    {
+                        var cell = cellList.Find(hitCell => hitCell.gameObject == hit.transform.gameObject);          
+                    
+                        if(!cell.IsBusy)
+                        {
+                            chosenCell = cell;
+        
+                            lastTower.Prefab.transform.position = chosenCell.transform.position;
+                            SetTowerColor(lastTower, transparentGreen);                 
+
+                            if (Input.GetMouseButtonDown(0))
+                                PlaceTower();
+                        }   
+                    }                                            
+                }                  
+            }
+
+            void PlaceTower()
+            {                  
+                lastTower.OcuppiedCell = chosenCell.gameObject;
+                chosenCell.IsBusy = true;      
+                
+                lastTower.Prefab.transform.position = lastTower.OcuppiedCell.transform.position;          
+
+                var placeEffect = U.Instantiate(GM.I.ElementPlaceEffectList[(int)lastTower.Stats.Element],
+                    lastTower.Prefab.transform.position + Vector3.up * 5,
+                    Quaternion.identity);
+                U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
+
+                SetTowerColor(lastTower, Color.white - new Color(0.2f, 0.2f, 0.2f));                  
+                  
+                GM.PlayerState = State.Idle;
+                TowerPlaced?.Invoke(this, new TowerEventArgs(lastTower));
+                TowerStateChanged?.Invoke(this, new EventArgs());  
+            }     
+
+            void DeleteTower()
+            {         
+                GM.PlayerState = State.Idle;
+                TowerDeleted?.Invoke(this, new TowerEventArgs(lastTower, lastTower.Stats));
+                TowerStateChanged?.Invoke(this, new EventArgs());   
+            }
+
+            void SetTowerColor(TowerSystem tower, Color color)
             {
-                CreateTower();     
-                o.state.ChangeState(new MoveTowerState(o));
-
-                void CreateTower()
-                {                
-                    GM.PlayerState = State.PlacingTower;
-                    GM.I.PlacedTowerList.Add(U.Instantiate(
-                        GM.I.PlayerInputSystem.NewTowerData.Prefab, 
-                        Vector3.zero - Vector3.up * 10, 
-                        Quaternion.identity, 
-                        GM.I.TowerParent));  
-
-                    o.lastTower = GM.I.PlacedTowerList[GM.I.PlacedTowerList.Count - 1].GetComponent<Tower.TowerSystem>();
-                    o.lastTower.Stats = GM.I.PlayerInputSystem.NewTowerData;                   
-                    o.lastTower.SetSystem();
-                    
-                    o.TowerCreated?.Invoke(o, new TowerEventArgs(o.newTowerLimit, o.newGoldCost));
-                    o.TowerStateChanged?.Invoke(o, new EventArgs());                       
-                }
+                for (int i = 0; i < tower.RendererList.Length; i++)
+                    tower.RendererList[i].material.color = color;
             }
-            
-            public void Execute() { }
-
-            public void Exit() { }
-        }
-
-        protected class MoveTowerState : IState
-        {
-            private readonly TowerPlaceSystem o;
-
-            public MoveTowerState(TowerPlaceSystem o) => this.o = o; 
-
-            public void Enter() { }
-
-            public void Execute()  
-            {
-                MoveTower();      
-
-                void MoveTower()
-                {          
-                    var ray = o.mainCam.ScreenPointToRay(Input.mousePosition);
-
-                    var cellList    = GM.I.GridSystem.CellList;
-
-                    var terrainLayer    = 1 << 9;
-                    var cellLayer       = 1 << 15;
-                    var layerMask       = terrainLayer | cellLayer;
-
-                    if (Input.GetMouseButtonDown(1))
-                            o.state.ChangeState(new DeleteTowerState(o));
-
-                    if (Physics.Raycast(ray, out o.hit, 5000, layerMask))
-                    {              
-                        o.lastTower.transform.position = o.hit.point;
-                        o.SetTowerColor(o.lastTower, o.transparentRed);        
-
-                        for (int i = 0; i < cellList.Count; i++)
-                        {                   
-                            var isHitCell           = o.hit.transform.gameObject == cellList[i].gameObject;
-                            var isHitCellNotBusy    = isHitCell && !cellList[i].IsBusy;
-                            cellList[i].IsChosen = isHitCellNotBusy;
-                        
-                            if(isHitCellNotBusy)
-                            {
-                                o.chosenCell = cellList[i];
-            
-                                o.lastTower.transform.position = o.chosenCell.transform.position;
-                                o.SetTowerColor(o.lastTower, o.transparentGreen);                 
-
-                                if (Input.GetMouseButtonDown(0))
-                                    o.state.ChangeState(new PlaceTowerState(o));
-                            } 
-                        }                                  
-                    }                  
-                }     
-            }
-
-            public void Exit() { }
-        }
-
-        protected class PlaceTowerState : IState
-        {
-            private readonly TowerPlaceSystem o;
-
-            public PlaceTowerState(TowerPlaceSystem o) => this.o = o; 
-
-            public void Enter()
-            {
-                PlaceTower();
-               
-                o.state.ChangeState(new GetInputState(o));      
-
-                void PlaceTower()
-                {                  
-                    o.lastTower.OcuppiedCell = o.chosenCell.gameObject;
-                    o.chosenCell.IsBusy = true;      
-                    
-                    o.lastTower.transform.position = o.lastTower.OcuppiedCell.transform.position;          
-
-                    var placeEffect = U.Instantiate(GM.I.ElementPlaceEffectList[(int)o.lastTower.Stats.Element],
-                        o.lastTower.transform.position + Vector3.up * 5,
-                        Quaternion.identity);
-                    U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
-
-                    o.SetTowerColor(o.lastTower, Color.white - new Color(0.2f, 0.2f, 0.2f));                  
-                    
-                    GM.I.TowerControlSystem.AddTower(o.lastTower);    
-                    o.TowerPlaced?.Invoke(o, new TowerEventArgs(o.lastTower));
-                    o.TowerStateChanged?.Invoke(o, new EventArgs());  
-                }
-            }
-
-            public void Execute() { }
-
-            public void Exit() { }
-        }
-
-        protected class DeleteTowerState : IState
-        {
-            private readonly TowerPlaceSystem o;
-
-            public DeleteTowerState(TowerPlaceSystem o) => this.o = o; 
-
-            public void Enter()
-            { 
-                DeleteTower();
-                o.state.ChangeState(new GetInputState(o));
-
-                void DeleteTower()
-                {         
-                    var lastTower = GM.I.PlacedTowerList[GM.I.PlacedTowerList.Count - 1];        
-
-                    U.Destroy(lastTower);
-                    GM.I.PlacedTowerList.Remove(lastTower);
-                    
-                    o.TowerDeleted?.Invoke(o, new TowerEventArgs(GM.I.PlayerInputSystem.NewTowerData, o.newTowerLimit, o.newGoldCost));
-                    o.TowerStateChanged?.Invoke(o, new EventArgs());   
-                }
-            }
-
-            public void Execute() { }
-
-            public void Exit() { }
-        }
+        }   
     }  
 }

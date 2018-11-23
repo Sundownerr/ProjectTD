@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Cells;
 using Game.Tower;
 using UnityEngine;
 
@@ -11,16 +12,30 @@ namespace Game.Systems
 
         public void SetSystem()
         {
-            GM.I.TowerPlaceSystem.TowerPlaced += OnNewTower;
-            GM.I.PlayerInputSystem.TowerUpgraded += OnNewTower;
+            GM.I.TowerPlaceSystem.TowerPlaced += OnTowerCreated;
+            GM.I.PlayerInputSystem.TowerUpgraded += OnTowerCreated;
+            GM.I.TowerPlaceSystem.TowerDeleted += OnTowerDeleted;
+            GM.I.PlayerInputSystem.TowerSold += OnTowerDeleted;
         }
 
-        private void OnNewTower(object sender, TowerEventArgs e) => AddTower(e.System);
+        private void OnTowerCreated(object sender, TowerEventArgs e) => AddTower(e.System);
+        private void OnTowerDeleted(object sender, TowerEventArgs e) => RemoveTower(e.System);
         
 		public void AddTower(TowerSystem tower) 
+        {           
+            towerSystemList.Add(tower);
+            tower.Prefab.layer = 14;
+            tower.IsTowerPlaced = true;    
+            tower.IsOn = true;
+            tower.IsVulnerable = false;			
+        }
+
+        public void RemoveTower(TowerSystem tower)
         {
-            tower.IsTowerPlaced = true;
-            towerSystemList.Add(tower);			
+            tower.OcuppiedCell.GetComponent<Cell>().IsBusy = false;
+            GM.I.PlacedTowerList.Remove(tower);
+            tower.Stats.Destroy();
+            Object.Destroy(tower.Prefab);
         }
 		
         public void UpdateSystem()
@@ -47,7 +62,7 @@ namespace Game.Systems
                             {                  
                                 tower.CombatSystem.UpdateSystem();                            
                                 
-                                if (tower.CreepInRangeList[0] != null)
+                                if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)
                                     RotateAtCreep();
                                 
                                 for (int j = 0; j < tower.CreepInRangeList.Count; j++)
@@ -59,7 +74,7 @@ namespace Game.Systems
 
                                 void RotateAtCreep()
                                 {
-                                    var offset = tower.CreepInRangeList[0].gameObject.transform.position - tower.transform.position;
+                                    var offset = tower.CreepInRangeList[0].Prefab.transform.position - tower.Prefab.transform.position;
                                     offset.y = 0;
                                     tower.MovingPartTransform.rotation = Quaternion.Lerp(tower.MovingPartTransform.rotation, 
                                                                                     Quaternion.LookRotation(offset), 

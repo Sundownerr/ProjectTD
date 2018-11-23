@@ -10,12 +10,14 @@ namespace Game.Tower.System
 
         public List<CreepSystem> CreepSystemList { get => creepSystemList; set => creepSystemList = value; }
         public List<GameObject> CreepList { get => creepList; set => creepList = value; }
+        public TowerSystem Owner { get => owner; set => owner = value; }
 
         private List<GameObject> creepList;
         private List<Creep.CreepSystem> creepSystemList;
         private Renderer rend;
         private Color transparent, notTransparent;
         private bool isRangeShowed;
+        private TowerSystem owner;
 
         protected override void Awake()
         {
@@ -36,7 +38,7 @@ namespace Game.Tower.System
             for (int i = 0; i < GM.I.CreepList.Count; i++)
                 if (other.gameObject == GM.I.CreepList[i])
                 {
-                    CreepSystemList.Add(other.gameObject.GetComponent<Creep.CreepSystem>());
+                    CreepSystemList.Add(GM.I.CreepSystemList.Find(creep => creep.Prefab == other.gameObject));
                     CreepList.Add(other.gameObject);
                 }
         }
@@ -45,7 +47,7 @@ namespace Game.Tower.System
         {
             if (CreepList.Count > 0)
             {
-                CreepSystemList.Remove(other.gameObject.GetComponent<Creep.CreepSystem>());
+                CreepSystemList.Remove(GM.I.CreepSystemList.Find(creep => creep.Prefab == other.gameObject));
                 CreepList.Remove(other.gameObject);
             }
         }
@@ -70,7 +72,7 @@ namespace Game.Tower.System
         {
             var isChoosedTower =
                 GM.I.TowerUISystem.gameObject.activeSelf &&
-                GM.I.PlayerInputSystem.ChoosedTower == transform.parent.GetComponent<TowerSystem>();
+                GM.I.PlayerInputSystem.ChoosedTower == owner;
 
             if (isChoosedTower)
             {

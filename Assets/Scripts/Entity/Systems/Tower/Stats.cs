@@ -7,7 +7,7 @@ using U = UnityEngine.Object;
 namespace Game.Tower.System
 {
     [Serializable]
-    public class Stats
+    public class Stats : ITowerSystem
     {
         public TowerData CurrentStats { get => currentStats; set => currentStats = value; }
         public TowerData BaseStats { get => baseStats; set => baseStats = value; }
@@ -23,7 +23,7 @@ namespace Game.Tower.System
         public void Set(TowerData stats)
         {
             currentStats = U.Instantiate(stats);            
-            currentStats.SetData();
+            currentStats.SetData(tower);
 
             for (int i = 0; i < stats.AbilityList.Count; i++)
             {
@@ -42,8 +42,7 @@ namespace Game.Tower.System
 
         public void Upgrade(TowerSystem previousTower, TowerData newStats)
         {            
-            Set(newStats);
-            currentStats.ParentTowerName    = previousTower.Stats.ParentTowerName;          
+            Set(newStats);         
             currentStats.GradeCount         = previousTower.Stats.GradeCount + 1;
             currentStats.Level              = previousTower.Stats.Level;
             currentStats.Exp                = previousTower.Stats.Exp;
@@ -56,7 +55,7 @@ namespace Game.Tower.System
                 IncreaseStatsPerLevel();        
             
             previousTower.Stats.Destroy();        
-            U.Destroy(previousTower.gameObject);          
+            U.Destroy(previousTower.Prefab);          
             ChangedStats();
         }
 
@@ -69,7 +68,7 @@ namespace Game.Tower.System
             currentStats.SpellCritChance += QoL.GetPercentOfValue(0.2f, baseStats.SpellCritChance);
 
             tower.SpecialSystem.IncreaseStatsPerLevel();
-            var effect = U.Instantiate(GM.I.LevelUpEffect, tower.transform.position, Quaternion.identity);
+            var effect = U.Instantiate(GM.I.LevelUpEffect, tower.Prefab.transform.position, Quaternion.identity);
             U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);    
             
         }

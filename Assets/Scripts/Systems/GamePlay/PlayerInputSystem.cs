@@ -55,51 +55,51 @@ namespace Game.Systems
         private void Update() 
         {      
             if (Input.GetMouseButtonDown(0))
-                {                   
-                    WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    pointerEventData = new PointerEventData(EventSystem);
-                    pointerEventData.position = Input.mousePosition;
-                    GraphicRaycaster.Raycast(pointerEventData, results);
-                    isHitUI = results.Count > 0;
+            {                   
+                WorldRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                pointerEventData = new PointerEventData(EventSystem);
+                pointerEventData.position = Input.mousePosition;
+                GraphicRaycaster.Raycast(pointerEventData, results);
+                isHitUI = results.Count > 0;
 
-                    if (Physics.Raycast(WorldRay, out hit, 10000, layerMask))
-                    {
-                        var isMouseOnTower =
-                            !isHitUI &&
-                            hit.transform.gameObject.layer == 14;
-
-                        var isMouseNotOnUI =
-                            !isHitUI &&
-                            hit.transform.gameObject.layer == 9;
-
-                        if(isMouseOnTower)                                          
-                            ActivateTowerUI(true);                          
-                        
-                        if(isMouseNotOnUI)
-                            ActivateTowerUI(false);
-                    }
-                }
-
-                if (isHitUI)
+                if (Physics.Raycast(WorldRay, out hit, 10000, layerMask))
                 {
-                    results.Clear();
-                    isHitUI = false;
+                    var isMouseOnTower =
+                        !isHitUI &&
+                        hit.transform.gameObject.layer == 14;
+
+                    var isMouseNotOnUI =
+                        !isHitUI &&
+                        hit.transform.gameObject.layer == 9;
+
+                    if(isMouseOnTower)                                          
+                        ActivateTowerUI(true);                          
+                    
+                    if(isMouseNotOnUI)
+                        ActivateTowerUI(false);
                 }
+            }
+
+            if (isHitUI)
+            {
+                results.Clear();
+                isHitUI = false;
+            }
         }
 
-        private void SellTower(object sender, EventArgs e)
-        {
-            TowerSold?.Invoke(this, new TowerEventArgs(ChoosedTower.Stats, ChoosedTower.Stats.TowerLimit, ChoosedTower.Stats.GoldCost));
-            ChoosedTower.OcuppiedCell.GetComponent<Cells.Cell>().IsBusy = false;          
-            GM.I.PlacedTowerList.Remove(ChoosedTower.gameObject);
-            ChoosedTower.Stats.Destroy();
-            Destroy(ChoosedTower.gameObject);
-        }         
-
+        private void SellTower(object sender, EventArgs e) =>                 
+            TowerSold?.Invoke(this, new TowerEventArgs(choosedTower, choosedTower.Stats));
+            
         private bool CheckGradeListOk(out List<TowerData> gradeList)
         {
-            var towerDBList = GM.I.TowerDataBase.AllTowerList.ElementsList[(int)choosedTower.Stats.Element].RarityList[(int)choosedTower.Stats.Rarity].TowerList;
-            gradeList = towerDBList.Find(tower => tower.CompareId(choosedTower.Stats.Id)).GradeList;
+            var allTowerList = 
+                GM.I.TowerDataBase.AllTowerList.
+                ElementsList[(int)choosedTower.Stats.Element].
+                RarityList[(int)choosedTower.Stats.Rarity].
+                TowerList;
+
+            var towerData = allTowerList.Find(tower => tower.CompareId(choosedTower.Stats.Id));
+            gradeList = towerData.GradeList;
 
             return gradeList.Count > 0 &&
                 choosedTower.Stats.GradeCount < gradeList.Count - 1;
@@ -111,18 +111,18 @@ namespace Game.Systems
             {              
                 var upgradedTowerPrefab = Instantiate(
                     gradeList[choosedTower.Stats.GradeCount + 1].Prefab, 
-                    choosedTower.transform.position, 
+                    choosedTower.Prefab.transform.position, 
                     Quaternion.identity, 
                     GM.I.TowerParent);
-                var upgradedTower = upgradedTowerPrefab.GetComponent<TowerSystem>(); 
+                var upgradedTower = new TowerSystem(upgradedTowerPrefab); 
                 
                 upgradedTower.StatsSystem.Upgrade(choosedTower, gradeList[choosedTower.Stats.GradeCount + 1]);                            
                 upgradedTower.SetSystem();   
                             
-                TowerUpgraded?.Invoke(this, new TowerEventArgs(upgradedTower));
                 choosedTower = upgradedTower;
+                TowerUpgraded?.Invoke(this, new TowerEventArgs(upgradedTower));             
             }
-            GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(choosedTower.Stats.GradeCount < gradeList.Count - 1);
+            GM.I.TowerUISystem.ActivateUpgradeButton(choosedTower.Stats.GradeCount < gradeList.Count - 1);
         }
 
         private void ActivateTowerUI(bool active)
@@ -133,16 +133,23 @@ namespace Game.Systems
 
             if (active)
             {  
-                choosedTower = hit.transform.GetComponent<TowerSystem>();                            
+                choosedTower = GM.I.PlacedTowerList.Find(tower => tower.Prefab == hit.transform.gameObject);  
+                choosedTower.StatsSystem.StatsChanged += GM.I.TowerUISystem.UpdateValues;   
+                GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(CheckGradeListOk(out _));      
+
                 if (isNotPlacingTower)
                     GM.PlayerState = State.ChoosedTower;
 
-                GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(CheckGradeListOk(out _));           
                 MouseOnTower?.Invoke(this, new EventArgs());
             }
             else 
+            {
                 if (isNotPlacingTower)
-                    GM.PlayerState = State.Idle;           
+                    GM.PlayerState = State.Idle;      
+
+                if(choosedTower != null)
+                    choosedTower.StatsSystem.StatsChanged -= GM.I.TowerUISystem.UpdateValues;        
+            }  
         
             GM.I.TowerUISystem.gameObject.SetActive(active);           
         }       

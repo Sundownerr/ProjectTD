@@ -5,6 +5,7 @@ using Game.Systems;
 using Game.Tower.Data;
 using Game.Tower.System;
 using UnityEngine;
+using U = UnityEngine.Object;
 
 namespace Game.Tower
 {
@@ -37,14 +38,13 @@ namespace Game.Tower
         private Stats statsSystem;
         private bool isTowerPlaced;
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            movingPartTransform = transform.GetChild(0);
-            staticPartTransform = transform.GetChild(1);
+        public TowerSystem(GameObject ownerPrefab)
+        {         
+            prefab = ownerPrefab;
+            movingPartTransform = ownerPrefab.transform.GetChild(0);
+            staticPartTransform = ownerPrefab.transform.GetChild(1);
             shootPointTransform = MovingPartTransform.GetChild(0).GetChild(0);
-            bullet = transform.GetChild(2).gameObject;
+            bullet = ownerPrefab.transform.GetChild(2).gameObject;
 
             statsSystem     = new Stats(this);
             specialSystem   = new Special(this);
@@ -57,7 +57,7 @@ namespace Game.Tower
         }
 
         public void SetSystem()
-        {
+        {         
             if(!Stats.IsGradeTower)
             {
                 statsSystem.Set();
@@ -67,13 +67,12 @@ namespace Game.Tower
             combatSystem.Set();
             abilitySystem.Set();
 
-            range = Instantiate(GM.I.RangePrefab, transform);           
+            range = U.Instantiate(GM.I.RangePrefab, prefab.transform);           
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
             rangeSystem = range.GetComponent<System.Range>();
+            rangeSystem.Owner = this;    
 
-            gameObject.layer = 14;
-
-            RendererList = GetComponentsInChildren<Renderer>();                       
+            RendererList = prefab.GetComponentsInChildren<Renderer>();                       
         }
         
         public void AddExp(int amount) => StatsSystem.AddExp(amount);      

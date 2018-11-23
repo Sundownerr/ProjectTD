@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Tower.System
 {
-    public class AbilitySystem
+    public class AbilitySystem : ITowerSystem
     {
         private StateMachine state;
         private TowerSystem tower;

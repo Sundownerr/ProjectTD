@@ -41,7 +41,12 @@ namespace Game.Creep
         {
             AddToDataBase();                   
             
-            Owner = Owner ?? Prefab.GetComponent<Tower.TowerSystem>();      
+           
+        }
+
+        public void SetData(CreepSystem ownerSystem)
+        {
+            owner = ownerSystem;
         }
 
         [Button]

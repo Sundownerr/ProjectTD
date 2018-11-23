@@ -16,7 +16,6 @@ namespace Game.Tower.Data
         public int Level { get => level; set => level = value > 25 ? 25 : value < 0 ? 0 : value; }
         public int GradeCount { get => gradeCount; set => gradeCount = value; }
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
-        public string ParentTowerName { get => parentTowerName; set => parentTowerName = value; }
 
         [HideInInspector]
         public List<float> DamageToRace;     
@@ -60,15 +59,10 @@ namespace Game.Tower.Data
 
         private int level, exp, gradeCount, numberInList;
         private bool isInstanced;
-        private string parentTowerName;
 
-        protected void Awake()
-        {
-            GradeList = new List<TowerData>();
-        }
-
-        public void SetData()
-        {                            
+        public void SetData(TowerSystem ownerSystem)
+        {           
+            GradeList = new List<TowerData>();                 
             isInstanced = true;           
             GradeCount = -1;
             
@@ -79,9 +73,8 @@ namespace Game.Tower.Data
             for (int i = 0; i < GradeList.Count; i++)                
                 GradeList[i].Destroy();    
             GradeList.Clear();
-
-            if (Owner == null)
-                Owner = Prefab == null ? null : Prefab.GetComponent<Tower.TowerSystem>();     
+          
+            owner = ownerSystem;     
             SetId();    
         }
 

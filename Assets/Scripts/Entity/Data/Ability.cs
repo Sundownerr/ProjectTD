@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.Systems;
 using System;
+using Game.Creep;
+using Game.Tower;
 
 namespace Game.Data
 {
@@ -50,12 +52,12 @@ namespace Game.Data
         {
             base.SetId();
 
-            if (Owner is Creep.CreepSystem creep)
+            if (Owner is CreepSystem creep)
             {
                 id.AddRange(creep.Stats.Id);   
                 id.Add(creep.Stats.AbilityList.IndexOf(this));           
             }
-            else if(Owner is Tower.TowerSystem tower)
+            else if(Owner is TowerSystem tower)
             {
                 id.AddRange(tower.Stats.Id);   
                 id.Add(tower.Stats.AbilityList.IndexOf(this));

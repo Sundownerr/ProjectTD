@@ -14,3 +14,8 @@ public interface IEffect
 {
 	
 }
+
+public interface ITowerSystem
+{
+	void Set();
+}

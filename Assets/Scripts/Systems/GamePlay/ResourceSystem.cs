@@ -21,14 +21,14 @@ namespace Game.Systems
 
         private void OnTowerDeleted(object sender, TowerEventArgs e)
         {
-            AddGold(e.GoldCost);
-            AddTowerLimit(-e.TowerLimit);
+            AddGold(e.Stats.GoldCost);
+            AddTowerLimit(-e.Stats.TowerLimit);
         }
 
         private void OnTowerCreated(object sender, TowerEventArgs e)
         {
-            AddGold(-e.GoldCost);
-            AddTowerLimit(e.TowerLimit);
+            AddGold(-e.Stats.GoldCost);
+            AddTowerLimit(e.Stats.TowerLimit);
         }
 
         public void AddMagicCrystal(int amount)

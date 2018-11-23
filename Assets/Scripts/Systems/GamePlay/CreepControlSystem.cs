@@ -12,7 +12,12 @@ namespace Game.Systems
 	{	
         private List<CreepSystem> creepList = new List<CreepSystem>();
 
-        public void AddCreep(CreepSystem creep) => creepList.Add(creep);
+        public void AddCreep(CreepSystem creep) 
+        {
+            creepList.Add(creep);
+            creep.IsOn = true;
+            creep.IsVulnerable = true;
+        }
 
         public void UpdateSystem()
         {
@@ -20,7 +25,7 @@ namespace Game.Systems
             {
                 var creep = creepList[i];             
                 
-                if(creep == null)
+                if(creep == null || creep.Prefab == null)
                     creepList.Remove(creep);
                 else
                 {
@@ -30,7 +35,7 @@ namespace Game.Systems
                     if(creep.IsOn)
                     {
                         var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;
-                        var creepTransform = creep.gameObject.transform;
+                        var creepTransform = creep.Prefab.transform;
                         var waypointReached = QoL.CalcDistance(creepTransform.position, waypointTransform.position) < 70;
 
                         if (creep.WaypointIndex < GM.I.WaypointList.Length - 1)
@@ -46,7 +51,7 @@ namespace Game.Systems
 
             void MoveAndRotateCreep(CreepSystem creep)
             {           
-                var creepTransform = creep.gameObject.transform;
+                var creepTransform = creep.Prefab.transform;
                 creepTransform.Translate(Vector3.forward * Time.deltaTime * creep.Stats.MoveSpeed, Space.Self);
 
                 var clampPos = new Vector3(creepTransform.position.x, creepTransform.lossyScale.y, creepTransform.position.z);
@@ -70,9 +75,10 @@ namespace Game.Systems
         {                     
             if(creep != null)
             {
-                GM.I.CreepList.Remove(creep.gameObject);
+                GM.I.CreepList.Remove(creep.Prefab);
+                GM.I.CreepSystemList.Remove(creep);
                 Object.Destroy(creep.Stats);
-                Object.Destroy(creep.gameObject);
+                Object.Destroy(creep.Prefab);
             }
         }    
 	}

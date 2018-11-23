@@ -170,12 +170,14 @@ namespace Game.Systems
                             Quaternion.identity, 
                             GM.I.CreepParent);
 
-                        var creepSystem = creep.GetComponent<CreepSystem>();                          
+                        var creepSystem = new CreepSystem(creep);                          
 
+                        
                         creepSystem.Stats = o.CalculateStats(
                             o.currentWaveCreepList[spawned], 
                             o.currentWaveCreepList[spawned].ArmorType, 
                             o.waveNumber); 
+                        creepSystem.Stats.SetData(creepSystem);
 
                         creepSystem.HealthSystem = new HealthSystem(creepSystem);
                         creepSystem.EffectSystem = new EffectSystem();             

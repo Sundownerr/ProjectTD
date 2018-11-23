@@ -47,9 +47,9 @@ namespace Game.Data.Effects
             else
             {
                 effectPrefab = Instantiate(EffectPrefab,
-                                target.gameObject.transform.position + Vector3.up * 20,
+                                target.Prefab.transform.position + Vector3.up * 20,
                                 Quaternion.identity,
-                                target.gameObject.transform);
+                                target.Prefab.transform);
 
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Show(true);     

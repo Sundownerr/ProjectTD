@@ -7,6 +7,7 @@ using Game.Tower.Data;
 using System.Threading;
 using Game.Cells;
 using Game.Creep;
+using Game.Tower;
 
 namespace Game.Systems
 {
@@ -29,7 +30,9 @@ namespace Game.Systems
         public GameObject[] WaypointList, CellAreaList, ElementPlaceEffectList;
 
         [NaughtyAttributes.BoxGroup("List")]
-        public List<GameObject> CreepList, PlacedTowerList;
+        public List<GameObject> CreepList;
+
+        public List<TowerSystem> PlacedTowerList = new List<TowerSystem>();
 
         [NaughtyAttributes.BoxGroup("List")]
         public List<TowerData> AvailableTowerList;     

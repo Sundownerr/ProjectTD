@@ -9,17 +9,18 @@ namespace Game.Systems
 	public static class DamageSystem 
 	{
 		public static void DoDamage(EntitySystem target, float damage, EntitySystem dealer)
-		{
-			if(target is CreepSystem creep)							
-				creep.HealthSystem.ChangeHealth(dealer, CalculateDamage());													
-			
+		{			
+			if(target is CreepSystem creep)		
+			{					
+				var calcDamage = CalculateDamage();
+				creep.HealthSystem.ChangeHealth(dealer, calcDamage);													
+			}
+
 			float CalculateDamage()
 			{				
 				if(dealer is TowerSystem tower)   					
 					damage = QoL.GetPercentOfValue(tower.Stats.DamageToRace[(int)creep.Stats.Race], damage);
-
 				// add armor modificator
-
 				return damage;
 			}				
 		}		

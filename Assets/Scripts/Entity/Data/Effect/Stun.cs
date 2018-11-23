@@ -27,9 +27,9 @@ namespace Game.Data.Effects
             else
             {
                 effectPrefab = Instantiate(EffectPrefab, 
-                                target.gameObject.transform.position, 
+                                target.Prefab.transform.position, 
                                 Quaternion.identity, 
-                                Target.gameObject.transform);
+                                target.Prefab.transform);
 
                 target.IsOn = false;
 

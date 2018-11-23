@@ -33,12 +33,7 @@ namespace Game.Systems
             gameObject.SetActive(false);         
         }
 
-        private void OnDisable()
-        {
-            if(GM.I.PlayerInputSystem?.ChoosedTower != null)
-                GM.I.PlayerInputSystem.ChoosedTower.StatsSystem.StatsChanged -= UpdateValues;
-        }
-
+       
         private void Sell()
         {
             Selling?.Invoke(this, new EventArgs());
@@ -51,11 +46,10 @@ namespace Game.Systems
             UpdateValues(this, new EventArgs());
         } 
         
-        private void UpdateValues(object sender, EventArgs e)
+        public void UpdateValues(object sender, EventArgs e)
         {
             choosedTower = GM.I.PlayerInputSystem.ChoosedTower;  
-            choosedTower.StatsSystem.StatsChanged += UpdateValues;
-
+            
             TowerName.text = choosedTower.Stats.Name;
             Level.text              = QoL.KiloFormat(choosedTower.Stats.Level);
             Damage.text             = QoL.KiloFormat(choosedTower.Stats.Damage.Value);
@@ -68,6 +62,8 @@ namespace Game.Systems
             CritChance.text         = QoL.KiloFormat(choosedTower.Stats.CritChance) + "%";
            
         }            
+
+        public void ActivateUpgradeButton(bool activate) => UpgradeButton.gameObject.SetActive(activate);
     }
 }
 

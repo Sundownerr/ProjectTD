@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Game.Tower.System
 {
     [Serializable]
-    public class Combat
+    public class Combat : ITowerSystem
     {
         public bool isHaveChainTargets;
 
@@ -35,7 +35,7 @@ namespace Game.Tower.System
             bulletPool = new ObjectPool()
             {
                 PoolObject = tower.Bullet,
-                Parent = tower.transform
+                Parent = tower.Prefab.transform
             };
 
             bulletPool.Initialize();
@@ -75,7 +75,7 @@ namespace Game.Tower.System
         {
             for (int i = 0; i < bulletList.Count; i++)
                 if (bulletList[i].activeSelf)
-                    if (bulletDataList[i].Target == null)
+                    if (bulletDataList[i].Target == null || bulletDataList[i].Target.Prefab == null)
                         HitTarget(bulletDataList[i]);
                     else
                     {                 
@@ -84,7 +84,7 @@ namespace Game.Tower.System
                         else
                         {
                             var offset = new Vector3(0, 40, 0);
-                            var distance = QoL.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.transform.position + offset);
+                            var distance = QoL.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.Prefab.transform.position + offset);
 
                             if (distance < 30)
                                 HitTarget(bulletDataList[i]);
@@ -95,7 +95,7 @@ namespace Game.Tower.System
                                     UnityEngine.Random.Range(-10, 10),
                                     UnityEngine.Random.Range(-10, 10));
 
-                                bulletList[i].transform.LookAt(bulletDataList[i].Target.transform.position + offset);
+                                bulletList[i].transform.LookAt(bulletDataList[i].Target.Prefab.transform.position + offset);
                                 bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed + randVec, Space.Self);
                             }
                         }
@@ -120,8 +120,11 @@ namespace Game.Tower.System
 
         private void HitTarget(BulletSystem bullet)
         {
-            if (bullet.Target == null)
+            if (bullet.Target == null || bullet.Target.Prefab == null)
+            {
                 SetTargetReached(bullet);
+                return;
+            }
 
             var isChainShot =
                 bullet.ChainshotCount > 0 &&
@@ -130,23 +133,23 @@ namespace Game.Tower.System
             if(bullet.AOEShotRange > 0)
                 tower.SpecialSystem.DamageInAOE(bullet);
             else
-                ApplyDamage(bullet);
+                ApplyDamage();
 
             if(isChainShot)
                 tower.SpecialSystem.SetChainTarget(bullet);
             else
                 SetTargetReached(bullet);         
 
-            void ApplyDamage(BulletSystem bulletе)
+            void ApplyDamage()
             {
-                if (bulletе.Target != null)
-                    DamageSystem.DoDamage(bulletе.Target, tower.Stats.Damage.Value, tower);
+                if (bullet.Target != null)
+                    DamageSystem.DoDamage(bullet.Target, tower.Stats.Damage.Value, tower);
             }
         }
 
         public void UpdateSystem()
         {
-            timer = timer > tower.Stats.AttackSpeed ? 0 : timer += Time.deltaTime;
+            timer = timer > tower.Stats.AttackSpeed ? 0 : timer + Time.deltaTime * 0.5f;
             MoveBullet();
 
             if (timer > tower.Stats.AttackSpeed)
