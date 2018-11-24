@@ -45,7 +45,7 @@ namespace Game.Systems
                         if (elementList[elementId].RarityList[i].TowerList[j].WaveLevel >= GM.I.WaveSystem.WaveNumber)
                         {
                             GM.I.AvailableTowerList.Add(elementList[elementId].RarityList[i].TowerList[j]);    
-                            GM.I.BuildUISystem.AddTowerButton(elementList[elementId].RarityList[i].TowerList[j]);                               
+                            GM.I.BuildUISystem.AddTowerButton(elementList[elementId].RarityList[i].TowerList[j]);    
                         }                   
             }       
             AddedNewAvailableTower?.Invoke(this, new EventArgs());                                    

@@ -41,9 +41,6 @@ namespace Game.Systems
         public Transform CellParent, TowerParent, CreepParent;
 
         [NaughtyAttributes.BoxGroup("Data")]
-        public TowerDataBase TowerDataBase;
-
-        [NaughtyAttributes.BoxGroup("Data")]
         public CreepDataBase CreepDataBase;
 
         [NaughtyAttributes.BoxGroup("Data")]
@@ -67,8 +64,11 @@ namespace Game.Systems
         public TowerControlSystem TowerControlSystem { get => towerControlSystem; set => towerControlSystem = value; }
         public CreepControlSystem CreepControlSystem { get => creepControlSystem; set => creepControlSystem = value; }
         public PlayerData PlayerData { get => playerData; set => playerData = value; }
+        public ElementSystem ElementSystem { get => elementSystem; set => elementSystem = value; }
+        public TowerDataBase TowerDataBase { get => towerDataBase; set => towerDataBase = value; }
 
         private PlayerData playerData;
+        private TowerDataBase towerDataBase;
         private TowerPlaceSystem towerPlaceSystem;
         private GridSystem gridSystem;
         private WaveSystem waveSystem;
@@ -77,6 +77,7 @@ namespace Game.Systems
         private WaveUISystem waveUISystem;
         private TowerUISystem towerUISystem;
         private ResourceSystem resourceSystem;
+        private ElementSystem elementSystem;
         private TowerControlSystem towerControlSystem;
         private CreepControlSystem creepControlSystem;
         private ElementUISystem elementUISystem;
@@ -101,13 +102,15 @@ namespace Game.Systems
 
             gridSystem          = new GridSystem();
             resourceSystem      = new ResourceSystem();
+            elementSystem       = new ElementSystem();
             towerPlaceSystem    = new TowerPlaceSystem();
             towerCreatingSystem = new TowerCreatingSystem();
             waveSystem          = new WaveSystem();     
             towerControlSystem  = new TowerControlSystem();    
             creepControlSystem  = new CreepControlSystem();
 
-            PlayerData = DataLoadingSystem.LoadPlayerData();
+            PlayerData = DataLoadingSystem.Load<PlayerData>() as PlayerData;
+            TowerDataBase = DataLoadingSystem.Load<TowerDataBase>() as TowerDataBase;
             
             PlayerState = State.Idle;
         

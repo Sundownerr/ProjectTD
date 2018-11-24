@@ -38,12 +38,12 @@ namespace Game.Systems
             FireLevel.text      = GM.I.PlayerData.ElementLevelList[6].ToString();
         }
 
-        private void LearnAstral()  => ElementSystem.LearnElement(0);
-        private void LearnDarkness() => ElementSystem.LearnElement(1);
-        private void LearnIce()     => ElementSystem.LearnElement(2);
-        private void LearnIron()    => ElementSystem.LearnElement(3);
-        private void LearnStorm()   => ElementSystem.LearnElement(4);
-        private void LearnNature()  => ElementSystem.LearnElement(5);
-        private void LearnFire()    => ElementSystem.LearnElement(6);      
+        private void LearnAstral()  => GM.I.ElementSystem.LearnElement(0);
+        private void LearnDarkness() => GM.I.ElementSystem.LearnElement(1);
+        private void LearnIce()     => GM.I.ElementSystem.LearnElement(2);
+        private void LearnIron()    => GM.I.ElementSystem.LearnElement(3);
+        private void LearnStorm()   => GM.I.ElementSystem.LearnElement(4);
+        private void LearnNature()  => GM.I.ElementSystem.LearnElement(5);
+        private void LearnFire()    => GM.I.ElementSystem.LearnElement(6);      
     }
 }

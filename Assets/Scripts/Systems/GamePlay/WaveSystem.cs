@@ -13,13 +13,13 @@ namespace Game.Systems
         public int WaveNumber { get => waveNumber; set => waveNumber = value > 0 ? value : 1; }
         public List<CreepData> CurrentWaveCreepList { get => currentWaveCreepList; set => currentWaveCreepList = value; }
         public event EventHandler WaveChanged = delegate{};
+        public event EventHandler AllWaveCreepsKilled = delegate{};
 
         private int waveNumber;
         private StateMachine state;
         private List<List<CreepSystem>> creepWaveList;
         private List<List<CreepData>> waveList;
         private List<CreepData> currentWaveCreepList;
-        
 
         public WaveSystem()
         {
@@ -29,7 +29,6 @@ namespace Game.Systems
             creepWaveList           = new List<List<CreepSystem>>();           
             waveList                = new List<List<CreepData>>();
           
-
             state = new StateMachine();
             state.ChangeState(new GenerateWavesState(this, GM.I.WaveAmount));    
         }
@@ -72,14 +71,13 @@ namespace Game.Systems
             tempStats.ArmorType         = armor;
             tempStats.ArmorValue        = waveCount;
             tempStats.DefaultMoveSpeed  = 120 + waveCount * 5;
-            tempStats.Gold              = waveCount / 7;
+            tempStats.Gold              = 1 + waveCount;        // waveCount / 7;
             tempStats.Health            = waveCount * 10;
             tempStats.MoveSpeed         = tempStats.DefaultMoveSpeed;
 
             tempStats.IsInstanced = true;
             return tempStats;
         }
-
         
         private void AddMagicCrystalAfterWaveEnd()
         {
@@ -92,7 +90,7 @@ namespace Game.Systems
                 }
                 else
                 {
-                    GM.I.ResourceSystem.AddMagicCrystal(5);
+                    AllWaveCreepsKilled?.Invoke(this, new EventArgs());
                     creepWaveList.RemoveAt(waveId);
                 }                       
         }
@@ -171,8 +169,7 @@ namespace Game.Systems
                             GM.I.CreepParent);
 
                         var creepSystem = new CreepSystem(creep);                          
-
-                        
+                     
                         creepSystem.Stats = o.CalculateStats(
                             o.currentWaveCreepList[spawned], 
                             o.currentWaveCreepList[spawned].ArmorType, 
@@ -186,7 +183,8 @@ namespace Game.Systems
                         GM.I.CreepList.Add(creep);
                         GM.I.CreepSystemList.Add(creepSystem);    
                         o.creepWaveList[o.creepWaveList.Count - 1].Add(creepSystem);    
-                        GM.I.CreepControlSystem.AddCreep(creepSystem);                                  
+                        GM.I.CreepControlSystem.AddCreep(creepSystem);         
+                        creepSystem.HealthSystem.CreepDied += GM.I.ResourceSystem.OnCreepDied;             
                     }
                 }
             }

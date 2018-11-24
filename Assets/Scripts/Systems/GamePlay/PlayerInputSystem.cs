@@ -97,8 +97,8 @@ namespace Game.Systems
                 ElementsList[(int)choosedTower.Stats.Element].
                 RarityList[(int)choosedTower.Stats.Rarity].
                 TowerList;
-
-            var towerData = allTowerList.Find(tower => tower.CompareId(choosedTower.Stats.Id));
+       
+            var towerData = allTowerList.Find(tower => tower.CompareId(choosedTower.Stats.Id));           
             gradeList = towerData.GradeList;
 
             return gradeList.Count > 0 &&
@@ -117,10 +117,10 @@ namespace Game.Systems
                 var upgradedTower = new TowerSystem(upgradedTowerPrefab); 
                 
                 upgradedTower.StatsSystem.Upgrade(choosedTower, gradeList[choosedTower.Stats.GradeCount + 1]);                            
-                upgradedTower.SetSystem();                             
-               
+                upgradedTower.SetSystem();                                         
+                
                 TowerUpgraded?.Invoke(this, new TowerEventArgs(upgradedTower));      
-                TowerSold?.Invoke(this, new TowerEventArgs(choosedTower));      
+                TowerSold?.Invoke(this, new TowerEventArgs(choosedTower, choosedTower.Stats));      
                 choosedTower = upgradedTower;
             }
             GM.I.TowerUISystem.ActivateUpgradeButton(choosedTower.Stats.GradeCount < gradeList.Count - 1);
@@ -134,14 +134,14 @@ namespace Game.Systems
 
             if (active)
             {  
-                choosedTower = GM.I.PlacedTowerList.Find(tower => tower.Prefab == hit.transform.gameObject);  
+                choosedTower = GM.I.PlacedTowerList.Find(tower => tower.Prefab == hit.transform.gameObject);                      
                 choosedTower.StatsSystem.StatsChanged += GM.I.TowerUISystem.UpdateValues;   
-                GM.I.TowerUISystem.UpgradeButton.gameObject.SetActive(CheckGradeListOk(out _));      
+                GM.I.TowerUISystem.ActivateUpgradeButton(CheckGradeListOk(out _));      
 
                 if (isNotPlacingTower)
                     GM.PlayerState = State.ChoosedTower;
 
-                MouseOnTower?.Invoke(this, new EventArgs());
+                MouseOnTower?.Invoke(this, new EventArgs());           
             }
             else 
             {

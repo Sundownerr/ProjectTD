@@ -7,11 +7,13 @@ using System.IO;
 using Game.Systems;
 
 namespace Game.Data
-{
-    [CreateAssetMenu(fileName = "Player Data", menuName = "Data/Player Data")]
-    
+{   
+    public interface IData
+    {
+        
+    }
     [Serializable]
-    public class PlayerData
+    public class PlayerData : IData
     {
         [SerializeField]
         public int MagicCrystals, Gold, CurrentTowerLimit, MaxTowerLimit, StartTowerRerollCount;

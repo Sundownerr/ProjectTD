@@ -7,7 +7,7 @@ namespace Game.Data
 {
     [CreateAssetMenu(fileName = "CreepDataBase", menuName = "Data/Creep Data Base")]
    	[Serializable]
-	public class CreepDataBase : ScriptableObject 
+	public class CreepDataBase : ScriptableObject, IData
 	{
         [SerializeField]
         public List<Race> AllCreepList;

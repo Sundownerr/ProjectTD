@@ -1,11 +1,21 @@
 ﻿
 using System;
+using Game.Creep;
+using Game.Data;
+using UnityEngine;
 
 namespace Game.Systems
 {
     public class ResourceSystem
     {
         public event EventHandler ResourcesChanged = delegate{};
+
+        private enum ResourceType
+        {
+            Gold,
+            MagicCrystal,
+            TowerLimit
+        }
 
         public ResourceSystem() 
         {
@@ -17,35 +27,40 @@ namespace Game.Systems
             GM.I.TowerPlaceSystem.TowerDeleted += OnTowerDeleted;
             GM.I.TowerPlaceSystem.TowerCreated += OnTowerCreated;
             GM.I.PlayerInputSystem.TowerSold += OnTowerDeleted;
+            GM.I.ElementSystem.LearnedElement += OnElementLearned;
+            GM.I.WaveSystem.AllWaveCreepsKilled += OnAllCreepsKilled;
         }
-
+      
         private void OnTowerDeleted(object sender, TowerEventArgs e)
         {
-            AddGold(e.Stats.GoldCost);
-            AddTowerLimit(-e.Stats.TowerLimit);
+            AddResource(ResourceType.Gold, e.Stats.GoldCost);
+            AddResource(ResourceType.TowerLimit, -e.Stats.TowerLimit);
         }
 
         private void OnTowerCreated(object sender, TowerEventArgs e)
         {
-            AddGold(-e.Stats.GoldCost);
-            AddTowerLimit(e.Stats.TowerLimit);
+            AddResource(ResourceType.Gold, -e.Stats.GoldCost);
+            AddResource(ResourceType.TowerLimit, e.Stats.TowerLimit);
         }
 
-        public void AddMagicCrystal(int amount)
-        {
-            GM.I.PlayerData.MagicCrystals += amount;
-            ResourcesChanged?.Invoke(this, new EventArgs());
-        }
+        public void OnCreepDied(object sender, CreepData creep) => AddResource(ResourceType.Gold, creep.Gold);
 
-        public void AddGold(int amount)
-        {
-            GM.I.PlayerData.Gold += amount;
-            ResourcesChanged?.Invoke(this, new EventArgs());
-        }
+        private void OnElementLearned(object sender, int learnCost) => AddResource(ResourceType.MagicCrystal, -learnCost);       
 
-        public void AddTowerLimit(int amount)
+        private void OnAllCreepsKilled(object sender, EventArgs e) => AddResource(ResourceType.MagicCrystal, 5);       
+
+        private void AddResource(ResourceType type, int amount)
         {
-            GM.I.PlayerData.CurrentTowerLimit += amount;
+            if(type == ResourceType.Gold)
+                GM.I.PlayerData.Gold += amount;
+
+            else if (type == ResourceType.MagicCrystal)
+                GM.I.PlayerData.MagicCrystals += amount;
+
+            else if (type == ResourceType.TowerLimit)
+                GM.I.PlayerData.CurrentTowerLimit += amount;
+
+            DataLoadingSystem.Save<PlayerData>(GM.I.PlayerData);
             ResourcesChanged?.Invoke(this, new EventArgs());
         }
 

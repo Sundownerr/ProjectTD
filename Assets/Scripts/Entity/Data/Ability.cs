@@ -50,8 +50,7 @@ namespace Game.Data
 
         public override void SetId() 
         {
-            base.SetId();
-
+            id = new List<int>();
             if (Owner is CreepSystem creep)
             {
                 id.AddRange(creep.Stats.Id);   
@@ -59,7 +58,7 @@ namespace Game.Data
             }
             else if(Owner is TowerSystem tower)
             {
-                id.AddRange(tower.Stats.Id);   
+                id = tower.Stats.Id;                 
                 id.Add(tower.Stats.AbilityList.IndexOf(this));
             }
         }       

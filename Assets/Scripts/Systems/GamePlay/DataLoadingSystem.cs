@@ -5,51 +5,102 @@ using System.IO;
 using Game.Data;
 using Game.Tower.Data.Stats;
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
+	
+
 	public static class DataLoadingSystem 
 	{
-		public static PlayerData LoadPlayerData()
+		
+		public static void Save<T>(T data) where T : IData
+		{		
+			if(typeof(T) == typeof(PlayerData))
+			{
+				var newData = JsonConvert.SerializeObject(data);
+				File.WriteAllText("playerData.json", newData);
+			}
+			
+			if(typeof(T) == typeof(TowerDataBase))
+			{
+				EditorUtility.SetDirty(data as TowerDataBase); 
+			}		
+		}
+
+		public static IData Load<T>() where T : IData
 		{
-			var playerData = new PlayerData();
+			if(typeof(T) == typeof(PlayerData))
+				return LoadPlayerData();
 
-			if (!File.Exists("playerData.json"))
-            {
-                playerData.ElementLevelList = new List<int>();
-                var elementAmount = Enum.GetValues(typeof(ElementType)).Length;
+			if(typeof(T) == typeof(TowerDataBase))
+				return LoadTowerDB();		
+			
+			return null;
 
-                for (int i = 0; i < elementAmount; i++)
-                     playerData.ElementLevelList.Add(0);      
+			PlayerData LoadPlayerData()
+			{
+				var playerData = new PlayerData();
 
-                playerData.MaxTowerLimit = 500;
-                playerData.StartTowerRerollCount = 3;
-                playerData.MagicCrystals = 100;   
-				playerData.Gold = 100;
+				if (!File.Exists("playerData.json"))
+				{
+					playerData.ElementLevelList = new List<int>();
+					var elementAmount = Enum.GetValues(typeof(ElementType)).Length;
 
-                var data = JsonConvert.SerializeObject(playerData);
+					for (int i = 0; i < elementAmount; i++)
+						playerData.ElementLevelList.Add(0);      
 
-                File.Create("playerData.json").Dispose();            
-                File.WriteAllText("playerData.json", data);
-            } 
-            else
-            {
-                var dataFromFile = File.ReadAllText("playerData.json");
+					playerData.MaxTowerLimit = 500;
+					playerData.StartTowerRerollCount = 3;
+					playerData.MagicCrystals = 100;   
+					playerData.Gold = 100;
+
+					var newData = JsonConvert.SerializeObject(playerData);
+			
+					File.WriteAllText("playerData.json", newData);
+				} 
+				else
+				{
+					var dataFromFile = File.ReadAllText("playerData.json");				
+					var loadedData = JsonConvert.DeserializeObject<PlayerData>(dataFromFile);
+					
+					playerData.ElementLevelList 	= new List<int>();
+					playerData.ElementLevelList    	= loadedData.ElementLevelList;
+					playerData.MagicCrystals       	= loadedData.MagicCrystals;
+					playerData.Gold                	= loadedData.Gold;
+					playerData.CurrentTowerLimit   	= loadedData.CurrentTowerLimit;
+					playerData.MaxTowerLimit       	= loadedData.MaxTowerLimit;				
+				}        
+
+				return playerData;
+			}		
+
+			TowerDataBase LoadTowerDB()
+			{			
+				var data = AssetDatabase.LoadAssetAtPath("Assets/DataBase/TowerDB.asset", typeof(TowerDataBase)) as TowerDataBase;
+
+				if (data is TowerDataBase towerDB)
+				{			
+					towerDB.AllTowerList = data.AllTowerList;			
+					return towerDB;
+				}
+				else
+				{
+					data = ScriptableObject.CreateInstance<TowerDataBase>();
+					data.AllTowerList = new ElementList();                
+					data.AllTowerList.ElementsList = new List<Element>();          
 				
-                var loadedData = JsonConvert.DeserializeObject<PlayerData>(dataFromFile);
-				
-				playerData.ElementLevelList 	= new List<int>();
-				playerData.ElementLevelList    	= loadedData.ElementLevelList;
-				playerData.MagicCrystals       	= loadedData.MagicCrystals;
-				playerData.Gold                	= loadedData.Gold;
-				playerData.CurrentTowerLimit   	= loadedData.CurrentTowerLimit;
-				playerData.MaxTowerLimit       	= loadedData.MaxTowerLimit;
-				
-            }        
+					var elementNameList = Enum.GetNames(typeof(ElementType));              
+							
+					for (int i = 0; i < elementNameList.Length; i++)
+						data.AllTowerList.ElementsList.Add(new Element(elementNameList[i])); 
 
-			return playerData;
+					EditorUtility.SetDirty(data);    					
+				}
+				return data;
+			}		
 		}
 	}
 }

@@ -39,9 +39,7 @@ namespace Game.Creep
 
         protected virtual void Awake() 
         {
-            AddToDataBase();                   
-            
-           
+            AddToDataBase();                          
         }
 
         public void SetData(CreepSystem ownerSystem)

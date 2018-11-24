@@ -5,6 +5,8 @@ using NaughtyAttributes;
 using Game.Tower.Data.Stats;
 using Game.Data;
 using UnityEditor;
+using Game.Systems;
+using Newtonsoft.Json;
 
 namespace Game.Tower.Data
 {
@@ -29,6 +31,7 @@ namespace Game.Tower.Data
         [BoxGroup("Main Info")]
         public int WaveLevel, ElementLevel, TowerLimit, MagicCrystalReq, GoldCost;
 
+        [BoxGroup("Main Info")]
         public bool IsGradeTower;
      
         [BoxGroup("Main Info"), OnValueChanged("OnValuesChanged")]
@@ -74,8 +77,7 @@ namespace Game.Tower.Data
                 GradeList[i].Destroy();    
             GradeList.Clear();
           
-            owner = ownerSystem;     
-            SetId();    
+            owner = ownerSystem;                    
         }
 
         [Button("Add to DataBase")]
@@ -83,44 +85,42 @@ namespace Game.Tower.Data
         {
             if (!IsGradeTower && !IsInstanced)
             {           
-                var database = Resources.Load("TowerDataBase");
-                if (database is TowerDataBase dataBase)     
-                {            
-                    var elementList = dataBase.AllTowerList.ElementsList;
-                    for (int i = 0; i < elementList.Count; i++)
-                        if ((int)Element == i)                    
-                            for (int j = 0; j < elementList[i].RarityList.Count; j++)
-                                if ((int)Rarity == j)
-                                {
-                                    var towerList = elementList[i].RarityList[j].TowerList;
-                                    for (int k = 0; k < towerList.Count; k++)
-                                        if(CompareId(towerList[k].Id))
-                                            return;
-                                    
-                                    elementList[i].RarityList[j].TowerList.Add(this);
-                                    numberInList = towerList.Count - 1;      
-                                    SetId();                                
-                                    EditorUtility.SetDirty(dataBase);
-                                    return;
-                                }     
-                }  
+                var dataBase = DataLoadingSystem.Load<TowerDataBase>() as TowerDataBase;                       
+                var elementList = dataBase.AllTowerList.ElementsList;
+
+                for (int i = 0; i < elementList.Count; i++)
+                    if ((int)Element == i)                    
+                        for (int j = 0; j < elementList[i].RarityList.Count; j++)
+                            if ((int)Rarity == j)
+                            {
+                                var towerList = elementList[i].RarityList[j].TowerList;
+                                for (int k = 0; k < towerList.Count; k++)
+                                    if(CompareId(towerList[k].Id))
+                                        return;
+                                
+                                numberInList = towerList.Count;      
+                                SetId();  
+                                elementList[i].RarityList[j].TowerList.Add(this);                                                           
+                                DataLoadingSystem.Save<TowerDataBase>(dataBase);
+                                return;
+                            }                    
             }           
         }
 
-        private void RemoveFromDataBase()
-        {
-            if (!IsGradeTower && !IsInstanced)
-            {
-                var database = Resources.Load("TowerDataBase");
-                if (database is TowerDataBase dataBase)            
-                {                
-                    dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.Remove(this);  
-                    EditorUtility.SetDirty(dataBase);
-                }
-            }          
-        }
+        // private void RemoveFromDataBase()
+        // {
+        //     if (!IsGradeTower && !IsInstanced)
+        //     {
+        //         var database = Resources.Load("TowerDataBase");
+        //         if (database is TowerDataBase dataBase)            
+        //         {                
+        //             dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.Remove(this);  
+        //             EditorUtility.SetDirty(dataBase);
+        //         }
+        //     }          
+        // }
 
-        private void OnDestroy() => RemoveFromDataBase();
+        // private void OnDestroy() => RemoveFromDataBase();
 
         private void OnValuesChanged() => SetId();
 
@@ -139,6 +139,7 @@ namespace Game.Tower.Data
                     for (int j = 0; j < AbilityList[i].EffectList.Count; j++)
                         Destroy(AbilityList[i].EffectList[j]);
                     AbilityList[i].EffectList.Clear();
+
                     Destroy(AbilityList[i]);
                     AbilityList.Clear();
                 }

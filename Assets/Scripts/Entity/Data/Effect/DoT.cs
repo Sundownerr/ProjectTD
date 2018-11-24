@@ -11,29 +11,10 @@ namespace Game.Data.Effects
     {
         public int DamagePerTick;
         public GameObject EffectPrefab;
-
-        private float tick;
+        
         private GameObject effectPrefab;
         private ParticleSystem[] psList;
-
-        public IEnumerator SetEffect(float delay)
-        {
-            while (tick < Duration)
-            {
-                tick++;
-
-                if (target is CreepSystem creep)
-                    DamageSystem.DoDamage(creep, DamagePerTick, (TowerSystem)Owner);
-                else
-                {
-                    End();
-                    break;
-                }
-                yield return new WaitForSeconds(1f);
-            }
-
-            End();
-        }
+        private float tickTimer;
 
         public override void Apply()
         {
@@ -62,18 +43,21 @@ namespace Game.Data.Effects
         {
             base.Continue();
             
-            //if(effectTimer % 10 == 0)
-            
-
-           
+            tickTimer += Time.deltaTime;
+            if(tickTimer == 1)           
+                if (target is CreepSystem creep)
+                {
+                    tickTimer = 0;
+                    DamageSystem.DoDamage(creep, DamagePerTick, (TowerSystem)Owner);
+                }
+                else            
+                    End();              
         }
 
         public override void End()
         {
             Destroy(effectPrefab);
-            tick = 0;
-
-        
+            tickTimer = 0;   
             base.End();
         }
 

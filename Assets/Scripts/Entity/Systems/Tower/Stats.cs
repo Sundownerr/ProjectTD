@@ -22,8 +22,10 @@ namespace Game.Tower.System
 
         public void Set(TowerData stats)
         {
+            var tempId = stats.Id;
             currentStats = U.Instantiate(stats);            
             currentStats.SetData(tower);
+            currentStats.Id = tempId;
 
             for (int i = 0; i < stats.AbilityList.Count; i++)
             {
@@ -41,8 +43,10 @@ namespace Game.Tower.System
         }
 
         public void Upgrade(TowerSystem previousTower, TowerData newStats)
-        {            
+        {     
+               
             Set(newStats);         
+            currentStats.Id                 = previousTower.Stats.Id;
             currentStats.GradeCount         = previousTower.Stats.GradeCount + 1;
             currentStats.Level              = previousTower.Stats.Level;
             currentStats.Exp                = previousTower.Stats.Exp;
@@ -52,8 +56,7 @@ namespace Game.Tower.System
                 currentStats.SpecialList[i] = U.Instantiate(newStats.SpecialList[i]);           
 
             for (int i = 1; i < currentStats.Level; i++)
-                IncreaseStatsPerLevel();        
-            
+                IncreaseStatsPerLevel();                    
                   
             ChangedStats();
         }

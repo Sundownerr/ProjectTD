@@ -21,18 +21,21 @@ namespace Game.Systems
         private void OnTowerCreated(object sender, TowerEventArgs e) => AddTower(e.System);
         private void OnTowerDeleted(object sender, TowerEventArgs e) => RemoveTower(e.System);
         
-		public void AddTower(TowerSystem tower) 
+		private void AddTower(TowerSystem tower) 
         {           
             towerSystemList.Add(tower);
+            GM.I.PlacedTowerList.Add(tower);  
             tower.OcuppiedCell.GetComponent<Cell>().IsBusy = true;
             tower.Prefab.layer = 14;  
             tower.IsOn = true;
             tower.IsVulnerable = false;			
         }
 
-        public void RemoveTower(TowerSystem tower)
+        private void RemoveTower(TowerSystem tower)
         {
-            tower.OcuppiedCell.GetComponent<Cell>().IsBusy = false;
+            if(tower.OcuppiedCell != null)
+                tower.OcuppiedCell.GetComponent<Cell>().IsBusy = false;
+                
             GM.I.PlacedTowerList.Remove(tower);
             tower.Stats.Destroy();
             Object.Destroy(tower.Prefab);

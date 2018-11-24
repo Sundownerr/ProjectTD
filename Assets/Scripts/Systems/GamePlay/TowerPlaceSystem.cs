@@ -80,10 +80,9 @@ namespace Game.Systems
                     GM.I.TowerParent);                 
 
                 lastTower = new TowerSystem(lastTowerPrefab);
-                lastTower.Stats = GM.I.PlayerInputSystem.NewTowerData;                   
+                lastTower.Stats = GM.I.PlayerInputSystem.NewTowerData;                                           
                 lastTower.SetSystem();
-                GM.I.PlacedTowerList.Add(lastTower);  
-                
+              
                 TowerCreated?.Invoke(this, new TowerEventArgs(lastTower, lastTower.Stats));
                 TowerStateChanged?.Invoke(this, new EventArgs());                       
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Game;
 using Game.Creep;
@@ -8,6 +9,8 @@ using UnityEngine;
 
 public class HealthSystem 
 {
+	public event EventHandler<CreepData> CreepDied = delegate{};
+
 	private EntitySystem owner;
 	private float maxHealth, healthRegen, regenTimer;
 
@@ -54,7 +57,7 @@ public class HealthSystem
             if (creep.LastDamageDealer is TowerSystem tower)
             {
                 tower.AddExp(creep.Stats.Exp);
-                GM.I.ResourceSystem.AddGold(creep.Stats.Gold);
+				CreepDied?.Invoke(this, creep.Stats);             
             }
             CreepControlSystem.DestroyCreep(creep);
         }

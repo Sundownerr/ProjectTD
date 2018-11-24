@@ -7,7 +7,7 @@ namespace Game.Data
     [CreateAssetMenu(fileName = "WaveDataBase", menuName = "Data/Wave Data Base")]
 
 	[Serializable]
-	public class WaveDataBase : ScriptableObject
+	public class WaveDataBase : ScriptableObject, IData
 	{
 		[SerializeField]
 		public List<Wave> WaveList;

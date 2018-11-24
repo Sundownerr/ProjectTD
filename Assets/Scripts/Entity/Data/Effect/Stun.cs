@@ -11,13 +11,7 @@ namespace Game.Data.Effects
 
         private GameObject effectPrefab;    
 
-        public IEnumerator SetEffect(float delay)
-        {
-            yield return new WaitForSeconds(delay);
        
-            End();
-        }
-
         public override void Apply()
         {
             base.Apply();
@@ -30,12 +24,14 @@ namespace Game.Data.Effects
                                 target.Prefab.transform.position, 
                                 Quaternion.identity, 
                                 target.Prefab.transform);
-
-                target.IsOn = false;
-
-                target.EffectSystem.Add(this);
-                effectCoroutine = GM.I.StartCoroutine(SetEffect(Duration));
+                target.EffectSystem.Add(this);          
             }
+        }
+
+        public override void Continue()
+        {
+            base.Continue();
+            target.IsOn = false;         
         }
 
         public override void End()

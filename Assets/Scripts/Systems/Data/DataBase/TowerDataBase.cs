@@ -4,14 +4,13 @@ using System;
 using Game.Tower.Data.Stats;
 
 namespace Game.Data
-{
-    [CreateAssetMenu(fileName = "TowerDataBase", menuName = "Data/Tower Data Base")]
-
+{   
+    [CreateAssetMenu(fileName = "TowerDB", menuName = "Data/Tower DataBase")]
     [Serializable]
-    public class TowerDataBase : ScriptableObject
+    public class TowerDataBase : ScriptableObject, IData
     {     
         [SerializeField]
-        public ElementList AllTowerList;
+        public ElementList AllTowerList;     
 
         private void Awake()
         {    
@@ -26,14 +25,5 @@ namespace Game.Data
                     AllTowerList.ElementsList.Add(new Element(elementNameList[i]));
             }                            
         }     
-
-        private void OnValidate()
-        {
-            for (int i = 0; i < AllTowerList.ElementsList.Count; i++)       
-                for (int j = 0; j < AllTowerList.ElementsList[i].RarityList.Count; j++)          
-                    for (int k = 0; k < AllTowerList.ElementsList[i].RarityList[j].TowerList.Count; k++)
-                        if(AllTowerList.ElementsList[i].RarityList[j].TowerList[k] == null)
-                            AllTowerList.ElementsList[i].RarityList[j].TowerList.RemoveAt(k);                          
-        }      
     }
 }

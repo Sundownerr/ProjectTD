@@ -26,7 +26,6 @@ namespace Game.Data
         protected float effectTimer;
         protected EntitySystem target;
         protected Ability ownerAbility;
-        protected Coroutine effectCoroutine;
 
         private void Awake()
         {
@@ -57,14 +56,16 @@ namespace Game.Data
 
         public virtual void Continue()
         {
-             effectTimer = effectTimer > Duration ? -1 : effectTimer += Time.deltaTime;
-
-            if(effectTimer == -1)
-                End();
-
             if (!isEnded)
+            {
                 if (target == null)
-                    End();            
+                    End();     
+                       
+                effectTimer = effectTimer > Duration ? -1 : effectTimer += Time.deltaTime;
+
+                if(effectTimer == -1)
+                    End();
+            }             
         }
 
         public virtual void End() 
@@ -84,10 +85,7 @@ namespace Game.Data
         }
 
         public virtual void RestartState()
-        {
-            if (effectCoroutine != null)
-                GM.I.StopCoroutine(effectCoroutine);
-          
+        {          
             End();
             isMaxStackCount = false;
             IsEnded = false;
@@ -105,7 +103,7 @@ namespace Game.Data
             }
             else if(Owner is Tower.TowerSystem tower)
             {               
-                id.AddRange(tower.Stats.Id);  
+                id = tower.Stats.Id;  
                 id.Add(ownerAbility.EffectList.IndexOf(this));
             }
         }

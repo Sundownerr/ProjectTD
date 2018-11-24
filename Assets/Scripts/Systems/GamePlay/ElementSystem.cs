@@ -1,9 +1,13 @@
 ﻿
+using System;
+
 namespace Game.Systems
 {
-    public static class ElementSystem
+    public class ElementSystem
     {
-        private static bool CheckCanLearn(int elementLevel)
+        public event EventHandler<int> LearnedElement = delegate{};
+
+        private bool CheckCanLearn(int elementLevel)
         {
             var baseLearnCost   = 20;
             var levelLimit      = 15;
@@ -14,7 +18,7 @@ namespace Game.Systems
             if (!isCanLearn || !isLearnCostOk)
                 return false;
            
-            GM.I.ResourceSystem.AddMagicCrystal(-learnCost);
+            LearnedElement?.Invoke(this, learnCost);          
 
             var isButtonOk =
                 GM.I.BaseUISystem.GetTowerButton != null &&
@@ -24,7 +28,7 @@ namespace Game.Systems
             return true;                    
         }
 
-        public static void LearnElement(int elementId)
+        public void LearnElement(int elementId)
         {
             if (CheckCanLearn(GM.I.PlayerData.ElementLevelList[elementId]))
             {
