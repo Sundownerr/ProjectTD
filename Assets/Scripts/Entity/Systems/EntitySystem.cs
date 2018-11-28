@@ -8,11 +8,11 @@ namespace Game.Systems
     {
         public bool IsVulnerable { get => isVulnerable; set => isVulnerable = value; }
         public bool IsOn { get => isOn; set => isOn = value; }
-        public AppliedEffectSystem EffectSystem { get => effectSystem; set => effectSystem = value; }
+        public AppliedEffectSystem AppliedEffectSystem { get => appliedEffectSystem; set => appliedEffectSystem = value; }
         public HealthSystem HealthSystem { get => healthSystem; set => healthSystem = value; }
         public GameObject Prefab { get => prefab; set => prefab = value; }
 
-        protected AppliedEffectSystem effectSystem;
+        protected AppliedEffectSystem appliedEffectSystem;
         protected HealthSystem healthSystem;
         protected bool isVulnerable, isOn;
         protected GameObject prefab;     

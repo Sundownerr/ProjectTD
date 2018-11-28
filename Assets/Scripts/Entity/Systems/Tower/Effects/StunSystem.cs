@@ -27,7 +27,7 @@ namespace Game.Data.Effects
                                 target.Prefab.transform.position, 
                                 Quaternion.identity, 
                                 target.Prefab.transform);
-                target.EffectSystem.Add(effect);          
+                target.AppliedEffectSystem.Add(effect);          
             }
         }
 

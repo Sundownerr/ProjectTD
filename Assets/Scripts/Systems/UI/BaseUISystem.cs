@@ -11,6 +11,7 @@ namespace Game.Systems
         public bool IsWaveStarted, IsPlayerReady;
         public int WaveTimer;
         public TextMeshProUGUI Gold, MagicCrystals, TowerLimit;
+        public event EventHandler WaveStarted = delegate{};
    
         protected override void Awake()
         {
@@ -41,7 +42,12 @@ namespace Game.Systems
 
         private void StartWave()
         {
-            IsWaveStarted = GM.I.WaveSystem.WaveNumber <= GM.I.WaveAmount;
+            // IsWaveStarted = GM.I.WaveSystem.WaveNumber <= GM.I.WaveAmount;
+            if (GM.I.WaveSystem.WaveNumber <= GM.I.WaveAmount)
+            {
+                StartWaveButton.gameObject.SetActive(false);
+                WaveStarted?.Invoke(this, new EventArgs());
+            }
         }
 
         private void LearnForce()

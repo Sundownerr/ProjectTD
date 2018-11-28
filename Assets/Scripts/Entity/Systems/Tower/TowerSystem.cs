@@ -39,7 +39,6 @@ namespace Game.Tower
         private Stats statsSystem;
         private List<AbilitySystem> abilitySystemList;
 
-
         public TowerSystem(GameObject ownerPrefab)
         {         
             prefab = ownerPrefab;
@@ -52,7 +51,7 @@ namespace Game.Tower
             specialSystem   = new Special(this);
             combatSystem    = new Combat(this);
             abilitySystem   = new AbilityControlSystem(this);
-            effectSystem    = new AppliedEffectSystem();         
+            appliedEffectSystem    = new AppliedEffectSystem();         
             AbilitySystemList = new List<AbilitySystem>();
          
             bullet.SetActive(false);   

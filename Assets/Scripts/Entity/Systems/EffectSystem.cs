@@ -57,7 +57,7 @@ namespace Game.Systems
         public virtual void Apply()
         {         
             if (effect.IsStackable)
-                if (Target.EffectSystem.CountOf(effect) >= effect.MaxStackCount)
+                if (Target.AppliedEffectSystem.CountOf(effect) >= effect.MaxStackCount)
                 {
                     IsMaxStackCount = true;                
                     return;
@@ -84,7 +84,7 @@ namespace Game.Systems
         public virtual void End() 
         {        
             if (!IsMaxStackCount)     
-                Target?.EffectSystem.Remove(effect);
+                Target?.AppliedEffectSystem.Remove(effect);
 
             IsEnded = true;         
         } 

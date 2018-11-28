@@ -39,7 +39,7 @@ namespace Game.Systems.Effects
                 psList = effectPrefab.GetComponentsInChildren<ParticleSystem>();
                 Show(true);     
                 
-                target.EffectSystem.Add(effect);                            
+                target.AppliedEffectSystem.Add(effect);                            
             }
         }
 

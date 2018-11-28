@@ -153,6 +153,7 @@ namespace Game.Systems
             resourceSystem.SetSystem();
             towerControlSystem.SetSystem();
             towerCreatingSystem.SetSystem();         
+            waveSystem.SetSystem();
         }
 
         private void Update()
