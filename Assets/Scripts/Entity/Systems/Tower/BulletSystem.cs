@@ -1,11 +1,12 @@
 ﻿using Game.Creep;
+using Game.Systems;
 using UnityEngine;
 
 namespace Game.Tower
 {
     public class BulletSystem : ExtendedMonoBehaviour
     {
-        public CreepSystem Target { get => target; set => target = value; }
+        public EntitySystem Target { get => target; set => target = value; }
         public int RemainingBounceCount { get => remainingBounceCount; set => remainingBounceCount = value >= 0 ? value : 0; }
         public int ChainshotCount { get => chainshotCount; set => chainshotCount = value >= 0 ? value : 0; }
         public int MultishotCount { get => multishotCount; set => multishotCount = value >= 0 ? value : 0; }
@@ -15,7 +16,7 @@ namespace Game.Tower
         public bool IsTargetReached { get => isTargetReached; set => isTargetReached = value; }
 
         private bool isTargetReached;
-        private CreepSystem target;
+        private EntitySystem target;
         private ParticleSystem.EmissionModule emissionModule;
         private ParticleSystem[] particleSystemList;
         private int remainingBounceCount, chainshotCount, multishotCount, aOEShotRange;

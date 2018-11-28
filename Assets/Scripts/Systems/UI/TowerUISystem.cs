@@ -32,7 +32,6 @@ namespace Game.Systems
             GM.I.PlayerInputSystem.MouseOnTower += UpdateValues;   
             gameObject.SetActive(false);         
         }
-
        
         private void Sell()
         {
@@ -59,8 +58,7 @@ namespace Game.Systems
             TriggerChance.text      = QoL.KiloFormat(choosedTower.Stats.TriggerChance) + "%";
             SpellCritChance.text    = QoL.KiloFormat(choosedTower.Stats.SpellCritChance) + "%";
             SpellDamage.text        = QoL.KiloFormat(choosedTower.Stats.SpellDamage) + "%";
-            CritChance.text         = QoL.KiloFormat(choosedTower.Stats.CritChance) + "%";
-           
+            CritChance.text         = QoL.KiloFormat(choosedTower.Stats.CritChance) + "%";          
         }            
 
         public void ActivateUpgradeButton(bool activate) => UpgradeButton.gameObject.SetActive(activate);

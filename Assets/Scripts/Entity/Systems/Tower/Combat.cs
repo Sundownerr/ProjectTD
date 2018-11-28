@@ -67,7 +67,7 @@ namespace Game.Tower.System
                 for (int i = 0; i < shotCount; i++)
                     CreateBullet(tower.CreepInRangeList[i]);
 
-                void CreateBullet(CreepSystem target)
+                void CreateBullet(EntitySystem target)
                 {
                     bulletList.Add(bulletPool.GetObject());
                     bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<BulletSystem>());

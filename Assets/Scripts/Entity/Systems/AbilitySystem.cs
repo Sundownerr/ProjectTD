@@ -43,7 +43,7 @@ namespace Game.Systems
             }
         }         
 
-        public void SetOwner(EntitySystem owner)
+        private void SetOwner(EntitySystem owner)
         {                 
             this.owner = owner;
             SetId();

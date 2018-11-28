@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Game.Cells;
+using Game.Creep;
 using Game.Tower;
 using UnityEngine;
 
@@ -71,8 +72,8 @@ namespace Game.Systems
                             for (int j = 0; j < tower.CreepInRangeList.Count; j++)
                                 if (tower.CreepInRangeList[j] == null)
                                 {
-                                    tower.RangeSystem.CreepList.RemoveAt(j);
-                                    tower.RangeSystem.CreepSystemList.RemoveAt(j);
+                                    tower.RangeSystem.EntityList.RemoveAt(j);
+                                    tower.RangeSystem.EntitySystemList.RemoveAt(j);
                                 }
 
                             void RotateAtCreep()

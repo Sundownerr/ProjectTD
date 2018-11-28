@@ -25,7 +25,7 @@ namespace Game.Tower
         public Stats StatsSystem            { get => statsSystem;           private set => statsSystem = value; }
         public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
         public Renderer[] RendererList      { get => rendererList;          private set => rendererList = value; }
-        public List<CreepSystem> CreepInRangeList => rangeSystem.CreepSystemList;
+        public List<EntitySystem> CreepInRangeList => rangeSystem.EntitySystemList;
 
         public List<AbilitySystem> AbilitySystemList { get => abilitySystemList; set => abilitySystemList = value; }
 
@@ -74,8 +74,9 @@ namespace Game.Tower
 
             range = U.Instantiate(GM.I.RangePrefab, prefab.transform);           
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
-            rangeSystem = range.GetComponent<System.Range>();
+            rangeSystem = range.GetComponent<Range>();
             rangeSystem.Owner = this;    
+            rangeSystem.CollideType = CollideWith.Creeps;
 
             RendererList = prefab.GetComponentsInChildren<Renderer>();                       
         }

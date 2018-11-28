@@ -26,10 +26,11 @@ namespace Game.Systems
 
         public void UpdateWaveUI(object sender, EventArgs e)
         {
-            var tempString = new StringBuilder();
-            var creepList = GM.I.WaveSystem.CurrentWaveCreepList;
-            Race.text = creepList[0].Race.ToString();
-            Armor.text = creepList[0].ArmorType.ToString();
+            var tempString  = new StringBuilder();
+            var creepList   = GM.I.WaveSystem.CurrentWaveCreepList;
+
+            Race.text   = creepList[0].Race.ToString();
+            Armor.text  = creepList[0].ArmorType.ToString();
 
             var smallCount = 0;
             var normalCount = 0;
@@ -46,11 +47,11 @@ namespace Game.Systems
                 if (creepList[i] is Boss)    {   bossCount++; continue;}            
             }
 
-            tempString.Append(smallCount > 0 ? smallCount + " Small " : string.Empty);
-            tempString.Append(normalCount > 0 ? normalCount + " Normal " : string.Empty);
+            tempString.Append(smallCount > 0    ? smallCount + " Small " : string.Empty);
+            tempString.Append(normalCount > 0   ? normalCount + " Normal " : string.Empty);
             tempString.Append(commanterCount > 0 ? commanterCount + " Commander " : string.Empty);
-            tempString.Append(flyingCount > 0 ? flyingCount + " Flying " : string.Empty);
-            tempString.Append(bossCount > 0 ? bossCount + " Boss " : string.Empty);
+            tempString.Append(flyingCount > 0   ? flyingCount + " Flying " : string.Empty);
+            tempString.Append(bossCount > 0     ? bossCount + " Boss " : string.Empty);
             CreepTypes.text = tempString.ToString();
         }        
     }

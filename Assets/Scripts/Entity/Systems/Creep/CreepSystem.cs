@@ -16,9 +16,15 @@ namespace Game.Creep
         private CreepData stats;
         private int waypointIndex;
         private EntitySystem lastDamageDealer;
+        private List<AbilitySystem> abilitySystemList;
 
         public CreepSystem(GameObject ownerPrefab)
         {
+            abilitySystemList = new List<AbilitySystem>();
+
+            for (int i = 0; i < stats.AbilityList.Count; i++)           
+                abilitySystemList.Add(new AbilitySystem(stats.AbilityList[i], this));
+            
             prefab = ownerPrefab;
         }
     }
