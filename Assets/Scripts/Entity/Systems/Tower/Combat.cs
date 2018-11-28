@@ -26,10 +26,10 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            timer = tower.Stats.AttackSpeed;
-            bulletList = new List<GameObject>();
-            bulletDataList = new List<BulletSystem>();
-            bulletRemoveTimerList = new List<float>();
+            timer       = tower.Stats.AttackSpeed;
+            bulletList  = new List<GameObject>();
+            bulletDataList          = new List<BulletSystem>();
+            bulletRemoveTimerList   = new List<float>();
             defaultBullet = tower.Bullet.GetComponent<BulletSystem>();
 
             bulletPool = new ObjectPool()

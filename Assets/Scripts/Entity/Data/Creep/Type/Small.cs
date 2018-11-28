@@ -10,7 +10,6 @@ namespace Game.Creep.Data
             MoveSpeed = DefaultMoveSpeed;
             Exp = 1;
             Gold = 1;
-            type = CreepType.Small;
 
             base.Awake();
         }

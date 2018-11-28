@@ -149,20 +149,20 @@ namespace Game.Systems
 
         private void Start()
         {
-            waveUISystem.SetSystem();     
-            resourceSystem.SetSystem();
-            towerControlSystem.SetSystem();
-            towerCreatingSystem.SetSystem();         
             waveSystem.SetSystem();
+            towerControlSystem.SetSystem();
+            waveUISystem.SetSystem();     
+            resourceSystem.SetSystem();          
+            towerCreatingSystem.SetSystem();                   
         }
 
         private void Update()
         {
-            towerPlaceSystem.UpdateSystem();
-            gridSystem.UpdateSystem();
             waveSystem.UpdateSystem();
-            creepControlSystem.UpdateSystem();
             towerControlSystem.UpdateSystem();
+            towerPlaceSystem.UpdateSystem();
+            gridSystem.UpdateSystem();           
+            creepControlSystem.UpdateSystem();         
         }      
     }
 

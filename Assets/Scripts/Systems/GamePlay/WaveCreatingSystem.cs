@@ -38,10 +38,10 @@ namespace Game.Systems
                     sortedCreepList.Add(GetCreepOfType(wave.CreepTypeList[i]));                     
                 return sortedCreepList;
 
-                CreepData GetCreepOfType(CreepType type)
+                CreepData GetCreepOfType(CreepData creep) 
                 {         
                     for (int i = 0; i < choosedCreepList.Length; i++)
-                        if (choosedCreepList[i].Type == type)
+                        if (choosedCreepList[i].GetType() == creep.GetType())
                             return choosedCreepList[i];        
                     return null;
                 }

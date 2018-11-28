@@ -75,7 +75,7 @@ namespace Game.Tower.Data
                     DamageToRace.Add(100f);    
 
             for (int i = 0; i < GradeList.Count; i++)                
-                GradeList[i].Destroy();    
+                Destroy(GradeList[i]);
             GradeList.Clear();                 
         }
 
@@ -128,14 +128,6 @@ namespace Game.Tower.Data
                 (int)Rarity,
                 numberInList,                                                   
             };      
-        }
-        public void Destroy()
-        {
-            if (isInstanced)
-            {
-               
-                Destroy(this);                  
-            }
-        }
+        }     
     }
 }

@@ -4,9 +4,9 @@ using Game.Systems;
 
 namespace Game
 {
+    
     public abstract class Entity : ScriptableObject
-    {
-       
+    {     
         public List<int> Id { get => id; set => id = value; }
         public EntitySystem Owner { get => owner; set => owner = value; }
 

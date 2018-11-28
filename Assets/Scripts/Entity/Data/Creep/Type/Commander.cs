@@ -6,12 +6,10 @@ namespace Game.Creep.Data
     public class Commander : CreepData
     {
         protected override void Awake()
-        {
-              
+        {            
             MoveSpeed = DefaultMoveSpeed;
             Exp = 4;
             Gold = 4;
-            type = CreepType.Commander;
 
             base.Awake();         
         }

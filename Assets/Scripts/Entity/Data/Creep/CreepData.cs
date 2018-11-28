@@ -15,7 +15,6 @@ namespace Game.Creep
         public int Gold         { get => gold; set => gold = value >= 0 ? value : 0; }      
         public float Health     { get => health; set => health = value >= 0 ? value : 0; }
         public float DefaultMoveSpeed       { get => defaultMoveSpeed; set => defaultMoveSpeed = value; }
-        public CreepType Type   { get => type; set => type = value; }
         public List<Ability> AbilityList    { get => abilityList; set => abilityList = value; }
         public float ArmorValue { get => armorValue; set => armorValue = value; }
         public Armor.ArmorType ArmorType    { get => armorType; set => armorType = value; }
@@ -33,13 +32,12 @@ namespace Game.Creep
         protected float armorValue;
         protected int gold, exp, numberInList;
         protected float defaultMoveSpeed, moveSpeed, health;    
-        protected CreepType type;
         protected bool isInstanced;
         protected List<Ability> abilityList;
 
         protected virtual void Awake() 
         {
-            AddToDataBase();                          
+         //   AddToDataBase();                          
         }
 
         public void SetData(CreepSystem ownerSystem)
@@ -87,9 +85,7 @@ namespace Game.Creep
             var tempName = new System.Text.StringBuilder();
         
             tempName.Append(Race.ToString());
-            tempName.Append(Type.ToString());
             tempName.Append((int)Race);
-            tempName.Append((int)Type);
             tempName.Append(numberInList);
 
             Name = tempName.ToString();
@@ -99,11 +95,13 @@ namespace Game.Creep
 
         public void OnValuesChanged() => AddToDataBase();
 
-        public override void SetId() => id = new List<int>
-                                                {
-                                                    (int)Race,
-                                                    (int)Type,
-                                                    numberInList
-                                                };
+        public override void SetId() 
+        {
+            id = new List<int>
+            {
+                (int)Race,
+                numberInList
+            };
+        }
     }
 }

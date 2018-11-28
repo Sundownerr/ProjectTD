@@ -101,8 +101,9 @@ namespace Game.Systems
                 {              
                     lastTower.Prefab.transform.position = hit.point;
                     SetTowerColor(lastTower, transparentRed);   
+                    var isHitCell = hit.transform.gameObject.layer == 15;
                     
-                    if (hit.transform.gameObject.layer == 15)
+                    if (isHitCell)
                     {
                         var cell = GM.I.GridSystem.CellList.Find(hitCell => hitCell.gameObject == hit.transform.gameObject);          
                     

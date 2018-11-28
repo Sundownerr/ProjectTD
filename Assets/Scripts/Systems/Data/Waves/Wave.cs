@@ -2,6 +2,7 @@
 using Game.Creep.Data;
 using UnityEngine;
 using System;
+using Game.Creep;
 
 namespace Game.Data
 {
@@ -10,6 +11,6 @@ namespace Game.Data
     public class Wave : ScriptableObject
     {
         [SerializeField]
-        public List<CreepType> CreepTypeList;       
+        public List<CreepData> CreepTypeList;       
     }
 }
