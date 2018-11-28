@@ -19,7 +19,7 @@ namespace Game.Data.Effects
         {
             base.Apply();
 
-            if(isMaxStackCount || target == null || target.Prefab == null)
+            if (isMaxStackCount || target == null || target.Prefab == null)
                 End();
             else
             {
@@ -39,7 +39,7 @@ namespace Game.Data.Effects
 
         public override void End()
         {
-            if(target != null)
+            if (target != null)
                 target.IsOn = true;
             
             Object.Destroy(effectPrefab);

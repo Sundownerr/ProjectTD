@@ -51,7 +51,7 @@ namespace Game.Tower.System
 
             for (int i = 0; i < bulletRemoveTimerList.Count; i++)
             {
-                if(bulletRemoveTimerList[i] > 0)
+                if (bulletRemoveTimerList[i] > 0)
                     bulletRemoveTimerList[i] -= Time.deltaTime;
                 else
                 {
@@ -77,7 +77,7 @@ namespace Game.Tower.System
 
                     void SetBulletData(BulletSystem bullet)
                     {
-                        if(target != null)                
+                        if (target != null)                
                             bullet.Target = target;                  
                         
                         bullet.ChainshotCount = defaultBullet.ChainshotCount;
@@ -137,7 +137,6 @@ namespace Game.Tower.System
             for (int i = 0; i < bulletList.Count; i++)
                 if (bulletList[i].activeSelf)
                     return false;
-
             return true;
         }
 
@@ -153,12 +152,12 @@ namespace Game.Tower.System
                 bullet.ChainshotCount > 0 &&
                 bullet.RemainingBounceCount > 0;        
 
-            if(bullet.AOEShotRange > 0)
+            if (bullet.AOEShotRange > 0)
                 tower.SpecialSystem.DamageInAOE(bullet);
             else
                 ApplyDamage();
 
-            if(isChainShot)
+            if (isChainShot)
                 tower.SpecialSystem.SetChainTarget(bullet);
             else
                 SetTargetReached(bullet);         

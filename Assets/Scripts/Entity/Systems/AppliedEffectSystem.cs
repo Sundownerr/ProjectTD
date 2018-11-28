@@ -16,7 +16,7 @@ namespace Game.Systems
 		public void Remove(Effect effect)
 		{
 			for (int i = 0; i < appliedEffectList.Count; i++)			
-				if(effect.CompareId(appliedEffectList[i].Id)) 
+				if (effect.CompareId(appliedEffectList[i].Id)) 
 				{			
 					appliedEffectList.RemoveAt(i);
 					return;
@@ -27,7 +27,7 @@ namespace Game.Systems
 		{
 			var count = 0;
 			for (int i = 0; i < appliedEffectList.Count; i++)			
-				if(effect.CompareId(appliedEffectList[i].Id)) 						
+				if (effect.CompareId(appliedEffectList[i].Id)) 						
 					count++;			
 			return count;
 		}		

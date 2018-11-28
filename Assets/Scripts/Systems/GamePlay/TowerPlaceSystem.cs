@@ -66,7 +66,7 @@ namespace Game.Systems
                         CreateTower();                    
                 }
                 else
-                    if(GM.PlayerState == State.PlacingTower)
+                    if (GM.PlayerState == State.PlacingTower)
                         MoveTower();                       
   
             void CreateTower()
@@ -102,11 +102,11 @@ namespace Game.Systems
                     lastTower.Prefab.transform.position = hit.point;
                     SetTowerColor(lastTower, transparentRed);   
                     
-                    if(hit.transform.gameObject.layer == 15)
+                    if (hit.transform.gameObject.layer == 15)
                     {
                         var cell = GM.I.GridSystem.CellList.Find(hitCell => hitCell.gameObject == hit.transform.gameObject);          
                     
-                        if(!cell.IsBusy)
+                        if (!cell.IsBusy)
                         {
                             chosenCell = cell;
         

@@ -31,7 +31,7 @@ namespace Game.Systems
                     GM.I.BuildUISystem.BuildNewTower();           
                     count--;              
                 
-                    if(count >= 1)
+                    if (count >= 1)
                         towerCountText.text = count.ToString();     
                     else
                     {

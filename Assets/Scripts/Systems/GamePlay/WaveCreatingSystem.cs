@@ -15,9 +15,9 @@ namespace Game.Systems
             var fittingCreepList = new List<CreepData>();      
 
             for (int raceId = 0; raceId < raceList.Count; raceId++)
-                if(raceId == (int)waveRace)
+                if (raceId == (int)waveRace)
                     for (int i = 0; i < raceList[raceId].CreepList.Count; i++)
-                        if(raceList[raceId].CreepList[i].WaveLevel >= GM.I.WaveSystem.WaveNumber)
+                        if (raceList[raceId].CreepList[i].WaveLevel >= GM.I.WaveSystem.WaveNumber)
                             fittingCreepList.Add(raceList[raceId].CreepList[i]);                  
                                
             return GetFittingCreepList();
@@ -41,7 +41,7 @@ namespace Game.Systems
                 CreepData GetCreepOfType(CreepType type)
                 {         
                     for (int i = 0; i < choosedCreepList.Length; i++)
-                        if(choosedCreepList[i].Type == type)
+                        if (choosedCreepList[i].Type == type)
                             return choosedCreepList[i];        
                     return null;
                 }
@@ -51,12 +51,12 @@ namespace Game.Systems
                     var tempChoosedCreepList = new List<CreepData>();           
             
                     for (int i = 0; i < fittingCreepList.Count; i++)           
-                        if(fittingCreepList[i] is T fittingCreep)
-                            if(tempChoosedCreepList.Count < 2)
+                        if (fittingCreepList[i] is T fittingCreep)
+                            if (tempChoosedCreepList.Count < 2)
                                 tempChoosedCreepList.Add(fittingCreep);
                             else
                                 for (int j = 0; j < tempChoosedCreepList.Count; j++)
-                                    if(fittingCreep != tempChoosedCreepList[j])
+                                    if (fittingCreep != tempChoosedCreepList[j])
                                     {
                                         tempChoosedCreepList.Add(fittingCreep);  
                                         break;

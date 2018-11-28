@@ -14,7 +14,7 @@ namespace Game.Data
 
         private void Awake()
         {
-            if(AllCreepList == null)    
+            if (AllCreepList == null)    
             {      
                 AllCreepList = new List<Race>();             
 

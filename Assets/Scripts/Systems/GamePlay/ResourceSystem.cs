@@ -51,7 +51,7 @@ namespace Game.Systems
 
         private void AddResource(ResourceType type, int amount)
         {
-            if(type == ResourceType.Gold)
+            if (type == ResourceType.Gold)
                 GM.I.PlayerData.Gold += amount;
 
             else if (type == ResourceType.MagicCrystal)

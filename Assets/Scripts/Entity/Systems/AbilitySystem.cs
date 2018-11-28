@@ -36,7 +36,7 @@ namespace Game.Systems
         public void SetId() 
         {
             id = new List<int>();          
-            if(owner is TowerSystem tower)
+            if (owner is TowerSystem tower)
             {
                 id.AddRange(tower.Stats.Id);                             
                 id.Add(tower.AbilitySystemList.IndexOf(this));                

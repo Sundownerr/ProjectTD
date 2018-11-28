@@ -19,14 +19,14 @@ namespace Game
 
         public virtual bool CompareId(List<int> otherId)
         {
-            if(otherId == null || id == null)
+            if (otherId == null || id == null)
                 return false;
 
-            if(id.Count != otherId.Count)
+            if (id.Count != otherId.Count)
                 return false;
             
             for (int i = 0; i < id.Count; i++)
-                if(id[i] != otherId[i])
+                if (id[i] != otherId[i])
                     return false;
 
             return true;

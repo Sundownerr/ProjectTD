@@ -45,23 +45,23 @@ namespace Game.Cells
 
             var isNothingHit = !isForwardHit && !isBackHit && !isLeftHit && isRightHit;
 
-            if(isNothingHit || !isDownHit)
+            if (isNothingHit || !isDownHit)
             {
                 GM.I.GridSystem.CellList.Remove(ownerCell);
                 Object.Destroy(ownerCell.gameObject);
             } 
             else
             {                      
-                if(isForwardHit)
+                if (isForwardHit)
                     Fill(forward);
 
-                if(isBackHit)
+                if (isBackHit)
                     Fill(back);
 
-                if(isLeftHit)
+                if (isLeftHit)
                     Fill(left);
 
-                if(isRightHit)
+                if (isRightHit)
                     Fill(right);         
             }
 

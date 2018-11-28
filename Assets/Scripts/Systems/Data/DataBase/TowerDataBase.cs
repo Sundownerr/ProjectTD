@@ -14,7 +14,7 @@ namespace Game.Data
 
         private void Awake()
         {    
-            if(AllTowerList == null) 
+            if (AllTowerList == null) 
             {
                 AllTowerList = new ElementList();                
                 AllTowerList.ElementsList = new List<Element>();          

@@ -33,7 +33,7 @@ namespace Game.Systems
                 CreateMainCell();
 
                 for (int i = 0; i < cellList.Count; i++)        
-                    if(!cellList[i].IsExpanded)
+                    if (!cellList[i].IsExpanded)
                         cellExpandSystem.Expand(cellList[i]);     
 
                 IsGridBuilded = true;            

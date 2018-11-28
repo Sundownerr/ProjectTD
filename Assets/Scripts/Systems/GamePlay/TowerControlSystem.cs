@@ -33,7 +33,7 @@ namespace Game.Systems
 
         private void RemoveTower(TowerSystem tower)
         {
-            if(tower.OcuppiedCell != null)
+            if (tower.OcuppiedCell != null)
                 tower.OcuppiedCell.GetComponent<Cell>().IsBusy = false;
 
             towerSystemList.Remove(tower);
@@ -46,7 +46,7 @@ namespace Game.Systems
             for (int i = 0; i < towerSystemList.Count; i++)
             {
                 var tower = towerSystemList[i];
-                if(tower == null)
+                if (tower == null)
                     towerSystemList.Remove(tower);
                 else
                 {                        

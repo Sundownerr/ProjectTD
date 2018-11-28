@@ -25,14 +25,14 @@ namespace Game.Systems
             this.owner = owner;
             this.effect = effect;
 
-            if(!effect.IsStackable)
+            if (!effect.IsStackable)
                 effect.MaxStackCount = 1;
         }
 
         public void SetId() 
         {   
             id = new List<int>();
-            if(owner is Tower.TowerSystem tower)
+            if (owner is Tower.TowerSystem tower)
             {               
                 id.AddRange(tower.Stats.Id);  
                 id.Add(ownerAbilitySystem.EffectSystemList.IndexOf(this));
@@ -56,8 +56,8 @@ namespace Game.Systems
 
         public virtual void Apply()
         {         
-            if(effect.IsStackable)
-                if(Target.EffectSystem.CountOf(effect) >= effect.MaxStackCount)
+            if (effect.IsStackable)
+                if (Target.EffectSystem.CountOf(effect) >= effect.MaxStackCount)
                 {
                     IsMaxStackCount = true;                
                     return;
@@ -76,14 +76,14 @@ namespace Game.Systems
                        
                 effectTimer = effectTimer > effect.Duration ? -1 : effectTimer += Time.deltaTime;
 
-                if(effectTimer == -1)
+                if (effectTimer == -1)
                     End();
             }             
         }
 
         public virtual void End() 
         {        
-            if(!IsMaxStackCount)     
+            if (!IsMaxStackCount)     
                 Target?.EffectSystem.Remove(effect);
 
             IsEnded = true;         
@@ -91,9 +91,9 @@ namespace Game.Systems
   
         public virtual void ApplyRestart()
         {
-            if(effect.IsStackable)
+            if (effect.IsStackable)
                 RestartState();
-            else if(IsEnded)
+            else if (IsEnded)
                 RestartState();     
         }
 

@@ -94,7 +94,7 @@ namespace Game.Tower.Data
                             {
                                 var towerList = elementList[i].RarityList[j].TowerList;
                                 for (int k = 0; k < towerList.Count; k++)
-                                    if(CompareId(towerList[k].Id))
+                                    if (CompareId(towerList[k].Id))
                                         return;
                                 
                                 numberInList = towerList.Count;      

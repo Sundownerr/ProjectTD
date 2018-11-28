@@ -24,7 +24,7 @@ namespace Game.Systems.Effects
         {
             base.Apply();
 
-            if(isMaxStackCount || target == null || target.Prefab == null)
+            if (isMaxStackCount || target == null || target.Prefab == null)
             {
                 End();
                 return;
@@ -48,7 +48,7 @@ namespace Game.Systems.Effects
             base.Continue();
             
             tickTimer += Time.deltaTime;
-            if(tickTimer == 1)           
+            if (tickTimer == 1)           
                 if (target is CreepSystem creep)
                 {
                     tickTimer = 0;

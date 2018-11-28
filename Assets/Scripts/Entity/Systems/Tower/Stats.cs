@@ -70,7 +70,7 @@ namespace Game.Tower.System
                 if (currentStats.Exp >= GM.ExpToLevelUp[currentStats.Level] && currentStats.Level < 25)
                     IncreaseStatsPerLevel();      
             
-            if(GM.I.PlayerInputSystem.ChoosedTower == tower)
+            if (GM.I.PlayerInputSystem.ChoosedTower == tower)
                 ChangedStats();    
         }
 

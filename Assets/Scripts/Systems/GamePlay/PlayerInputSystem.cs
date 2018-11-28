@@ -72,10 +72,10 @@ namespace Game.Systems
                         !isHitUI &&
                         hit.transform.gameObject.layer == 9;
 
-                    if(isMouseOnTower)                                          
+                    if (isMouseOnTower)                                          
                         ActivateTowerUI(true);                          
                     
-                    if(isMouseNotOnUI)
+                    if (isMouseNotOnUI)
                         ActivateTowerUI(false);
                 }
             }
@@ -148,7 +148,7 @@ namespace Game.Systems
                 if (isNotPlacingTower)
                     GM.PlayerState = State.Idle;      
 
-                if(choosedTower != null)
+                if (choosedTower != null)
                     choosedTower.StatsSystem.StatsChanged -= GM.I.TowerUISystem.UpdateValues;        
             }  
         

@@ -25,14 +25,14 @@ namespace Game.Systems
             {
                 var creep = creepList[i];             
                 
-                if(creep == null || creep.Prefab == null)
+                if (creep == null || creep.Prefab == null)
                     creepList.Remove(creep);
                 else
                 {
-                    if(creep.HealthSystem != null)
+                    if (creep.HealthSystem != null)
                         creep.HealthSystem.Update();
                         
-                    if(creep.IsOn)
+                    if (creep.IsOn)
                     {
                         var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;
                         var creepTransform = creep.Prefab.transform;
@@ -73,7 +73,7 @@ namespace Game.Systems
 
         public static void DestroyCreep(CreepSystem creep)
         {                     
-            if(creep != null)
+            if (creep != null)
             {
                 GM.I.CreepList.Remove(creep.Prefab);
                 GM.I.CreepSystemList.Remove(creep);

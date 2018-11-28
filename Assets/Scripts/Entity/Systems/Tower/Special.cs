@@ -44,9 +44,9 @@ namespace Game.Tower.System
             {
                 IsHaveChainTargets = true;
               
-                if(bullet.Target != null)
+                if (bullet.Target != null)
                     for (int i = 0; i < hitTargetCount; i++)                                                    
-                        if(bullet.Target.Prefab == chainShotColliderList[i].gameObject)
+                        if (bullet.Target.Prefab == chainShotColliderList[i].gameObject)
                         {
                             bullet.Target = 
                                 i - 1 >= 0              ? GM.I.CreepSystemList.Find(creep => creep.Prefab == chainShotColliderList[i - 1].transform.gameObject) :

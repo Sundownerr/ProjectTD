@@ -50,15 +50,15 @@ namespace Game.Creep
         [Button]
         public void AddToDataBase()
         {
-            if(!IsInstanced)      
-                if(DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)     
+            if (!IsInstanced)      
+                if (DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)     
                 {            
                     var raceList = dataBase.AllCreepList;
                     for (int i = 0; i < raceList.Count; i++)
-                        if(i == (int)Race)                    
+                        if (i == (int)Race)                    
                         {
                             for (int j = 0; j < raceList[i].CreepList.Count; j++)                             
-                                if(CompareId(raceList[i].CreepList[j].Id) || Name == raceList[i].CreepList[j].Name)
+                                if (CompareId(raceList[i].CreepList[j].Id) || Name == raceList[i].CreepList[j].Name)
                                     return;
                             
                             raceList[i].CreepList.Add(this);
@@ -74,8 +74,8 @@ namespace Game.Creep
 
         private void RemoveFromDataBase()
         {
-            if(!IsInstanced)        
-                if(DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)             
+            if (!IsInstanced)        
+                if (DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)             
                 {               
                     dataBase.AllCreepList[(int)Race].CreepList.RemoveAt(numberInList);       
                     DataLoadingSystem.Save<CreepDataBase>(dataBase);       

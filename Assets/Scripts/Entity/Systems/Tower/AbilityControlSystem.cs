@@ -29,12 +29,11 @@ namespace Game.Tower.System
                 isInContinueState = false;
 
                 for (int i = 0; i < abilitySystemList.Count; i++)
-                    {
-                        if (abilitySystemList[i].IsNeedStack)
-                            CreateStack(i);
-
-                        Init(abilitySystemList[i], CheckTargetInRange(abilitySystemList[i].Target));
-                    }
+                {
+                    if (abilitySystemList[i].IsNeedStack)
+                        CreateStack(i);
+                    Init(abilitySystemList[i], CheckTargetInRange(abilitySystemList[i].Target));
+                }
 
                 for (int i = 0; i < abilityStackList.Count; i++)
                     Init(abilityStackList[i], !abilityStackList[i].CheckAllEffectsEnded());
@@ -80,43 +79,43 @@ namespace Game.Tower.System
                 for (int i = 0; i < abilityStackList.Count; i++)
                     Init(abilityStackList[i], !abilityStackList[i].CheckAllEffectsEnded());              
             }
-        }
 
-        private bool CheckTargetInRange(EntitySystem target)
-        {
-            for (int i = 0; i < tower.CreepInRangeList.Count; i++)
-                if (target == tower.CreepInRangeList[i])
-                    return true;
-            return false;
-        }
-
-        private void Init(AbilitySystem abilitySystem, bool condition)
-        {
-            if (abilitySystem.Target != null && condition)
+            bool CheckTargetInRange(EntitySystem target)
             {
-                isAllEffectsEnded = false;
-                abilitySystem.Init();
+                for (int i = 0; i < tower.CreepInRangeList.Count; i++)
+                    if (target == tower.CreepInRangeList[i])
+                        return true;
+                return false;
             }
-            else
+
+            void Init(AbilitySystem abilitySystem, bool condition)
             {
-                if (!abilitySystem.IsStacked)
-                    if (!isInContinueState)
-                        abilitySystem.SetTarget(tower.CreepInRangeList[0]);
-                    else
-                    {
-                        abilitySystem.CooldownReset();
-                        abilitySystem.SetTarget(null);
-                    }
+                if (abilitySystem.Target != null && condition)
+                {
+                    isAllEffectsEnded = false;
+                    abilitySystem.Init();
+                }
                 else
                 {
-                    for (int i = 0; i < abilitySystem.EffectSystemList.Count; i++)
-                        abilitySystem.EffectSystemList.Remove(abilitySystem.EffectSystemList[i]);
+                    if (!abilitySystem.IsStacked)
+                        if (!isInContinueState)
+                            abilitySystem.SetTarget(tower.CreepInRangeList[0]);
+                        else
+                        {
+                            abilitySystem.CooldownReset();
+                            abilitySystem.SetTarget(null);
+                        }
+                    else
+                    {
+                        for (int i = 0; i < abilitySystem.EffectSystemList.Count; i++)
+                            abilitySystem.EffectSystemList.Remove(abilitySystem.EffectSystemList[i]);
 
-                    abilitySystem.EffectSystemList.Clear();
-                    abilityStackList.Remove(abilitySystem);
+                        abilitySystem.EffectSystemList.Clear();
+                        abilityStackList.Remove(abilitySystem);
+                    }
+
+                    isAllEffectsEnded = true;
                 }
-
-                isAllEffectsEnded = true;
             }
         }
     }

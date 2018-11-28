@@ -193,7 +193,7 @@ namespace Game.Systems
 
             public void Exit()
             {
-                if(o.waveNumber <= GM.I.WaveAmount)
+                if (o.waveNumber <= GM.I.WaveAmount)
                 {
                     o.currentWaveCreepList = o.waveList[o.waveNumber];
                     GM.I.BaseUISystem.IsWaveStarted = false;

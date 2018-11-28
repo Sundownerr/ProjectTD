@@ -111,8 +111,8 @@ namespace Game.Systems
             var buttonRectList = new List<RectTransform>();
 
             for (int i = 0; i < towerButtonList.Count; i++)          
-                if(towerButtonList[i].TowerData.Element == towerButton.TowerData.Element)
-                    if(towerButtonList[i].TowerData.Rarity == towerButton.TowerData.Rarity)                                      
+                if (towerButtonList[i].TowerData.Element == towerButton.TowerData.Element)
+                    if (towerButtonList[i].TowerData.Rarity == towerButton.TowerData.Rarity)                                      
                         buttonRectList.Add(towerButtonList[i].GetComponent<RectTransform>());
 
             for (int i = 0; i < buttonRectList.Count; i++)              
@@ -121,15 +121,15 @@ namespace Game.Systems
                 var newButtonPos = (Vector2)buttonRectList[i].localPosition - newTowerButtonPos;
                 
                 for (int j = 0; j < buttonRectList.Count; j++)                              
-                    if(newButtonPos.y == buttonRectList[j].localPosition.y)  
+                    if (newButtonPos.y == buttonRectList[j].localPosition.y)  
                     {
                         isNewButtonPosBusy = true;
                         break;  
                     }                                     
-                if(isNewButtonPosBusy)
+                if (isNewButtonPosBusy)
                     break;
                 else
-                    if(newButtonPos.y >= 0)
+                    if (newButtonPos.y >= 0)
                         buttonRectList[i].localPosition = newButtonPos;            
             }                                                                                                        
         }
@@ -147,8 +147,8 @@ namespace Game.Systems
                     AddTowerAmount(i);                                                                     
                 }  
             
-                if(towerButtonList[i].TowerData.Element == towerData.Element)
-                    if(towerButtonList[i].TowerData.Rarity == towerData.Rarity)
+                if (towerButtonList[i].TowerData.Element == towerData.Element)
+                    if (towerButtonList[i].TowerData.Rarity == towerData.Rarity)
                         towerCount++;
             }
 

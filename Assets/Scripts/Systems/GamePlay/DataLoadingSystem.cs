@@ -17,20 +17,20 @@ namespace Game.Systems
 	{		
 		public static void Save<T>(T data) where T : IData
 		{		
-			if(typeof(T) == typeof(PlayerData))
+			if (typeof(T) == typeof(PlayerData))
 			{
 				var newData = JsonConvert.SerializeObject(data);
 				File.WriteAllText("playerData.json", newData);
 				return;
 			}
 			
-			if(typeof(T) == typeof(TowerDataBase))		
+			if (typeof(T) == typeof(TowerDataBase))		
 			{	
 				EditorUtility.SetDirty(data as TowerDataBase); 
 				return;
 			}
 
-			if(typeof(T) == typeof(CreepDataBase))		
+			if (typeof(T) == typeof(CreepDataBase))		
 			{	
 				EditorUtility.SetDirty(data as CreepDataBase); 						
 				return;
