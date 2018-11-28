@@ -41,26 +41,61 @@ namespace Game.Tower.System
             bulletPool.Initialize();
         }
 
-        private void CreateBullet(CreepSystem target)
+        public void UpdateSystem()
         {
-            bulletList.Add(bulletPool.GetObject());
-            bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<BulletSystem>());
-            SetBulletData(bulletDataList[bulletDataList.Count - 1]);
+            timer = timer > tower.Stats.AttackSpeed ? 0 : timer + Time.deltaTime * 0.5f;
+            MoveBullet();
 
-            bulletList[bulletList.Count - 1].SetActive(true);
+            if (timer > tower.Stats.AttackSpeed)
+                ShotBullet();      
 
-            void SetBulletData(BulletSystem bullet)
+            for (int i = 0; i < bulletRemoveTimerList.Count; i++)
             {
-                if(target != null)                
-                    bullet.Target = target;                  
-                
-                bullet.ChainshotCount = defaultBullet.ChainshotCount;
-                bullet.AOEShotRange = defaultBullet.AOEShotRange;
-                bullet.transform.position = tower.ShootPoint.position;
-                bullet.transform.rotation = tower.MovingPart.rotation;
+                if(bulletRemoveTimerList[i] > 0)
+                    bulletRemoveTimerList[i] -= Time.deltaTime;
+                else
+                {
+                    RemoveBullet(bulletDataList[0]);
+                    bulletRemoveTimerList.RemoveAt(i);
+                }
             }
-        }
 
+            void ShotBullet()
+            {
+                var shotCount = tower.SpecialSystem.CalculateShotCount();
+
+                for (int i = 0; i < shotCount; i++)
+                    CreateBullet(tower.CreepInRangeList[i]);
+
+                void CreateBullet(CreepSystem target)
+                {
+                    bulletList.Add(bulletPool.GetObject());
+                    bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<BulletSystem>());
+                    SetBulletData(bulletDataList[bulletDataList.Count - 1]);
+
+                    bulletList[bulletList.Count - 1].SetActive(true);
+
+                    void SetBulletData(BulletSystem bullet)
+                    {
+                        if(target != null)                
+                            bullet.Target = target;                  
+                        
+                        bullet.ChainshotCount = defaultBullet.ChainshotCount;
+                        bullet.AOEShotRange = defaultBullet.AOEShotRange;
+                        bullet.transform.position = tower.ShootPoint.position;
+                        bullet.transform.rotation = tower.MovingPart.rotation;
+                    }
+                }
+            }
+
+            void RemoveBullet(BulletSystem bullet)
+            {      
+                bullet.gameObject.SetActive(false);
+                bulletDataList.Remove(bullet);
+                bulletList.Remove(bullet.gameObject);
+            }
+        }   
+   
         private void SetTargetReached(BulletSystem bullet)
         {
             if (!bullet.IsTargetReached)
@@ -106,13 +141,6 @@ namespace Game.Tower.System
             return true;
         }
 
-        private void RemoveBullet(BulletSystem bullet)
-        {      
-            bullet.gameObject.SetActive(false);
-            bulletDataList.Remove(bullet);
-            bulletList.Remove(bullet.gameObject);
-        }
-
         private void HitTarget(BulletSystem bullet)
         {
             if (bullet.Target == null || bullet.Target.Prefab == null)
@@ -140,34 +168,6 @@ namespace Game.Tower.System
                 if (bullet.Target != null)
                     DamageSystem.DoDamage(bullet.Target, tower.Stats.Damage.Value, tower);
             }
-        }
-
-        public void UpdateSystem()
-        {
-            timer = timer > tower.Stats.AttackSpeed ? 0 : timer + Time.deltaTime * 0.5f;
-            MoveBullet();
-
-            if (timer > tower.Stats.AttackSpeed)
-                ShotBullet();
-
-            void ShotBullet()
-            {
-                var shotCount = tower.SpecialSystem.CalculateShotCount();
-
-                for (int i = 0; i < shotCount; i++)
-                    CreateBullet(tower.CreepInRangeList[i]);
-            }
-
-            for (int i = 0; i < bulletRemoveTimerList.Count; i++)
-            {
-                if(bulletRemoveTimerList[i] > 0)
-                    bulletRemoveTimerList[i] -= Time.deltaTime;
-                else
-                {
-                    RemoveBullet(bulletDataList[0]);
-                    bulletRemoveTimerList.RemoveAt(i);
-                }
-            }
-        }   
+        }     
     }
 }
