@@ -7,7 +7,6 @@ namespace Game.Tower.System
 {
     public class AbilityControlSystem : ITowerSystem
     {
-        private StateMachine state;
         private TowerSystem tower;
         private List<AbilitySystem> abilitySystemList, abilityStackList;
         private bool isAllEffectsEnded, isInContinueState;
@@ -15,9 +14,6 @@ namespace Game.Tower.System
         public AbilityControlSystem(TowerSystem ownerTower)
         {
             tower = ownerTower;
-
-            state = new StateMachine();
-            state.ChangeState(new LookForCreepState(this));
         }
 
         public void Set()
@@ -26,14 +22,71 @@ namespace Game.Tower.System
             abilityStackList = new List<AbilitySystem>();
         }
 
-        public void Update() => state.Update();
+        public void UpdateSystem()
+        {
+            if (tower.CreepInRangeList.Count > 0)
+            {
+                isInContinueState = false;
+
+                for (int i = 0; i < abilitySystemList.Count; i++)
+                    {
+                        if (abilitySystemList[i].IsNeedStack)
+                            CreateStack(i);
+
+                        Init(abilitySystemList[i], CheckTargetInRange(abilitySystemList[i].Target));
+                    }
+
+                for (int i = 0; i < abilityStackList.Count; i++)
+                    Init(abilityStackList[i], !abilityStackList[i].CheckAllEffectsEnded());
+            }
+            else
+            {
+                isAllEffectsEnded = true;
+
+                for (int i = 0; i < abilitySystemList.Count; i++)
+                    CheckContinueEffects(abilitySystemList[i]);
+
+                for (int i = 0; i < abilityStackList.Count; i++)
+                    CheckContinueEffects(abilityStackList[i]);
+
+                if (!isAllEffectsEnded)
+                    ContinueEffects();
+            }
+
+            void CheckContinueEffects(AbilitySystem abilitySystem)
+            {
+                if (!abilitySystem.CheckAllEffectsEnded())
+                    isAllEffectsEnded = false;
+            }
+            
+            void CreateStack(int index)
+            {
+                var stack =  new AbilitySystem(tower.Stats.AbilityList[index], tower);
+
+                stack.StackReset(tower);
+                stack.SetTarget(abilitySystemList[index].Target);
+
+                abilityStackList.Add(stack);
+                abilitySystemList[index].IsNeedStack = false;
+            }
+
+            void ContinueEffects()
+            {        
+                isInContinueState = true;
+
+                for (int i = 0; i < abilitySystemList.Count; i++)
+                    Init(abilitySystemList[i], !abilitySystemList[i].CheckAllEffectsEnded());
+
+                for (int i = 0; i < abilityStackList.Count; i++)
+                    Init(abilityStackList[i], !abilityStackList[i].CheckAllEffectsEnded());              
+            }
+        }
 
         private bool CheckTargetInRange(EntitySystem target)
         {
             for (int i = 0; i < tower.CreepInRangeList.Count; i++)
                 if (target == tower.CreepInRangeList[i])
                     return true;
-
             return false;
         }
 
@@ -65,136 +118,6 @@ namespace Game.Tower.System
 
                 isAllEffectsEnded = true;
             }
-        }
-
-        private void CheckContinueEffects(AbilitySystem abilitySystem)
-        {
-            if (!abilitySystem.CheckAllEffectsEnded())
-                state.ChangeState(new ContinueEffectState(this));
-        }
-
-        protected class LookForCreepState : IState
-        {
-            private readonly AbilityControlSystem o;
-
-            public LookForCreepState(AbilityControlSystem o) => this.o = o;
-
-            public void Enter() { }
-
-            public void Execute()
-            {
-                if (o.tower.CreepInRangeList.Count > 0)
-                    o.state.ChangeState(new CombatState(o));
-            }
-
-            public void Exit() { }
-        }
-
-        protected class CreateStackState : IState
-        {
-            private readonly AbilityControlSystem o;
-            private int stackAbilityId;
-
-            public CreateStackState(AbilityControlSystem o, int stackAbilityId)
-            {
-                this.o = o;
-                this.stackAbilityId = stackAbilityId;
-            }
-
-            public void Enter()
-            {
-                var stack =  new AbilitySystem(o.tower.Stats.AbilityList[stackAbilityId], o.tower);
-
-                stack.StackReset(o.tower);
-                stack.SetTarget(o.abilitySystemList[stackAbilityId].Target);
-
-                o.abilityStackList.Add(stack);
-                o.abilitySystemList[stackAbilityId].IsNeedStack = false;
-
-                o.state.ChangeState(new CombatState(o));
-            }
-
-            public void Execute() { }
-
-            public void Exit() { }
-        }
-
-        protected class CombatState : IState
-        {
-            private readonly AbilityControlSystem o;
-
-            public CombatState(AbilityControlSystem o) => this.o = o;
-
-            public void Enter()
-            {
-                o.isInContinueState = false;
-            }
-
-            public void Execute()
-            {
-                if (o.tower.CreepInRangeList.Count > 0)
-                {
-                    for (int i = 0; i < o.abilitySystemList.Count; i++)
-                    {
-                        if (o.abilitySystemList[i].IsNeedStack)
-                            o.state.ChangeState(new CreateStackState(o, i));
-
-                        o.Init(o.abilitySystemList[i], o.CheckTargetInRange(o.abilitySystemList[i].Target));
-                    }
-
-                    for (int i = 0; i < o.abilityStackList.Count; i++)
-                        o.Init(o.abilityStackList[i], !o.abilityStackList[i].CheckAllEffectsEnded());
-                }
-                else
-                {
-                    o.isAllEffectsEnded = true;
-
-                    for (int i = 0; i < o.abilitySystemList.Count; i++)
-                        o.CheckContinueEffects(o.abilitySystemList[i]);
-
-                    for (int i = 0; i < o.abilityStackList.Count; i++)
-                        o.CheckContinueEffects(o.abilityStackList[i]);
-
-                    if (o.isAllEffectsEnded)
-                        o.state.ChangeState(new LookForCreepState(o));
-                }
-            }
-
-            public void Exit() { }
-        }
-
-        protected class ContinueEffectState : IState
-        {
-            private readonly AbilityControlSystem o;
-
-            public ContinueEffectState(AbilityControlSystem o) => this.o = o;
-
-            public void Enter()
-            {
-                o.isAllEffectsEnded = false;
-                o.isInContinueState = true;
-            }
-
-            public void Execute()
-            {
-                if (o.tower.CreepInRangeList.Count > 0)
-                    o.state.ChangeState(new CombatState(o));
-
-                if (o.isAllEffectsEnded)
-                    o.state.ChangeState(new LookForCreepState(o));
-                else
-                {
-                    o.isAllEffectsEnded = true;
-
-                    for (int i = 0; i < o.abilitySystemList.Count; i++)
-                        o.Init(o.abilitySystemList[i], !o.abilitySystemList[i].CheckAllEffectsEnded());
-
-                    for (int i = 0; i < o.abilityStackList.Count; i++)
-                        o.Init(o.abilityStackList[i], !o.abilityStackList[i].CheckAllEffectsEnded());
-                }
-            }
-
-            public void Exit() => o.isInContinueState = false;
         }
     }
 }

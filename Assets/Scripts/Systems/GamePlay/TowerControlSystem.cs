@@ -53,7 +53,7 @@ namespace Game.Systems
                     tower.RangeSystem.SetShow();
                     if (tower.IsOn)                                       
                     {                  
-                        tower.AbilitySystem.Update();
+                        tower.AbilitySystem.UpdateSystem();
 
                         if (tower.CreepInRangeList.Count < 1)
                         {
