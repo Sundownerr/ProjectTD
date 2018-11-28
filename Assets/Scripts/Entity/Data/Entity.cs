@@ -6,6 +6,7 @@ namespace Game
 {
     public abstract class Entity : ScriptableObject
     {
+       
         public List<int> Id { get => id; set => id = value; }
         public EntitySystem Owner { get => owner; set => owner = value; }
 
@@ -13,6 +14,7 @@ namespace Game
         public string Description;
 
         protected EntitySystem owner;
+        [SerializeField]
         protected List<int> id;     
 
         public virtual bool CompareId(List<int> otherId)

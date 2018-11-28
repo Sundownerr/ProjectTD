@@ -188,6 +188,8 @@
      <Compile Include="Assets\Scripts\Entity\Data\Tower\Special\Multishot.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Tower\Stats.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Tower\TowerData.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\AbilitySystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\AppliedEffectSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\BulletSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\Cell.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\CellExpandSystem.cs" />
@@ -197,8 +199,10 @@
      <Compile Include="Assets\Scripts\Entity\Systems\EntitySystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\HealthSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Iterfaces.cs" />
-     <Compile Include="Assets\Scripts\Entity\Systems\Tower\AbilitySystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Tower\AbilityControlSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Combat.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Tower\Effects\DoTSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Tower\Effects\StunSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Range.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Special.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Stats.cs" />

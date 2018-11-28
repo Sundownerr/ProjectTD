@@ -10,10 +10,7 @@ public interface IAffectable
 	int CountOf(Effect effect);
 }
 
-public interface IEffect
-{
-	
-}
+
 
 public interface ITowerSystem
 {

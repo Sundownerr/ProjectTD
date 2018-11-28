@@ -51,7 +51,7 @@ namespace Game.Creep
         public void AddToDataBase()
         {
             if(!IsInstanced)      
-                if(Resources.Load("CreepDataBase") is CreepDataBase dataBase)     
+                if(DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)     
                 {            
                     var raceList = dataBase.AllCreepList;
                     for (int i = 0; i < raceList.Count; i++)
@@ -65,9 +65,8 @@ namespace Game.Creep
                             numberInList = raceList[i].CreepList.Count - 1;    
 
                             SetId();
-                            SetName();                        
-                            
-                            UnityEditor.EditorUtility.SetDirty(dataBase);
+                            SetName();      
+                            DataLoadingSystem.Save<CreepDataBase>(dataBase);
                             return;
                         }
                 }                   
@@ -75,16 +74,12 @@ namespace Game.Creep
 
         private void RemoveFromDataBase()
         {
-            if(!IsInstanced)
-            {
-                var database = Resources.Load("CreepDataBase");
-                if(database is CreepDataBase dataBase)             
+            if(!IsInstanced)        
+                if(DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)             
                 {               
-                   dataBase.AllCreepList[(int)Race].CreepList.RemoveAt(numberInList);       
-
-                   UnityEditor.EditorUtility.SetDirty(dataBase);       
-                }    
-            }      
+                    dataBase.AllCreepList[(int)Race].CreepList.RemoveAt(numberInList);       
+                    DataLoadingSystem.Save<CreepDataBase>(dataBase);       
+                }                    
         }
 
         protected override void SetName()

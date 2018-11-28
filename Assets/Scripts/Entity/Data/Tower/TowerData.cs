@@ -61,9 +61,10 @@ namespace Game.Tower.Data
         public List<Ability> AbilityList;
 
         private int level, exp, gradeCount, numberInList;
+        [SerializeField]
         private bool isInstanced;
 
-        public void SetData(TowerSystem ownerSystem)
+        public void SetData()
         {           
             GradeList = new List<TowerData>();                 
             isInstanced = true;           
@@ -75,9 +76,7 @@ namespace Game.Tower.Data
 
             for (int i = 0; i < GradeList.Count; i++)                
                 GradeList[i].Destroy();    
-            GradeList.Clear();
-          
-            owner = ownerSystem;                    
+            GradeList.Clear();                 
         }
 
         [Button("Add to DataBase")]
@@ -107,42 +106,34 @@ namespace Game.Tower.Data
             }           
         }
 
-        // private void RemoveFromDataBase()
-        // {
-        //     if (!IsGradeTower && !IsInstanced)
-        //     {
-        //         var database = Resources.Load("TowerDataBase");
-        //         if (database is TowerDataBase dataBase)            
-        //         {                
-        //             dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.Remove(this);  
-        //             EditorUtility.SetDirty(dataBase);
-        //         }
-        //     }          
-        // }
+        private void RemoveFromDataBase()
+        {
+            if (!IsGradeTower && !IsInstanced)          
+                if (DataLoadingSystem.Load<TowerDataBase>() is TowerDataBase dataBase)            
+                {                
+                    dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.RemoveAt(numberInList);  
+                    DataLoadingSystem.Save<TowerDataBase>(dataBase);
+                }                   
+        }
 
-        // private void OnDestroy() => RemoveFromDataBase();
+        private void OnDestroy() => RemoveFromDataBase();
 
         private void OnValuesChanged() => SetId();
 
-        public override void SetId() => id = new List<int>
-                                                {
-                                                    (int)Element,
-                                                    (int)Rarity,
-                                                    numberInList,                                                   
-                                                };      
+        public override void SetId() 
+        {
+            id = new List<int>
+            {
+                (int)Element,
+                (int)Rarity,
+                numberInList,                                                   
+            };      
+        }
         public void Destroy()
         {
             if (isInstanced)
             {
-                for (int i = 0; i < AbilityList.Count; i++)     
-                {      
-                    for (int j = 0; j < AbilityList[i].EffectList.Count; j++)
-                        Destroy(AbilityList[i].EffectList[j]);
-                    AbilityList[i].EffectList.Clear();
-
-                    Destroy(AbilityList[i]);
-                    AbilityList.Clear();
-                }
+               
                 Destroy(this);                  
             }
         }

@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace Game.Tower.System
 {
-    public class AbilitySystem : ITowerSystem
+    public class AbilityControlSystem : ITowerSystem
     {
         private StateMachine state;
         private TowerSystem tower;
-        private List<Ability> abilityList, abilityStackList;
+        private List<AbilitySystem> abilitySystemList, abilityStackList;
         private bool isAllEffectsEnded, isInContinueState;
 
-        public AbilitySystem(TowerSystem ownerTower)
+        public AbilityControlSystem(TowerSystem ownerTower)
         {
             tower = ownerTower;
 
@@ -22,8 +22,8 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            abilityList = tower.Stats.AbilityList;
-            abilityStackList = new List<Ability>();
+            abilitySystemList = tower.AbilitySystemList;
+            abilityStackList = new List<AbilitySystem>();
         }
 
         public void Update() => state.Update();
@@ -37,45 +37,47 @@ namespace Game.Tower.System
             return false;
         }
 
-        private void Init(Ability ability, bool condition)
+        private void Init(AbilitySystem abilitySystem, bool condition)
         {
-            if (ability.Target != null && condition)
+            if (abilitySystem.Target != null && condition)
             {
                 isAllEffectsEnded = false;
-                ability.Init();
+                abilitySystem.Init();
             }
             else
             {
-                if (!ability.IsStacked)
+                if (!abilitySystem.IsStacked)
                     if (!isInContinueState)
-                        ability.SetTarget(tower.CreepInRangeList[0]);
+                        abilitySystem.SetTarget(tower.CreepInRangeList[0]);
                     else
-                        ability.CooldownReset();
+                    {
+                        abilitySystem.CooldownReset();
+                        abilitySystem.SetTarget(null);
+                    }
                 else
                 {
-                    for (int i = 0; i < ability.EffectList.Count; i++)
-                        Object.Destroy(ability.EffectList[i]);
+                    for (int i = 0; i < abilitySystem.EffectSystemList.Count; i++)
+                        abilitySystem.EffectSystemList.Remove(abilitySystem.EffectSystemList[i]);
 
-                    ability.EffectList.Clear();
-                    abilityStackList.Remove(ability);
-                    Object.Destroy(ability);
+                    abilitySystem.EffectSystemList.Clear();
+                    abilityStackList.Remove(abilitySystem);
                 }
 
                 isAllEffectsEnded = true;
             }
         }
 
-        private void CheckContinueEffects(Ability ability)
+        private void CheckContinueEffects(AbilitySystem abilitySystem)
         {
-            if (!ability.CheckAllEffectsEnded())
+            if (!abilitySystem.CheckAllEffectsEnded())
                 state.ChangeState(new ContinueEffectState(this));
         }
 
         protected class LookForCreepState : IState
         {
-            private readonly AbilitySystem o;
+            private readonly AbilityControlSystem o;
 
-            public LookForCreepState(AbilitySystem o) => this.o = o;
+            public LookForCreepState(AbilityControlSystem o) => this.o = o;
 
             public void Enter() { }
 
@@ -90,10 +92,10 @@ namespace Game.Tower.System
 
         protected class CreateStackState : IState
         {
-            private readonly AbilitySystem o;
+            private readonly AbilityControlSystem o;
             private int stackAbilityId;
 
-            public CreateStackState(AbilitySystem o, int stackAbilityId)
+            public CreateStackState(AbilityControlSystem o, int stackAbilityId)
             {
                 this.o = o;
                 this.stackAbilityId = stackAbilityId;
@@ -101,13 +103,13 @@ namespace Game.Tower.System
 
             public void Enter()
             {
-                var stack = Object.Instantiate(o.abilityList[stackAbilityId]);
+                var stack =  new AbilitySystem(o.tower.Stats.AbilityList[stackAbilityId], o.tower);
 
                 stack.StackReset(o.tower);
-                stack.SetTarget(o.abilityList[stackAbilityId].Target);
+                stack.SetTarget(o.abilitySystemList[stackAbilityId].Target);
 
                 o.abilityStackList.Add(stack);
-                o.abilityList[stackAbilityId].IsNeedStack = false;
+                o.abilitySystemList[stackAbilityId].IsNeedStack = false;
 
                 o.state.ChangeState(new CombatState(o));
             }
@@ -119,9 +121,9 @@ namespace Game.Tower.System
 
         protected class CombatState : IState
         {
-            private readonly AbilitySystem o;
+            private readonly AbilityControlSystem o;
 
-            public CombatState(AbilitySystem o) => this.o = o;
+            public CombatState(AbilityControlSystem o) => this.o = o;
 
             public void Enter()
             {
@@ -132,12 +134,12 @@ namespace Game.Tower.System
             {
                 if (o.tower.CreepInRangeList.Count > 0)
                 {
-                    for (int i = 0; i < o.abilityList.Count; i++)
+                    for (int i = 0; i < o.abilitySystemList.Count; i++)
                     {
-                        if (o.abilityList[i].IsNeedStack)
+                        if (o.abilitySystemList[i].IsNeedStack)
                             o.state.ChangeState(new CreateStackState(o, i));
 
-                        o.Init(o.abilityList[i], o.CheckTargetInRange(o.abilityList[i].Target));
+                        o.Init(o.abilitySystemList[i], o.CheckTargetInRange(o.abilitySystemList[i].Target));
                     }
 
                     for (int i = 0; i < o.abilityStackList.Count; i++)
@@ -147,8 +149,8 @@ namespace Game.Tower.System
                 {
                     o.isAllEffectsEnded = true;
 
-                    for (int i = 0; i < o.abilityList.Count; i++)
-                        o.CheckContinueEffects(o.abilityList[i]);
+                    for (int i = 0; i < o.abilitySystemList.Count; i++)
+                        o.CheckContinueEffects(o.abilitySystemList[i]);
 
                     for (int i = 0; i < o.abilityStackList.Count; i++)
                         o.CheckContinueEffects(o.abilityStackList[i]);
@@ -163,9 +165,9 @@ namespace Game.Tower.System
 
         protected class ContinueEffectState : IState
         {
-            private readonly AbilitySystem o;
+            private readonly AbilityControlSystem o;
 
-            public ContinueEffectState(AbilitySystem o) => this.o = o;
+            public ContinueEffectState(AbilityControlSystem o) => this.o = o;
 
             public void Enter()
             {
@@ -184,8 +186,8 @@ namespace Game.Tower.System
                 {
                     o.isAllEffectsEnded = true;
 
-                    for (int i = 0; i < o.abilityList.Count; i++)
-                        o.Init(o.abilityList[i], !o.abilityList[i].CheckAllEffectsEnded());
+                    for (int i = 0; i < o.abilitySystemList.Count; i++)
+                        o.Init(o.abilitySystemList[i], !o.abilitySystemList[i].CheckAllEffectsEnded());
 
                     for (int i = 0; i < o.abilityStackList.Count; i++)
                         o.Init(o.abilityStackList[i], !o.abilityStackList[i].CheckAllEffectsEnded());

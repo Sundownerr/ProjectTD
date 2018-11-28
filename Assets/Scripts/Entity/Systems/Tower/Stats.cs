@@ -22,29 +22,16 @@ namespace Game.Tower.System
 
         public void Set(TowerData stats)
         {
-            var tempId = stats.Id;
             currentStats = U.Instantiate(stats);            
-            currentStats.SetData(tower);
-            currentStats.Id = tempId;
-
-            for (int i = 0; i < stats.AbilityList.Count; i++)
-            {
-                currentStats.AbilityList[i] = U.Instantiate(stats.AbilityList[i]);
-
-                for (int j = 0; j < stats.AbilityList[i].EffectList.Count; j++)
-                    currentStats.AbilityList[i].EffectList[j] = U.Instantiate(stats.AbilityList[i].EffectList[j]);
-
-                currentStats.AbilityList[i].SetOwner(tower);
-            }
-
-            baseStats = U.Instantiate(stats);
-            baseStats.IsInstanced = true;
+            currentStats.SetData();
+       
+            baseStats = stats;
+           
             ChangedStats();
         }
 
         public void Upgrade(TowerSystem previousTower, TowerData newStats)
-        {     
-               
+        {                  
             Set(newStats);         
             currentStats.Id                 = previousTower.Stats.Id;
             currentStats.GradeCount         = previousTower.Stats.GradeCount + 1;
@@ -88,5 +75,7 @@ namespace Game.Tower.System
         }
 
         public void ChangedStats() => StatsChanged?.Invoke(this, new EventArgs());            
+
+      
     }
 }

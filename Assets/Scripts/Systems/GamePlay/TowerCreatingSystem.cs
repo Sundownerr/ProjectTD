@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.Tower.Data.Stats;
 using UnityEngine;
+using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
@@ -16,7 +17,16 @@ namespace Game.Systems
             GM.I.TowerPlaceSystem.TowerDeleted += OnTowerDeleted;
         }   
 
-        private void OnTowerDeleted(object sender, TowerEventArgs e) => GM.I.AvailableTowerList.Add(e.Stats);          
+        private void OnTowerDeleted(object sender, TowerEventArgs e) 
+        {
+            var towerFromDB = 
+                GM.I.TowerDataBase.AllTowerList.
+                ElementsList[(int)e.Stats.Element].
+                RarityList[(int)e.Stats.Rarity].TowerList.Find(tower => tower.CompareId(e.Stats.Id));
+
+            GM.I.AvailableTowerList.Add(towerFromDB);          
+           
+        }
 
         public void CreateRandomTower()
         {

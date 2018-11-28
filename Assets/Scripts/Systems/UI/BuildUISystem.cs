@@ -60,7 +60,11 @@ namespace Game.Systems
             GM.I.TowerPlaceSystem.TowerDeleted               += OnTowerDeleted;
         }
 
-        private void OnTowerDeleted(object sender, TowerEventArgs e) => AddTowerButton(e.Stats);
+        private void OnTowerDeleted(object sender, TowerEventArgs e) 
+        {
+            AddTowerButton(e.Stats);
+            //Destroy(e.Stats);
+        } 
  
         private void UpdateUI(object sender, EventArgs e)
         {
@@ -113,20 +117,19 @@ namespace Game.Systems
 
             for (int i = 0; i < buttonRectList.Count; i++)              
             {                             
-                var isNewPosBusy = false;
+                var isNewButtonPosBusy = false;
                 var newButtonPos = (Vector2)buttonRectList[i].localPosition - newTowerButtonPos;
                 
                 for (int j = 0; j < buttonRectList.Count; j++)                              
                     if(newButtonPos.y == buttonRectList[j].localPosition.y)  
                     {
-                        isNewPosBusy = true;
+                        isNewButtonPosBusy = true;
                         break;  
-                    }                       
-                 
-                if(isNewPosBusy)
+                    }                                     
+                if(isNewButtonPosBusy)
                     break;
                 else
-                    if(newButtonPos.y > 0)
+                    if(newButtonPos.y >= 0)
                         buttonRectList[i].localPosition = newButtonPos;            
             }                                                                                                        
         }

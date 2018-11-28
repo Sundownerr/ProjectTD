@@ -35,9 +35,9 @@ namespace Game.Systems
         {
             if(tower.OcuppiedCell != null)
                 tower.OcuppiedCell.GetComponent<Cell>().IsBusy = false;
-                
-            GM.I.PlacedTowerList.Remove(tower);
-            tower.Stats.Destroy();
+
+            towerSystemList.Remove(tower);
+            GM.I.PlacedTowerList.Remove(tower);        
             Object.Destroy(tower.Prefab);
         }
 		
@@ -61,11 +61,12 @@ namespace Game.Systems
                                 tower.CombatSystem.MoveBullet();                   
                         }
                         else
-                        {                  
-                            tower.CombatSystem.UpdateSystem();                            
-                            
+                        {                                                                                            
                             if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)
+                            {
+                                tower.CombatSystem.UpdateSystem();      
                                 RotateAtCreep();
+                            }
                             
                             for (int j = 0; j < tower.CreepInRangeList.Count; j++)
                                 if (tower.CreepInRangeList[j] == null)

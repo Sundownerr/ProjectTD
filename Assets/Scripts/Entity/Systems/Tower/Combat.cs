@@ -74,32 +74,27 @@ namespace Game.Tower.System
         public void MoveBullet()
         {
             for (int i = 0; i < bulletList.Count; i++)
-                if (bulletList[i].activeSelf)
-                    if (bulletDataList[i].Target == null || bulletDataList[i].Target.Prefab == null)
-                        HitTarget(bulletDataList[i]);
+                if (bulletList[i].activeSelf)                                 
+                    if (bulletDataList[i].IsTargetReached)
+                        SetTargetReached(bulletDataList[i]);
                     else
-                    {                 
-                        if (bulletDataList[i].IsTargetReached)
-                            SetTargetReached(bulletDataList[i]);
+                    {
+                        var offset = new Vector3(0, 40, 0);
+                        var distance = QoL.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.Prefab.transform.position + offset);
+
+                        if (distance < 30)
+                            HitTarget(bulletDataList[i]);
                         else
                         {
-                            var offset = new Vector3(0, 40, 0);
-                            var distance = QoL.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.Prefab.transform.position + offset);
+                            var randVec = new Vector3(
+                                UnityEngine.Random.Range(-10, 10),
+                                UnityEngine.Random.Range(-10, 10),
+                                UnityEngine.Random.Range(-10, 10));
 
-                            if (distance < 30)
-                                HitTarget(bulletDataList[i]);
-                            else
-                            {
-                                var randVec = new Vector3(
-                                    UnityEngine.Random.Range(-10, 10),
-                                    UnityEngine.Random.Range(-10, 10),
-                                    UnityEngine.Random.Range(-10, 10));
-
-                                bulletList[i].transform.LookAt(bulletDataList[i].Target.Prefab.transform.position + offset);
-                                bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed + randVec, Space.Self);
-                            }
+                            bulletList[i].transform.LookAt(bulletDataList[i].Target.Prefab.transform.position + offset);
+                            bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed + randVec, Space.Self);
                         }
-                    }                    
+                    }                                     
         }
 
         public bool CheckAllBulletInactive()

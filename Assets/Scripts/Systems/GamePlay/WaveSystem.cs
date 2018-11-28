@@ -177,7 +177,7 @@ namespace Game.Systems
                         creepSystem.Stats.SetData(creepSystem);
 
                         creepSystem.HealthSystem = new HealthSystem(creepSystem);
-                        creepSystem.EffectSystem = new EffectSystem();             
+                        creepSystem.EffectSystem = new AppliedEffectSystem();             
                         creepSystem.IsVulnerable = true;  
 
                         GM.I.CreepList.Add(creep);

@@ -14,31 +14,36 @@ namespace Game.Systems
 	
 
 	public static class DataLoadingSystem 
-	{
-		
+	{		
 		public static void Save<T>(T data) where T : IData
 		{		
 			if(typeof(T) == typeof(PlayerData))
 			{
 				var newData = JsonConvert.SerializeObject(data);
 				File.WriteAllText("playerData.json", newData);
+				return;
 			}
 			
-			if(typeof(T) == typeof(TowerDataBase))
-			{
+			if(typeof(T) == typeof(TowerDataBase))		
+			{	
 				EditorUtility.SetDirty(data as TowerDataBase); 
-			}		
+				return;
+			}
+
+			if(typeof(T) == typeof(CreepDataBase))		
+			{	
+				EditorUtility.SetDirty(data as CreepDataBase); 						
+				return;
+			}
 		}
 
 		public static IData Load<T>() where T : IData
 		{
-			if(typeof(T) == typeof(PlayerData))
-				return LoadPlayerData();
-
-			if(typeof(T) == typeof(TowerDataBase))
-				return LoadTowerDB();		
-			
-			return null;
+			return 
+				typeof(T) == typeof(PlayerData) 	? LoadPlayerData() :
+				typeof(T) == typeof(TowerDataBase) 	? LoadTowerDB() :
+				typeof(T) == typeof(CreepDataBase) 	? LoadCreepDB() :
+				null as IData;
 
 			PlayerData LoadPlayerData()
 			{
@@ -77,30 +82,11 @@ namespace Game.Systems
 				return playerData;
 			}		
 
-			TowerDataBase LoadTowerDB()
-			{			
-				var data = AssetDatabase.LoadAssetAtPath("Assets/DataBase/TowerDB.asset", typeof(TowerDataBase)) as TowerDataBase;
+			TowerDataBase LoadTowerDB() =>					
+				AssetDatabase.LoadAssetAtPath("Assets/DataBase/TowerDB.asset", typeof(TowerDataBase)) as TowerDataBase;
 
-				if (data is TowerDataBase towerDB)
-				{			
-					towerDB.AllTowerList = data.AllTowerList;			
-					return towerDB;
-				}
-				else
-				{
-					data = ScriptableObject.CreateInstance<TowerDataBase>();
-					data.AllTowerList = new ElementList();                
-					data.AllTowerList.ElementsList = new List<Element>();          
-				
-					var elementNameList = Enum.GetNames(typeof(ElementType));              
-							
-					for (int i = 0; i < elementNameList.Length; i++)
-						data.AllTowerList.ElementsList.Add(new Element(elementNameList[i])); 
-
-					EditorUtility.SetDirty(data);    					
-				}
-				return data;
-			}		
+			CreepDataBase LoadCreepDB() =>					
+				AssetDatabase.LoadAssetAtPath("Assets/DataBase/CreepDB.asset", typeof(CreepDataBase)) as CreepDataBase;
 		}
 	}
 }

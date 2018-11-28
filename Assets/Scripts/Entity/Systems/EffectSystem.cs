@@ -1,37 +1,111 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Game.Data;
-using Game.Data.Effects;
 using UnityEngine;
 
 namespace Game.Systems
 {
-	public class EffectSystem 
+	public class EffectSystem
 	{
-		public List<Effect> AppliedEffectList { get => appliedEffectList; set => appliedEffectList = value; }
+		public bool IsSet { get => isSet; set => isSet = value; }
+        public bool IsEnded { get => isEnded; set => isEnded = value; }
+        public bool IsMaxStackCount { get => isMaxStackCount; set => isMaxStackCount = value; }
+        public EntitySystem Target { get => target; set => target = value; }
 
-		private List<Effect> appliedEffectList = new List<Effect>();
+        protected bool isSet, isEnded, isMaxStackCount;
+        protected float effectTimer;
+        protected EntitySystem target, owner;
+		protected Effect effect; 
+        protected List<int> id;
+        protected AbilitySystem ownerAbilitySystem;
 
-        public void Add(Effect effect) => appliedEffectList.Add(effect);	
 
-		public void Remove(Effect effect)
-		{
-			for (int i = 0; i < appliedEffectList.Count; i++)			
-				if(effect.CompareId(appliedEffectList[i].Id)) 
-				{			
-					appliedEffectList.RemoveAt(i);
-					return;
-				}
-		}
+        public EffectSystem(Effect effect, EntitySystem owner)
+        {		
+            this.owner = owner;
+            this.effect = effect;
 
-		public int CountOf(Effect effect)
-		{
-			var count = 0;
-			for (int i = 0; i < appliedEffectList.Count; i++)			
-				if(effect.CompareId(appliedEffectList[i].Id)) 						
-					count++;			
-			return count;
-		}		
-	}
+            if(!effect.IsStackable)
+                effect.MaxStackCount = 1;
+        }
+
+        public void SetId() 
+        {   
+            id = new List<int>();
+            if(owner is Tower.TowerSystem tower)
+            {               
+                id.AddRange(tower.Stats.Id);  
+                id.Add(ownerAbilitySystem.EffectSystemList.IndexOf(this));
+            }
+        }
+
+        public void SetOwner(EntitySystem owner, AbilitySystem ownerAbilitySystem)
+        {
+            this.owner = owner;
+            this.ownerAbilitySystem = ownerAbilitySystem;
+            SetId();
+        }     
+
+        public virtual void Init()
+        {
+            if (!IsSet)
+                Apply();
+            
+            Continue();
+        }
+
+        public virtual void Apply()
+        {         
+            if(effect.IsStackable)
+                if(Target.EffectSystem.CountOf(effect) >= effect.MaxStackCount)
+                {
+                    IsMaxStackCount = true;                
+                    return;
+                }           
+            
+            IsSet = true;
+            IsEnded = false;
+        }
+
+        public virtual void Continue()
+        {
+            if (!IsEnded)
+            {
+                if (Target == null)
+                    End();     
+                       
+                effectTimer = effectTimer > effect.Duration ? -1 : effectTimer += Time.deltaTime;
+
+                if(effectTimer == -1)
+                    End();
+            }             
+        }
+
+        public virtual void End() 
+        {        
+            if(!IsMaxStackCount)     
+                Target?.EffectSystem.Remove(effect);
+
+            IsEnded = true;         
+        } 
+  
+        public virtual void ApplyRestart()
+        {
+            if(effect.IsStackable)
+                RestartState();
+            else if(IsEnded)
+                RestartState();     
+        }
+
+        public virtual void RestartState()
+        {          
+            End();
+            IsMaxStackCount = false;
+            IsEnded = false;
+            IsSet = false;
+        }    
+		
+        public virtual void SetTarget(EntitySystem newTarget) =>     
+            Target = Target ?? newTarget;               
+    }	
 }
