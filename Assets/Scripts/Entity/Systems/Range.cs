@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game.Creep;
 using Game.Systems;
@@ -12,13 +13,27 @@ namespace Game
         Towers,
         CreepsAndTowers
     }
-    
+
+    public class EntityEventArgs
+    {
+        public EntitySystem Entity { get => entity; set => entity = value; }
+        
+        private EntitySystem entity;     
+
+        public EntityEventArgs(EntitySystem entity)
+        {
+            this.entity = entity;
+        }    
+    }
+
     public class Range : ExtendedMonoBehaviour
     {
         public List<EntitySystem> EntitySystemList { get => entitySystemList; set => entitySystemList = value; }
         public List<GameObject> EntityList { get => entityList; set => entityList = value; }
         public TowerSystem Owner { get => owner; set => owner = value; }
         public CollideWith CollideType { get => collideType; set => collideType = value; }
+        public event EventHandler<EntityEventArgs> EntityEntered = delegate{};
+        public event EventHandler<EntityEventArgs> EntityExit = delegate{};
 
         private List<GameObject> entityList;
         private List<EntitySystem> entitySystemList;
@@ -79,6 +94,7 @@ namespace Game
                     {
                         entitySystemList.Add(entitySystem);
                         entityList.Add(other.gameObject);      
+                        EntityEntered?.Invoke(this, new EntityEventArgs(entitySystem));
                         return true;                  
                     }       
                     return false;       
@@ -91,6 +107,7 @@ namespace Game
             for (int i = 0; i < entitySystemList.Count; i++)
                 if (other.gameObject == entitySystemList[i].Prefab)
                 {
+                    EntityExit?.Invoke(this, new EntityEventArgs(entitySystemList[i]));
                     entitySystemList.Remove(entitySystemList[i]);
                     entityList.Remove(other.gameObject);
                 }            

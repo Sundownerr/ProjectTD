@@ -42,6 +42,8 @@ namespace Game.Systems
                 {
                     if (creep.HealthSystem != null)
                         creep.HealthSystem.Update();
+
+                    
                         
                     if (creep.IsOn)
                     {

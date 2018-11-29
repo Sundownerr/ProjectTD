@@ -7,20 +7,20 @@ namespace Game.Systems
 {
     public class AuraSystem : EffectSystem
     {
-        public Range Range { get => range; set => range = value; }
+        
 
-        private Range range;
-        private GameObject rangePrefab;
+        protected Range range;
+        protected GameObject rangePrefab;
 
         public AuraSystem(Effect effect, EntitySystem owner) : base(effect, owner)
         {
             this.effect = effect;
+            this.owner = owner;  
             rangePrefab = Object.Instantiate(GM.I.RangePrefab, 
                                 owner.Prefab.transform.position, 
                                 Quaternion.identity, 
                                 owner.Prefab.transform);
-            range = rangePrefab.GetComponent<Range>();
-            range.CollideType = CollideWith.CreepsAndTowers;
+            range = rangePrefab.GetComponent<Range>();       
         }     
 
         public override void Apply()   
@@ -31,7 +31,8 @@ namespace Game.Systems
 
         public override void Continue()
         {
-
+            if(owner == null)
+                End();
         }
 
         public override void End()
