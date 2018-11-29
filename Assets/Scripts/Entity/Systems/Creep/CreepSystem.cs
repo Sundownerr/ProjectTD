@@ -20,12 +20,18 @@ namespace Game.Creep
 
         public CreepSystem(GameObject ownerPrefab)
         {
-            abilitySystemList = new List<AbilitySystem>();
-
-            for (int i = 0; i < stats.AbilityList.Count; i++)           
-                abilitySystemList.Add(new AbilitySystem(stats.AbilityList[i], this));
-            
+            abilitySystemList = new List<AbilitySystem>();         
             prefab = ownerPrefab;
+        }
+
+        public void SetSystem()
+        {
+            if(stats.AbilityList != null)
+                for (int i = 0; i < stats.AbilityList.Count; i++)           
+                    abilitySystemList.Add(new AbilitySystem(stats.AbilityList[i], this));
+
+            healthSystem = new HealthSystem(this);
+            appliedEffectSystem = new AppliedEffectSystem();
         }
     }
 }

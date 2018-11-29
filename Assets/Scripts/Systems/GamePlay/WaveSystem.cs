@@ -8,11 +8,22 @@ using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
+    public class CreepEventArgs
+    {
+        public CreepSystem Creep { get => creep; set => creep = value; }
+        private CreepSystem creep;
+
+        public CreepEventArgs(CreepSystem creep)
+        {
+            this.creep = creep;
+        }    
+    }
     public class WaveSystem 
     {
         public int WaveNumber { get => waveNumber; set => waveNumber = value > 0 ? value : 1; }
         public List<CreepData> CurrentWaveCreepList { get => currentWaveCreepList; set => currentWaveCreepList = value; }
         public event EventHandler WaveChanged = delegate{};
+        public event EventHandler<CreepEventArgs> CreepSpawned = delegate{};
         public event EventHandler AllWaveCreepsKilled = delegate{};
 
         private int waveNumber;
@@ -137,14 +148,11 @@ namespace Game.Systems
                         currentWaveCreepList[spawned].ArmorType, 
                         waveNumber); 
                     creepSystem.Stats.SetData(creepSystem);
-
-                    creepSystem.HealthSystem = new HealthSystem(creepSystem);
-                    creepSystem.AppliedEffectSystem = new AppliedEffectSystem();             
-
-                    GM.I.CreepList.Add(creep);
-                    GM.I.CreepSystemList.Add(creepSystem);    
+                    creepSystem.SetSystem();
+             
                     creepWaveList[creepWaveList.Count - 1].Add(creepSystem);    
-                    GM.I.CreepControlSystem.AddCreep(creepSystem);         
+                        
+                    CreepSpawned?.Invoke(this, new CreepEventArgs(creepSystem));
                     creepSystem.HealthSystem.CreepDied += GM.I.ResourceSystem.OnCreepDied;             
                 }
             }

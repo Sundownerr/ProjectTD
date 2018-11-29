@@ -11,10 +11,21 @@ namespace Game.Systems
 	public class CreepControlSystem 
 	{	
         private List<CreepSystem> creepList = new List<CreepSystem>();
+        public void SetSystem()
+        {
+            GM.I.WaveSystem.CreepSpawned += OnCreepSpawned;
+        }
+
+        private void OnCreepSpawned(object sender, CreepEventArgs e)
+        {
+            AddCreep(e.Creep);
+        }
 
         public void AddCreep(CreepSystem creep) 
         {
             creepList.Add(creep);
+            GM.I.CreepList.Add(creep.Prefab);
+            GM.I.CreepSystemList.Add(creep);    
             creep.IsOn = true;
             creep.IsVulnerable = true;
         }

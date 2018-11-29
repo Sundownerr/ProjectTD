@@ -68,17 +68,17 @@ namespace Game.Systems
         }
 
         public virtual void Continue()
-        {
+        {           
             if (!IsEnded)
             {
                 if (Target == null)
                     End();     
-                       
+                    
                 effectTimer = effectTimer > effect.Duration ? -1 : effectTimer += Time.deltaTime;
 
                 if (effectTimer == -1)
                     End();
-            }             
+            }                
         }
 
         public virtual void End() 

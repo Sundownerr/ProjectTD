@@ -180,6 +180,7 @@
      <Compile Include="Assets\Scripts\Entity\Data\Creep\Type\Normal.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Creep\Type\Small.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Effect.cs" />
+     <Compile Include="Assets\Scripts\Entity\Data\Effect\Aura.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Effect\DoT.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Effect\Stun.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Entity.cs" />
@@ -193,7 +194,7 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\Cell.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\CellExpandSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Creep\CreepSystem.cs" />
-     <Compile Include="Assets\Scripts\Entity\Systems\Creep\Effects\SlowAura.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Creep\Effects\AuraSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\DamageSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\EffectSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\EntitySystem.cs" />
