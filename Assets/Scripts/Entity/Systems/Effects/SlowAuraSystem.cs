@@ -11,23 +11,23 @@ namespace Game.Systems
     public class SlowAuraSystem : AuraSystem
     {   
         private new SlowAura effect;
-        private float removedAttackSpeed;
-        private Hashtable towerAttackSpeedList;
+        private Dictionary<TowerSystem, float> towerAttackSpeedList;
 
         public SlowAuraSystem(SlowAura effect, EntitySystem owner) : base(effect, owner)
         {
             this.effect = effect;        
             this.owner = owner;            
-            towerAttackSpeedList = new Hashtable();
+            towerAttackSpeedList = new Dictionary<TowerSystem, float>();
         } 
 
         private void OnTowerEnteredRange(object sender, EntityEventArgs e)
         {
             if (e.Entity is TowerSystem tower)                   
                 if (tower.AppliedEffectSystem.CountOf(effect) <= 0)
-                {                          
-                    towerAttackSpeedList.Add(tower, QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed));
-                    tower.Stats.AttackSpeed += QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed);
+                {     
+                    var removedAttackSpeed = QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed);                    
+                    towerAttackSpeedList.Add(tower, removedAttackSpeed);
+                    tower.Stats.AttackSpeed += removedAttackSpeed;
                     tower.AppliedEffectSystem.Add(effect); 
                 }              
         }
@@ -39,7 +39,7 @@ namespace Game.Systems
             if (entity is TowerSystem tower)            
             {               
                 if (tower.AppliedEffectSystem.CountOf(effect) == 1)                        
-                    tower.Stats.AttackSpeed -= (float)towerAttackSpeedList[tower];                                               
+                    tower.Stats.AttackSpeed -= towerAttackSpeedList[tower];                                               
                 tower.AppliedEffectSystem.Remove(effect);
             }
         }
