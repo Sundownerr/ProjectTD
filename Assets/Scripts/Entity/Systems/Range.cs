@@ -78,8 +78,8 @@ namespace Game
                 void AddEntity<T>() where T: EntitySystem
                 {
                     if (typeof(T) == typeof(CreepSystem))
-                        for (int i = 0; i < GM.I.CreepSystemList.Count; i++)
-                            if (CheckFound(GM.I.CreepSystemList[i]))
+                        for (int i = 0; i < GM.I.CreepList.Count; i++)
+                            if (CheckFound(GM.I.CreepList[i]))
                                 return;
 
                     if (typeof(T) == typeof(TowerSystem))

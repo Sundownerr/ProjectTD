@@ -24,12 +24,7 @@ namespace Game.Systems
     public class GM : ExtendedMonoBehaviour
     {
         [NaughtyAttributes.BoxGroup("List")]
-        public GameObject[] WaypointList, CellAreaList, ElementPlaceEffectList;
-
-        [NaughtyAttributes.BoxGroup("List")]
-        public List<GameObject> CreepList;
-
-        public List<TowerSystem> PlacedTowerList = new List<TowerSystem>();
+        public GameObject[] WaypointList, CellAreaList, ElementPlaceEffectList;  
 
         [NaughtyAttributes.BoxGroup("List")]
         public List<TowerData> AvailableTowerList;     
@@ -41,32 +36,32 @@ namespace Game.Systems
         public Transform CellParent, TowerParent, CreepParent;
 
         [NaughtyAttributes.BoxGroup("Data")]
-        public CreepDataBase CreepDataBase;
-
-        [NaughtyAttributes.BoxGroup("Data")]
-        public WaveDataBase WaveDataBase;
-
-        [NaughtyAttributes.BoxGroup("Data")]
         public int WaveAmount;
 
-        public TowerPlaceSystem TowerPlaceSystem { get => towerPlaceSystem; set => towerPlaceSystem = value; }
-        public GridSystem GridSystem { get => gridSystem; set => gridSystem = value; }
-        public WaveSystem WaveSystem { get => waveSystem; set => waveSystem = value; }
-        public PlayerInputSystem PlayerInputSystem { get => playerInputSystem; set => playerInputSystem = value; }
-        public BaseUISystem BaseUISystem { get => baseUISystem; set => baseUISystem = value; }
-        public TowerUISystem TowerUISystem { get => towerUISystem; set => towerUISystem = value; }
-        public ResourceSystem ResourceSystem { get => resourceSystem; set => resourceSystem = value; }     
-        public ElementUISystem ElementUISystem { get => elementUISystem; set => elementUISystem = value; }
-        public TowerCreatingSystem TowerCreatingSystem { get => towerCreatingSystem; set => towerCreatingSystem = value; }
-        public BuildUISystem BuildUISystem { get => buildUISystem; set => buildUISystem = value; }
-        public List<CreepSystem> CreepSystemList { get => creepSystemList; set => creepSystemList = value; }
-        public WaveUISystem WaveUISystem { get => waveUISystem; set => waveUISystem = value; }
-        public TowerControlSystem TowerControlSystem { get => towerControlSystem; set => towerControlSystem = value; }
-        public CreepControlSystem CreepControlSystem { get => creepControlSystem; set => creepControlSystem = value; }
-        public PlayerData PlayerData { get => playerData; set => playerData = value; }
-        public ElementSystem ElementSystem { get => elementSystem; set => elementSystem = value; }
-        public TowerDataBase TowerDataBase { get => towerDataBase; set => towerDataBase = value; }
+        public List<TowerSystem> PlacedTowerList = new List<TowerSystem>();
 
+        public TowerPlaceSystem TowerPlaceSystem        { get => towerPlaceSystem; set => towerPlaceSystem = value; }
+        public GridSystem GridSystem                    { get => gridSystem; set => gridSystem = value; }
+        public WaveSystem WaveSystem                    { get => waveSystem; set => waveSystem = value; }
+        public PlayerInputSystem PlayerInputSystem      { get => playerInputSystem; set => playerInputSystem = value; }
+        public BaseUISystem BaseUISystem                { get => baseUISystem; set => baseUISystem = value; }
+        public TowerUISystem TowerUISystem              { get => towerUISystem; set => towerUISystem = value; }
+        public ResourceSystem ResourceSystem            { get => resourceSystem; set => resourceSystem = value; }     
+        public ElementUISystem ElementUISystem          { get => elementUISystem; set => elementUISystem = value; }
+        public TowerCreatingSystem TowerCreatingSystem  { get => towerCreatingSystem; set => towerCreatingSystem = value; }
+        public BuildUISystem BuildUISystem              { get => buildUISystem; set => buildUISystem = value; }
+        public List<CreepSystem> CreepList        { get => creepList; set => creepList = value; }
+        public WaveUISystem WaveUISystem                { get => waveUISystem; set => waveUISystem = value; }
+        public TowerControlSystem TowerControlSystem    { get => towerControlSystem; set => towerControlSystem = value; }
+        public CreepControlSystem CreepControlSystem    { get => creepControlSystem; set => creepControlSystem = value; }
+        public PlayerData PlayerData                    { get => playerData; set => playerData = value; }
+        public ElementSystem ElementSystem              { get => elementSystem; set => elementSystem = value; }
+        public TowerDataBase TowerDataBase              { get => towerDataBase; set => towerDataBase = value; }
+        public CreepDataBase CreepDataBase              { get => creepDataBase; set => creepDataBase = value; }
+        public WaveDataBase WaveDataBase                { get => waveDataBase; set => waveDataBase = value; }
+
+        private WaveDataBase waveDataBase;
+        private CreepDataBase creepDataBase;
         private PlayerData playerData;
         private TowerDataBase towerDataBase;
         private TowerPlaceSystem towerPlaceSystem;
@@ -83,7 +78,7 @@ namespace Game.Systems
         private ElementUISystem elementUISystem;
         private TowerCreatingSystem towerCreatingSystem;
         private BuildUISystem buildUISystem;
-        private List<CreepSystem> creepSystemList = new List<CreepSystem>();
+        private List<CreepSystem> creepList = new List<CreepSystem>();
 
         public Canvas UICanvas;
 
@@ -109,8 +104,10 @@ namespace Game.Systems
             towerControlSystem  = new TowerControlSystem();    
             creepControlSystem  = new CreepControlSystem();
 
-            PlayerData = DataLoadingSystem.Load<PlayerData>() as PlayerData;
-            TowerDataBase = DataLoadingSystem.Load<TowerDataBase>() as TowerDataBase;
+            PlayerData      = DataLoadingSystem.Load<PlayerData>() as PlayerData;
+            TowerDataBase   = DataLoadingSystem.Load<TowerDataBase>() as TowerDataBase;
+            creepDataBase   = DataLoadingSystem.Load<CreepDataBase>() as CreepDataBase;
+            waveDataBase    = DataLoadingSystem.Load<WaveDataBase>() as WaveDataBase;
             
             PlayerState = State.Idle;
         

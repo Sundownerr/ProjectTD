@@ -60,11 +60,10 @@ namespace Game.Systems
                             tower.CombatSystem.MoveBullet();                                     
                         else
                         {   
-                            tower.CombatSystem.UpdateSystem();                                                                                          
-                            if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)
-                            {                                     
-                                RotateAtCreep();
-                            }
+                            tower.CombatSystem.UpdateSystem();    
+
+                            if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)                                                           
+                                RotateAtCreep();                     
                             
                             for (int j = 0; j < tower.CreepInRangeList.Count; j++)
                                 if (tower.CreepInRangeList[j] == null)
@@ -77,9 +76,11 @@ namespace Game.Systems
                             {
                                 var offset = tower.CreepInRangeList[0].Prefab.transform.position - tower.Prefab.transform.position;
                                 offset.y = 0;
-                                tower.MovingPart.rotation = Quaternion.Lerp(tower.MovingPart.rotation, 
-                                                                                Quaternion.LookRotation(offset), 
-                                                                                Time.deltaTime * 9f);
+                                tower.MovingPart.rotation = 
+                                    Quaternion.Lerp(
+                                        tower.MovingPart.rotation, 
+                                        Quaternion.LookRotation(offset), 
+                                        Time.deltaTime * 9f);
                             }        
                         }    
                     }        
