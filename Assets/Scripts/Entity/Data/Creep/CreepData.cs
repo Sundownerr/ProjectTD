@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Game.Data;
 using NaughtyAttributes;
 using Game.Systems;
+using System.Text;
 
 namespace Game.Creep
 {  
@@ -15,7 +16,6 @@ namespace Game.Creep
         public int Gold         { get => gold; set => gold = value >= 0 ? value : 0; }      
         public float Health     { get => health; set => health = value >= 0 ? value : 0; }
         public float DefaultMoveSpeed       { get => defaultMoveSpeed; set => defaultMoveSpeed = value; }
-        public List<Ability> AbilityList    { get => abilityList; set => abilityList = value; }
         public float ArmorValue { get => armorValue; set => armorValue = value; }
         public Armor.ArmorType ArmorType    { get => armorType; set => armorType = value; }
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
@@ -26,6 +26,7 @@ namespace Game.Creep
         public int WaveLevel;
   
         public RaceType Race;
+        public List<Ability> AbilityList;
 
         protected float healthRegen;
         protected Armor.ArmorType armorType;
@@ -33,7 +34,7 @@ namespace Game.Creep
         protected int gold, exp, numberInList;
         protected float defaultMoveSpeed, moveSpeed, health;    
         protected bool isInstanced;
-        protected List<Ability> abilityList;
+        
 
         protected virtual void Awake() 
         {
@@ -82,7 +83,7 @@ namespace Game.Creep
 
         protected override void SetName()
         {
-            var tempName = new System.Text.StringBuilder();
+            var tempName = new StringBuilder();
         
             tempName.Append(Race.ToString());
             tempName.Append((int)Race);

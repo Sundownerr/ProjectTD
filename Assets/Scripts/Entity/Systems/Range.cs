@@ -63,13 +63,13 @@ namespace Game
           
             void AddToList()
             {
-                if(collideType == CollideWith.Creeps)
+                if (collideType == CollideWith.Creeps)
                     AddEntity<CreepSystem>();
                     
-                if(collideType == CollideWith.Towers)
+                if (collideType == CollideWith.Towers)
                     AddEntity<TowerSystem>();
 
-                if(collideType == CollideWith.CreepsAndTowers)
+                if (collideType == CollideWith.CreepsAndTowers)
                 {
                     AddEntity<CreepSystem>();
                     AddEntity<TowerSystem>();

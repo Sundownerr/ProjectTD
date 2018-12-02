@@ -11,6 +11,7 @@ namespace Game.Systems
 	public class CreepControlSystem 
 	{	
         private List<CreepSystem> creepList = new List<CreepSystem>();
+        
         public void SetSystem()
         {
             GM.I.WaveSystem.CreepSpawned += OnCreepSpawned;
@@ -41,10 +42,9 @@ namespace Game.Systems
                 else
                 {
                     if (creep.HealthSystem != null)
-                        creep.HealthSystem.Update();
-
+                        creep.HealthSystem.Update();             
+                    creep.AbilityControlSystem.UpdateSystem();
                     
-                        
                     if (creep.IsOn)
                     {
                         var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;

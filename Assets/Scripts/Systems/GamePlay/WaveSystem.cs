@@ -131,6 +131,7 @@ namespace Game.Systems
                     currentWaveCreepList = waveList[waveNumber];                 
                     GM.I.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
                     waveNumber++;
+                    WaveChanged?.Invoke(this, new EventArgs());
                 }
 
                 void SpawnCreep()

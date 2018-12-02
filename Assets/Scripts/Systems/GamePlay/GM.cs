@@ -153,7 +153,8 @@ namespace Game.Systems
             towerControlSystem.SetSystem();
             waveUISystem.SetSystem();     
             resourceSystem.SetSystem();          
-            towerCreatingSystem.SetSystem();                   
+            towerCreatingSystem.SetSystem();    
+            CreepControlSystem.SetSystem();              
         }
 
         private void Update()

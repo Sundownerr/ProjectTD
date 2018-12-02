@@ -20,12 +20,12 @@ namespace Game.Tower
         public GameObject Range             { get => range;                 private set => range = value; }
         public Range RangeSystem            { get => rangeSystem;           private set => rangeSystem = value; }
         public Special SpecialSystem        { get => specialSystem;         private set => specialSystem = value; }
-        public Combat CombatSystem          { get => combatSystem;          private set => combatSystem = value; }
-        public AbilityControlSystem AbilitySystem  { get => abilitySystem;         private set => abilitySystem = value; }
+        public Combat CombatSystem          { get => combatSystem;          private set => combatSystem = value; }      
         public Stats StatsSystem            { get => statsSystem;           private set => statsSystem = value; }
         public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
         public Renderer[] RendererList      { get => rendererList;          private set => rendererList = value; }
         public List<EntitySystem> CreepInRangeList => rangeSystem.EntitySystemList;
+        public AbilityControlSystem AbilitySystem  { get => abilitySystem;  private set => abilitySystem = value; }
 
         public List<AbilitySystem> AbilitySystemList { get => abilitySystemList; set => abilitySystemList = value; }
 
@@ -35,7 +35,7 @@ namespace Game.Tower
         private Range rangeSystem;
         private Special specialSystem;
         private Combat combatSystem;
-        private AbilityControlSystem abilitySystem;
+        private System.AbilityControlSystem abilitySystem;
         private Stats statsSystem;
         private List<AbilitySystem> abilitySystemList;
 

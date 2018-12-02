@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.Creep;
 using Game.Data;
 using Game.Data.Effects;
 using Game.Tower;
@@ -11,42 +12,66 @@ namespace Game.Systems
     {   
         private new SlowAura effect;
         private float removedAttackSpeed;
+        private Hashtable towerAttackSpeedList;
 
         public SlowAuraSystem(SlowAura effect, EntitySystem owner) : base(effect, owner)
         {
             this.effect = effect;        
-            this.owner = owner;  
-            range.CollideType = CollideWith.Towers;
-            range.EntityEntered += OnTowerEnteredRange;         
-            range.EntityExit += OnTowerExitRange;   
-            range.transform.localScale = new Vector3(effect.Size, 0.001f, effect.Size);
+            this.owner = owner;            
+            towerAttackSpeedList = new Hashtable();
         } 
 
         private void OnTowerEnteredRange(object sender, EntityEventArgs e)
         {
-            var tower = e.Entity as TowerSystem;
-            removedAttackSpeed = QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed);
-            tower.Stats.AttackSpeed -= removedAttackSpeed;
+            if (e.Entity is TowerSystem tower)                   
+                if (tower.AppliedEffectSystem.CountOf(effect) <= 0)
+                {                          
+                    towerAttackSpeedList.Add(tower, QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed));
+                    tower.Stats.AttackSpeed += QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed);
+                    tower.AppliedEffectSystem.Add(effect); 
+                }              
         }
 
-        private void OnTowerExitRange(object sender, EntityEventArgs e)
+        private void OnTowerExitRange(object sender, EntityEventArgs e) => RemoveEffect(e.Entity);    
+
+        private void RemoveEffect(EntitySystem entity)
         {
-            var tower = e.Entity as TowerSystem;
-            tower.Stats.AttackSpeed += removedAttackSpeed;
+            if (entity is TowerSystem tower)            
+            {               
+                if (tower.AppliedEffectSystem.CountOf(effect) == 1)                        
+                    tower.Stats.AttackSpeed -= (float)towerAttackSpeedList[tower];                                               
+                tower.AppliedEffectSystem.Remove(effect);
+            }
         }
 
         public override void Apply()   
         {
             base.Apply();
+
+            (owner as CreepSystem).HealthSystem.CreepDied += OnOwnerKilled;          
+            range.EntityEntered += OnTowerEnteredRange;         
+            range.EntityExit += OnTowerExitRange;   
+
+            range.CollideType = CollideWith.Towers;
+            range.transform.localScale = new Vector3(effect.Size, 0.001f, effect.Size);
+            range.transform.position += new Vector3(0, 15, 0);
+            range.SetShow(true);         
         }
+
+        private void OnOwnerKilled(object sender, CreepData creep) => End();   
 
         public override void Continue()
         {
-            base.Continue();          
-        }
-
+            base.Continue();         
+        }         
+        
         public override void End()
-        {         
+        {                             
+            for (int i = 0; i < range.EntitySystemList.Count; i++)       
+                RemoveEffect(range.EntitySystemList[i]);            
+            
+            range.EntityEntered -= OnTowerEnteredRange;         
+            range.EntityExit -= OnTowerExitRange;   
             base.End();
         }
     }

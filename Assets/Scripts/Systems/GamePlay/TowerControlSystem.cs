@@ -56,16 +56,13 @@ namespace Game.Systems
                     {                  
                         tower.AbilitySystem.UpdateSystem();
 
-                        if (tower.CreepInRangeList.Count < 1)
-                        {
-                            if (!tower.CombatSystem.CheckAllBulletInactive())
-                                tower.CombatSystem.MoveBullet();                   
-                        }
+                        if (tower.CreepInRangeList.Count < 1)                                                 
+                            tower.CombatSystem.MoveBullet();                                     
                         else
-                        {                                                                                            
+                        {   
+                            tower.CombatSystem.UpdateSystem();                                                                                          
                             if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)
-                            {
-                                tower.CombatSystem.UpdateSystem();      
+                            {                                     
                                 RotateAtCreep();
                             }
                             

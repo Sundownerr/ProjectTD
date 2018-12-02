@@ -12,9 +12,9 @@ namespace Game.Tower.System
     {
         public bool isHaveChainTargets;
 
-        private List<BulletSystem> bulletDataList;
-        private List<GameObject> bulletList;
-        private List<float> bulletRemoveTimerList;
+        private List<BulletSystem> bulletList;
+        private List<GameObject> bulletGOList;
+        private List<float> removeTimerList;
         private TowerSystem tower;
         private ObjectPool bulletPool;
         private float timer;
@@ -26,11 +26,11 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            timer       = tower.Stats.AttackSpeed;
-            bulletList  = new List<GameObject>();
-            bulletDataList          = new List<BulletSystem>();
-            bulletRemoveTimerList   = new List<float>();
-            defaultBullet = tower.Bullet.GetComponent<BulletSystem>();
+            timer           = tower.Stats.AttackSpeed;
+            bulletGOList    = new List<GameObject>();
+            bulletList      = new List<BulletSystem>();
+            removeTimerList = new List<float>();
+            defaultBullet   = tower.Bullet.GetComponent<BulletSystem>();
 
             bulletPool = new ObjectPool()
             {
@@ -49,17 +49,15 @@ namespace Game.Tower.System
             if (timer > tower.Stats.AttackSpeed)
                 ShotBullet();      
 
-            for (int i = 0; i < bulletRemoveTimerList.Count; i++)
-            {
-                if (bulletRemoveTimerList[i] > 0)
-                    bulletRemoveTimerList[i] -= Time.deltaTime;
+            for (int i = 0; i < removeTimerList.Count; i++)          
+                if (removeTimerList[i] > 0)
+                    removeTimerList[i] -= Time.deltaTime;
                 else
                 {
-                    RemoveBullet(bulletDataList[0]);
-                    bulletRemoveTimerList.RemoveAt(i);
+                    RemoveBullet(bulletList[0]);
+                    removeTimerList.RemoveAt(i);
                 }
-            }
-
+            
             void ShotBullet()
             {
                 var shotCount = tower.SpecialSystem.CalculateShotCount();
@@ -69,21 +67,23 @@ namespace Game.Tower.System
 
                 void CreateBullet(EntitySystem target)
                 {
-                    bulletList.Add(bulletPool.GetObject());
-                    bulletDataList.Add(bulletList[bulletList.Count - 1].GetComponent<BulletSystem>());
-                    SetBulletData(bulletDataList[bulletDataList.Count - 1]);
+                    bulletGOList.Add(bulletPool.GetObject());
+                    bulletList.Add(bulletGOList[bulletGOList.Count - 1].GetComponent<BulletSystem>());
+                    SetBulletData(bulletList[bulletList.Count - 1]);
 
-                    bulletList[bulletList.Count - 1].SetActive(true);
+                    bulletGOList[bulletGOList.Count - 1].SetActive(true);
 
                     void SetBulletData(BulletSystem bullet)
-                    {
-                        if (target != null)                
-                            bullet.Target = target;                  
-                        
+                    {                                                        
                         bullet.ChainshotCount = defaultBullet.ChainshotCount;
                         bullet.AOEShotRange = defaultBullet.AOEShotRange;
                         bullet.transform.position = tower.ShootPoint.position;
                         bullet.transform.rotation = tower.MovingPart.rotation;
+
+                        if (target != null)                
+                            bullet.Target = target; 
+                        else
+                            RemoveBullet(bullet);  
                     }
                 }
             }
@@ -91,8 +91,8 @@ namespace Game.Tower.System
             void RemoveBullet(BulletSystem bullet)
             {      
                 bullet.gameObject.SetActive(false);
-                bulletDataList.Remove(bullet);
-                bulletList.Remove(bullet.gameObject);
+                bulletList.Remove(bullet);
+                bulletGOList.Remove(bullet.gameObject);
             }
         }   
    
@@ -102,52 +102,42 @@ namespace Game.Tower.System
             {
                 bullet.IsTargetReached = true;
                 bullet.Show(false);
-                bulletRemoveTimerList.Add(bulletDataList[bulletList.Count - 1].Lifetime);
+                removeTimerList.Add(bulletList[bulletGOList.Count - 1].Lifetime);
             }              
         }
 
         public void MoveBullet()
         {
             for (int i = 0; i < bulletList.Count; i++)
-                if (bulletList[i].activeSelf)                                 
-                    if (bulletDataList[i].IsTargetReached)
-                        SetTargetReached(bulletDataList[i]);
-                    else
-                    {
-                        var offset = new Vector3(0, 40, 0);
-                        var distance = QoL.CalcDistance(bulletList[i].transform.position, bulletDataList[i].Target.Prefab.transform.position + offset);
-
-                        if (distance < 30)
-                            HitTarget(bulletDataList[i]);
+            {
+                var bullet = bulletList[i];
+                if (bullet.gameObject.activeSelf) 
+                    if (!bullet.IsTargetReached)          
+                        if (bullet.Target == null || bullet.Target.Prefab == null)
+                            SetTargetReached(bullet);
                         else
-                        {
-                            var randVec = new Vector3(
-                                UnityEngine.Random.Range(-10, 10),
-                                UnityEngine.Random.Range(-10, 10),
-                                UnityEngine.Random.Range(-10, 10));
+                        {                                
+                            var offset = new Vector3(0, 40, 0);
+                            var distance = QoL.CalcDistance(bullet.transform.position, bullet.Target.Prefab.transform.position + offset);
 
-                            bulletList[i].transform.LookAt(bulletDataList[i].Target.Prefab.transform.position + offset);
-                            bulletList[i].transform.Translate(Vector3.forward * bulletDataList[i].Speed + randVec, Space.Self);
-                        }
-                    }                                     
-        }
+                            if (distance < 30)
+                                HitTarget(bullet);
+                            else
+                            {
+                                var randVec = new Vector3(
+                                    UnityEngine.Random.Range(-10, 10),
+                                    UnityEngine.Random.Range(-10, 10),
+                                    UnityEngine.Random.Range(-10, 10));
 
-        public bool CheckAllBulletInactive()
-        {
-            for (int i = 0; i < bulletList.Count; i++)
-                if (bulletList[i].activeSelf)
-                    return false;
-            return true;
+                                bullet.transform.LookAt(bullet.Target.Prefab.transform.position + offset);
+                                bullet.transform.Translate(Vector3.forward * bullet.Speed + randVec, Space.Self);
+                            }                         
+                        }          
+            }                        
         }
 
         private void HitTarget(BulletSystem bullet)
         {
-            if (bullet.Target == null || bullet.Target.Prefab == null)
-            {
-                SetTargetReached(bullet);
-                return;
-            }
-
             var isChainShot =
                 bullet.ChainshotCount > 0 &&
                 bullet.RemainingBounceCount > 0;        

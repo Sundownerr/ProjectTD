@@ -55,57 +55,72 @@ namespace Game.Systems
         }
 
         public virtual void Apply()
-        {         
-            if (effect.IsStackable)
-                if (Target.AppliedEffectSystem.CountOf(effect) >= effect.MaxStackCount)
-                {
-                    IsMaxStackCount = true;                
-                    return;
-                }           
-            
-            IsSet = true;
-            IsEnded = false;
+        {       
+            if (!(this is AuraSystem))   
+            {  
+                if (effect.IsStackable)
+                    if (Target.AppliedEffectSystem.CountOf(effect) >= effect.MaxStackCount)
+                    {
+                        IsMaxStackCount = true;                
+                        return;
+                    }           
+                
+                IsSet = true;
+                IsEnded = false;
+            }
         }
 
         public virtual void Continue()
-        {           
-            if (!IsEnded)
-            {
-                if (Target == null)
-                    End();     
-                    
-                effectTimer = effectTimer > effect.Duration ? -1 : effectTimer += Time.deltaTime;
+        {       
+            if (!(this is AuraSystem))
+                if (!IsEnded)
+                {
+                    if (Target == null)
+                        End();     
+                        
+                    effectTimer = effectTimer > effect.Duration ? -1 : effectTimer += Time.deltaTime;
 
-                if (effectTimer == -1)
-                    End();
-            }                
+                    if (effectTimer == -1)
+                        End();
+                }             
         }
 
         public virtual void End() 
-        {        
-            if (!IsMaxStackCount)     
-                Target?.AppliedEffectSystem.Remove(effect);
+        {     
+            if (!(this is AuraSystem))   
+            {
+                if (!IsMaxStackCount)     
+                    Target?.AppliedEffectSystem.Remove(effect);
 
-            IsEnded = true;         
+                IsEnded = true;     
+            }  
         } 
   
         public virtual void ApplyRestart()
         {
-            if (effect.IsStackable)
-                RestartState();
-            else if (IsEnded)
-                RestartState();     
+            if (!(this is AuraSystem))   
+            {
+                if (effect.IsStackable)
+                    RestartState();
+                else if (IsEnded)
+                    RestartState();     
+            }
         }
 
         public virtual void RestartState()
-        {          
-            End();
-            IsMaxStackCount = false;
-            IsEnded = false;
-            IsSet = false;
+        {     
+            if (!(this is AuraSystem))   
+            {     
+                End();
+                IsMaxStackCount = false;
+                IsEnded = false;
+                IsSet = false;          
+            }
         }    
 		
-        public virtual void SetTarget(EntitySystem newTarget) =>     
-            Target = Target ?? newTarget;               
+        public virtual void SetTarget(EntitySystem newTarget) 
+        {
+            Target = Target ?? newTarget; 
+        }                            
     }	
 }
