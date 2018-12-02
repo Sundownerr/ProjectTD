@@ -11,13 +11,13 @@ namespace Game.Systems
     public class SlowAuraSystem : AuraSystem
     {   
         private new SlowAura effect;
-        private Dictionary<TowerSystem, float> towerAttackSpeedList;
+        private Dictionary<TowerSystem, float> removedAttackSpeedList;
 
         public SlowAuraSystem(SlowAura effect, EntitySystem owner) : base(effect, owner)
         {
             this.effect = effect;        
             this.owner = owner;            
-            towerAttackSpeedList = new Dictionary<TowerSystem, float>();
+            removedAttackSpeedList = new Dictionary<TowerSystem, float>();
         } 
 
         private void OnTowerEnteredRange(object sender, EntityEventArgs e)
@@ -26,7 +26,7 @@ namespace Game.Systems
                 if (tower.AppliedEffectSystem.CountOf(effect) <= 0)
                 {     
                     var removedAttackSpeed = QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed);                    
-                    towerAttackSpeedList.Add(tower, removedAttackSpeed);
+                    removedAttackSpeedList.Add(tower, removedAttackSpeed);
                     tower.Stats.AttackSpeed += removedAttackSpeed;
                     tower.AppliedEffectSystem.Add(effect); 
                 }              
@@ -39,7 +39,7 @@ namespace Game.Systems
             if (entity is TowerSystem tower)            
             {               
                 if (tower.AppliedEffectSystem.CountOf(effect) == 1)                        
-                    tower.Stats.AttackSpeed -= towerAttackSpeedList[tower];                                               
+                    tower.Stats.AttackSpeed -= removedAttackSpeedList[tower];                                               
                 tower.AppliedEffectSystem.Remove(effect);
             }
         }
