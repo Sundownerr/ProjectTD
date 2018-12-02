@@ -37,6 +37,9 @@ namespace Game.Systems
 
         [NaughtyAttributes.BoxGroup("Data")]
         public int WaveAmount;
+        public TowerDataBase TowerDataBase;             
+        public CreepDataBase CreepDataBase;            
+        public WaveDataBase WaveDataBase;     
 
         public List<TowerSystem> PlacedTowerList = new List<TowerSystem>();
 
@@ -56,14 +59,8 @@ namespace Game.Systems
         public CreepControlSystem CreepControlSystem    { get => creepControlSystem; set => creepControlSystem = value; }
         public PlayerData PlayerData                    { get => playerData; set => playerData = value; }
         public ElementSystem ElementSystem              { get => elementSystem; set => elementSystem = value; }
-        public TowerDataBase TowerDataBase              { get => towerDataBase; set => towerDataBase = value; }
-        public CreepDataBase CreepDataBase              { get => creepDataBase; set => creepDataBase = value; }
-        public WaveDataBase WaveDataBase                { get => waveDataBase; set => waveDataBase = value; }
-
-        private WaveDataBase waveDataBase;
-        private CreepDataBase creepDataBase;
-        private PlayerData playerData;
-        private TowerDataBase towerDataBase;
+                   
+        private PlayerData playerData;   
         private TowerPlaceSystem towerPlaceSystem;
         private GridSystem gridSystem;
         private WaveSystem waveSystem;
@@ -105,9 +102,7 @@ namespace Game.Systems
             creepControlSystem  = new CreepControlSystem();
 
             PlayerData      = DataLoadingSystem.Load<PlayerData>() as PlayerData;
-            TowerDataBase   = DataLoadingSystem.Load<TowerDataBase>() as TowerDataBase;
-            creepDataBase   = DataLoadingSystem.Load<CreepDataBase>() as CreepDataBase;
-            waveDataBase    = DataLoadingSystem.Load<WaveDataBase>() as WaveDataBase;
+           
             
             PlayerState = State.Idle;
         

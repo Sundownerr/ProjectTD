@@ -5,14 +5,14 @@ using System.IO;
 using Game.Data;
 using Game.Tower.Data.Stats;
 using Newtonsoft.Json;
+#if UNITY_EDITOR	
 using UnityEditor;
+#endif
 using UnityEngine;
 using U = UnityEngine.Object;
 
 namespace Game.Systems
 {
-	
-
 	public static class DataLoadingSystem 
 	{		
 		public static void Save<T>(T data) where T : IData
@@ -23,7 +23,7 @@ namespace Game.Systems
 				File.WriteAllText("playerData.json", newData);
 				return;
 			}
-			
+#if UNITY_EDITOR			
 			if (data is TowerDataBase)		
 			{	
 				EditorUtility.SetDirty(data as TowerDataBase); 
@@ -35,14 +35,17 @@ namespace Game.Systems
 				EditorUtility.SetDirty(data as CreepDataBase); 						
 				return;
 			}
+#endif
 		}
 
 		public static IData Load<T>() where T : IData
 		{
 			return 
-				typeof(T) == typeof(PlayerData) 	? LoadPlayerData() :
+				typeof(T) == typeof(PlayerData) ? LoadPlayerData() :
+#if UNITY_EDITOR
 				typeof(T) == typeof(TowerDataBase) 	? LoadTowerDB() :
 				typeof(T) == typeof(CreepDataBase) 	? LoadCreepDB() :
+#endif
 				null as IData;
 
 			PlayerData LoadPlayerData()
@@ -81,12 +84,13 @@ namespace Game.Systems
 
 				return playerData;
 			}		
-
+#if UNITY_EDITOR
 			TowerDataBase LoadTowerDB() =>					
 				AssetDatabase.LoadAssetAtPath("Assets/DataBase/TowerDB.asset", typeof(TowerDataBase)) as TowerDataBase;
 
 			CreepDataBase LoadCreepDB() =>					
 				AssetDatabase.LoadAssetAtPath("Assets/DataBase/CreepDB.asset", typeof(CreepDataBase)) as CreepDataBase;
+#endif
 		}
 	}
 }

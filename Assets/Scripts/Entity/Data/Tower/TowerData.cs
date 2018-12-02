@@ -79,6 +79,7 @@ namespace Game.Tower.Data
             GradeList.Clear();                 
         }
 
+#if UNITY_EDITOR
         [Button("Add to DataBase")]
         private void AddToDataBase()
         {
@@ -119,7 +120,7 @@ namespace Game.Tower.Data
         private void OnDestroy() => RemoveFromDataBase();
 
         private void OnValuesChanged() => SetId();
-
+#endif
         public override void SetId() 
         {
             id = new List<int>

@@ -46,6 +46,7 @@ namespace Game.Creep
             owner = ownerSystem;
         }
 
+#if UNITY_EDITOR
         [Button]
         public void AddToDataBase()
         {
@@ -95,7 +96,7 @@ namespace Game.Creep
         private void OnDestroy() => RemoveFromDataBase();
 
         public void OnValuesChanged() => AddToDataBase();
-
+#endif
         public override void SetId() 
         {
             id = new List<int>
