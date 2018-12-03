@@ -184,11 +184,11 @@
      <Compile Include="Assets\Scripts\Entity\Data\Effect\SlowAura.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Effect\Stun.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Entity.cs" />
-     <Compile Include="Assets\Scripts\Entity\Data\Tower\Special.cs" />
-     <Compile Include="Assets\Scripts\Entity\Data\Tower\Special\Chainshot.cs" />
-     <Compile Include="Assets\Scripts\Entity\Data\Tower\Special\Multishot.cs" />
+     <Compile Include="Assets\Scripts\Entity\Data\Special\Chainshot.cs" />
+     <Compile Include="Assets\Scripts\Entity\Data\Special\Multishot.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Tower\Stats.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Tower\TowerData.cs" />
+     <Compile Include="Assets\Scripts\Entity\Data\Tower\Trait.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\AbilitySystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\AppliedEffectSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\Cell.cs" />
@@ -208,9 +208,11 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\AbilityControlSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\BulletSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Combat.cs" />
-     <Compile Include="Assets\Scripts\Entity\Systems\Tower\Special.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\Stats.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\TowerSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Tower\TraitControlSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Trait\ChainshotSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Trait\MultishotSystem.cs" />
      <Compile Include="Assets\Scripts\ExtendedMonoBehaviour.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\CreepDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\PlayerData.cs" />

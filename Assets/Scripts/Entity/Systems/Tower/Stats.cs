@@ -39,8 +39,8 @@ namespace Game.Tower.System
             currentStats.AttackSpeedModifier = previousTower.Stats.AttackSpeedModifier;
             tower.OcuppiedCell              = previousTower.OcuppiedCell;   
 
-            for (int i = 0; i < newStats.SpecialList.Length; i++)
-                currentStats.SpecialList[i] = U.Instantiate(newStats.SpecialList[i]);           
+            for (int i = 0; i < newStats.TraitList.Length; i++)
+                currentStats.TraitList[i] = U.Instantiate(newStats.TraitList[i]);           
 
             for (int i = 0; i < previousTower.Stats.Level; i++)
                 IncreaseStatsPerLevel();                    
@@ -56,7 +56,7 @@ namespace Game.Tower.System
             currentStats.CritChance      += QoL.GetPercentOfValue(0.2f, baseStats.CritChance);
             currentStats.SpellCritChance += QoL.GetPercentOfValue(0.2f, baseStats.SpellCritChance);
 
-            tower.SpecialSystem.IncreaseStatsPerLevel();
+            tower.TraitSystem.IncreaseStatsPerLevel();
             var effect = U.Instantiate(GM.I.LevelUpEffect, tower.Prefab.transform.position, Quaternion.identity);
             U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);              
         }

@@ -49,10 +49,9 @@ namespace Game.Systems
             if (entity is TowerSystem tower)            
             {               
                 if (tower.AppliedEffectSystem.CountOf(effect) <= 1)   
-                    if(removedAttackSpeedModList.TryGetValue(tower, out int attackSpeedMod))    
-                    {                 
+                    if(removedAttackSpeedModList.TryGetValue(tower, out int attackSpeedMod))                                       
                         tower.Stats.AttackSpeedModifier += attackSpeedMod;                                     
-                    }
+                                          
                 removedAttackSpeedModList.Remove(tower);
                 tower.AppliedEffectSystem.Remove(effect);
             }

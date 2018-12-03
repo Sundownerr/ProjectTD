@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Tower.System
 {
-    public class Special : ITowerSystem
+    public class TraitControlSystem : ITowerSystem
     {
         public bool IsHaveChainTargets { get => isHaveChainTargets; set => isHaveChainTargets = value; }
 
@@ -14,7 +14,7 @@ namespace Game.Tower.System
         private Collider[] aoeColliderList, chainColliderList;
         private int creepLayer;      
 
-        public Special(TowerSystem ownerTower) 
+        public TraitControlSystem(TowerSystem ownerTower) 
         {
             tower = ownerTower;
             aoeColliderList = new Collider[20];
@@ -24,8 +24,8 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            for (int i = 0; i < tower.Stats.SpecialList.Length; i++)
-                tower.Stats.SpecialList[i].InitSpecial(tower);          
+            for (int i = 0; i < tower.Stats.TraitList.Length; i++)
+                tower.Stats.TraitList[i].InitTrait(tower);          
         }
 
         public int CalculateShotCount()
@@ -38,12 +38,11 @@ namespace Game.Tower.System
 
         public void SetChainTarget(BulletSystem bullet)
         {       
-            var hitTargetCount =
-                Physics.OverlapSphereNonAlloc(
-                    bullet.transform.position, 
-                    150, 
-                    chainColliderList, 
-                    creepLayer);    
+            var hitTargetCount = Physics.OverlapSphereNonAlloc(
+                bullet.transform.position, 
+                150, 
+                chainColliderList, 
+                creepLayer);    
 
             if (hitTargetCount < 1)
                 IsHaveChainTargets = false;
@@ -58,14 +57,12 @@ namespace Game.Tower.System
                             bullet.Target = 
 
                                 i - 1 >= 0 ? 
-                                    GM.I.CreepList.Find(
-                                        creep => 
-                                            creep.Prefab == chainColliderList[i - 1].transform.gameObject) :
+                                    GM.I.CreepList.Find(creep => 
+                                        creep.Prefab == chainColliderList[i - 1].transform.gameObject) :
 
                                 i + 1 < hitTargetCount ? 
-                                    GM.I.CreepList.Find(
-                                        creep => 
-                                            creep.Prefab == chainColliderList[i + 1].transform.gameObject) :
+                                    GM.I.CreepList.Find(creep => 
+                                        creep.Prefab == chainColliderList[i + 1].transform.gameObject) :
 
                                 bullet.Target;     
                             break; 
@@ -76,12 +73,11 @@ namespace Game.Tower.System
 
         public void DamageInAOE(BulletSystem bullet)
         {
-            var hitTargetCount = 
-                Physics.OverlapSphereNonAlloc(
-                    bullet.transform.position, 
-                    bullet.AOEShotRange, 
-                    aoeColliderList, 
-                    creepLayer);
+            var hitTargetCount = Physics.OverlapSphereNonAlloc(
+                bullet.transform.position, 
+                bullet.AOEShotRange, 
+                aoeColliderList, 
+                creepLayer);
 
             for (int i = 0; i < hitTargetCount; i++)
                 DamageSystem.DoDamage(
@@ -92,7 +88,7 @@ namespace Game.Tower.System
 
         public void IncreaseStatsPerLevel()
         {
-            var specialList = tower.Stats.SpecialList;
+            var specialList = tower.Stats.TraitList;
 
             for (int i = 0; i < specialList.Length; i++)
                 specialList[i].IncreaseStatsPerLevel();

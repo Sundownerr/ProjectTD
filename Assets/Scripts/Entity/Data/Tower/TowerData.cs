@@ -52,23 +52,22 @@ namespace Game.Tower.Data
         [BoxGroup("Ratio")]
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio, BuffDuration, DebuffDuration;
 
-        [BoxGroup("Special"), Expandable]
-        public Special[] SpecialList;     
+        [BoxGroup("Trait"), Expandable]
+        public Trait[] TraitList;     
 
         [Space, Expandable]
-        public List<TowerData> GradeList;
+        public TowerData[] GradeList;
 
         [Space, Expandable]
-        public List<Ability> AbilityList;
+        public Ability[] AbilityList;
 
-        private int level, exp, gradeCount, numberInList;
-        private int attackSpeedModifier;
+        private int level, exp, gradeCount, numberInList, attackSpeedModifier;
         [SerializeField]
         private bool isInstanced;
 
         public void SetData()
         {           
-            GradeList = new List<TowerData>();                 
+                        
             isInstanced = true;           
             GradeCount = -1;
             attackSpeedModifier = 100;
@@ -77,9 +76,8 @@ namespace Game.Tower.Data
                 for (int i = 0; i < 5; i++)
                     DamageToRace.Add(100f);    
 
-            for (int i = 0; i < GradeList.Count; i++)                
-                Destroy(GradeList[i]);
-            GradeList.Clear();                 
+            for (int i = 0; i < GradeList.Length; i++)                
+                Destroy(GradeList[i]);                 
         }
 
 #if UNITY_EDITOR

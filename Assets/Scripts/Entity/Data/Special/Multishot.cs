@@ -4,7 +4,7 @@ namespace Game.Tower.Data.Stats.Specials
 {
     [CreateAssetMenu(fileName = "Multishot", menuName = "Data/Tower/Special/Multishot")]
 
-    public class Multishot : Special
+    public class Multishot : Trait
     {
         public int Count;
 
@@ -14,7 +14,7 @@ namespace Game.Tower.Data.Stats.Specials
             Description = $"Shoot {Count} additional targets";
         }
 
-        public override void InitSpecial(TowerSystem ownerTower)
+        public override void InitTrait(TowerSystem ownerTower)
         {
             ownerTower.Bullet.GetComponent<BulletSystem>().MultishotCount = Count;
         }

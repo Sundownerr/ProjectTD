@@ -18,14 +18,14 @@ namespace Game.Tower
         public GameObject OcuppiedCell      { get => ocuppiedCell;          set => ocuppiedCell = value; }
         public GameObject Bullet            { get => bullet;                private set => bullet = value; }
         public GameObject Range             { get => range;                 private set => range = value; }
-        public Range RangeSystem            { get => rangeSystem;           private set => rangeSystem = value; }
-        public Special SpecialSystem        { get => specialSystem;         private set => specialSystem = value; }
+        public Range RangeSystem            { get => rangeSystem;           private set => rangeSystem = value; }      
         public Combat CombatSystem          { get => combatSystem;          private set => combatSystem = value; }      
         public Stats StatsSystem            { get => statsSystem;           private set => statsSystem = value; }
         public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
         public Renderer[] RendererList      { get => rendererList;          private set => rendererList = value; }
         public List<EntitySystem> CreepInRangeList => rangeSystem.EntitySystemList;
         public AbilityControlSystem AbilitySystem  { get => abilitySystem;  private set => abilitySystem = value; }
+        public TraitControlSystem TraitSystem        { get => traitSystem;         private set => traitSystem = value; }
 
         public List<AbilitySystem> AbilitySystemList { get => abilitySystemList; set => abilitySystemList = value; }
 
@@ -33,7 +33,7 @@ namespace Game.Tower
         private GameObject ocuppiedCell, bullet, range;
         private Renderer[] rendererList;
         private Range rangeSystem;
-        private Special specialSystem;
+        private TraitControlSystem traitSystem;
         private Combat combatSystem;
         private System.AbilityControlSystem abilitySystem;
         private Stats statsSystem;
@@ -48,7 +48,7 @@ namespace Game.Tower
             bullet = ownerPrefab.transform.GetChild(2).gameObject;
 
             statsSystem     = new Stats(this);
-            specialSystem   = new Special(this);
+            traitSystem   = new TraitControlSystem(this);
             combatSystem    = new Combat(this);
             abilitySystem   = new AbilityControlSystem(this);
             appliedEffectSystem    = new AppliedEffectSystem();         
@@ -60,13 +60,13 @@ namespace Game.Tower
 
         public void SetSystem()
         {               
-            for (int i = 0; i < Stats.AbilityList.Count; i++)          
+            for (int i = 0; i < Stats.AbilityList.Length; i++)          
                 AbilitySystemList.Add(new AbilitySystem(Stats.AbilityList[i], this));   
                 
             if (!Stats.IsGradeTower)
             {
                 statsSystem.Set();
-                specialSystem.Set();
+                traitSystem.Set();
             }
             
             combatSystem.Set();

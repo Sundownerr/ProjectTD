@@ -4,7 +4,7 @@ namespace Game.Tower.Data.Stats.Specials
 {
     [CreateAssetMenu(fileName = "Chainshot", menuName = "Data/Tower/Special/Chainshot")]
 
-    public class Chainshot : Special
+    public class Chainshot : Trait
     {
         public int BounceCount, DecreaseDamagePerBounce;
 
@@ -14,7 +14,7 @@ namespace Game.Tower.Data.Stats.Specials
             Description = $"Bounce between {BounceCount} targets";
         }
 
-        public override void InitSpecial(TowerSystem ownerTower)
+        public override void InitTrait(TowerSystem ownerTower)
         {
             ownerTower.Bullet.GetComponent<BulletSystem>().ChainshotCount = BounceCount;
             ownerTower.Bullet.GetComponent<BulletSystem>().RemainingBounceCount = BounceCount;

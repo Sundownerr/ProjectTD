@@ -43,13 +43,11 @@ namespace Game.Tower.System
 
         public void UpdateSystem()
         {
-            var attackSpeedMod = tower.Stats.AttackSpeedModifier;
-            var percent = QoL.GetPercentOfValue(attackSpeedMod, tower.Stats.AttackSpeed);
-
-            var attackCooldown = 
-                attackSpeedMod < 100 ? 
-                    tower.Stats.AttackSpeed + (tower.Stats.AttackSpeed - percent) : 
-                    tower.Stats.AttackSpeed - (percent - tower.Stats.AttackSpeed);
+            var modifiedAttackSpeed = QoL.GetPercentOfValue(tower.Stats.AttackSpeedModifier, tower.Stats.AttackSpeed);
+            
+            var attackCooldown = tower.Stats.AttackSpeedModifier < 100 ? 
+                    tower.Stats.AttackSpeed + (tower.Stats.AttackSpeed - modifiedAttackSpeed) : 
+                    tower.Stats.AttackSpeed - (modifiedAttackSpeed - tower.Stats.AttackSpeed);
                          
             attackDelay = attackDelay > attackCooldown ? 0 : attackDelay + Time.deltaTime * 0.5f;
             MoveBullet();
@@ -68,7 +66,7 @@ namespace Game.Tower.System
             
             void ShotBullet()
             {
-                var shotCount = tower.SpecialSystem.CalculateShotCount();
+                var shotCount = tower.TraitSystem.CalculateShotCount();
 
                 for (int i = 0; i < shotCount; i++)
                     CreateBullet(tower.CreepInRangeList[i]);
@@ -151,12 +149,12 @@ namespace Game.Tower.System
                 bullet.RemainingBounceCount > 0;        
 
             if (bullet.AOEShotRange > 0)
-                tower.SpecialSystem.DamageInAOE(bullet);
+                tower.TraitSystem.DamageInAOE(bullet);
             else
                 ApplyDamage();
 
             if (isChainShot)
-                tower.SpecialSystem.SetChainTarget(bullet);
+                tower.TraitSystem.SetChainTarget(bullet);
             else
                 SetTargetReached(bullet);         
 

@@ -2,11 +2,11 @@
 
 namespace Game.Tower.Data.Stats
 {
-    public abstract class Special : ScriptableObject
+    public abstract class Trait : ScriptableObject
     {
         public string Name, Description;
 
         public virtual void IncreaseStatsPerLevel() { }
-        public virtual void InitSpecial(TowerSystem ownerTower) { }
+        public virtual void InitTrait(TowerSystem ownerTower) { }
     }
 }

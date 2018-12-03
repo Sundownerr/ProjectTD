@@ -90,24 +90,23 @@ namespace Game.Systems
         private void SellTower(object sender, EventArgs e) =>                 
             TowerSold?.Invoke(this, new TowerEventArgs(choosedTower, choosedTower.Stats));
             
-        private bool CheckGradeListOk(out List<TowerData> gradeList)
+        private bool CheckGradeListOk(out TowerData[] gradeList)
         {
-            var allTowerList = 
-                GM.I.TowerDataBase.AllTowerList.
+            var allTowerList = GM.I.TowerDataBase.AllTowerList.
                 ElementsList[(int)choosedTower.Stats.Element].
                 RarityList[(int)choosedTower.Stats.Rarity].
                 TowerList;
-       
-            var towerData = allTowerList.Find(tower => tower.CompareId(choosedTower.Stats.Id));           
-            gradeList = towerData.GradeList;
+               
+            gradeList = allTowerList.Find(tower => 
+                tower.CompareId(choosedTower.Stats.Id)).GradeList;
 
-            return gradeList.Count > 0 &&
-                choosedTower.Stats.GradeCount < gradeList.Count - 1;
+            return gradeList.Length > 0 &&
+                choosedTower.Stats.GradeCount < gradeList.Length - 1;
         }        
 
         private void UpgradeTower(object sender, EventArgs e) 
         {           
-            if (CheckGradeListOk(out List<TowerData> gradeList))
+            if (CheckGradeListOk(out TowerData[] gradeList))
             {              
                 var upgradedTowerPrefab = Instantiate(
                     gradeList[choosedTower.Stats.GradeCount + 1].Prefab, 
@@ -123,7 +122,7 @@ namespace Game.Systems
                 TowerSold?.Invoke(this, new TowerEventArgs(choosedTower, choosedTower.Stats));      
                 choosedTower = upgradedTower;
             }
-            GM.I.TowerUISystem.ActivateUpgradeButton(choosedTower.Stats.GradeCount < gradeList.Count - 1);
+            GM.I.TowerUISystem.ActivateUpgradeButton(choosedTower.Stats.GradeCount < gradeList.Length - 1);
         }
 
         private void ActivateTowerUI(bool active)
