@@ -18,6 +18,7 @@ namespace Game.Tower.Data
         public int Level { get => level; set => level = value > 25 ? 25 : value < 0 ? 0 : value; }
         public int GradeCount { get => gradeCount; set => gradeCount = value; }
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
+        public int AttackSpeedModifier { get => attackSpeedModifier; set => attackSpeedModifier = value; }
 
         [HideInInspector]
         public List<float> DamageToRace;     
@@ -61,6 +62,7 @@ namespace Game.Tower.Data
         public List<Ability> AbilityList;
 
         private int level, exp, gradeCount, numberInList;
+        private int attackSpeedModifier;
         [SerializeField]
         private bool isInstanced;
 
@@ -69,6 +71,7 @@ namespace Game.Tower.Data
             GradeList = new List<TowerData>();                 
             isInstanced = true;           
             GradeCount = -1;
+            attackSpeedModifier = 100;
             
             if (DamageToRace == null)
                 for (int i = 0; i < 5; i++)

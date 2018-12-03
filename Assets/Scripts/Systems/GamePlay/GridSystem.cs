@@ -23,8 +23,8 @@ namespace Game.Systems
             CreateGrid();
  
             red = new Color(0.3f, 0.1f, 0.1f, 0.6f);
-            green = new Color(0.1f, 0.3f, 0.1f, 0.5f);
-            blue = new Color(0.1f, 0.1f, 0.3f, 0.4f);      
+            green = new Color(0.1f, 0.6f, 0.1f, 0.9f);
+            blue = new Color(0.1f, 0.1f, 0.3f, 0.7f);      
 
             void CreateGrid()
             {
@@ -85,7 +85,7 @@ namespace Game.Systems
                 for (int i = 0; i < cellList.Count; i++)
                 {
                     var cell = cellList[i];
-                    cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? green : blue;              
+                    cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? blue : green;              
                 }
             }
         }

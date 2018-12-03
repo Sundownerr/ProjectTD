@@ -11,25 +11,35 @@ namespace Game.Systems
     public class SlowAuraSystem : AuraSystem
     {   
         private new SlowAura effect;
-        private Dictionary<TowerSystem, float> removedAttackSpeedList;
+        private Dictionary<TowerSystem, int> removedAttackSpeedModList;
 
         public SlowAuraSystem(SlowAura effect, EntitySystem owner) : base(effect, owner)
         {
             this.effect = effect;        
             this.owner = owner;            
-            removedAttackSpeedList = new Dictionary<TowerSystem, float>();
+            removedAttackSpeedModList = new Dictionary<TowerSystem, int>();
         } 
 
         private void OnTowerEnteredRange(object sender, EntityEventArgs e)
         {
-            if (e.Entity is TowerSystem tower)                   
+            if (e.Entity is TowerSystem tower)   
+            {        
+                var removedAttackSpeedMod = 
+                        (int)QoL.GetPercentOfValue(
+                            effect.SlowPercent, 
+                            tower.Stats.AttackSpeedModifier);             
+               
                 if (tower.AppliedEffectSystem.CountOf(effect) <= 0)
-                {     
-                    var removedAttackSpeed = QoL.GetPercentOfValue(effect.SlowPercent, tower.Stats.AttackSpeed);                    
-                    removedAttackSpeedList.Add(tower, removedAttackSpeed);
-                    tower.Stats.AttackSpeed += removedAttackSpeed;
-                    tower.AppliedEffectSystem.Add(effect); 
-                }              
+                    tower.Stats.AttackSpeedModifier -= removedAttackSpeedMod;          
+                else                
+                    removedAttackSpeedMod = 
+                        (int)QoL.GetPercentOfValue(
+                            effect.SlowPercent, 
+                            tower.Stats.AttackSpeedModifier + effect.SlowPercent);               
+                                    
+                removedAttackSpeedModList.Add(tower, removedAttackSpeedMod); 
+                tower.AppliedEffectSystem.Add(effect); 
+            }
         }
 
         private void OnTowerExitRange(object sender, EntityEventArgs e) => RemoveEffect(e.Entity);    
@@ -38,8 +48,12 @@ namespace Game.Systems
         {
             if (entity is TowerSystem tower)            
             {               
-                if (tower.AppliedEffectSystem.CountOf(effect) == 1)                        
-                    tower.Stats.AttackSpeed -= removedAttackSpeedList[tower];                                               
+                if (tower.AppliedEffectSystem.CountOf(effect) <= 1)   
+                    if(removedAttackSpeedModList.TryGetValue(tower, out int attackSpeedMod))    
+                    {                 
+                        tower.Stats.AttackSpeedModifier += attackSpeedMod;                                     
+                    }
+                removedAttackSpeedModList.Remove(tower);
                 tower.AppliedEffectSystem.Remove(effect);
             }
         }

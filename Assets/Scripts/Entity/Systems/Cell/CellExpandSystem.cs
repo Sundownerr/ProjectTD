@@ -26,7 +26,7 @@ namespace Game.Cells
 
         public void Expand(Cell ownerCell)
         {
-            var spacing = ownerCell.gameObject.transform.localScale.x + 1;
+            var spacing = ownerCell.gameObject.transform.localScale.x;
             var rayDistance = ownerCell.gameObject.transform.localScale.x;
 
             var results = new RaycastHit[1];

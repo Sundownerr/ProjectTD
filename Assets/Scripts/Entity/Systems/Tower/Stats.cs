@@ -35,14 +35,14 @@ namespace Game.Tower.System
             Set(newStats);         
             currentStats.Id                 = previousTower.Stats.Id;
             currentStats.GradeCount         = previousTower.Stats.GradeCount + 1;
-            currentStats.Level              = previousTower.Stats.Level;
             currentStats.Exp                = previousTower.Stats.Exp;
+            currentStats.AttackSpeedModifier = previousTower.Stats.AttackSpeedModifier;
             tower.OcuppiedCell              = previousTower.OcuppiedCell;   
 
             for (int i = 0; i < newStats.SpecialList.Length; i++)
                 currentStats.SpecialList[i] = U.Instantiate(newStats.SpecialList[i]);           
 
-            for (int i = 1; i < currentStats.Level; i++)
+            for (int i = 0; i < previousTower.Stats.Level; i++)
                 IncreaseStatsPerLevel();                    
                   
             ChangedStats();
@@ -58,8 +58,7 @@ namespace Game.Tower.System
 
             tower.SpecialSystem.IncreaseStatsPerLevel();
             var effect = U.Instantiate(GM.I.LevelUpEffect, tower.Prefab.transform.position, Quaternion.identity);
-            U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);    
-            
+            U.Destroy(effect, effect.GetComponent<ParticleSystem>().main.duration);              
         }
 
         public void AddExp(int amount)
@@ -74,8 +73,6 @@ namespace Game.Tower.System
                 ChangedStats();    
         }
 
-        public void ChangedStats() => StatsChanged?.Invoke(this, new EventArgs());            
-
-      
+        public void ChangedStats() => StatsChanged?.Invoke(this, new EventArgs());                 
     }
 }

@@ -17,7 +17,7 @@ namespace Game.Tower.System
         private List<float> removeTimerList;
         private TowerSystem tower;
         private ObjectPool bulletPool;
-        private float timer;
+        private float attackDelay, attackCooldown;
         private BulletSystem defaultBullet;
 
         public Combat(TowerSystem ownerTower) => tower = ownerTower;
@@ -26,7 +26,7 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            timer           = tower.Stats.AttackSpeed;
+            attackDelay     = QoL.GetPercentOfValue(tower.Stats.AttackSpeedModifier, tower.Stats.AttackSpeed);         
             bulletGOList    = new List<GameObject>();
             bulletList      = new List<BulletSystem>();
             removeTimerList = new List<float>();
@@ -43,10 +43,18 @@ namespace Game.Tower.System
 
         public void UpdateSystem()
         {
-            timer = timer > tower.Stats.AttackSpeed ? 0 : timer + Time.deltaTime * 0.5f;
+            var attackSpeedMod = tower.Stats.AttackSpeedModifier;
+            var percent = QoL.GetPercentOfValue(attackSpeedMod, tower.Stats.AttackSpeed);
+
+            var attackCooldown = 
+                attackSpeedMod < 100 ? 
+                    tower.Stats.AttackSpeed + (tower.Stats.AttackSpeed - percent) : 
+                    tower.Stats.AttackSpeed - (percent - tower.Stats.AttackSpeed);
+                         
+            attackDelay = attackDelay > attackCooldown ? 0 : attackDelay + Time.deltaTime * 0.5f;
             MoveBullet();
 
-            if (timer > tower.Stats.AttackSpeed)
+            if (attackDelay > attackCooldown)
                 ShotBullet();      
 
             for (int i = 0; i < removeTimerList.Count; i++)          

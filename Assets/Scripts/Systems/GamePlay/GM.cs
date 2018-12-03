@@ -189,10 +189,8 @@ namespace Game.Systems
             return distance;
         }
 
-        public static float GetPercentOfValue(float desiredPercent, float value)
-        {
-            return value / 100 * desiredPercent;
-        }
+        public static float GetPercentOfValue(float desiredPercent, float value) => value / 100 * desiredPercent;
+        
 
         public static string KiloFormat(float num)
         {
