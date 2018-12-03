@@ -66,18 +66,15 @@ namespace Game.Tower.Data
         private bool isInstanced;
 
         public void SetData()
-        {           
-                        
+        {                   
+            GradeList = new TowerData[0];              
             isInstanced = true;           
             GradeCount = -1;
             attackSpeedModifier = 100;
             
             if (DamageToRace == null)
                 for (int i = 0; i < 5; i++)
-                    DamageToRace.Add(100f);    
-
-            for (int i = 0; i < GradeList.Length; i++)                
-                Destroy(GradeList[i]);                 
+                    DamageToRace.Add(100f);                  
         }
 
 #if UNITY_EDITOR

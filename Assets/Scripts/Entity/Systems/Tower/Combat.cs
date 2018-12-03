@@ -17,7 +17,7 @@ namespace Game.Tower.System
         private List<float> removeTimerList;
         private TowerSystem tower;
         private ObjectPool bulletPool;
-        private float attackDelay, attackCooldown;
+        private float attackDelay;
         private BulletSystem defaultBullet;
 
         public Combat(TowerSystem ownerTower) => tower = ownerTower;
