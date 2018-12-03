@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Game.Tower;
+using UnityEngine;
 
-namespace Game.Tower.Data.Stats
+namespace Game.Data
 {
     public abstract class Trait : ScriptableObject
     {

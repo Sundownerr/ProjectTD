@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Game.Tower;
+using UnityEngine;
 
-namespace Game.Tower.Data.Stats.Specials
+namespace Game.Data
 {
     [CreateAssetMenu(fileName = "Multishot", menuName = "Data/Tower/Special/Multishot")]
 

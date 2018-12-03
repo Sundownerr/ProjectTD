@@ -213,6 +213,7 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\TraitControlSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Trait\ChainshotSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Trait\MultishotSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\TraitSystem.cs" />
      <Compile Include="Assets\Scripts\ExtendedMonoBehaviour.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\CreepDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\PlayerData.cs" />
