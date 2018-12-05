@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Game.Creep;
+using Game.Data;
 using Game.Systems;
 using UnityEngine;
 
@@ -11,87 +13,77 @@ namespace Game.Tower.System
 
         private bool isHaveChainTargets;
         private TowerSystem tower;
-        private Collider[] aoeColliderList, chainColliderList;
-        private int creepLayer;      
 
         public TraitControlSystem(TowerSystem ownerTower) 
         {
             tower = ownerTower;
-            aoeColliderList = new Collider[20];
-            chainColliderList = new Collider[40];
-            creepLayer = 1 << 12;
+            
         } 
 
         public void Set()
         {
-            for (int i = 0; i < tower.Stats.TraitList.Length; i++)
-                tower.Stats.TraitList[i].InitTrait(tower);          
+            tower.CombatSystem.BulletHit += OnBulletHit;
+            tower.CombatSystem.PrepareToShoot += OnPrepareToShoot;
+            tower.CombatSystem.Shooting += OnShooting;
         }
 
-        public int CalculateShotCount()
+        public void OnBulletHit(object sender, BulletSystem bullet)
         {
-            var creepList = tower.CreepInRangeList;
-            var requiredShotCount = 1 + tower.Bullet.GetComponent<BulletSystem>().MultishotCount;
+            var bulletTraitCount = 0;
+            var isHaveChainShot = false;
 
-            return creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;
-        }
+            for (int i = 0; i < tower.TraitSystemList.Count; i++)          
+                if (tower.TraitSystemList[i] is BulletTraitSystem trait)    
+                {
+                    bulletTraitCount++;
+                    trait.Apply(bullet); 
 
-        public void SetChainTarget(BulletSystem bullet)
-        {       
-            var hitTargetCount = Physics.OverlapSphereNonAlloc(
-                bullet.transform.position, 
-                150, 
-                chainColliderList, 
-                creepLayer);    
+                    if (trait is ChainshotSystem)
+                        isHaveChainShot = true;
+                }
+                    
+            if (bulletTraitCount == 0)
+            {
+                if (bullet.Target != null)
+                    DamageSystem.DoDamage(bullet.Target, tower.Stats.Damage.Value, tower);
 
-            if (hitTargetCount < 1)
-                IsHaveChainTargets = false;
+                tower.CombatSystem.SetTargetReached(bullet);
+            }           
             else
             {
-                IsHaveChainTargets = true;
-              
-                if (bullet.Target != null)
-                    for (int i = 0; i < hitTargetCount; i++)                                                    
-                        if (bullet.Target.Prefab == chainColliderList[i].gameObject)
-                        {
-                            bullet.Target = 
-
-                                i - 1 >= 0 ? 
-                                    GM.I.CreepList.Find(creep => 
-                                        creep.Prefab == chainColliderList[i - 1].transform.gameObject) :
-
-                                i + 1 < hitTargetCount ? 
-                                    GM.I.CreepList.Find(creep => 
-                                        creep.Prefab == chainColliderList[i + 1].transform.gameObject) :
-
-                                bullet.Target;     
-                            break; 
-                        }                             
-                bullet.RemainingBounceCount--;
-            }          
+                if (!isHaveChainShot)              
+                    tower.CombatSystem.SetTargetReached(bullet);             
+            }            
         }
 
-        public void DamageInAOE(BulletSystem bullet)
+        public void OnPrepareToShoot(object sender, EventArgs e)
         {
-            var hitTargetCount = Physics.OverlapSphereNonAlloc(
-                bullet.transform.position, 
-                bullet.AOEShotRange, 
-                aoeColliderList, 
-                creepLayer);
+            tower.CombatSystem.ShotCount = 1;
 
-            for (int i = 0; i < hitTargetCount; i++)
-                DamageSystem.DoDamage(
-                    GM.I.CreepList.Find(creep => creep.Prefab == aoeColliderList[i].transform.gameObject), 
-                    tower.Stats.Damage.Value, 
-                    tower);
+            for (int i = 0; i < tower.Stats.TraitList.Length; i++)            
+                if (tower.Stats.TraitList[i] is Multishot multishot)
+                {
+                    var creepList = tower.CreepInRangeList;
+                    var requiredShotCount = 1 + multishot.Count;
+
+                    tower.CombatSystem.ShotCount = 
+                        creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;
+                }                             
+        }
+
+        public void OnShooting(object sender, BulletSystem bullet)
+        {    
+            for (int i = 0; i < tower.Stats.TraitList.Length; i++)  
+                if (tower.Stats.TraitList[i] is Chainshot chainshot)              
+                    bullet.RemainingBounceCount = chainshot.BounceCount;        
         }
 
         public void IncreaseStatsPerLevel()
         {
-            var specialList = tower.Stats.TraitList;
+            var traitList = tower.TraitSystemList;
 
-            for (int i = 0; i < specialList.Length; i++)
-                specialList[i].IncreaseStatsPerLevel();
+            for (int i = 0; i < traitList.Count; i++)
+                traitList[i].IncreaseStatsPerLevel();
         }
     }
 }

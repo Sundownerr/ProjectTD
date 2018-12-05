@@ -1,13 +1,11 @@
-﻿using Game.Tower;
+﻿using Game.Systems;
+using Game.Tower;
 using UnityEngine;
 
 namespace Game.Data
 {
-    public abstract class Trait : ScriptableObject
+    public class Trait : Entity 
     {
-        public string Name, Description;
-
-        public virtual void IncreaseStatsPerLevel() { }
-        public virtual void InitTrait(TowerSystem ownerTower) { }
+        public virtual TraitSystem GetTraitSystem(EntitySystem owner) => new TraitSystem(this, owner);
     }
 }

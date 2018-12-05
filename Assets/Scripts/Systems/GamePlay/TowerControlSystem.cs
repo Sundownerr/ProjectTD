@@ -54,7 +54,7 @@ namespace Game.Systems
                     tower.RangeSystem.SetShow();
                     if (tower.IsOn)                                       
                     {                  
-                        tower.AbilitySystem.UpdateSystem();
+                        tower.AbilityControlSystem.UpdateSystem();
 
                         if (tower.CreepInRangeList.Count < 1)                                                 
                             tower.CombatSystem.MoveBullet();                                     

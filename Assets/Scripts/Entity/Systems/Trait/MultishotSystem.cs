@@ -1,26 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Data;
 using Game.Systems;
 using Game.Tower;
 using UnityEngine;
 
-namespace Game.Data
+namespace Game.Systems
 {
 	public class MultishotSystem : TraitSystem
     {
         private new Multishot trait;
-        public MultishotSystem(EntitySystem owner, Multishot trait) : base(owner, trait)
+
+        public MultishotSystem(Multishot trait, EntitySystem owner) : base(trait, owner)
         {
             this.trait = trait;
         }
 
-        public override void Init()
+        public override void IncreaseStatsPerLevel()
         {
-            if(owner is TowerSystem tower)
-            {
-                tower.Bullet.GetComponent<BulletSystem>().MultishotCount = trait.Count;
-            }
+            Debug.Log("increase stats per level");
         }
-
     }
 }

@@ -22,22 +22,24 @@ namespace Game.Tower
         public Combat CombatSystem          { get => combatSystem;          private set => combatSystem = value; }      
         public Stats StatsSystem            { get => statsSystem;           private set => statsSystem = value; }
         public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
-        public Renderer[] RendererList      { get => rendererList;          private set => rendererList = value; }
-        public List<EntitySystem> CreepInRangeList => rangeSystem.EntitySystemList;
-        public AbilityControlSystem AbilitySystem  { get => abilitySystem;  private set => abilitySystem = value; }
-        public TraitControlSystem TraitSystem        { get => traitSystem;         private set => traitSystem = value; }
+        public Renderer[] RendererList      { get => rendererList;          private set => rendererList = value; }    
+        public AbilityControlSystem AbilityControlSystem    { get => abilityControlSystem;  private set => abilityControlSystem = value; }
+        public TraitControlSystem TraitControlSystem        { get => traitControlSystem;    private set => traitControlSystem = value; }
+        public List<EntitySystem> CreepInRangeList          => rangeSystem.EntitySystemList;
 
         public List<AbilitySystem> AbilitySystemList { get => abilitySystemList; set => abilitySystemList = value; }
+        public List<TraitSystem> TraitSystemList { get => traitSystemList; set => traitSystemList = value; }
 
         private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
         private GameObject ocuppiedCell, bullet, range;
         private Renderer[] rendererList;
         private Range rangeSystem;
-        private TraitControlSystem traitSystem;
+        private TraitControlSystem traitControlSystem;
         private Combat combatSystem;
-        private System.AbilityControlSystem abilitySystem;
+        private System.AbilityControlSystem abilityControlSystem;
         private Stats statsSystem;
         private List<AbilitySystem> abilitySystemList;
+        private List<TraitSystem> traitSystemList;
 
         public TowerSystem(GameObject ownerPrefab)
         {         
@@ -47,12 +49,13 @@ namespace Game.Tower
             shootPointTransform = MovingPart.GetChild(0).GetChild(0);
             bullet = ownerPrefab.transform.GetChild(2).gameObject;
 
-            statsSystem     = new Stats(this);
-            traitSystem   = new TraitControlSystem(this);
-            combatSystem    = new Combat(this);
-            abilitySystem   = new AbilityControlSystem(this);
-            appliedEffectSystem    = new AppliedEffectSystem();         
-            AbilitySystemList = new List<AbilitySystem>();
+            statsSystem             = new Stats(this);
+            traitControlSystem      = new TraitControlSystem(this);
+            combatSystem            = new Combat(this);
+            abilityControlSystem    = new AbilityControlSystem(this);
+            appliedEffectSystem     = new AppliedEffectSystem();         
+            abilitySystemList       = new List<AbilitySystem>();
+            traitSystemList         = new List<TraitSystem>();
          
             bullet.SetActive(false);   
             isVulnerable = false;                           
@@ -61,16 +64,17 @@ namespace Game.Tower
         public void SetSystem()
         {               
             for (int i = 0; i < Stats.AbilityList.Length; i++)          
-                AbilitySystemList.Add(new AbilitySystem(Stats.AbilityList[i], this));   
+                abilitySystemList.Add(new AbilitySystem(Stats.AbilityList[i], this));   
+
+            for (int i = 0; i < Stats.TraitList.Length; i++)
+                traitSystemList.Add(Stats.TraitList[i].GetTraitSystem(this));
                 
-            if (!Stats.IsGradeTower)
-            {
-                statsSystem.Set();
-                traitSystem.Set();
-            }
-            
+            if (!Stats.IsGradeTower)            
+                statsSystem.Set();            
+                       
             combatSystem.Set();
-            abilitySystem.Set();
+            abilityControlSystem.Set();
+            traitControlSystem.Set();
 
             range = U.Instantiate(GM.I.RangePrefab, prefab.transform);           
             range.transform.localScale = new Vector3(Stats.Range, 0.001f, Stats.Range);
