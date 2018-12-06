@@ -33,7 +33,7 @@ namespace Game.Tower.System
             var isHaveChainShot = false;
 
             for (int i = 0; i < tower.TraitSystemList.Count; i++)          
-                if (tower.TraitSystemList[i] is BulletTraitSystem trait)    
+                if (tower.TraitSystemList[i] is IBulletTraitSystem trait)    
                 {
                     bulletTraitCount++;
                     trait.Apply(bullet); 

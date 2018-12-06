@@ -10,7 +10,7 @@ namespace Game.Systems
 {
     public class WaveUISystem : ExtendedMonoBehaviour
     {
-        public TextMeshProUGUI CreepTypes, Race, Armor, Specials;
+        public TextMeshProUGUI CreepTypes, Race, Armor, Traits;
 
         protected override void Awake()
         {
@@ -26,33 +26,47 @@ namespace Game.Systems
 
         public void UpdateWaveUI(object sender, EventArgs e)
         {
-            var tempString  = new StringBuilder();
+           
             var creepList   = GM.I.WaveSystem.CurrentWaveCreepList;
 
             Race.text   = creepList[0].Race.ToString();
             Armor.text  = creepList[0].ArmorType.ToString();
+            CreepTypes.text = CalculateTypes();
+            Traits.text = "";
 
-            var smallCount = 0;
-            var normalCount = 0;
-            var commanterCount = 0;
-            var flyingCount = 0;
-            var bossCount = 0;
-
-            for (int i = 0; i < creepList.Count; i++)
+            string GetTraitsAndAbilities()
             {
-                if (creepList[i] is Small)   {   smallCount++; continue;}
-                if (creepList[i] is Normal)  {   normalCount++; continue;}
-                if (creepList[i] is Commander){  commanterCount++; continue;}
-                if (creepList[i] is Flying)  {   flyingCount++; continue;}
-                if (creepList[i] is Boss)    {   bossCount++; continue;}            
+               
+                
+                return "";
             }
 
-            tempString.Append(smallCount > 0    ? smallCount + " Small " : string.Empty);
-            tempString.Append(normalCount > 0   ? normalCount + " Normal " : string.Empty);
-            tempString.Append(commanterCount > 0 ? commanterCount + " Commander " : string.Empty);
-            tempString.Append(flyingCount > 0   ? flyingCount + " Flying " : string.Empty);
-            tempString.Append(bossCount > 0     ? bossCount + " Boss " : string.Empty);
-            CreepTypes.text = tempString.ToString();
+            string CalculateTypes()
+            {
+                var creepTypes = new StringBuilder();
+                var smallCount = 0;
+                var normalCount = 0;
+                var commanterCount = 0;
+                var flyingCount = 0;
+                var bossCount = 0;
+
+                for (int i = 0; i < creepList.Count; i++)
+                {
+                    if (creepList[i] is Small)   {   smallCount++; continue;}
+                    if (creepList[i] is Normal)  {   normalCount++; continue;}
+                    if (creepList[i] is Commander){  commanterCount++; continue;}
+                    if (creepList[i] is Flying)  {   flyingCount++; continue;}
+                    if (creepList[i] is Boss)    {   bossCount++; continue;}            
+                }
+
+                creepTypes
+                    .Append(smallCount > 0    ? $"{smallCount} Small " : string.Empty)
+                    .Append(normalCount > 0   ? $"{normalCount} Normal " : string.Empty)
+                    .Append(commanterCount > 0 ? $"{commanterCount} Commander " : string.Empty)
+                    .Append(flyingCount > 0   ? $"{flyingCount} Flying " : string.Empty)
+                    .Append(bossCount > 0     ? $"{bossCount} Boss " : string.Empty);
+                return creepTypes.ToString();
+            }        
         }        
     }
 }

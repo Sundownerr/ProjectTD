@@ -6,7 +6,7 @@ namespace Game.Data
 {
     [CreateAssetMenu(fileName = "Chainshot", menuName = "Data/Tower/Trait/Chainshot")]
 
-    public class Chainshot : Trait
+    public class Chainshot : Trait, ITrait
     {
         public int BounceCount, DecreaseDamagePerBounce;
 
@@ -16,6 +16,10 @@ namespace Game.Data
             Description = $"Bounce between {BounceCount} targets";
         }
 
-        public override TraitSystem GetTraitSystem(EntitySystem owner) => new ChainshotSystem(this, owner);
+        public override ITraitSystem GetTraitSystem(EntitySystem owner)
+        {
+            this.owner = owner; 
+            return new ChainshotSystem(this);
+        }  
     }
 }

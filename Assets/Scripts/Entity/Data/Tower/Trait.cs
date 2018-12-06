@@ -4,8 +4,17 @@ using UnityEngine;
 
 namespace Game.Data
 {
-    public class Trait : Entity 
+    public interface ITrait
     {
-        public virtual TraitSystem GetTraitSystem(EntitySystem owner) => new TraitSystem(this, owner);
+        ITraitSystem GetTraitSystem(EntitySystem owner);
+    }
+    
+    public class Trait : Entity, ITrait
+    {
+        public virtual ITraitSystem GetTraitSystem(EntitySystem owner)
+        {
+            this.owner = owner; 
+            return new TraitSystem();
+        } 
     }
 }

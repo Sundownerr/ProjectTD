@@ -22,6 +22,8 @@ namespace Game.Systems
                                
             return GetFittingCreepList();
 
+            #region Helper functions
+
             List<CreepData> GetFittingCreepList()
             {
                 var sortedCreepList = new List<CreepData>();
@@ -35,8 +37,11 @@ namespace Game.Systems
                 };
 
                 for (int i = 0; i < wave.CreepTypeList.Count; i++)        
-                    sortedCreepList.Add(GetCreepOfType(wave.CreepTypeList[i]));                     
+                    sortedCreepList.Add(GetCreepOfType(wave.CreepTypeList[i]));   
+
                 return sortedCreepList;
+
+                #region Helper functions
 
                 CreepData GetCreepOfType(CreepData creep) 
                 {         
@@ -65,6 +70,10 @@ namespace Game.Systems
                     var random = StaticRandom.Instance.Next(0, tempChoosedCreepList.Count);
                     return tempChoosedCreepList.Count > 0 ? tempChoosedCreepList[random] : null;                                                                   
                 }
+
+                #endregion
+                #endregion
+            
             }    
         }
     }

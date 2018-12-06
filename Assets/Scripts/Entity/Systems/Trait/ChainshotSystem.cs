@@ -6,28 +6,25 @@ using UnityEngine;
 
 namespace Game.Systems
 {
-    public class ChainshotSystem : BulletTraitSystem
+    public class ChainshotSystem : IBulletTraitSystem
     {
-        private new Chainshot trait;
-        private Collider[] chainColliderList;
-        private int creepLayer;      
+        private Chainshot trait;
 
-
-        public ChainshotSystem(Chainshot trait, EntitySystem owner) : base(trait, owner)
+        public ChainshotSystem(Chainshot trait) 
         {
-            this.trait = trait;
-            chainColliderList = new Collider[40];
-            creepLayer = 1 << 12;
+            this.trait = trait;          
         }
 
-        public override void IncreaseStatsPerLevel()
+        public void IncreaseStatsPerLevel()
         {
             Debug.Log("incresa");
         }
 
-        public override void Apply(BulletSystem bullet)
+        public void Apply(BulletSystem bullet)
         {                   
-            var tower = owner as TowerSystem;
+            var tower = trait.Owner as TowerSystem;
+            var chainColliderList = new Collider[40];
+            var creepLayer = 1 << 12;
 
             var hitTargetCount = Physics.OverlapSphereNonAlloc(
                 bullet.Prefab.transform.position, 
@@ -35,7 +32,6 @@ namespace Game.Systems
                 chainColliderList, 
                 creepLayer);    
         
-            Debug.Log(bullet.RemainingBounceCount);
             if (bullet.Target != null)         
             {   
                 DamageSystem.DoDamage(bullet.Target, tower.Stats.Damage.Value, tower);
@@ -61,8 +57,7 @@ namespace Game.Systems
                             break; 
                         }                             
                     bullet.RemainingBounceCount--;       
-                }   
-               
+                }               
             }                              
         }
     }

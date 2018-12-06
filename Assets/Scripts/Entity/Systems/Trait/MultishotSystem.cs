@@ -7,16 +7,16 @@ using UnityEngine;
 
 namespace Game.Systems
 {
-	public class MultishotSystem : TraitSystem
+	public class MultishotSystem : ITraitSystem
     {
-        private new Multishot trait;
+        private Multishot trait;
 
-        public MultishotSystem(Multishot trait, EntitySystem owner) : base(trait, owner)
+        public MultishotSystem(Multishot trait) 
         {
             this.trait = trait;
         }
 
-        public override void IncreaseStatsPerLevel()
+        public void IncreaseStatsPerLevel()
         {
             Debug.Log("increase stats per level");
         }

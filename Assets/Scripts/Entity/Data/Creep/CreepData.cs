@@ -10,7 +10,6 @@ namespace Game.Creep
 {  
     public class CreepData : Entity
     {
-
         public float MoveSpeed  { get => moveSpeed; set => moveSpeed = value >= 0 ? value : 0; }
         public int Exp          { get => exp; set => exp = value; }
         public int Gold         { get => gold; set => gold = value >= 0 ? value : 0; }      
@@ -20,6 +19,7 @@ namespace Game.Creep
         public Armor.ArmorType ArmorType    { get => armorType; set => armorType = value; }
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
         public float HealthRegen { get => healthRegen; set => healthRegen = value; }
+        public List<Trait> TraitList { get => traitList; set => traitList = value; }
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
@@ -27,7 +27,8 @@ namespace Game.Creep
   
         public RaceType Race;
         public List<Ability> AbilityList;
-
+        
+        private List<Trait> traitList;
         protected float healthRegen;
         protected Armor.ArmorType armorType;
         protected float armorValue;
@@ -35,7 +36,6 @@ namespace Game.Creep
         protected float defaultMoveSpeed, moveSpeed, health;    
         protected bool isInstanced;
         
-
         protected virtual void Awake() 
         {
          //   AddToDataBase();                          

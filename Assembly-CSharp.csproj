@@ -217,9 +217,13 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Trait\MultishotSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\TraitSystem.cs" />
      <Compile Include="Assets\Scripts\ExtendedMonoBehaviour.cs" />
+     <Compile Include="Assets\Scripts\Systems\Data\DataBase\CreepAbilityDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\CreepDataBase.cs" />
+     <Compile Include="Assets\Scripts\Systems\Data\DataBase\CreepTraitDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\PlayerData.cs" />
+     <Compile Include="Assets\Scripts\Systems\Data\DataBase\TowerAbilityDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\TowerDataBase.cs" />
+     <Compile Include="Assets\Scripts\Systems\Data\DataBase\TowerTraitDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\DataBase\WaveDataBase.cs" />
      <Compile Include="Assets\Scripts\Systems\Data\Waves\Wave.cs" />
      <Compile Include="Assets\Scripts\Systems\GamePlay\CreepControlSystem.cs" />

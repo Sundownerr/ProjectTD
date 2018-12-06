@@ -28,7 +28,7 @@ namespace Game.Tower
         public List<EntitySystem> CreepInRangeList          => rangeSystem.EntitySystemList;
 
         public List<AbilitySystem> AbilitySystemList { get => abilitySystemList; set => abilitySystemList = value; }
-        public List<TraitSystem> TraitSystemList { get => traitSystemList; set => traitSystemList = value; }
+        public List<ITraitSystem> TraitSystemList { get => traitSystemList; set => traitSystemList = value; }
 
         private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
         private GameObject ocuppiedCell, bullet, range;
@@ -39,7 +39,7 @@ namespace Game.Tower
         private System.AbilityControlSystem abilityControlSystem;
         private Stats statsSystem;
         private List<AbilitySystem> abilitySystemList;
-        private List<TraitSystem> traitSystemList;
+        private List<ITraitSystem> traitSystemList;
 
         public TowerSystem(GameObject ownerPrefab)
         {         
@@ -55,7 +55,7 @@ namespace Game.Tower
             abilityControlSystem    = new AbilityControlSystem(this);
             appliedEffectSystem     = new AppliedEffectSystem();         
             abilitySystemList       = new List<AbilitySystem>();
-            traitSystemList         = new List<TraitSystem>();
+            traitSystemList         = new List<ITraitSystem>();
          
             bullet.SetActive(false);   
             isVulnerable = false;                           

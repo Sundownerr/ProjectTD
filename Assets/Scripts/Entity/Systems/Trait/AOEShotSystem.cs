@@ -7,36 +7,35 @@ using UnityEngine;
 
 namespace Game.Systems
 {
-	public class AOEShotSystem : BulletTraitSystem
+	public class AOEShotSystem : IBulletTraitSystem
     {
-        private new AOEShot trait;
-        private Collider[] aoeColliderList;
-        private int creepLayer;      
+        private  AOEShot trait;   
 
-        public AOEShotSystem(AOEShot trait, EntitySystem owner) : base(trait, owner)
+        public AOEShotSystem(AOEShot trait)
         {
-            this.trait = trait;
-            aoeColliderList = new Collider[40];
-            creepLayer = 1 << 12;
+             this.trait = trait;                       
         }
 
-        public override void IncreaseStatsPerLevel()
+        public void IncreaseStatsPerLevel()
         {
             Debug.Log("increase stats per level");
         }
 
-        public override void Apply(BulletSystem bullet)
+        public void Apply(BulletSystem bullet)
         {
-            var tower = owner as TowerSystem;
+            var creepLayer      = 1 << 12;
+            var colliderList    = new Collider[40];
+            var tower           = trait.Owner as TowerSystem;
+
             var hitTargetCount = Physics.OverlapSphereNonAlloc(
             bullet.Prefab.transform.position, 
             trait.Range, 
-            aoeColliderList, 
+            colliderList, 
             creepLayer);
 
             for (int i = 0; i < hitTargetCount; i++)
                 DamageSystem.DoDamage(
-                    GM.I.CreepList.Find(creep => creep.Prefab == aoeColliderList[i].transform.gameObject), 
+                    GM.I.CreepList.Find(creep => creep.Prefab == colliderList[i].transform.gameObject), 
                     tower.Stats.Damage.Value, 
                     tower);          
         }

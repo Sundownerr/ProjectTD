@@ -6,7 +6,7 @@ namespace Game.Data
 {
     [CreateAssetMenu(fileName = "AOE Shot", menuName = "Data/Tower/Trait/Multishot")]
 
-    public class AOEShot : Trait
+    public class AOEShot : Trait, ITrait
     {
         public int Range;
 
@@ -16,7 +16,11 @@ namespace Game.Data
             Description = $"Damage targets in {Range} range";
         }
 
-        public override TraitSystem GetTraitSystem(EntitySystem owner) => new AOEShotSystem(this, owner);     
+        public override ITraitSystem GetTraitSystem(EntitySystem owner)
+        {
+            this.owner = owner; 
+            return new AOEShotSystem(this);
+        }  
     }
 }
 

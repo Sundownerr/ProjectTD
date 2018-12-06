@@ -6,7 +6,7 @@ namespace Game.Data
 {
     [CreateAssetMenu(fileName = "Multishot", menuName = "Data/Tower/Trait/Multishot")]
 
-    public class Multishot : Trait
+    public class Multishot : Trait, ITrait
     {
         public int Count;
 
@@ -16,6 +16,10 @@ namespace Game.Data
             Description = $"Shoot {Count} additional targets";
         }
 
-        public override TraitSystem GetTraitSystem(EntitySystem owner) => new MultishotSystem(this, owner);     
+        public override ITraitSystem GetTraitSystem(EntitySystem owner)
+        {
+            this.owner = owner; 
+            return new MultishotSystem(this);
+        }  
     }
 }
