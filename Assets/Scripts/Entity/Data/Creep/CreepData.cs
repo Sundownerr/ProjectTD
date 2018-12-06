@@ -19,16 +19,16 @@ namespace Game.Creep
         public Armor.ArmorType ArmorType    { get => armorType; set => armorType = value; }
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
         public float HealthRegen { get => healthRegen; set => healthRegen = value; }
-        public List<Trait> TraitList { get => traitList; set => traitList = value; }
+        public List<Trait> Traits { get => traits; set => traits = value; }
 
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
         public int WaveLevel;
   
         public RaceType Race;
-        public List<Ability> AbilityList;
+        public List<Ability> Abilities;
         
-        private List<Trait> traitList;
+        private List<Trait> traits;
         protected float healthRegen;
         protected Armor.ArmorType armorType;
         protected float armorValue;
@@ -53,16 +53,16 @@ namespace Game.Creep
             if (!IsInstanced)      
                 if (DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)     
                 {            
-                    var raceList = dataBase.AllCreepList;
-                    for (int i = 0; i < raceList.Count; i++)
+                    var races = dataBase.CreepRaces;
+                    for (int i = 0; i < races.Count; i++)
                         if (i == (int)Race)                    
                         {
-                            for (int j = 0; j < raceList[i].CreepList.Count; j++)                             
-                                if (CompareId(raceList[i].CreepList[j].Id) || Name == raceList[i].CreepList[j].Name)
+                            for (int j = 0; j < races[i].Creeps.Count; j++)                             
+                                if (CompareId(races[i].Creeps[j].Id) || Name == races[i].Creeps[j].Name)
                                     return;
                             
-                            raceList[i].CreepList.Add(this);
-                            numberInList = raceList[i].CreepList.Count - 1;    
+                            races[i].Creeps.Add(this);
+                            numberInList = races[i].Creeps.Count - 1;    
 
                             SetId();
                             SetName();      
@@ -77,7 +77,7 @@ namespace Game.Creep
             if (!IsInstanced)        
                 if (DataLoadingSystem.Load<CreepDataBase>() is CreepDataBase dataBase)             
                 {               
-                    dataBase.AllCreepList[(int)Race].CreepList.RemoveAt(numberInList);       
+                    dataBase.CreepRaces[(int)Race].Creeps.RemoveAt(numberInList);       
                     DataLoadingSystem.Save<CreepDataBase>(dataBase);       
                 }                    
         }

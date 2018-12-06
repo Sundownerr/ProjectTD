@@ -19,7 +19,7 @@ namespace Game.Cells
         {
             base.Awake();
         
-            GM.I.GridSystem.CellList.Add(this);
+            GM.I.GridSystem.Cells.Add(this);
 
             cellRenderer = GetComponent<Renderer>();
             cellRenderer.material.color = new Color(0, 0, 0, 0);      

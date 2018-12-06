@@ -56,11 +56,11 @@ namespace Game.Systems
 
 				if (!File.Exists("playerData.json"))
 				{
-					playerData.ElementLevelList = new List<int>();
+					playerData.ElementLevels = new List<int>();
 					var elementAmount = Enum.GetValues(typeof(ElementType)).Length;
 
 					for (int i = 0; i < elementAmount; i++)
-						playerData.ElementLevelList.Add(0);      
+						playerData.ElementLevels.Add(0);      
 
 					playerData.MaxTowerLimit = 500;
 					playerData.StartTowerRerollCount = 3;
@@ -76,8 +76,8 @@ namespace Game.Systems
 					var dataFromFile = File.ReadAllText("playerData.json");				
 					var loadedData = JsonConvert.DeserializeObject<PlayerData>(dataFromFile);
 					
-					playerData.ElementLevelList 	= new List<int>();
-					playerData.ElementLevelList    	= loadedData.ElementLevelList;
+					playerData.ElementLevels 	= new List<int>();
+					playerData.ElementLevels    	= loadedData.ElementLevels;
 					playerData.MagicCrystals       	= loadedData.MagicCrystals;
 					playerData.Gold                	= loadedData.Gold;
 					playerData.CurrentTowerLimit   	= loadedData.CurrentTowerLimit;

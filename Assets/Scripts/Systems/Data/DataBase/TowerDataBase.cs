@@ -10,19 +10,19 @@ namespace Game.Data
     public class TowerDataBase : ScriptableObject, IData
     {     
         [SerializeField]
-        public ElementList AllTowerList;     
+        public ElementList AllTowers;     
 
         private void Awake()
         {    
-            if (AllTowerList == null) 
+            if (AllTowers == null) 
             {
-                AllTowerList = new ElementList();                
-                AllTowerList.ElementsList = new List<Element>();          
+                AllTowers = new ElementList();                
+                AllTowers.Elements = new List<Element>();          
                
-                var elementNameList = Enum.GetNames(typeof(ElementType));              
+                var elementNames = Enum.GetNames(typeof(ElementType));              
                          
-                for (int i = 0; i < elementNameList.Length; i++)
-                    AllTowerList.ElementsList.Add(new Element(elementNameList[i]));
+                for (int i = 0; i < elementNames.Length; i++)
+                    AllTowers.Elements.Add(new Element(elementNames[i]));
             }                            
         }     
     }

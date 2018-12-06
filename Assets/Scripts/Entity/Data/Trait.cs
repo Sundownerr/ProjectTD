@@ -8,13 +8,9 @@ namespace Game.Data
     {
         ITraitSystem GetTraitSystem(EntitySystem owner);
     }
-    
+
     public class Trait : Entity, ITrait
     {
-        public virtual ITraitSystem GetTraitSystem(EntitySystem owner)
-        {
-            this.owner = owner; 
-            return new TraitSystem();
-        } 
+        public virtual ITraitSystem GetTraitSystem(EntitySystem owner) => null;
     }
 }

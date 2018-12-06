@@ -10,18 +10,18 @@ namespace Game.Data
 	public class CreepDataBase : ScriptableObject, IData
 	{
         [SerializeField]
-        public List<Race> AllCreepList;
+        public List<Race> CreepRaces;
 
         private void Awake()
         {
-            if (AllCreepList == null)    
+            if (CreepRaces == null)    
             {      
-                AllCreepList = new List<Race>();             
+                CreepRaces = new List<Race>();             
 
-				var raceList = Enum.GetValues(typeof(RaceType));  
+				var races = Enum.GetValues(typeof(RaceType));  
                 
-                for (int i = 0; i < raceList.Length; i++)
-                    AllCreepList.Add(new Race());               
+                for (int i = 0; i < races.Length; i++)
+                    CreepRaces.Add(new Race());               
             }                           
         }  
     }

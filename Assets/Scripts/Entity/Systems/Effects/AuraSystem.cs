@@ -35,8 +35,7 @@ namespace Game.Systems
         }
 
         public override void End()
-        {         
-           
+        {                   
             Object.Destroy(rangePrefab);
         }
     }

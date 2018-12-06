@@ -107,7 +107,7 @@ namespace Game.Systems
                     
                     if (isHitCell)
                     {
-                        var cell = GM.I.GridSystem.CellList.Find(hitCell => hitCell.gameObject == hit.transform.gameObject);          
+                        var cell = GM.I.GridSystem.Cells.Find(hitCell => hitCell.gameObject == hit.transform.gameObject);          
                     
                         if (!cell.IsBusy)
                         {
@@ -128,7 +128,7 @@ namespace Game.Systems
                 lastTower.OcuppiedCell = chosenCell.gameObject;                       
                 lastTower.Prefab.transform.position = lastTower.OcuppiedCell.transform.position;          
 
-                var placeEffect = U.Instantiate(GM.I.ElementPlaceEffectList[(int)lastTower.Stats.Element],
+                var placeEffect = U.Instantiate(GM.I.ElementPlaceEffects[(int)lastTower.Stats.Element],
                     lastTower.Prefab.transform.position + Vector3.up * 5,
                     Quaternion.identity);
                 U.Destroy(placeEffect, placeEffect.GetComponent<ParticleSystem>().main.duration);
@@ -149,8 +149,8 @@ namespace Game.Systems
 
             void SetTowerColor(TowerSystem tower, Color color)
             {
-                for (int i = 0; i < tower.RendererList.Length; i++)
-                    tower.RendererList[i].material.color = color;
+                for (int i = 0; i < tower.Renderers.Length; i++)
+                    tower.Renderers[i].material.color = color;
             }
 
             #endregion

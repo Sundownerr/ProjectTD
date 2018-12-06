@@ -41,11 +41,11 @@ namespace Game.Creep.Data
     public class Race
     {
         [SerializeField, Expandable]
-        public List<CreepData> CreepList;
+        public List<CreepData> Creeps;
 
         public Race()
         {
-            CreepList = new List<CreepData>();
+            Creeps = new List<CreepData>();
         }           
     }
 }

@@ -47,7 +47,7 @@ namespace Game.Cells
 
             if (isNothingHit || !isDownHit)
             {
-                GM.I.GridSystem.CellList.Remove(ownerCell);
+                GM.I.GridSystem.Cells.Remove(ownerCell);
                 Object.Destroy(ownerCell.gameObject);
             } 
             else

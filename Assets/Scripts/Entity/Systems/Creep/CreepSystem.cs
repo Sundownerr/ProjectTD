@@ -13,27 +13,27 @@ namespace Game.Creep
         public CreepData Stats              { get => stats; set => stats = value; }
         public int WaypointIndex            { get => waypointIndex; set => waypointIndex = value; }
         public EntitySystem LastDamageDealer { get => lastDamageDealer; set => lastDamageDealer = value; }
-        public List<AbilitySystem> AbilitySystemList { get => abilitySystemList; set => abilitySystemList = value; }
+        public List<AbilitySystem> AbilitySystems { get => abilitySystems; set => abilitySystems = value; }
         public AbilityControlSystem AbilityControlSystem { get => abilityControlSystem; set => abilityControlSystem = value; }
 
         private CreepData stats;
         private int waypointIndex;
         private EntitySystem lastDamageDealer;
-        private List<AbilitySystem> abilitySystemList;
+        private List<AbilitySystem> abilitySystems;
         private AbilityControlSystem abilityControlSystem;
 
         public CreepSystem(GameObject ownerPrefab)
         {
-            AbilitySystemList = new List<AbilitySystem>();     
+            AbilitySystems = new List<AbilitySystem>();     
  
             prefab = ownerPrefab;
         }
 
         public void SetSystem()
         {
-            if (stats.AbilityList != null)
-                for (int i = 0; i < stats.AbilityList.Count; i++)           
-                    AbilitySystemList.Add(new AbilitySystem(stats.AbilityList[i], this));
+            if (stats.Abilities != null)
+                for (int i = 0; i < stats.Abilities.Count; i++)           
+                    AbilitySystems.Add(new AbilitySystem(stats.Abilities[i], this));
         
             AbilityControlSystem    = new AbilityControlSystem(this);                
             appliedEffectSystem     = new AppliedEffectSystem();

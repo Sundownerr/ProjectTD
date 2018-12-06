@@ -10,8 +10,8 @@ namespace Game.Systems
 {
     public class BuildUISystem : ExtendedMonoBehaviour
     {
-        public List<Button> ElementButtonList;
-        public List<GameObject> RarityGOList;
+        public List<Button> ElementButtons;
+        public List<GameObject> RarityGOs;
         public GameObject TowerButtonPrefab;
         public StateMachine State;
         public ElementType ChoosedElement;
@@ -19,9 +19,9 @@ namespace Game.Systems
         public bool IsChoosedNewTower;
         public event EventHandler NeedToBuildTower = delegate{};      
 
-        private List<TowerData> availableTowerList;      
-        private List<GameObject> towerButtonGOList;
-        private List<TowerButtonSystem> towerButtonList;
+        private List<TowerData> availableTowers;      
+        private List<GameObject> towerButtonGOs;
+        private List<TowerButtonSystem> towerButtons;
         private RectTransform rarityTransform;
         private Vector2 newTowerButtonPos;
 
@@ -31,20 +31,20 @@ namespace Game.Systems
               
             base.Awake();          
 
-            towerButtonGOList   = new List<GameObject>();
-            towerButtonList     = new List<TowerButtonSystem>();
-            availableTowerList  = new List<TowerData>();
+            towerButtonGOs   = new List<GameObject>();
+            towerButtons     = new List<TowerButtonSystem>();
+            availableTowers  = new List<TowerData>();
             newTowerButtonPos   = new Vector2(0, 32);
-            availableTowerList  = GM.I.AvailableTowerList;
+            availableTowers  = GM.I.AvailableTowers;
             rarityTransform     = Rarity.GetComponent<RectTransform>();       
 
-            ElementButtonList[0].onClick.AddListener(ShowAstral);
-            ElementButtonList[1].onClick.AddListener(ShowDarkness);
-            ElementButtonList[2].onClick.AddListener(ShowIce);
-            ElementButtonList[3].onClick.AddListener(ShowIron);
-            ElementButtonList[4].onClick.AddListener(ShowStorm);
-            ElementButtonList[5].onClick.AddListener(ShowNature);
-            ElementButtonList[6].onClick.AddListener(ShowFire);
+            ElementButtons[0].onClick.AddListener(ShowAstral);
+            ElementButtons[1].onClick.AddListener(ShowDarkness);
+            ElementButtons[2].onClick.AddListener(ShowIce);
+            ElementButtons[3].onClick.AddListener(ShowIron);
+            ElementButtons[4].onClick.AddListener(ShowStorm);
+            ElementButtons[5].onClick.AddListener(ShowNature);
+            ElementButtons[6].onClick.AddListener(ShowFire);
 
             UpdateAvailableElement();
 
@@ -79,10 +79,10 @@ namespace Game.Systems
 
         private void UpdateAvailableElement()
         {           
-            ActivateButtonList(ref ElementButtonList, false);      
+            ActivateButtonList(ref ElementButtons, false);      
 
-            for (int i = 0; i < availableTowerList.Count; i++)           
-                ElementButtonList[(int)availableTowerList[i].Element].gameObject.SetActive(true);
+            for (int i = 0; i < availableTowers.Count; i++)           
+                ElementButtons[(int)availableTowers[i].Element].gameObject.SetActive(true);
         }      
 
         public void BuildNewTower() => NeedToBuildTower?.Invoke(this, new EventArgs());
@@ -91,7 +91,7 @@ namespace Game.Systems
         {           
             ChoosedElement = element;
             Rarity.gameObject.SetActive(true);
-            rarityTransform.SetParent(ElementButtonList[(int)ChoosedElement].GetComponent<RectTransform>());
+            rarityTransform.SetParent(ElementButtons[(int)ChoosedElement].GetComponent<RectTransform>());
             rarityTransform.localPosition = Vector2.zero;
 
             UpdateRarity();                       
@@ -99,28 +99,28 @@ namespace Game.Systems
 
         private void UpdateRarity()
         {                          
-            for (int i = 0; i < towerButtonList.Count; i++)                      
-                towerButtonGOList[i].gameObject.SetActive(towerButtonList[i].TowerData.Element == ChoosedElement);                                                                                                    
+            for (int i = 0; i < towerButtons.Count; i++)                      
+                towerButtonGOs[i].gameObject.SetActive(towerButtons[i].TowerData.Element == ChoosedElement);                                                                                                    
         }
 
         public void RemoveTowerButton(TowerButtonSystem towerButton)
         {
-            towerButtonGOList.Remove(towerButton.gameObject);
-            towerButtonList.Remove(towerButton);
-            var buttonRectList = new List<RectTransform>();
+            towerButtonGOs.Remove(towerButton.gameObject);
+            towerButtons.Remove(towerButton);
+            var buttonRects = new List<RectTransform>();
 
-            for (int i = 0; i < towerButtonList.Count; i++)          
-                if (towerButtonList[i].TowerData.Element == towerButton.TowerData.Element)
-                    if (towerButtonList[i].TowerData.Rarity == towerButton.TowerData.Rarity)                                      
-                        buttonRectList.Add(towerButtonList[i].GetComponent<RectTransform>());
+            for (int i = 0; i < towerButtons.Count; i++)          
+                if (towerButtons[i].TowerData.Element == towerButton.TowerData.Element)
+                    if (towerButtons[i].TowerData.Rarity == towerButton.TowerData.Rarity)                                      
+                        buttonRects.Add(towerButtons[i].GetComponent<RectTransform>());
 
-            for (int i = 0; i < buttonRectList.Count; i++)              
+            for (int i = 0; i < buttonRects.Count; i++)              
             {                             
                 var isNewButtonPosBusy = false;
-                var newButtonPos = (Vector2)buttonRectList[i].localPosition - newTowerButtonPos;
+                var newButtonPos = (Vector2)buttonRects[i].localPosition - newTowerButtonPos;
                 
-                for (int j = 0; j < buttonRectList.Count; j++)                              
-                    if (newButtonPos.y == buttonRectList[j].localPosition.y)  
+                for (int j = 0; j < buttonRects.Count; j++)                              
+                    if (newButtonPos.y == buttonRects[j].localPosition.y)  
                     {
                         isNewButtonPosBusy = true;
                         break;  
@@ -129,7 +129,7 @@ namespace Game.Systems
                     break;
                 else
                     if (newButtonPos.y >= 0)
-                        buttonRectList[i].localPosition = newButtonPos;            
+                        buttonRects[i].localPosition = newButtonPos;            
             }                                                                                                        
         }
 
@@ -138,16 +138,16 @@ namespace Game.Systems
             var towerCount = 0;               
             var isSameTower = false;
              
-            for (int i = 0; i < towerButtonList.Count; i++)
+            for (int i = 0; i < towerButtons.Count; i++)
             {
-                if (towerButtonList[i].TowerData == towerData)
+                if (towerButtons[i].TowerData == towerData)
                 {          
                     isSameTower = true;            
                     AddTowerAmount(i);                                                                     
                 }  
             
-                if (towerButtonList[i].TowerData.Element == towerData.Element)
-                    if (towerButtonList[i].TowerData.Rarity == towerData.Rarity)
+                if (towerButtons[i].TowerData.Element == towerData.Element)
+                    if (towerButtons[i].TowerData.Rarity == towerData.Rarity)
                         towerCount++;
             }
 
@@ -158,16 +158,16 @@ namespace Game.Systems
 
             void AddTowerAmount(int index)
             {
-                towerButtonList[index].Count++;
-                towerButtonList[index].transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = towerButtonList[index].Count.ToString();       
+                towerButtons[index].Count++;
+                towerButtons[index].transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = towerButtons[index].Count.ToString();       
             }           
 
             void CreateTowerButton()
             {
-                towerButtonGOList.Add(Instantiate(TowerButtonPrefab, RarityGOList[(int)towerData.Rarity].transform));                      
-                towerButtonList.Add(towerButtonGOList[towerButtonGOList.Count - 1].GetComponent<TowerButtonSystem>());
+                towerButtonGOs.Add(Instantiate(TowerButtonPrefab, RarityGOs[(int)towerData.Rarity].transform));                      
+                towerButtons.Add(towerButtonGOs[towerButtonGOs.Count - 1].GetComponent<TowerButtonSystem>());
 
-                var towerButton = towerButtonList[towerButtonList.Count - 1];     
+                var towerButton = towerButtons[towerButtons.Count - 1];     
                 var towerButtonImage = towerButton.gameObject.transform.GetChild(0).GetComponent<Image>();
 
                 towerButton.TowerData = towerData;

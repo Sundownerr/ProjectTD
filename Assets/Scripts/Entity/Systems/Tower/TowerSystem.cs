@@ -22,24 +22,24 @@ namespace Game.Tower
         public Combat CombatSystem          { get => combatSystem;          private set => combatSystem = value; }      
         public Stats StatsSystem            { get => statsSystem;           private set => statsSystem = value; }
         public TowerData Stats              { get => StatsSystem.CurrentStats; set => StatsSystem.CurrentStats = value; }
-        public Renderer[] RendererList      { get => rendererList;          private set => rendererList = value; }    
+        public Renderer[] Renderers      { get => renderers;          private set => renderers = value; }    
         public AbilityControlSystem AbilityControlSystem    { get => abilityControlSystem;  private set => abilityControlSystem = value; }
         public TraitControlSystem TraitControlSystem        { get => traitControlSystem;    private set => traitControlSystem = value; }
-        public List<EntitySystem> CreepInRangeList          => rangeSystem.EntitySystemList;
+        public List<EntitySystem> CreepsInRange          => rangeSystem.EntitySystems;
 
-        public List<AbilitySystem> AbilitySystemList { get => abilitySystemList; set => abilitySystemList = value; }
-        public List<ITraitSystem> TraitSystemList { get => traitSystemList; set => traitSystemList = value; }
+        public List<AbilitySystem> AbilitySystems { get => abilitySystems; set => abilitySystems = value; }
+        public List<ITraitSystem> TraitSystems { get => traitSystems; set => traitSystems = value; }
 
         private Transform rangeTransform, movingPartTransform, staticPartTransform, shootPointTransform;
         private GameObject ocuppiedCell, bullet, range;
-        private Renderer[] rendererList;
+        private Renderer[] renderers;
         private Range rangeSystem;
         private TraitControlSystem traitControlSystem;
         private Combat combatSystem;
         private System.AbilityControlSystem abilityControlSystem;
         private Stats statsSystem;
-        private List<AbilitySystem> abilitySystemList;
-        private List<ITraitSystem> traitSystemList;
+        private List<AbilitySystem> abilitySystems;
+        private List<ITraitSystem> traitSystems;
 
         public TowerSystem(GameObject ownerPrefab)
         {         
@@ -54,8 +54,8 @@ namespace Game.Tower
             combatSystem            = new Combat(this);
             abilityControlSystem    = new AbilityControlSystem(this);
             appliedEffectSystem     = new AppliedEffectSystem();         
-            abilitySystemList       = new List<AbilitySystem>();
-            traitSystemList         = new List<ITraitSystem>();
+            abilitySystems       = new List<AbilitySystem>();
+            traitSystems         = new List<ITraitSystem>();
          
             bullet.SetActive(false);   
             isVulnerable = false;                           
@@ -63,11 +63,11 @@ namespace Game.Tower
 
         public void SetSystem()
         {               
-            for (int i = 0; i < Stats.AbilityList.Length; i++)          
-                abilitySystemList.Add(new AbilitySystem(Stats.AbilityList[i], this));   
+            for (int i = 0; i < Stats.Abilities.Count; i++)          
+                abilitySystems.Add(new AbilitySystem(Stats.Abilities[i], this));   
 
-            for (int i = 0; i < Stats.TraitList.Length; i++)
-                traitSystemList.Add(Stats.TraitList[i].GetTraitSystem(this));
+            for (int i = 0; i < Stats.Traits.Count; i++)
+                traitSystems.Add(Stats.Traits[i].GetTraitSystem(this));
                 
             if (!Stats.IsGradeTower)            
                 statsSystem.Set();            
@@ -82,7 +82,7 @@ namespace Game.Tower
             rangeSystem.Owner = this;    
             rangeSystem.CollideType = CollideWith.Creeps;
 
-            RendererList = prefab.GetComponentsInChildren<Renderer>();                       
+            Renderers = prefab.GetComponentsInChildren<Renderer>();                       
         }
         
         public void AddExp(int amount) => StatsSystem.AddExp(amount);      

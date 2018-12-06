@@ -22,60 +22,61 @@ namespace Game.Systems
     public class WaveSystem 
     {
         public int WaveNumber { get => waveNumber; set => waveNumber = value > 0 ? value : 1; }
-        public List<CreepData> CurrentWaveCreepList { get => currentWaveCreepList; set => currentWaveCreepList = value; }
+        public List<CreepData> CurrentWaveCreeps { get => currentWaveCreeps; set => currentWaveCreeps = value; }
         public event EventHandler WaveChanged = delegate{};
         public event EventHandler<CreepEventArgs> CreepSpawned = delegate{};
         public event EventHandler AllWaveCreepsKilled = delegate{};
 
         private int waveNumber;
-        private List<List<CreepSystem>> creepWaveList;
-        private List<List<CreepData>> waveList;
-        private List<CreepData> currentWaveCreepList;
+        private List<List<CreepSystem>> creepWaves;
+        private List<List<CreepData>> waves;
+        private List<CreepData> currentWaveCreeps;
 
         public WaveSystem()
         {
             GM.I.WaveSystem = this;
 
-            currentWaveCreepList    = new List<CreepData>();
-            creepWaveList           = new List<List<CreepSystem>>();           
-            waveList                = new List<List<CreepData>>();
-
-            waveList = CreateWaveList(GM.I.WaveAmount);
-            waveNumber = 1;
-            currentWaveCreepList = waveList[0];      
-
-            #region  Helper functions
-
-            List<List<CreepData>> CreateWaveList(int waveAmount)
-            {
-                var armorRandomList = new List<int>();
-                var waveRandomList  = new List<int>();         
-                var armorTypeList   = Enum.GetValues(typeof(Armor.ArmorType));
-                var raceTypeList    = Enum.GetValues(typeof(RaceType));     
-                var tempWaveList    = new List<List<CreepData>>();      
-                var waveList        = GM.I.WaveDataBase.WaveList;      
-
-                for (int i = 0; i < waveAmount; i++)
-                {
-                    waveRandomList.Add(StaticRandom.Instance.Next(0, waveList.Count));
-                    armorRandomList.Add(StaticRandom.Instance.Next(0, armorTypeList.Length));      
-                }
-
-                for (int waveId = 0; waveId < waveAmount; waveId++)
-                {             
-                    tempWaveList.Add(
-                        WaveCreatingSystem.CreateWave(
-                            RaceType.Humanoid,
-                            waveList[waveRandomList[waveId]]));               
-                }   
-                return tempWaveList;
-            }   
-            #endregion
+            currentWaveCreeps = new List<CreepData>();
+            creepWaves        = new List<List<CreepSystem>>();           
+            waves             = new List<List<CreepData>>();  
         }
 
         public void SetSystem()
         {
             GM.I.BaseUISystem.WaveStarted += OnWaveStarted;
+
+             waves = CreateWaves(GM.I.WaveAmount);
+            waveNumber = 1;
+            currentWaveCreeps = waves[0];      
+
+            #region  Helper functions
+
+            List<List<CreepData>> CreateWaves(int waveAmount)
+            {
+                var armorRandomIds = new List<int>();
+                var waveRandomIds  = new List<int>();         
+                var armorTypes   = Enum.GetValues(typeof(Armor.ArmorType));
+                var raceTypes    = Enum.GetValues(typeof(RaceType));     
+                var tempWaves    = new List<List<CreepData>>();      
+                var waves        = GM.I.WaveDataBase.Waves;      
+
+                for (int i = 0; i < waveAmount; i++)
+                {
+                    waveRandomIds.Add(StaticRandom.Instance.Next(0, waves.Count));
+                    armorRandomIds.Add(StaticRandom.Instance.Next(0, armorTypes.Length));      
+                }
+
+                for (int waveId = 0; waveId < waveAmount; waveId++)
+                {             
+                    tempWaves.Add(
+                        WaveCreatingSystem.CreateWave(
+                            RaceType.Humanoid,
+                            waves[waveRandomIds[waveId]]));               
+                }   
+                return tempWaves;
+            }   
+            #endregion
+
         }
 
         public void UpdateSystem()
@@ -86,17 +87,17 @@ namespace Game.Systems
 
             void AddMagicCrystalAfterWaveEnd()
             {
-                for (int waveId = 0; waveId < creepWaveList.Count; waveId++)                 
-                    if (creepWaveList[waveId].Count > 0)
+                for (int waveId = 0; waveId < creepWaves.Count; waveId++)                 
+                    if (creepWaves[waveId].Count > 0)
                     {
-                        for (int creepId = 0; creepId < creepWaveList[waveId].Count; creepId++)
-                            if (creepWaveList[waveId][creepId] == null)
-                                creepWaveList[waveId].RemoveAt(creepId);                    
+                        for (int creepId = 0; creepId < creepWaves[waveId].Count; creepId++)
+                            if (creepWaves[waveId][creepId] == null)
+                                creepWaves[waveId].RemoveAt(creepId);                    
                     }
                     else
                     {
                         AllWaveCreepsKilled?.Invoke(this, new EventArgs());
-                        creepWaveList.RemoveAt(waveId);
+                        creepWaves.RemoveAt(waveId);
                     }                       
             }
 
@@ -105,7 +106,7 @@ namespace Game.Systems
 
         public void OnWaveStarted(object sender, EventArgs e)
         {          
-            creepWaveList.Add(new List<CreepSystem>());
+            creepWaves.Add(new List<CreepSystem>());
             GM.I.StartCoroutine(SpawnCreepWave(0.2f));
 
             #region  Helper functions
@@ -114,7 +115,7 @@ namespace Game.Systems
             {
                 var spawned = 0;
                 
-                while (spawned < currentWaveCreepList.Count)
+                while (spawned < currentWaveCreeps.Count)
                 {
                     SpawnCreep();
                     spawned++;
@@ -123,7 +124,7 @@ namespace Game.Systems
                 
                 if (waveNumber <= GM.I.WaveAmount)
                 {
-                    currentWaveCreepList = waveList[waveNumber];                 
+                    currentWaveCreeps = waves[waveNumber];                 
                     GM.I.BaseUISystem.StartWaveButton.gameObject.SetActive(true);
                     waveNumber++;
                     WaveChanged?.Invoke(this, new EventArgs());
@@ -134,7 +135,7 @@ namespace Game.Systems
                 void SpawnCreep()
                 {
                     var creep = U.Instantiate(
-                        currentWaveCreepList[spawned].Prefab, 
+                        currentWaveCreeps[spawned].Prefab, 
                         GM.I.CreepSpawnPoint.transform.position,
                         Quaternion.identity, 
                         GM.I.CreepParent);
@@ -142,13 +143,13 @@ namespace Game.Systems
                     var creepSystem = new CreepSystem(creep);                          
                     
                     creepSystem.Stats = CalculateStats(
-                        currentWaveCreepList[spawned], 
-                        currentWaveCreepList[spawned].ArmorType, 
+                        currentWaveCreeps[spawned], 
+                        currentWaveCreeps[spawned].ArmorType, 
                         waveNumber); 
                     creepSystem.Stats.SetData(creepSystem);
                     creepSystem.SetSystem();
              
-                    creepWaveList[creepWaveList.Count - 1].Add(creepSystem);    
+                    creepWaves[creepWaves.Count - 1].Add(creepSystem);    
                         
                     CreepSpawned?.Invoke(this, new CreepEventArgs(creepSystem));
                     creepSystem.HealthSystem.CreepDied += GM.I.ResourceSystem.OnCreepDied;    

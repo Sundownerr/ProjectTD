@@ -19,6 +19,6 @@ namespace Game.Data
         public int MagicCrystals, Gold, CurrentTowerLimit, MaxTowerLimit, StartTowerRerollCount;
 
         [SerializeField]
-        public List<int> ElementLevelList; 
+        public List<int> ElementLevels; 
     }
 }

@@ -16,9 +16,9 @@ namespace Game.Tower.System
         public event EventHandler PrepareToShoot = delegate{};
         public event EventHandler<BulletSystem> Shooting = delegate{};
 
-        private List<BulletSystem> bulletList;
-        private List<GameObject> bulletGOList;
-        private List<float> removeTimerList;
+        private List<BulletSystem> bullets;
+        private List<GameObject> bulletGOs;
+        private List<float> removeTimers;
         private TowerSystem tower;
         private ObjectPool bulletPool;
         private float attackDelay;
@@ -31,9 +31,9 @@ namespace Game.Tower.System
         public void Set()
         {
             attackDelay     = QoL.GetPercentOfValue(tower.Stats.AttackSpeedModifier, tower.Stats.AttackSpeed);         
-            bulletGOList    = new List<GameObject>();
-            bulletList      = new List<BulletSystem>();
-            removeTimerList = new List<float>();       
+            bulletGOs    = new List<GameObject>();
+            bullets      = new List<BulletSystem>();
+            removeTimers = new List<float>();       
 
             bulletPool = new ObjectPool()
             {
@@ -58,13 +58,13 @@ namespace Game.Tower.System
             if (attackDelay > attackCooldown)
                 ShotBullet();      
 
-            for (int i = 0; i < removeTimerList.Count; i++)          
-                if (removeTimerList[i] > 0)
-                    removeTimerList[i] -= Time.deltaTime;
+            for (int i = 0; i < removeTimers.Count; i++)          
+                if (removeTimers[i] > 0)
+                    removeTimers[i] -= Time.deltaTime;
                 else
                 {
-                    RemoveBullet(bulletList[0]);
-                    removeTimerList.RemoveAt(i);
+                    RemoveBullet(bullets[0]);
+                    removeTimers.RemoveAt(i);
                 }
 
             #region Helper functions
@@ -74,19 +74,19 @@ namespace Game.Tower.System
                 PrepareToShoot?.Invoke(this, new EventArgs());
  
                 for (int i = 0; i < shotCount; i++)
-                    CreateBullet(tower.CreepInRangeList[i]);
+                    CreateBullet(tower.CreepsInRange[i]);
 
                 void CreateBullet(EntitySystem target)
                 {
                     var bulletGO = bulletPool.GetObject();
 
-                    bulletGOList.Add(bulletGO);
-                    bulletList.Add(new BulletSystem(bulletGO));
+                    bulletGOs.Add(bulletGO);
+                    bullets.Add(new BulletSystem(bulletGO));
 
-                    SetBulletData(bulletList[bulletList.Count - 1]);
+                    SetBulletData(bullets[bullets.Count - 1]);
 
-                    Shooting?.Invoke(this, bulletList[bulletList.Count - 1]);
-                    bulletGOList[bulletGOList.Count - 1].SetActive(true);
+                    Shooting?.Invoke(this, bullets[bullets.Count - 1]);
+                    bulletGOs[bulletGOs.Count - 1].SetActive(true);
 
                     void SetBulletData(BulletSystem bullet)
                     {                                                        
@@ -107,8 +107,8 @@ namespace Game.Tower.System
             {                  
                 bullet.Show(false);         
                 bullet.Prefab.SetActive(false);
-                bulletList.Remove(bullet);
-                bulletGOList.Remove(bullet.Prefab);
+                bullets.Remove(bullet);
+                bulletGOs.Remove(bullet.Prefab);
             }
 
             #endregion
@@ -120,15 +120,15 @@ namespace Game.Tower.System
             {
                 bullet.IsTargetReached = true;
                 bullet.Show(false);
-                removeTimerList.Add(bulletList[bulletGOList.Count - 1].Lifetime);
+                removeTimers.Add(bullets[bulletGOs.Count - 1].Lifetime);
             }              
         }
 
         public void MoveBullet()
         {
-            for (int i = 0; i < bulletList.Count; i++)
+            for (int i = 0; i < bullets.Count; i++)
             {
-                var bullet = bulletList[i];
+                var bullet = bullets[i];
                 if (bullet.Prefab.activeSelf) 
                     if (!bullet.IsTargetReached)          
                         if (bullet.Target == null || bullet.Target.Prefab == null)

@@ -16,11 +16,4 @@ namespace Game.Systems
 	{
 		void Apply(BulletSystem bullet);
 	}
-
-	public class TraitSystem : ITraitSystem
-	{
-        public EntitySystem Owner { get => Owner; set => Owner = value; }
-
-        public void IncreaseStatsPerLevel() {}	
-    }
 }

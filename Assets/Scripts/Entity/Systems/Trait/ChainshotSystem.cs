@@ -27,13 +27,13 @@ namespace Game.Systems
         public void Apply(BulletSystem bullet)
         {                   
             var tower = Owner as TowerSystem;
-            var colliderList = new Collider[40];
+            var colliders = new Collider[40];
             var creepLayer = 1 << 12;
 
             var hitTargetCount = Physics.OverlapSphereNonAlloc(
                 bullet.Prefab.transform.position, 
                 150, 
-                colliderList, 
+                colliders, 
                 creepLayer);    
         
             if (bullet.Target != null)         
@@ -45,17 +45,17 @@ namespace Game.Systems
                 else
                 {            
                     for (int i = 0; i < hitTargetCount; i++)                                                    
-                        if (bullet.Target.Prefab == colliderList[i].gameObject)
+                        if (bullet.Target.Prefab == colliders[i].gameObject)
                         {
                             bullet.Target = 
 
                                 i - 1 >= 0 ? 
-                                    GM.I.CreepList.Find(creep => 
-                                        creep.Prefab == colliderList[i - 1].transform.gameObject) :
+                                    GM.I.Creeps.Find(creep => 
+                                        creep.Prefab == colliders[i - 1].transform.gameObject) :
 
                                 i + 1 < hitTargetCount ? 
-                                    GM.I.CreepList.Find(creep => 
-                                        creep.Prefab == colliderList[i + 1].transform.gameObject) :
+                                    GM.I.Creeps.Find(creep => 
+                                        creep.Prefab == colliders[i + 1].transform.gameObject) :
 
                                 bullet.Target;     
                             break; 

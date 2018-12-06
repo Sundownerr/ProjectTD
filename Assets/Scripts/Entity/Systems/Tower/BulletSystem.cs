@@ -16,31 +16,31 @@ namespace Game.Tower
         private bool isTargetReached;
         private EntitySystem target;
         private ParticleSystem.EmissionModule emissionModule;
-        private ParticleSystem[] particleSystemList;
+        private ParticleSystem[] particleSystems;
         private int remainingBounceCount;
         private float lifetime, speed;
 
         public BulletSystem(GameObject prefab)
         {         
             this.prefab = prefab;
-            particleSystemList = prefab.GetComponentsInChildren<ParticleSystem>(true);
+            particleSystems = prefab.GetComponentsInChildren<ParticleSystem>(true);
 
             Speed = 10f;
             Speed = Mathf.Lerp(Speed, Speed * 10, Time.deltaTime * 5f);
-            Lifetime = particleSystemList[0].main.startLifetime.constant;           
+            Lifetime = particleSystems[0].main.startLifetime.constant;           
         }
 
         public void Show(bool enabled)
         {
-            for (int i = 0; i < particleSystemList.Length; i++)
+            for (int i = 0; i < particleSystems.Length; i++)
             {
-                emissionModule = particleSystemList[i].emission;
+                emissionModule = particleSystems[i].emission;
                 emissionModule.enabled = enabled;
                
                 if (enabled)
-                    particleSystemList[i].Play();
+                    particleSystems[i].Play();
                 else
-                    particleSystemList[i].Stop();
+                    particleSystems[i].Stop();
             }
         }      
     }

@@ -10,14 +10,14 @@ namespace Game.Data
     [Serializable]
     public class Wave : ScriptableObject
     {       
-        public List<Trait> WaveTraitList { get => waveTraitList; set => waveTraitList = value; }
-        public List<Ability> WaveAbilityList { get => waveAbilityList; set => waveAbilityList = value; }
+        public List<Trait> WaveTraits { get => waveTraits; set => waveTraits = value; }
+        public List<Ability> WaveAbilities { get => waveAbilities; set => waveAbilities = value; }
 
         [SerializeField]
-        public List<CreepData> CreepTypeList;
+        public List<CreepData> CreepTypes;
               
-        private List<Ability> waveAbilityList;
-        private List<Trait> waveTraitList;
+        private List<Ability> waveAbilities;
+        private List<Trait> waveTraits;
 
     }
 }

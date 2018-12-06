@@ -12,14 +12,14 @@ namespace Game.Systems
 		public bool IsNeedStack { get => isNeedStack; set => isNeedStack = value; }
         public EntitySystem Target { get => target; set => target = value; }
         public bool IsStacked { get => isStacked; set => isStacked = value; }
-        public List<EffectSystem> EffectSystemList { get => effectSystemList; set => effectSystemList = value; }
+        public List<EffectSystem> EffectSystems { get => effectSystems; set => effectSystems = value; }
 
         private Ability ability;
 		private bool isStacked, isNeedStack;
         private EntitySystem target;      
         private int effectCount;
         private float cooldownTimer, nextEffectTimer;
-		private List<EffectSystem> effectSystemList;
+		private List<EffectSystem> effectSystems;
         private EntitySystem owner;
         private List<int> id;
 
@@ -27,9 +27,9 @@ namespace Game.Systems
 		{
 			this.ability = ability;       
 
-            effectSystemList = new List<EffectSystem>();
-			for (int i = 0; i < ability.EffectList.Count; i++)		           
-				EffectSystemList.Add(ability.EffectList[i].GetEffectSystem());           
+            effectSystems = new List<EffectSystem>();
+			for (int i = 0; i < ability.Effects.Count; i++)		           
+				EffectSystems.Add(ability.Effects[i].GetEffectSystem());           
             SetOwner(owner);		
 		}
 
@@ -39,7 +39,7 @@ namespace Game.Systems
             if (owner is TowerSystem tower)
             {
                 id.AddRange(tower.Stats.Id);                             
-                id.Add(tower.AbilitySystemList.IndexOf(this));                
+                id.Add(tower.AbilitySystems.IndexOf(this));                
             }
         }         
 
@@ -48,10 +48,10 @@ namespace Game.Systems
             this.owner = owner;
             SetId();
 
-            for (int i = 0; i < EffectSystemList.Count; i++)           
-                EffectSystemList[i].SetOwner(owner, this);
+            for (int i = 0; i < EffectSystems.Count; i++)           
+                EffectSystems[i].SetOwner(owner, this);
             
-            ability.EffectList[ability.EffectList.Count - 1].NextInterval = 0.01f;               
+            ability.Effects[ability.Effects.Count - 1].NextInterval = 0.01f;               
         }
 
 		public void Init() 
@@ -66,26 +66,26 @@ namespace Game.Systems
                     CooldownReset();   
                 }         
 
-            nextEffectTimer = nextEffectTimer > ability.EffectList[effectCount].NextInterval ? 0 : nextEffectTimer + Time.deltaTime;
+            nextEffectTimer = nextEffectTimer > ability.Effects[effectCount].NextInterval ? 0 : nextEffectTimer + Time.deltaTime;
 
             for (int i = 0; i <= effectCount; i++)
-                EffectSystemList[i].Init();  
+                EffectSystems[i].Init();  
 
-            if (!(effectCount >= ability.EffectList.Count - 1))
-                if (nextEffectTimer > ability.EffectList[effectCount].NextInterval)                  
+            if (!(effectCount >= ability.Effects.Count - 1))
+                if (nextEffectTimer > ability.Effects[effectCount].NextInterval)                  
                     effectCount++;   
 
             #region  Helper functions
             bool CheckNeedStack()
             {
-                for (int i = 0; i < EffectSystemList.Count; i++)
-                    if (ability.EffectList[i].IsStackable)
+                for (int i = 0; i < EffectSystems.Count; i++)
+                    if (ability.Effects[i].IsStackable)
                     {
-                        if (!EffectSystemList[i].IsEnded)
+                        if (!EffectSystems[i].IsEnded)
                             return true;
                     }
                     else
-                        if (EffectSystemList[i].Target != target)
+                        if (EffectSystems[i].Target != target)
                             return true;
                 return false;         
             }  
@@ -96,8 +96,8 @@ namespace Game.Systems
         {
             Target = target;
           
-            for (int i = 0; i < EffectSystemList.Count; i++)
-                EffectSystemList[i].SetTarget(target);                     
+            for (int i = 0; i < EffectSystems.Count; i++)
+                EffectSystems[i].SetTarget(target);                     
         } 
 
         public void StackReset(EntitySystem owner)
@@ -111,14 +111,14 @@ namespace Game.Systems
             effectCount = 0;        
             nextEffectTimer = 0;
 
-            for (int i = 0; i < EffectSystemList.Count; i++)
-                EffectSystemList[i].ApplyRestart();         
+            for (int i = 0; i < EffectSystems.Count; i++)
+                EffectSystems[i].ApplyRestart();         
         }
 
         public bool CheckAllEffectsEnded()
         {
-            for (int i = 0; i < EffectSystemList.Count; i++)
-                if (!EffectSystemList[i].IsEnded)
+            for (int i = 0; i < EffectSystems.Count; i++)
+                if (!EffectSystems[i].IsEnded)
                     return false;        
             return true;
         }

@@ -7,6 +7,7 @@ using UnityEngine;
 namespace Game.Data.Effects
 {
 	[CreateAssetMenu(fileName = "DoT", menuName = "Data/Effect/DoT")]
+	
 	public class DoT : Effect
 	{
         public int DamagePerTick;

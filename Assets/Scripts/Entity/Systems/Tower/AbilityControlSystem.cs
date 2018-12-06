@@ -8,7 +8,7 @@ namespace Game.Tower.System
     public class AbilityControlSystem : ITowerSystem
     {
         private TowerSystem tower;
-        private List<AbilitySystem> abilitySystemList, abilityStackList;
+        private List<AbilitySystem> abilitySystems, abilityStacks;
         private bool isAllEffectsEnded, isInContinueState;
 
         public AbilityControlSystem(TowerSystem ownerTower)
@@ -18,35 +18,35 @@ namespace Game.Tower.System
 
         public void Set()
         {
-            abilitySystemList = tower.AbilitySystemList;
-            abilityStackList = new List<AbilitySystem>();
+            abilitySystems = tower.AbilitySystems;
+            abilityStacks = new List<AbilitySystem>();
         }
 
         public void UpdateSystem()
         {
-            if (tower.CreepInRangeList.Count > 0)
+            if (tower.CreepsInRange.Count > 0)
             {
                 isInContinueState = false;
 
-                for (int i = 0; i < abilitySystemList.Count; i++)
+                for (int i = 0; i < abilitySystems.Count; i++)
                 {
-                    if (abilitySystemList[i].IsNeedStack)
+                    if (abilitySystems[i].IsNeedStack)
                         CreateStack(i);
-                    Init(abilitySystemList[i], CheckTargetInRange(abilitySystemList[i].Target));
+                    Init(abilitySystems[i], CheckTargetInRange(abilitySystems[i].Target));
                 }
 
-                for (int i = 0; i < abilityStackList.Count; i++)
-                    Init(abilityStackList[i], !abilityStackList[i].CheckAllEffectsEnded());
+                for (int i = 0; i < abilityStacks.Count; i++)
+                    Init(abilityStacks[i], !abilityStacks[i].CheckAllEffectsEnded());
             }
             else
             {
                 isAllEffectsEnded = true;
 
-                for (int i = 0; i < abilitySystemList.Count; i++)
-                    CheckContinueEffects(abilitySystemList[i]);
+                for (int i = 0; i < abilitySystems.Count; i++)
+                    CheckContinueEffects(abilitySystems[i]);
 
-                for (int i = 0; i < abilityStackList.Count; i++)
-                    CheckContinueEffects(abilityStackList[i]);
+                for (int i = 0; i < abilityStacks.Count; i++)
+                    CheckContinueEffects(abilityStacks[i]);
 
                 if (!isAllEffectsEnded)
                     ContinueEffects();
@@ -62,30 +62,30 @@ namespace Game.Tower.System
             
             void CreateStack(int index)
             {
-                var stack =  new AbilitySystem(tower.Stats.AbilityList[index], tower);
+                var stack =  new AbilitySystem(tower.Stats.Abilities[index], tower);
 
                 stack.StackReset(tower);
-                stack.SetTarget(abilitySystemList[index].Target);
+                stack.SetTarget(abilitySystems[index].Target);
 
-                abilityStackList.Add(stack);
-                abilitySystemList[index].IsNeedStack = false;
+                abilityStacks.Add(stack);
+                abilitySystems[index].IsNeedStack = false;
             }
 
             void ContinueEffects()
             {        
                 isInContinueState = true;
 
-                for (int i = 0; i < abilitySystemList.Count; i++)
-                    Init(abilitySystemList[i], !abilitySystemList[i].CheckAllEffectsEnded());
+                for (int i = 0; i < abilitySystems.Count; i++)
+                    Init(abilitySystems[i], !abilitySystems[i].CheckAllEffectsEnded());
 
-                for (int i = 0; i < abilityStackList.Count; i++)
-                    Init(abilityStackList[i], !abilityStackList[i].CheckAllEffectsEnded());              
+                for (int i = 0; i < abilityStacks.Count; i++)
+                    Init(abilityStacks[i], !abilityStacks[i].CheckAllEffectsEnded());              
             }
 
             bool CheckTargetInRange(EntitySystem target)
             {
-                for (int i = 0; i < tower.CreepInRangeList.Count; i++)
-                    if (target == tower.CreepInRangeList[i])
+                for (int i = 0; i < tower.CreepsInRange.Count; i++)
+                    if (target == tower.CreepsInRange[i])
                         return true;
                 return false;
             }
@@ -101,7 +101,7 @@ namespace Game.Tower.System
                 {
                     if (!abilitySystem.IsStacked)
                         if (!isInContinueState)
-                            abilitySystem.SetTarget(tower.CreepInRangeList[0]);
+                            abilitySystem.SetTarget(tower.CreepsInRange[0]);
                         else
                         {
                             abilitySystem.CooldownReset();
@@ -109,11 +109,11 @@ namespace Game.Tower.System
                         }
                     else
                     {
-                        for (int i = 0; i < abilitySystem.EffectSystemList.Count; i++)
-                            abilitySystem.EffectSystemList.Remove(abilitySystem.EffectSystemList[i]);
+                        for (int i = 0; i < abilitySystem.EffectSystems.Count; i++)
+                            abilitySystem.EffectSystems.Remove(abilitySystem.EffectSystems[i]);
 
-                        abilitySystem.EffectSystemList.Clear();
-                        abilityStackList.Remove(abilitySystem);
+                        abilitySystem.EffectSystems.Clear();
+                        abilityStacks.Remove(abilitySystem);
                     }
 
                     isAllEffectsEnded = true;

@@ -35,7 +35,7 @@ namespace Game.Systems
             if (owner is Tower.TowerSystem tower)
             {               
                 id.AddRange(tower.Stats.Id);  
-                id.Add(ownerAbilitySystem.EffectSystemList.IndexOf(this));
+                id.Add(ownerAbilitySystem.EffectSystems.IndexOf(this));
             }
         }
 

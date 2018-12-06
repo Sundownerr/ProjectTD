@@ -10,7 +10,7 @@ namespace Game.Systems
 {
 	public class CreepControlSystem 
 	{	
-        private List<CreepSystem> creepList = new List<CreepSystem>();
+        private List<CreepSystem> creeps = new List<CreepSystem>();
         
         public void SetSystem()
         {
@@ -24,20 +24,20 @@ namespace Game.Systems
 
         public void AddCreep(CreepSystem creep) 
         {
-            creepList.Add(creep);
-            GM.I.CreepList.Add(creep);    
+            creeps.Add(creep);
+            GM.I.Creeps.Add(creep);    
             creep.IsOn = true;
             creep.IsVulnerable = true;
         }
 
         public void UpdateSystem()
         {
-            for (int i = 0; i < creepList.Count; i++)
+            for (int i = 0; i < creeps.Count; i++)
             {
-                var creep = creepList[i];             
+                var creep = creeps[i];             
                 
                 if (creep == null || creep.Prefab == null)
-                    creepList.Remove(creep);
+                    creeps.Remove(creep);
                 else
                 {
                     if (creep.HealthSystem != null)
@@ -46,11 +46,11 @@ namespace Game.Systems
                     
                     if (creep.IsOn)
                     {
-                        var waypointTransform = GM.I.WaypointList[creep.WaypointIndex].transform;
+                        var waypointTransform = GM.I.Waypoints[creep.WaypointIndex].transform;
                         var creepTransform = creep.Prefab.transform;
                         var waypointReached = QoL.CalcDistance(creepTransform.position, waypointTransform.position) < 70;
 
-                        if (creep.WaypointIndex < GM.I.WaypointList.Length - 1)
+                        if (creep.WaypointIndex < GM.I.Waypoints.Length - 1)
                             if (!waypointReached)                    
                                 MoveAndRotateCreep(creep);                                                     
                             else
@@ -81,7 +81,7 @@ namespace Game.Systems
                 void RotateCreep()
                 {            
                     var lookRotation = 
-                        Quaternion.LookRotation(GM.I.WaypointList[creep.WaypointIndex].transform.position - creepTransform.position);
+                        Quaternion.LookRotation(GM.I.Waypoints[creep.WaypointIndex].transform.position - creepTransform.position);
                     var rotation =
                         Quaternion.Lerp(creepTransform.rotation, lookRotation, Time.deltaTime * 10f);
 
@@ -99,7 +99,7 @@ namespace Game.Systems
         {                     
             if (creep != null)
             {
-                GM.I.CreepList.Remove(creep);
+                GM.I.Creeps.Remove(creep);
                 Object.Destroy(creep.Stats);
                 Object.Destroy(creep.Prefab);
             }

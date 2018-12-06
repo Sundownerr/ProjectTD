@@ -53,13 +53,13 @@ namespace Game.Tower.Data
         public float GoldRatio, ExpRatio, ItemDropRatio, ItemQuialityRatio, BuffDuration, DebuffDuration;
 
         [BoxGroup("Trait"), Expandable]
-        public Trait[] TraitList;     
+        public List<Trait> Traits;     
 
         [Space, Expandable]
-        public TowerData[] GradeList;
+        public List<TowerData> Grades;
 
         [Space, Expandable]
-        public Ability[] AbilityList;
+        public List<Ability> Abilities;
 
         private int level, exp, gradeCount, numberInList, attackSpeedModifier;
         [SerializeField]
@@ -67,7 +67,7 @@ namespace Game.Tower.Data
 
         public void SetData()
         {                   
-            GradeList = new TowerData[0];              
+            Grades = new List<TowerData>();             
             isInstanced = true;           
             GradeCount = -1;
             attackSpeedModifier = 100;
@@ -84,21 +84,21 @@ namespace Game.Tower.Data
             if (!IsGradeTower && !IsInstanced)
             {           
                 var dataBase = DataLoadingSystem.Load<TowerDataBase>() as TowerDataBase;                       
-                var elementList = dataBase.AllTowerList.ElementsList;
+                var elements = dataBase.AllTowers.Elements;
 
-                for (int i = 0; i < elementList.Count; i++)
+                for (int i = 0; i < elements.Count; i++)
                     if ((int)Element == i)                    
-                        for (int j = 0; j < elementList[i].RarityList.Count; j++)
+                        for (int j = 0; j < elements[i].Rarities.Count; j++)
                             if ((int)Rarity == j)
                             {
-                                var towerList = elementList[i].RarityList[j].TowerList;
-                                for (int k = 0; k < towerList.Count; k++)
-                                    if (CompareId(towerList[k].Id))
+                                var towers = elements[i].Rarities[j].Towers;
+                                for (int k = 0; k < towers.Count; k++)
+                                    if (CompareId(towers[k].Id))
                                         return;
                                 
-                                numberInList = towerList.Count;      
+                                numberInList = towers.Count;      
                                 SetId();  
-                                elementList[i].RarityList[j].TowerList.Add(this);                                                           
+                                elements[i].Rarities[j].Towers.Add(this);                                                           
                                 DataLoadingSystem.Save<TowerDataBase>(dataBase);
                                 return;
                             }                    
@@ -110,7 +110,7 @@ namespace Game.Tower.Data
             if (!IsGradeTower && !IsInstanced)          
                 if (DataLoadingSystem.Load<TowerDataBase>() is TowerDataBase dataBase)            
                 {                
-                    dataBase.AllTowerList.ElementsList[(int)Element].RarityList[(int)Rarity].TowerList.RemoveAt(numberInList);  
+                    dataBase.AllTowers.Elements[(int)Element].Rarities[(int)Rarity].Towers.RemoveAt(numberInList);  
                     DataLoadingSystem.Save<TowerDataBase>(dataBase);
                 }                   
         }

@@ -11,13 +11,13 @@ namespace Game.Systems
     public class SlowAuraSystem : AuraSystem
     {   
         private new SlowAura effect;
-        private Dictionary<TowerSystem, int> removedAttackSpeedModList;
+        private Dictionary<TowerSystem, int> removedAttackSpeedMods;
 
         public SlowAuraSystem(SlowAura effect, EntitySystem owner) : base(effect, owner)
         {
             this.effect = effect;        
             this.owner = owner;            
-            removedAttackSpeedModList = new Dictionary<TowerSystem, int>();
+            removedAttackSpeedMods = new Dictionary<TowerSystem, int>();
         } 
 
         private void OnTowerEnteredRange(object sender, EntityEventArgs e)
@@ -37,7 +37,7 @@ namespace Game.Systems
                             effect.SlowPercent, 
                             tower.Stats.AttackSpeedModifier + effect.SlowPercent);               
                                     
-                removedAttackSpeedModList.Add(tower, removedAttackSpeedMod); 
+                removedAttackSpeedMods.Add(tower, removedAttackSpeedMod); 
                 tower.AppliedEffectSystem.Add(effect); 
             }
         }
@@ -49,10 +49,10 @@ namespace Game.Systems
             if (entity is TowerSystem tower)            
             {               
                 if (tower.AppliedEffectSystem.CountOf(effect) <= 1)   
-                    if (removedAttackSpeedModList.TryGetValue(tower, out int attackSpeedMod))                                       
+                    if (removedAttackSpeedMods.TryGetValue(tower, out int attackSpeedMod))                                       
                         tower.Stats.AttackSpeedModifier += attackSpeedMod;                                     
                                           
-                removedAttackSpeedModList.Remove(tower);
+                removedAttackSpeedMods.Remove(tower);
                 tower.AppliedEffectSystem.Remove(effect);
             }
         }
@@ -80,8 +80,8 @@ namespace Game.Systems
         
         public override void End()
         {                             
-            for (int i = 0; i < range.EntitySystemList.Count; i++)       
-                RemoveEffect(range.EntitySystemList[i]);            
+            for (int i = 0; i < range.EntitySystems.Count; i++)       
+                RemoveEffect(range.EntitySystems[i]);            
             
             range.EntityEntered -= OnTowerEnteredRange;         
             range.EntityExit -= OnTowerExitRange;   

@@ -29,13 +29,13 @@ namespace Game.Systems
 
         public void UpdateUI()
         {
-            AstralLevel.text    = GM.I.PlayerData.ElementLevelList[0].ToString();
-            DarknessLevel.text  = GM.I.PlayerData.ElementLevelList[1].ToString();
-            IceLevel.text       = GM.I.PlayerData.ElementLevelList[2].ToString();
-            IronLevel.text      = GM.I.PlayerData.ElementLevelList[3].ToString();
-            StormLevel.text     = GM.I.PlayerData.ElementLevelList[4].ToString();
-            NatureLevel.text    = GM.I.PlayerData.ElementLevelList[5].ToString();
-            FireLevel.text      = GM.I.PlayerData.ElementLevelList[6].ToString();
+            AstralLevel.text    = GM.I.PlayerData.ElementLevels[0].ToString();
+            DarknessLevel.text  = GM.I.PlayerData.ElementLevels[1].ToString();
+            IceLevel.text       = GM.I.PlayerData.ElementLevels[2].ToString();
+            IronLevel.text      = GM.I.PlayerData.ElementLevels[3].ToString();
+            StormLevel.text     = GM.I.PlayerData.ElementLevels[4].ToString();
+            NatureLevel.text    = GM.I.PlayerData.ElementLevels[5].ToString();
+            FireLevel.text      = GM.I.PlayerData.ElementLevels[6].ToString();
         }
 
         private void LearnAstral()  => GM.I.ElementSystem.LearnElement(0);

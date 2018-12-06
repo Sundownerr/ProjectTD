@@ -186,7 +186,7 @@
      <Compile Include="Assets\Scripts\Entity\Data\Entity.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Tower\Stats.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Tower\TowerData.cs" />
-     <Compile Include="Assets\Scripts\Entity\Data\Tower\Trait.cs" />
+     <Compile Include="Assets\Scripts\Entity\Data\Trait.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Trait\AOEShot.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Trait\Chainshot.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Trait\Multishot.cs" />

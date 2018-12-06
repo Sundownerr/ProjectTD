@@ -30,9 +30,9 @@ namespace Game.Systems
 
         public void LearnElement(int elementId)
         {
-            if (CheckCanLearn(GM.I.PlayerData.ElementLevelList[elementId]))
+            if (CheckCanLearn(GM.I.PlayerData.ElementLevels[elementId]))
             {
-                GM.I.PlayerData.ElementLevelList[elementId]++;
+                GM.I.PlayerData.ElementLevels[elementId]++;
                 GM.I.ElementUISystem.UpdateUI();
             }
         }    

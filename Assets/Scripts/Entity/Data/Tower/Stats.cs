@@ -9,14 +9,14 @@ namespace Game.Tower.Data.Stats
     public class ElementList
     {
         [SerializeField]
-        public List<Element> ElementsList;
+        public List<Element> Elements;
     }
 
     [Serializable]
     public class Element
     {
         [SerializeField]
-        public List<Rarity> RarityList;
+        public List<Rarity> Rarities;
 
         [SerializeField]
         public string Name;
@@ -24,7 +24,7 @@ namespace Game.Tower.Data.Stats
         public Element(string name)
         {
             Name = name;        
-            RarityList = new List<Rarity>
+            Rarities = new List<Rarity>
             {
                 new Rarity(RarityType.Common.ToString()),
                 new Rarity(RarityType.Uncommon.ToString()),
@@ -38,7 +38,7 @@ namespace Game.Tower.Data.Stats
     public class Rarity
     {
         [SerializeField]
-        public List<TowerData> TowerList;
+        public List<TowerData> Towers;
 
         [SerializeField]
         public string Name;
@@ -46,7 +46,7 @@ namespace Game.Tower.Data.Stats
         public Rarity(string name) 
         {
             Name = name;          
-            TowerList = new List<TowerData>();          
+            Towers = new List<TowerData>();          
         }
     }
 

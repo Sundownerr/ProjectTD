@@ -9,16 +9,16 @@ namespace Game.Systems
 {
 	public class AppliedEffectSystem 
 	{		
-		private List<Effect> appliedEffectList = new List<Effect>();
+		private List<Effect> appliedEffects = new List<Effect>();
 
-        public void Add(Effect effect) => appliedEffectList.Add(effect);	
+        public void Add(Effect effect) => appliedEffects.Add(effect);	
 
 		public void Remove(Effect effect)
 		{
-			for (int i = 0; i < appliedEffectList.Count; i++)			
-				if (effect.CompareId(appliedEffectList[i].Id)) 
+			for (int i = 0; i < appliedEffects.Count; i++)			
+				if (effect.CompareId(appliedEffects[i].Id)) 
 				{			
-					appliedEffectList.RemoveAt(i);
+					appliedEffects.RemoveAt(i);
 					return;
 				}
 		}
@@ -26,8 +26,8 @@ namespace Game.Systems
 		public int CountOf(Effect effect)
 		{
 			var count = 0;
-			for (int i = 0; i < appliedEffectList.Count; i++)			
-				if (effect.CompareId(appliedEffectList[i].Id)) 						
+			for (int i = 0; i < appliedEffects.Count; i++)			
+				if (effect.CompareId(appliedEffects[i].Id)) 						
 					count++;			
 			return count;
 		}		

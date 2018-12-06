@@ -90,39 +90,39 @@ namespace Game.Systems
         private void OnSelling(object sender, EventArgs e) =>                 
             TowerSold?.Invoke(this, new TowerEventArgs(choosedTower, choosedTower.Stats));
             
-        private bool CheckGradeListOk(out TowerData[] gradeList)
+        private bool CheckGradeListOk(out List<TowerData> grades)
         {
-            var allTowerList = GM.I.TowerDataBase.AllTowerList.
-                ElementsList[(int)choosedTower.Stats.Element].
-                RarityList[(int)choosedTower.Stats.Rarity].
-                TowerList;
+            var allTowerList = GM.I.TowerDataBase.AllTowers.
+                Elements[(int)choosedTower.Stats.Element].
+                Rarities[(int)choosedTower.Stats.Rarity].
+                Towers;
                
-            gradeList = allTowerList.Find(tower => 
-                tower.CompareId(choosedTower.Stats.Id)).GradeList;
+            grades = allTowerList.Find(tower => 
+                tower.CompareId(choosedTower.Stats.Id)).Grades;
 
-            return gradeList.Length > 0 &&
-                choosedTower.Stats.GradeCount < gradeList.Length - 1;
+            return grades.Count > 0 &&
+                choosedTower.Stats.GradeCount < grades.Count - 1;
         }        
 
         private void OnUpgrading(object sender, EventArgs e) 
         {           
-            if (CheckGradeListOk(out TowerData[] gradeList))
+            if (CheckGradeListOk(out List<TowerData> grades))
             {              
                 var upgradedTowerPrefab = Instantiate(
-                    gradeList[choosedTower.Stats.GradeCount + 1].Prefab, 
+                    grades[choosedTower.Stats.GradeCount + 1].Prefab, 
                     choosedTower.Prefab.transform.position, 
                     Quaternion.identity, 
                     GM.I.TowerParent);
                 var upgradedTower = new TowerSystem(upgradedTowerPrefab); 
                 
-                upgradedTower.StatsSystem.Upgrade(choosedTower, gradeList[choosedTower.Stats.GradeCount + 1]);                            
+                upgradedTower.StatsSystem.Upgrade(choosedTower, grades[choosedTower.Stats.GradeCount + 1]);                            
                 upgradedTower.SetSystem();                                         
                 
                 TowerUpgraded?.Invoke(this, new TowerEventArgs(upgradedTower));      
                 TowerSold?.Invoke(this, new TowerEventArgs(choosedTower, choosedTower.Stats));      
                 choosedTower = upgradedTower;
             }
-            GM.I.TowerUISystem.ActivateUpgradeButton(choosedTower.Stats.GradeCount < gradeList.Length - 1);
+            GM.I.TowerUISystem.ActivateUpgradeButton(choosedTower.Stats.GradeCount < grades.Count - 1);
         }
 
         private void ActivateTowerUI(bool active)
@@ -133,7 +133,7 @@ namespace Game.Systems
 
             if (active)
             {  
-                choosedTower = GM.I.PlacedTowerList.Find(tower => tower.Prefab == hit.transform.gameObject);                      
+                choosedTower = GM.I.Towers.Find(tower => tower.Prefab == hit.transform.gameObject);                      
                 choosedTower.StatsSystem.StatsChanged += GM.I.TowerUISystem.UpdateValues;   
                 GM.I.TowerUISystem.ActivateUpgradeButton(CheckGradeListOk(out _));      
 
@@ -158,10 +158,10 @@ namespace Game.Systems
         {
             GM.PlayerState = State.PreparePlacingTower;
 
-            for (int i = 0; i < GM.I.AvailableTowerList.Count; i++)
-                if (GM.I.AvailableTowerList[i] == NewTowerData)
+            for (int i = 0; i < GM.I.AvailableTowers.Count; i++)
+                if (GM.I.AvailableTowers[i] == NewTowerData)
                 {
-                    GM.I.AvailableTowerList.RemoveAt(i);
+                    GM.I.AvailableTowers.RemoveAt(i);
                     break;
                 }           
             StartedTowerBuild?.Invoke(this, new EventArgs());

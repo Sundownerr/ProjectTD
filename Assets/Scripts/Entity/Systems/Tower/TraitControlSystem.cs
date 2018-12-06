@@ -32,8 +32,8 @@ namespace Game.Tower.System
             var bulletTraitCount = 0;
             var isHaveChainShot = false;
 
-            for (int i = 0; i < tower.TraitSystemList.Count; i++)          
-                if (tower.TraitSystemList[i] is IBulletTraitSystem trait)    
+            for (int i = 0; i < tower.TraitSystems.Count; i++)          
+                if (tower.TraitSystems[i] is IBulletTraitSystem trait)    
                 {
                     bulletTraitCount++;
                     trait.Apply(bullet); 
@@ -60,30 +60,28 @@ namespace Game.Tower.System
         {
             tower.CombatSystem.ShotCount = 1;
 
-            for (int i = 0; i < tower.Stats.TraitList.Length; i++)            
-                if (tower.Stats.TraitList[i] is Multishot multishot)
+            for (int i = 0; i < tower.Stats.Traits.Count; i++)            
+                if (tower.Stats.Traits[i] is Multishot multishot)
                 {
-                    var creepList = tower.CreepInRangeList;
+                    var creeps = tower.CreepsInRange;
                     var requiredShotCount = 1 + multishot.Count;
 
                     tower.CombatSystem.ShotCount = 
-                        creepList.Count >= requiredShotCount ? requiredShotCount : creepList.Count;
+                        creeps.Count >= requiredShotCount ? requiredShotCount : creeps.Count;
                 }                             
         }
 
         public void OnShooting(object sender, BulletSystem bullet)
         {    
-            for (int i = 0; i < tower.Stats.TraitList.Length; i++)  
-                if (tower.Stats.TraitList[i] is Chainshot chainshot)              
+            for (int i = 0; i < tower.Stats.Traits.Count; i++)  
+                if (tower.Stats.Traits[i] is Chainshot chainshot)              
                     bullet.RemainingBounceCount = chainshot.BounceCount;        
         }
 
         public void IncreaseStatsPerLevel()
         {
-            var traitList = tower.TraitSystemList;
-
-            for (int i = 0; i < traitList.Count; i++)
-                traitList[i].IncreaseStatsPerLevel();
+            for (int i = 0; i < tower.TraitSystems.Count; i++)
+                tower.TraitSystems[i].IncreaseStatsPerLevel();
         }
     }
 }

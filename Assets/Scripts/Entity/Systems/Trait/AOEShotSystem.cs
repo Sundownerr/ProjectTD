@@ -28,18 +28,18 @@ namespace Game.Systems
         public void Apply(BulletSystem bullet)
         {
             var creepLayer      = 1 << 12;
-            var colliderList    = new Collider[40];
+            var colliders       = new Collider[40];
             var tower           = Owner as TowerSystem;
 
             var hitTargetCount = Physics.OverlapSphereNonAlloc(
             bullet.Prefab.transform.position, 
             trait.Range, 
-            colliderList, 
+            colliders, 
             creepLayer);
 
             for (int i = 0; i < hitTargetCount; i++)
                 DamageSystem.DoDamage(
-                    GM.I.CreepList.Find(creep => creep.Prefab == colliderList[i].transform.gameObject), 
+                    GM.I.Creeps.Find(creep => creep.Prefab == colliders[i].transform.gameObject), 
                     tower.Stats.Damage.Value, 
                     tower);          
         }

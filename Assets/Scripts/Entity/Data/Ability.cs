@@ -17,6 +17,6 @@ namespace Game.Data
         public int ManaCost;
 
         [Expandable]
-        public List<Effect> EffectList;       
+        public List<Effect> Effects;       
     }
 }

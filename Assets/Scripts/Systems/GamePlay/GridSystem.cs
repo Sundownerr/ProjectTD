@@ -8,17 +8,17 @@ namespace Game.Systems
     public class GridSystem 
     {
         public bool IsGridBuilded { get => isGridBuilded; set => isGridBuilded = value; }
-        public List<Cell> CellList { get => cellList; set => cellList = value; }
+        public List<Cell> Cells { get => cells; set => cells = value; }
 
         private bool isGridBuilded;
         private Color blue, red, green;
         private CellExpandSystem cellExpandSystem;
-        private List<Cell> cellList;
+        private List<Cell> cells;
 
         public GridSystem()
         {
             GM.I.GridSystem = this;
-            cellList = new List<Cell>();
+            cells = new List<Cell>();
 
             CreateGrid();
  
@@ -34,24 +34,24 @@ namespace Game.Systems
 
                 CreateMainCell();
 
-                for (int i = 0; i < cellList.Count; i++)        
-                    if (!cellList[i].IsExpanded)
-                        cellExpandSystem.Expand(cellList[i]);     
+                for (int i = 0; i < cells.Count; i++)        
+                    if (!cells[i].IsExpanded)
+                        cellExpandSystem.Expand(cells[i]);     
 
                 IsGridBuilded = true;            
             }   
 
             void CreateMainCell()
             {          
-                for (var i = 0; i < GM.I.CellAreaList.Length; i++)
+                for (var i = 0; i < GM.I.CellAreas.Length; i++)
                 {
-                    var ray = new Ray(GM.I.CellAreaList[i].transform.position, Vector3.up);
+                    var ray = new Ray(GM.I.CellAreas[i].transform.position, Vector3.up);
                     var layerMask = 1 << 15;
 
                     if (!Physics.Raycast(ray, 100, layerMask))
                     {
-                        var spawnPos = GM.I.CellAreaList[i].transform.position + 
-                            new Vector3(0, GM.I.CellAreaList[i].transform.localScale.y / 1.9f, 0);
+                        var spawnPos = GM.I.CellAreas[i].transform.position + 
+                            new Vector3(0, GM.I.CellAreas[i].transform.localScale.y / 1.9f, 0);
 
                         Object.Instantiate(GM.I.CellPrefab, spawnPos, Quaternion.identity, GM.I.CellParent);                       
                     }
@@ -65,7 +65,7 @@ namespace Game.Systems
         {
             if (IsGridBuilded)
             {
-                var lastCell = cellList[cellList.Count - 1];
+                var lastCell = cells[cells.Count - 1];
 
                 if (GM.PlayerState == State.PlacingTower)
                 {
@@ -82,15 +82,15 @@ namespace Game.Systems
 
             void SetCellsActive(bool active)
             {
-                for (int i = 0; i < cellList.Count; i++)
-                    cellList[i].gameObject.SetActive(active);
+                for (int i = 0; i < cells.Count; i++)
+                    cells[i].gameObject.SetActive(active);
             }
 
             void SetCellsColors()
             {
-                for (int i = 0; i < cellList.Count; i++)
+                for (int i = 0; i < cells.Count; i++)
                 {
-                    var cell = cellList[i];
+                    var cell = cells[i];
                     cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? blue : green;              
                 }
             }

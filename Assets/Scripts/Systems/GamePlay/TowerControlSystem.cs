@@ -9,7 +9,7 @@ namespace Game.Systems
 {
 	public class TowerControlSystem 
 	{		
-		private List<TowerSystem> towerSystemList = new List<TowerSystem>();
+		private List<TowerSystem> towers = new List<TowerSystem>();
 
         public void SetSystem()
         {
@@ -24,8 +24,8 @@ namespace Game.Systems
         
 		private void AddTower(TowerSystem tower) 
         {           
-            towerSystemList.Add(tower);
-            GM.I.PlacedTowerList.Add(tower);  
+            towers.Add(tower);
+            GM.I.Towers.Add(tower);  
             tower.OcuppiedCell.GetComponent<Cell>().IsBusy = true;
             tower.Prefab.layer = 14;  
             tower.IsOn = true;
@@ -37,18 +37,18 @@ namespace Game.Systems
             if (tower.OcuppiedCell != null)
                 tower.OcuppiedCell.GetComponent<Cell>().IsBusy = false;
 
-            towerSystemList.Remove(tower);
-            GM.I.PlacedTowerList.Remove(tower);        
+            towers.Remove(tower);
+            GM.I.Towers.Remove(tower);        
             Object.Destroy(tower.Prefab);
         }
 		
         public void UpdateSystem()
         {           
-            for (int i = 0; i < towerSystemList.Count; i++)
+            for (int i = 0; i < towers.Count; i++)
             {
-                var tower = towerSystemList[i];
+                var tower = towers[i];
                 if (tower == null)
-                    towerSystemList.Remove(tower);
+                    towers.Remove(tower);
                 else
                 {                        
                     tower.RangeSystem.SetShow();
@@ -56,27 +56,27 @@ namespace Game.Systems
                     {                  
                         tower.AbilityControlSystem.UpdateSystem();
                
-                        if (tower.CreepInRangeList.Count < 1)                                                 
+                        if (tower.CreepsInRange.Count < 1)                                                 
                             tower.CombatSystem.MoveBullet();                                     
                         else
                         {   
                             tower.CombatSystem.UpdateSystem();    
 
-                            if (tower.CreepInRangeList[0] != null && tower.CreepInRangeList[0].Prefab != null)                                                           
+                            if (tower.CreepsInRange[0] != null && tower.CreepsInRange[0].Prefab != null)                                                           
                                 RotateAtCreep();                     
                             
-                            for (int j = 0; j < tower.CreepInRangeList.Count; j++)
-                                if (tower.CreepInRangeList[j] == null || tower.CreepInRangeList[j].Prefab == null)
+                            for (int j = 0; j < tower.CreepsInRange.Count; j++)
+                                if (tower.CreepsInRange[j] == null || tower.CreepsInRange[j].Prefab == null)
                                 {
-                                    tower.RangeSystem.EntityList.RemoveAt(j);
-                                    tower.RangeSystem.EntitySystemList.RemoveAt(j);
+                                    tower.RangeSystem.Entities.RemoveAt(j);
+                                    tower.RangeSystem.EntitySystems.RemoveAt(j);
                                 }
                                 
                             #region  Helper functions
 
                             void RotateAtCreep()
                             {
-                                var offset = tower.CreepInRangeList[0].Prefab.transform.position - tower.Prefab.transform.position;
+                                var offset = tower.CreepsInRange[0].Prefab.transform.position - tower.Prefab.transform.position;
                                 offset.y = 0;
                                 tower.MovingPart.rotation = 
                                     Quaternion.Lerp(

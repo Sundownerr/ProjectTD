@@ -25,12 +25,11 @@ namespace Game.Systems
         }
 
         public void UpdateWaveUI(object sender, EventArgs e)
-        {
-           
-            var creepList   = GM.I.WaveSystem.CurrentWaveCreepList;
+        {          
+            var creeps  = GM.I.WaveSystem.CurrentWaveCreeps;
 
-            Race.text   = creepList[0].Race.ToString();
-            Armor.text  = creepList[0].ArmorType.ToString();
+            Race.text   = creeps[0].Race.ToString();
+            Armor.text  = creeps[0].ArmorType.ToString();
             CreepTypes.text = CalculateTypes();
             Traits.text = "";
 
@@ -52,13 +51,13 @@ namespace Game.Systems
                 var flyingCount = 0;
                 var bossCount = 0;
 
-                for (int i = 0; i < creepList.Count; i++)
+                for (int i = 0; i < creeps.Count; i++)
                 {
-                    if (creepList[i] is Small)   {   smallCount++; continue;}
-                    if (creepList[i] is Normal)  {   normalCount++; continue;}
-                    if (creepList[i] is Commander){  commanterCount++; continue;}
-                    if (creepList[i] is Flying)  {   flyingCount++; continue;}
-                    if (creepList[i] is Boss)    {   bossCount++; continue;}            
+                    if (creeps[i] is Small)   {   smallCount++; continue;}
+                    if (creeps[i] is Normal)  {   normalCount++; continue;}
+                    if (creeps[i] is Commander){  commanterCount++; continue;}
+                    if (creeps[i] is Flying)  {   flyingCount++; continue;}
+                    if (creeps[i] is Boss)    {   bossCount++; continue;}            
                 }
 
                 creepTypes

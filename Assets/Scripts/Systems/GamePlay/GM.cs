@@ -24,10 +24,10 @@ namespace Game.Systems
     public class GM : ExtendedMonoBehaviour
     {
         [NaughtyAttributes.BoxGroup("List")]
-        public GameObject[] WaypointList, CellAreaList, ElementPlaceEffectList;  
+        public GameObject[] Waypoints, CellAreas, ElementPlaceEffects;  
 
         [NaughtyAttributes.BoxGroup("List")]
-        public List<TowerData> AvailableTowerList;     
+        public List<TowerData> AvailableTowers;     
 
         [NaughtyAttributes.BoxGroup("Prefab")]
         public GameObject CellPrefab, CreepPrefab, TowerPrefab, RangePrefab, CreepSpawnPoint, LevelUpEffect;
@@ -41,7 +41,7 @@ namespace Game.Systems
         public CreepDataBase CreepDataBase;            
         public WaveDataBase WaveDataBase;     
 
-        public List<TowerSystem> PlacedTowerList = new List<TowerSystem>();
+        public List<TowerSystem> Towers = new List<TowerSystem>();
 
         public TowerPlaceSystem TowerPlaceSystem        { get => towerPlaceSystem; set => towerPlaceSystem = value; }
         public GridSystem GridSystem                    { get => gridSystem; set => gridSystem = value; }
@@ -53,7 +53,7 @@ namespace Game.Systems
         public ElementUISystem ElementUISystem          { get => elementUISystem; set => elementUISystem = value; }
         public TowerCreatingSystem TowerCreatingSystem  { get => towerCreatingSystem; set => towerCreatingSystem = value; }
         public BuildUISystem BuildUISystem              { get => buildUISystem; set => buildUISystem = value; }
-        public List<CreepSystem> CreepList        { get => creepList; set => creepList = value; }
+        public List<CreepSystem> Creeps                 { get => creeps; set => creeps = value; }
         public WaveUISystem WaveUISystem                { get => waveUISystem; set => waveUISystem = value; }
         public TowerControlSystem TowerControlSystem    { get => towerControlSystem; set => towerControlSystem = value; }
         public CreepControlSystem CreepControlSystem    { get => creepControlSystem; set => creepControlSystem = value; }
@@ -75,7 +75,7 @@ namespace Game.Systems
         private ElementUISystem elementUISystem;
         private TowerCreatingSystem towerCreatingSystem;
         private BuildUISystem buildUISystem;
-        private List<CreepSystem> creepList = new List<CreepSystem>();
+        private List<CreepSystem> creeps = new List<CreepSystem>();
 
         public Canvas UICanvas;
 
