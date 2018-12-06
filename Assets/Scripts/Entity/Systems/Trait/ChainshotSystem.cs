@@ -9,7 +9,7 @@ namespace Game.Systems
     public class ChainshotSystem : IBulletTraitSystem
     {
         public EntitySystem Owner { get => owner; set => owner = value; }
-        
+
         private EntitySystem owner;
         private Chainshot trait;
 
@@ -21,7 +21,7 @@ namespace Game.Systems
 
         public void IncreaseStatsPerLevel()
         {
-            Debug.Log("incresa");
+           //Debug.Log("incresa");
         }
 
         public void Apply(BulletSystem bullet)

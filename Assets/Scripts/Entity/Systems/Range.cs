@@ -93,7 +93,7 @@ namespace Game
                     if (other.gameObject == entitySystem.Prefab)
                     {
                         entitySystemList.Add(entitySystem);
-                        entityList.Add(other.gameObject);      
+                        entityList.Add(entitySystem.Prefab);      
                         EntityEntered?.Invoke(this, new EntityEventArgs(entitySystem));
                         return true;                  
                     }       
@@ -115,8 +115,8 @@ namespace Game
 
         private void OnTriggerStay(Collider other)
         {
-            for (int i = 0; i < entityList.Count; i++)
-                if (entityList[i] == null)
+            for (int i = 0; i < entitySystemList.Count; i++)
+                if (entitySystemList[i] == null || entitySystemList[i].Prefab == null )
                 {
                     entityList.RemoveAt(i);
                     entitySystemList.RemoveAt(i);

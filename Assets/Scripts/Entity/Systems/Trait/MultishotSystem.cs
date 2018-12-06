@@ -22,7 +22,7 @@ namespace Game.Systems
 
         public void IncreaseStatsPerLevel()
         {
-            Debug.Log("increase stats per level");
+            //Debug.Log("increase stats per level");
         }
     }
 }

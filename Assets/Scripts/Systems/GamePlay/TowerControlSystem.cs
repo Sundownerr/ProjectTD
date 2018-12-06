@@ -56,6 +56,10 @@ namespace Game.Systems
                     {                  
                         tower.AbilityControlSystem.UpdateSystem();
 
+                        for (int j = 0; j < tower.CreepInRangeList.Count; j++)
+                        {
+                            Debug.Log(tower.CreepInRangeList[j]);
+                        }
                         if (tower.CreepInRangeList.Count < 1)                                                 
                             tower.CombatSystem.MoveBullet();                                     
                         else
@@ -66,7 +70,7 @@ namespace Game.Systems
                                 RotateAtCreep();                     
                             
                             for (int j = 0; j < tower.CreepInRangeList.Count; j++)
-                                if (tower.CreepInRangeList[j] == null)
+                                if (tower.CreepInRangeList[j] == null || tower.CreepInRangeList[j].Prefab == null)
                                 {
                                     tower.RangeSystem.EntityList.RemoveAt(j);
                                     tower.RangeSystem.EntitySystemList.RemoveAt(j);

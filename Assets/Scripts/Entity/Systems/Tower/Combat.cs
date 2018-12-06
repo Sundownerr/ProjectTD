@@ -65,8 +65,11 @@ namespace Game.Tower.System
                 {
                     RemoveBullet(bulletList[0]);
                     removeTimerList.RemoveAt(i);
+                     Debug.Log("remove remove timer");
                 }
-            
+
+            #region Helper functions
+
             void ShotBullet()
             {              
                 PrepareToShoot?.Invoke(this, new EventArgs());
@@ -77,8 +80,10 @@ namespace Game.Tower.System
                 void CreateBullet(EntitySystem target)
                 {
                     var bulletGO = bulletPool.GetObject();
+
                     bulletGOList.Add(bulletGO);
                     bulletList.Add(new BulletSystem(bulletGO));
+
                     SetBulletData(bulletList[bulletList.Count - 1]);
 
                     Shooting?.Invoke(this, bulletList[bulletList.Count - 1]);
@@ -101,11 +106,14 @@ namespace Game.Tower.System
 
             void RemoveBullet(BulletSystem bullet)
             {                  
+                Debug.Log("add remove timer");
                 bullet.Show(false);         
                 bullet.Prefab.SetActive(false);
                 bulletList.Remove(bullet);
                 bulletGOList.Remove(bullet.Prefab);
             }
+
+            #endregion
         }   
    
         public void SetTargetReached(BulletSystem bullet)
