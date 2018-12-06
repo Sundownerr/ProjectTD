@@ -16,10 +16,6 @@ namespace Game.Data
             Description = $"Bounce between {BounceCount} targets";
         }
 
-        public override ITraitSystem GetTraitSystem(EntitySystem owner)
-        {
-            this.owner = owner; 
-            return new ChainshotSystem(this);
-        }  
+        public override ITraitSystem GetTraitSystem(EntitySystem owner) => new ChainshotSystem(this, owner);
     }
 }

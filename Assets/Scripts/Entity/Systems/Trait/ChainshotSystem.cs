@@ -8,11 +8,15 @@ namespace Game.Systems
 {
     public class ChainshotSystem : IBulletTraitSystem
     {
+        public EntitySystem Owner { get => owner; set => owner = value; }
+        
+        private EntitySystem owner;
         private Chainshot trait;
 
-        public ChainshotSystem(Chainshot trait) 
+        public ChainshotSystem(Chainshot trait, EntitySystem owner) 
         {
-            this.trait = trait;          
+            this.trait = trait;      
+            Owner = owner;    
         }
 
         public void IncreaseStatsPerLevel()
@@ -22,14 +26,14 @@ namespace Game.Systems
 
         public void Apply(BulletSystem bullet)
         {                   
-            var tower = trait.Owner as TowerSystem;
-            var chainColliderList = new Collider[40];
+            var tower = Owner as TowerSystem;
+            var colliderList = new Collider[40];
             var creepLayer = 1 << 12;
 
             var hitTargetCount = Physics.OverlapSphereNonAlloc(
                 bullet.Prefab.transform.position, 
                 150, 
-                chainColliderList, 
+                colliderList, 
                 creepLayer);    
         
             if (bullet.Target != null)         
@@ -41,17 +45,17 @@ namespace Game.Systems
                 else
                 {            
                     for (int i = 0; i < hitTargetCount; i++)                                                    
-                        if (bullet.Target.Prefab == chainColliderList[i].gameObject)
+                        if (bullet.Target.Prefab == colliderList[i].gameObject)
                         {
                             bullet.Target = 
 
                                 i - 1 >= 0 ? 
                                     GM.I.CreepList.Find(creep => 
-                                        creep.Prefab == chainColliderList[i - 1].transform.gameObject) :
+                                        creep.Prefab == colliderList[i - 1].transform.gameObject) :
 
                                 i + 1 < hitTargetCount ? 
                                     GM.I.CreepList.Find(creep => 
-                                        creep.Prefab == chainColliderList[i + 1].transform.gameObject) :
+                                        creep.Prefab == colliderList[i + 1].transform.gameObject) :
 
                                 bullet.Target;     
                             break; 

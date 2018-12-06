@@ -9,11 +9,15 @@ namespace Game.Systems
 {
 	public class AOEShotSystem : IBulletTraitSystem
     {
-        private  AOEShot trait;   
+        public EntitySystem Owner { get => owner; set => owner = value; }
 
-        public AOEShotSystem(AOEShot trait)
+        private EntitySystem owner;
+        private AOEShot trait;   
+
+        public AOEShotSystem(AOEShot trait, EntitySystem owner)
         {
-             this.trait = trait;                       
+             this.trait = trait;     
+             Owner = owner;                   
         }
 
         public void IncreaseStatsPerLevel()
@@ -25,7 +29,7 @@ namespace Game.Systems
         {
             var creepLayer      = 1 << 12;
             var colliderList    = new Collider[40];
-            var tower           = trait.Owner as TowerSystem;
+            var tower           = Owner as TowerSystem;
 
             var hitTargetCount = Physics.OverlapSphereNonAlloc(
             bullet.Prefab.transform.position, 

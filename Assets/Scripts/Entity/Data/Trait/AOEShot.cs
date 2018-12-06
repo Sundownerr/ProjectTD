@@ -16,11 +16,7 @@ namespace Game.Data
             Description = $"Damage targets in {Range} range";
         }
 
-        public override ITraitSystem GetTraitSystem(EntitySystem owner)
-        {
-            this.owner = owner; 
-            return new AOEShotSystem(this);
-        }  
+        public override ITraitSystem GetTraitSystem(EntitySystem owner) => new AOEShotSystem(this, owner);
     }
 }
 

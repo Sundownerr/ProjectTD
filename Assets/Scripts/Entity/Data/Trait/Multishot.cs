@@ -16,10 +16,7 @@ namespace Game.Data
             Description = $"Shoot {Count} additional targets";
         }
 
-        public override ITraitSystem GetTraitSystem(EntitySystem owner)
-        {
-            this.owner = owner; 
-            return new MultishotSystem(this);
-        }  
+        public override ITraitSystem GetTraitSystem(EntitySystem owner) => new MultishotSystem(this, owner);
+        
     }
 }

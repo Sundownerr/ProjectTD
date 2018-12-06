@@ -9,11 +9,15 @@ namespace Game.Systems
 {
 	public class MultishotSystem : ITraitSystem
     {
+        public EntitySystem Owner { get => owner; set => owner = value; }
+
+        private EntitySystem owner;
         private Multishot trait;
 
-        public MultishotSystem(Multishot trait) 
+        public MultishotSystem(Multishot trait, EntitySystem owner) 
         {
             this.trait = trait;
+            Owner = owner;
         }
 
         public void IncreaseStatsPerLevel()

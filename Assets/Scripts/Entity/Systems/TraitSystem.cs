@@ -8,6 +8,7 @@ namespace Game.Systems
 {
 	public interface ITraitSystem
 	{
+		EntitySystem Owner {get; set;}
 		void IncreaseStatsPerLevel();
 	}
 
@@ -18,6 +19,8 @@ namespace Game.Systems
 
 	public class TraitSystem : ITraitSystem
 	{
+        public EntitySystem Owner { get => Owner; set => Owner = value; }
+
         public void IncreaseStatsPerLevel() {}	
     }
 }
