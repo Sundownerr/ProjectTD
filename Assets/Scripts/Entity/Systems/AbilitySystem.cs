@@ -75,6 +75,7 @@ namespace Game.Systems
                 if (nextEffectTimer > ability.EffectList[effectCount].NextInterval)                  
                     effectCount++;   
 
+            #region  Helper functions
             bool CheckNeedStack()
             {
                 for (int i = 0; i < EffectSystemList.Count; i++)
@@ -88,6 +89,7 @@ namespace Game.Systems
                             return true;
                 return false;         
             }  
+            #endregion
         }
 
         public void SetTarget(EntitySystem target)

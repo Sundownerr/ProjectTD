@@ -65,7 +65,6 @@ namespace Game.Tower.System
                 {
                     RemoveBullet(bulletList[0]);
                     removeTimerList.RemoveAt(i);
-                     Debug.Log("remove remove timer");
                 }
 
             #region Helper functions
@@ -106,7 +105,6 @@ namespace Game.Tower.System
 
             void RemoveBullet(BulletSystem bullet)
             {                  
-                Debug.Log("add remove timer");
                 bullet.Show(false);         
                 bullet.Prefab.SetActive(false);
                 bulletList.Remove(bullet);

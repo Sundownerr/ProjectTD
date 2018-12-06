@@ -47,9 +47,9 @@ namespace Game.Systems
 
         private void Start()
         {
-            GM.I.TowerUISystem.Selling += SellTower;
-            GM.I.TowerUISystem.Upgrading += UpgradeTower;
-            GM.I.BuildUISystem.NeedToBuildTower += BuildNewTower;
+            GM.I.TowerUISystem.Selling += OnSelling;
+            GM.I.TowerUISystem.Upgrading += OnUpgrading;
+            GM.I.BuildUISystem.NeedToBuildTower += OnBuildNewTower;
         }
 
         private void Update() 
@@ -87,7 +87,7 @@ namespace Game.Systems
             }
         }
 
-        private void SellTower(object sender, EventArgs e) =>                 
+        private void OnSelling(object sender, EventArgs e) =>                 
             TowerSold?.Invoke(this, new TowerEventArgs(choosedTower, choosedTower.Stats));
             
         private bool CheckGradeListOk(out TowerData[] gradeList)
@@ -104,7 +104,7 @@ namespace Game.Systems
                 choosedTower.Stats.GradeCount < gradeList.Length - 1;
         }        
 
-        private void UpgradeTower(object sender, EventArgs e) 
+        private void OnUpgrading(object sender, EventArgs e) 
         {           
             if (CheckGradeListOk(out TowerData[] gradeList))
             {              
@@ -154,7 +154,7 @@ namespace Game.Systems
             GM.I.TowerUISystem.gameObject.SetActive(active);           
         }       
 
-        private void BuildNewTower(object sender, EventArgs e)
+        private void OnBuildNewTower(object sender, EventArgs e)
         {
             GM.PlayerState = State.PreparePlacingTower;
 

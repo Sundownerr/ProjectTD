@@ -70,9 +70,9 @@ namespace Game.Systems
                     var random = StaticRandom.Instance.Next(0, tempChoosedCreepList.Count);
                     return tempChoosedCreepList.Count > 0 ? tempChoosedCreepList[random] : null;                                                                   
                 }
+                #endregion
 
-                #endregion
-                #endregion
+            #endregion
             
             }    
         }

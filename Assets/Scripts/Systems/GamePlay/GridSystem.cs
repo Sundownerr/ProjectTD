@@ -26,6 +26,8 @@ namespace Game.Systems
             green = new Color(0.1f, 0.6f, 0.1f, 0.9f);
             blue = new Color(0.1f, 0.1f, 0.3f, 0.7f);      
 
+            #region  Helper functions
+
             void CreateGrid()
             {
                 cellExpandSystem = new CellExpandSystem();
@@ -55,6 +57,8 @@ namespace Game.Systems
                     }
                 }
             }
+
+            #endregion
         }       
 
         public void UpdateSystem()
@@ -74,6 +78,8 @@ namespace Game.Systems
                     SetCellsActive(false);
             }
 
+            #region  Helper functions
+
             void SetCellsActive(bool active)
             {
                 for (int i = 0; i < cellList.Count; i++)
@@ -88,6 +94,8 @@ namespace Game.Systems
                     cell.CellRenderer.material.color = cell.IsBusy ? red : cell.IsChosen ? blue : green;              
                 }
             }
+
+            #endregion
         }
     }
 }

@@ -55,11 +55,7 @@ namespace Game.Systems
                     if (tower.IsOn)                                       
                     {                  
                         tower.AbilityControlSystem.UpdateSystem();
-
-                        for (int j = 0; j < tower.CreepInRangeList.Count; j++)
-                        {
-                            Debug.Log(tower.CreepInRangeList[j]);
-                        }
+               
                         if (tower.CreepInRangeList.Count < 1)                                                 
                             tower.CombatSystem.MoveBullet();                                     
                         else
@@ -75,6 +71,8 @@ namespace Game.Systems
                                     tower.RangeSystem.EntityList.RemoveAt(j);
                                     tower.RangeSystem.EntitySystemList.RemoveAt(j);
                                 }
+                                
+                            #region  Helper functions
 
                             void RotateAtCreep()
                             {
@@ -85,7 +83,9 @@ namespace Game.Systems
                                         tower.MovingPart.rotation, 
                                         Quaternion.LookRotation(offset), 
                                         Time.deltaTime * 9f);
-                            }        
+                            }    
+
+                            #endregion 
                         }    
                     }        
                 }

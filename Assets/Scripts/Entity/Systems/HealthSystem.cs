@@ -52,6 +52,9 @@ public class HealthSystem
 				GiveResources();			
 		}
 
+
+		#region  Helper functions
+		
 		void GiveResources()
         {
             if (creep.LastDamageDealer is TowerSystem tower)
@@ -61,5 +64,7 @@ public class HealthSystem
             }
             CreepControlSystem.DestroyCreep(creep);
         }
+		
+		#endregion
 	}
 }

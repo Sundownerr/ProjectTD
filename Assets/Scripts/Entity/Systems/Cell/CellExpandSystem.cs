@@ -64,6 +64,8 @@ namespace Game.Cells
                 if (isRightHit)
                     Fill(right);         
             }
+            
+            #region  Helper functions
 
             void Fill(Vector3 spawnDirection)
             {
@@ -73,6 +75,8 @@ namespace Game.Cells
                     Object.Instantiate(GM.I.CellPrefab, ownerCell.gameObject.transform.position + spawnDirection * spacing, Quaternion.identity, GM.I.CellParent);    
                 }   
             }
+
+            #endregion
         }
     }
 }

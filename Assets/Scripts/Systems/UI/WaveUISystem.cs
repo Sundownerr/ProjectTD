@@ -34,6 +34,8 @@ namespace Game.Systems
             CreepTypes.text = CalculateTypes();
             Traits.text = "";
 
+            #region  Helper functions
+
             string GetTraitsAndAbilities()
             {
                
@@ -67,6 +69,8 @@ namespace Game.Systems
                     .Append(bossCount > 0     ? $"{bossCount} Boss " : string.Empty);
                 return creepTypes.ToString();
             }        
+
+            #endregion
         }        
     }
 }

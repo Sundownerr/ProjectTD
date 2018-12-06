@@ -43,11 +43,14 @@ namespace Game.Systems
             AddResource(ResourceType.TowerLimit, e.Stats.TowerLimit);
         }
 
-        public void OnCreepDied(object sender, CreepData creep) => AddResource(ResourceType.Gold, creep.Gold);
+        public void OnCreepDied(object sender, CreepData creep) => 
+            AddResource(ResourceType.Gold, creep.Gold);
 
-        private void OnElementLearned(object sender, int learnCost) => AddResource(ResourceType.MagicCrystal, -learnCost);       
+        private void OnElementLearned(object sender, int learnCost) => 
+            AddResource(ResourceType.MagicCrystal, -learnCost);       
 
-        private void OnAllCreepsKilled(object sender, EventArgs e) => AddResource(ResourceType.MagicCrystal, 5);       
+        private void OnAllCreepsKilled(object sender, EventArgs e) => 
+            AddResource(ResourceType.MagicCrystal, 5);       
 
         private void AddResource(ResourceType type, int amount)
         {

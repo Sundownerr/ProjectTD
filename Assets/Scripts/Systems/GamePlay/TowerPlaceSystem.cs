@@ -15,15 +15,15 @@ namespace Game.Systems
         public TowerSystem System;
 
 
-        public TowerEventArgs(TowerSystem system, TowerData stats) : base()
+        public TowerEventArgs(TowerSystem system, TowerData stats) 
         {
             Stats = stats;
             System = system;         
         }
 
-        public TowerEventArgs(TowerSystem tower) : base() => System = tower;        
+        public TowerEventArgs(TowerSystem tower) => System = tower;        
         
-        public TowerEventArgs(TowerData stats) : base() => Stats = stats;               
+        public TowerEventArgs(TowerData stats) => Stats = stats;               
     }
 
     public class TowerPlaceSystem
@@ -67,7 +67,9 @@ namespace Game.Systems
                 }
                 else
                     if (GM.PlayerState == State.PlacingTower)
-                        MoveTower();                       
+                        MoveTower();   
+
+            #region  Helper functions
   
             void CreateTower()
             {                
@@ -150,6 +152,8 @@ namespace Game.Systems
                 for (int i = 0; i < tower.RendererList.Length; i++)
                     tower.RendererList[i].material.color = color;
             }
+
+            #endregion
         }   
     }  
 }

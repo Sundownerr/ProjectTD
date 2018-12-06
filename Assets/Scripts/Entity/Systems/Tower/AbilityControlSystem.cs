@@ -52,6 +52,8 @@ namespace Game.Tower.System
                     ContinueEffects();
             }
 
+            #region  Helper functions
+
             void CheckContinueEffects(AbilitySystem abilitySystem)
             {
                 if (!abilitySystem.CheckAllEffectsEnded())
@@ -117,6 +119,8 @@ namespace Game.Tower.System
                     isAllEffectsEnded = true;
                 }
             }
+            
+            #endregion
         }
     }
 }

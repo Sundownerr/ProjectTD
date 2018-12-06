@@ -48,6 +48,8 @@ namespace Game.Systems
 #endif
 				null as IData;
 
+			#region  Helper functions
+
 			PlayerData LoadPlayerData()
 			{
 				var playerData = new PlayerData();
@@ -91,6 +93,7 @@ namespace Game.Systems
 			CreepDataBase LoadCreepDB() =>					
 				AssetDatabase.LoadAssetAtPath("Assets/DataBase/CreepDB.asset", typeof(CreepDataBase)) as CreepDataBase;
 #endif
+			#endregion
 		}
 	}
 }

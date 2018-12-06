@@ -61,6 +61,8 @@ namespace Game.Systems
                 }
             }
 
+            #region  Helper functions
+
             void MoveAndRotateCreep(CreepSystem creep)
             {           
                 var creepTransform = creep.Prefab.transform;
@@ -89,6 +91,8 @@ namespace Game.Systems
                     creepTransform.localRotation = rotation;
                 }
             }
+            
+            #endregion
         }
 
         public static void DestroyCreep(CreepSystem creep)

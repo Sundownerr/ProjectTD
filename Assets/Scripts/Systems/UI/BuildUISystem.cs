@@ -63,7 +63,6 @@ namespace Game.Systems
         private void OnTowerDeleted(object sender, TowerEventArgs e) 
         {
             AddTowerButton(e.Stats);
-            //Destroy(e.Stats);
         } 
  
         private void UpdateUI(object sender, EventArgs e)
@@ -155,6 +154,8 @@ namespace Game.Systems
             if (!isSameTower)
                 CreateTowerButton();             
             
+            #region  Helper functions
+
             void AddTowerAmount(int index)
             {
                 towerButtonList[index].Count++;
@@ -174,6 +175,8 @@ namespace Game.Systems
                 towerButtonImage.sprite = towerData.Image;
                 towerButton.Count = 1;             
             }        
+
+            #endregion
         }
 
         private void ShowAstral()   => ShowRarity(ElementType.Astral);     

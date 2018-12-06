@@ -60,7 +60,9 @@ namespace Game
         private void OnTriggerEnter(Collider other)
         {
             AddToList();
-          
+
+            #region  Helper functions
+
             void AddToList()
             {
                 if (collideType == CollideWith.Creeps)
@@ -75,6 +77,8 @@ namespace Game
                     AddEntity<TowerSystem>();
                 }
                     
+                #region  Helper functions
+
                 void AddEntity<T>() where T: EntitySystem
                 {
                     if (typeof(T) == typeof(CreepSystem))
@@ -99,7 +103,11 @@ namespace Game
                     }       
                     return false;       
                 }
+
+                #endregion
             }
+
+            #endregion
         }
 
         private void OnTriggerExit(Collider other)

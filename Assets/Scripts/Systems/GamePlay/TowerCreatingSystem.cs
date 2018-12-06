@@ -24,8 +24,7 @@ namespace Game.Systems
                 ElementsList[(int)e.Stats.Element].
                 RarityList[(int)e.Stats.Rarity].TowerList.Find(tower => tower.CompareId(e.Stats.Id));
 
-            GM.I.AvailableTowerList.Add(towerFromDB);          
-           
+            GM.I.AvailableTowerList.Add(towerFromDB);                    
         }
 
         public void CreateRandomTower()
@@ -44,7 +43,11 @@ namespace Game.Systems
                     for (int dataBaseElementId = 0; dataBaseElementId < dataBaseElementList.Count; dataBaseElementId++)
                         if (dataBaseElementId == lvldUpElementId) 
                             GetTower(lvldUpElementId);  
-        
+
+            AddedNewAvailableTower?.Invoke(this, new EventArgs());  
+
+            #region  Helper functions
+
             void GetTower(int elementId)
             {
                 var allTowerList = GM.I.TowerDataBase.AllTowerList;     
@@ -57,8 +60,9 @@ namespace Game.Systems
                             GM.I.AvailableTowerList.Add(elementList[elementId].RarityList[i].TowerList[j]);    
                             GM.I.BuildUISystem.AddTowerButton(elementList[elementId].RarityList[i].TowerList[j]);    
                         }                   
-            }       
-            AddedNewAvailableTower?.Invoke(this, new EventArgs());                                    
+            }      
+
+            #endregion                                            
         }
     }    
 }
