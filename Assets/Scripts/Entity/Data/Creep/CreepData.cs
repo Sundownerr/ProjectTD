@@ -20,15 +20,13 @@ namespace Game.Creep
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
         public float HealthRegen { get => healthRegen; set => healthRegen = value; }
         public List<Trait> Traits { get => traits; set => traits = value; }
-
+        
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
         public int WaveLevel;
-  
         public RaceType Race;
-        public List<Ability> Abilities;
-        
-        private List<Trait> traits;
+            
+        protected List<Trait> traits;
         protected float healthRegen;
         protected Armor.ArmorType armorType;
         protected float armorValue;

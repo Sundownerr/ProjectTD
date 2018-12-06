@@ -8,7 +8,7 @@ namespace Game.Tower.System
     public class AbilityControlSystem : ITowerSystem
     {
         private TowerSystem tower;
-        private List<AbilitySystem> abilitySystems, abilityStacks;
+        private List<AbilitySystem> abilityStacks;
         private bool isAllEffectsEnded, isInContinueState;
 
         public AbilityControlSystem(TowerSystem ownerTower)
@@ -17,13 +17,14 @@ namespace Game.Tower.System
         }
 
         public void Set()
-        {
-            abilitySystems = tower.AbilitySystems;
+        {            
             abilityStacks = new List<AbilitySystem>();
         }
 
         public void UpdateSystem()
         {
+            var abilitySystems = tower.AbilitySystems;
+
             if (tower.CreepsInRange.Count > 0)
             {
                 isInContinueState = false;

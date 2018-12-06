@@ -9,9 +9,11 @@ namespace Game.Systems
 {
     public static class WaveCreatingSystem
     {
-        public static List<CreepData> CreateWave(RaceType waveRace, Wave wave)
+        public static List<CreepData> CreateWave(Wave wave)
         {
-            var races = GM.I.CreepDataBase.CreepRaces;       
+            var races = GM.I.CreepDataBase.CreepRaces;   
+            var waveRace = RaceType.Humanoid;    
+            
             var fittingCreeps = new List<CreepData>();      
 
             for (int raceId = 0; raceId < races.Count; raceId++)
@@ -70,11 +72,11 @@ namespace Game.Systems
                     var random = StaticRandom.Instance.Next(0, tempChoosedCreeps.Count);
                     return tempChoosedCreeps.Count > 0 ? tempChoosedCreeps[random] : null;                                                                   
                 }
-                #endregion
+
+                #endregion                 
+            }    
 
             #endregion
-            
-            }    
         }
     }
 }

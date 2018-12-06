@@ -8,7 +8,7 @@ namespace Game.Creep.System
 	public class AbilityControlSystem 
 	{
 		private CreepSystem creep;
-		private List<AbilitySystem> abilitySystems;
+	
 
 		public AbilityControlSystem(CreepSystem ownerCreep)
         {
@@ -17,11 +17,13 @@ namespace Game.Creep.System
 
         public void Set()
         {
-            abilitySystems = creep.AbilitySystems;         
+                  
         }
 
         public void UpdateSystem()
         {
+            var abilitySystems = creep.AbilitySystems;   
+            
 			for (int i = 0; i < abilitySystems.Count; i++)			
 				abilitySystems[i].Init();		
         }

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Creep.System;
+using Game.Creep.Data;
 
 namespace Game.Creep
 {
@@ -24,17 +25,13 @@ namespace Game.Creep
 
         public CreepSystem(GameObject ownerPrefab)
         {
-            AbilitySystems = new List<AbilitySystem>();     
+            abilitySystems = new List<AbilitySystem>();     
  
             prefab = ownerPrefab;
         }
 
         public void SetSystem()
         {
-            if (stats.Abilities != null)
-                for (int i = 0; i < stats.Abilities.Count; i++)           
-                    AbilitySystems.Add(new AbilitySystem(stats.Abilities[i], this));
-        
             AbilityControlSystem    = new AbilityControlSystem(this);                
             appliedEffectSystem     = new AppliedEffectSystem();
             healthSystem            = new HealthSystem(this);

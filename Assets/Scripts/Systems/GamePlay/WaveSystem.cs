@@ -45,16 +45,16 @@ namespace Game.Systems
         {
             GM.I.BaseUISystem.WaveStarted += OnWaveStarted;
 
-             waves = CreateWaves(GM.I.WaveAmount);
+            waves = GenerateWaves(GM.I.WaveAmount);
             waveNumber = 1;
             currentWaveCreeps = waves[0];      
 
             #region  Helper functions
 
-            List<List<CreepData>> CreateWaves(int waveAmount)
+            List<List<CreepData>> GenerateWaves(int waveAmount)
             {
-                var armorRandomIds = new List<int>();
-                var waveRandomIds  = new List<int>();         
+                var randomArmorIds = new List<int>();
+                var randomWaveIds  = new List<int>();         
                 var armorTypes   = Enum.GetValues(typeof(Armor.ArmorType));
                 var raceTypes    = Enum.GetValues(typeof(RaceType));     
                 var tempWaves    = new List<List<CreepData>>();      
@@ -62,21 +62,17 @@ namespace Game.Systems
 
                 for (int i = 0; i < waveAmount; i++)
                 {
-                    waveRandomIds.Add(StaticRandom.Instance.Next(0, waves.Count));
-                    armorRandomIds.Add(StaticRandom.Instance.Next(0, armorTypes.Length));      
+                    randomWaveIds.Add(StaticRandom.Instance.Next(0, waves.Count));
+                    randomArmorIds.Add(StaticRandom.Instance.Next(0, armorTypes.Length));      
                 }
 
-                for (int waveId = 0; waveId < waveAmount; waveId++)
-                {             
-                    tempWaves.Add(
-                        WaveCreatingSystem.CreateWave(
-                            RaceType.Humanoid,
-                            waves[waveRandomIds[waveId]]));               
-                }   
+                for (int i = 0; i < waveAmount; i++)                         
+                    tempWaves.Add(WaveCreatingSystem.CreateWave(waves[randomWaveIds[i]]));               
+                  
                 return tempWaves;
             }   
-            #endregion
 
+            #endregion
         }
 
         public void UpdateSystem()
