@@ -20,6 +20,9 @@ namespace Game.Creep
         public bool IsInstanced { get => isInstanced; set => isInstanced = value; }
         public float HealthRegen { get => healthRegen; set => healthRegen = value; }
         public List<Trait> Traits { get => traits; set => traits = value; }
+        public List<Ability> Abilities { get => abilities; set => abilities = value; }
+
+        
         
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
@@ -33,6 +36,7 @@ namespace Game.Creep
         protected int gold, exp, numberInList;
         protected float defaultMoveSpeed, moveSpeed, health;    
         protected bool isInstanced;
+        protected List<Ability> abilities;
         
         protected virtual void Awake() 
         {

@@ -5,7 +5,7 @@ using Game.Tower.Data.Stats;
 
 namespace Game.Data
 {   
-    [CreateAssetMenu(fileName = "TowerDB", menuName = "Data/Tower DataBase")]
+    [CreateAssetMenu(fileName = "TowerDB", menuName = "Data/Data Base/Tower DataBase")]
     [Serializable]
     public class TowerDataBase : ScriptableObject, IData
     {     

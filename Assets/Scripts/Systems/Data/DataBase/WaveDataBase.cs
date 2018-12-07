@@ -4,7 +4,7 @@ using System;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "WaveDataBase", menuName = "Data/Wave Data Base")]
+    [CreateAssetMenu(fileName = "WaveDataBase", menuName = "Data/Data Base/Wave Data Base")]
 
 	[Serializable]
 	public class WaveDataBase : ScriptableObject, IData

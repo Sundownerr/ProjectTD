@@ -188,6 +188,7 @@
      <Compile Include="Assets\Scripts\Entity\Data\Tower\TowerData.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Trait.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Trait\AOEShot.cs" />
+     <Compile Include="Assets\Scripts\Entity\Data\Trait\Armored.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Trait\Chainshot.cs" />
      <Compile Include="Assets\Scripts\Entity\Data\Trait\Multishot.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\AbilitySystem.cs" />
@@ -213,6 +214,7 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\TowerSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Tower\TraitControlSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Trait\AOEShotSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Trait\ArmoredSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Trait\ChainshotSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Trait\MultishotSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\TraitSystem.cs" />

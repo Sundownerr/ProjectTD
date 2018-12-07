@@ -31,15 +31,24 @@ namespace Game.Systems
             Race.text   = creeps[0].Race.ToString();
             Armor.text  = creeps[0].ArmorType.ToString();
             CreepTypes.text = CalculateTypes();
-            Traits.text = "";
+            Traits.text = GetTraitsAndAbilities();
 
             #region  Helper functions
 
             string GetTraitsAndAbilities()
             {
-               
-                
-                return "";
+                var traitsAndAbilities = new StringBuilder();
+
+                for (int i = 0; i < creeps.Count; i++)               
+                    if(creeps[i] is Commander || creeps[i] is Boss)
+                    {
+                        for (int j = 0; j < creeps[i].Traits.Count; j++)                        
+                            traitsAndAbilities.Append($"{creeps[i].Traits[j].Name} ");
+
+                        for (int j = 0; j < creeps[i].Abilities.Count; j++)                        
+                            traitsAndAbilities.Append($"{creeps[i].Abilities[j].Name} ");              
+                    }             
+                return traitsAndAbilities.ToString();
             }
 
             string CalculateTypes()

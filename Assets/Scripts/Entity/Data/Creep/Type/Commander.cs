@@ -7,10 +7,6 @@ namespace Game.Creep.Data
 
     public class Commander : CreepData
     {
-        public List<Ability> Abilities { get => abilities; set => abilities = value; }
-
-        private List<Ability> abilities;
-
         protected override void Awake()
         {            
             MoveSpeed = DefaultMoveSpeed;

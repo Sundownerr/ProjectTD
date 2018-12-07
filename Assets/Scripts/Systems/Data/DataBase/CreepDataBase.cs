@@ -5,7 +5,7 @@ using Game.Creep.Data;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "CreepDB", menuName = "Data/Creep DataBase")]
+    [CreateAssetMenu(fileName = "CreepDB", menuName = "Data/Data Base/Creep DataBase")]
    	[Serializable]
 	public class CreepDataBase : ScriptableObject, IData
 	{

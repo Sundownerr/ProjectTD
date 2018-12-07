@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using Game.Creep.Data;
 using U = UnityEngine.Object;
+using Game.Data;
 
 namespace Game.Systems
 {
@@ -52,22 +53,17 @@ namespace Game.Systems
             #region  Helper functions
 
             List<List<CreepData>> GenerateWaves(int waveAmount)
-            {
-                var randomArmorIds = new List<int>();
-                var randomWaveIds  = new List<int>();         
-                var armorTypes   = Enum.GetValues(typeof(Armor.ArmorType));
+            {             
+                var randomWaveIds  = new List<int>();                    
                 var raceTypes    = Enum.GetValues(typeof(RaceType));     
                 var tempWaves    = new List<List<CreepData>>();      
                 var waves        = GM.I.WaveDataBase.Waves;      
 
-                for (int i = 0; i < waveAmount; i++)
-                {
+                for (int i = 0; i < waveAmount; i++)               
                     randomWaveIds.Add(StaticRandom.Instance.Next(0, waves.Count));
-                    randomArmorIds.Add(StaticRandom.Instance.Next(0, armorTypes.Length));      
-                }
 
                 for (int i = 0; i < waveAmount; i++)                         
-                    tempWaves.Add(WaveCreatingSystem.CreateWave(waves[randomWaveIds[i]]));               
+                    tempWaves.Add(WaveCreatingSystem.CreateWave(waves[randomWaveIds[i]], i));               
                   
                 return tempWaves;
             }   
@@ -138,39 +134,17 @@ namespace Game.Systems
 
                     var creepSystem = new CreepSystem(creep);                          
                     
-                    creepSystem.Stats = CalculateStats(
-                        currentWaveCreeps[spawned], 
-                        currentWaveCreeps[spawned].ArmorType, 
-                        waveNumber); 
+                    creepSystem.Stats = currentWaveCreeps[spawned];
                     creepSystem.Stats.SetData(creepSystem);
                     creepSystem.SetSystem();
              
                     creepWaves[creepWaves.Count - 1].Add(creepSystem);    
                         
                     CreepSpawned?.Invoke(this, new CreepEventArgs(creepSystem));
-                    creepSystem.HealthSystem.CreepDied += GM.I.ResourceSystem.OnCreepDied;    
-
-                    #region  Helper functions
-
-                    CreepData CalculateStats(CreepData stats, Armor.ArmorType armor, int waveCount)
-                    {
-                        var tempStats = U.Instantiate(stats);
-                    
-                        tempStats.ArmorType         = armor;
-                        tempStats.ArmorValue        = waveCount;
-                        tempStats.DefaultMoveSpeed  = 120 + waveCount * 5;
-                        tempStats.Gold              = 1 + waveCount;        // waveCount / 7;
-                        tempStats.Health            = waveCount * 10;
-                        tempStats.MoveSpeed         = tempStats.DefaultMoveSpeed;
-
-                        tempStats.IsInstanced = true;
-                        return tempStats;
-                    }         
-                    #endregion
+                    creepSystem.HealthSystem.CreepDied += GM.I.ResourceSystem.OnCreepDied;              
                 }
                 #endregion
             }
-
             #endregion
         }
     }

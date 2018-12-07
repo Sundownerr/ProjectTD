@@ -39,7 +39,9 @@ namespace Game.Systems
         public int WaveAmount;
         public TowerDataBase TowerDataBase;             
         public CreepDataBase CreepDataBase;            
-        public WaveDataBase WaveDataBase;     
+        public WaveDataBase WaveDataBase; 
+        public CreepAbilityDataBase CreepAbilityDataBase;    
+        public CreepTraitDataBase CreepTraitDataBase;
 
         public List<TowerSystem> Towers = new List<TowerSystem>();
 
