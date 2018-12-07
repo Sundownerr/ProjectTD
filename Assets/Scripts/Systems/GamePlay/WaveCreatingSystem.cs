@@ -58,7 +58,7 @@ namespace Game.Systems
                 #region Helper functions
 
                 CreepData GetCreepOfType(CreepData creep) 
-                {         
+                {                             
                     for (int i = 0; i < choosedCreeps.Length; i++)
                         if (choosedCreeps[i].GetType() == creep.GetType())
                             return choosedCreeps[i];        
@@ -93,10 +93,15 @@ namespace Game.Systems
                     stats.Gold              = 1 + waveNumber;        // waveCount / 7;
                     stats.Health            = waveNumber * 10;
                     stats.MoveSpeed         = stats.DefaultMoveSpeed;   
+
+                    stats.Traits = new List<Trait>();
                     stats.Traits.AddRange(traits);
 
                     if(stats is Boss || stats is Commander)    
+                    {
+                        stats.Abilities = new List<Ability>();
                         stats.Abilities.AddRange(abilities); 
+                    }
 
                     stats.IsInstanced = true;     
                 }         

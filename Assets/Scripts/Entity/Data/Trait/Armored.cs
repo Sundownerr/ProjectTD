@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "AOE Shot", menuName = "Data/Tower/Trait/Multishot")]
+    [CreateAssetMenu(fileName = "Armored", menuName = "Data/Creep/Trait/Armored")]
 
     public class Armored : Trait, ITrait
     {

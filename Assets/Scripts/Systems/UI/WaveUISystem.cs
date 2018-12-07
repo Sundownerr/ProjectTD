@@ -38,15 +38,16 @@ namespace Game.Systems
             string GetTraitsAndAbilities()
             {
                 var traitsAndAbilities = new StringBuilder();
+                
+                for (int i = 0; i < creeps[0].Traits.Count; i++)     
+                    traitsAndAbilities.Append($"{creeps[0].Traits[i].Name} ");
 
                 for (int i = 0; i < creeps.Count; i++)               
                     if(creeps[i] is Commander || creeps[i] is Boss)
-                    {
-                        for (int j = 0; j < creeps[i].Traits.Count; j++)                        
-                            traitsAndAbilities.Append($"{creeps[i].Traits[j].Name} ");
-
+                    {           
                         for (int j = 0; j < creeps[i].Abilities.Count; j++)                        
-                            traitsAndAbilities.Append($"{creeps[i].Abilities[j].Name} ");              
+                            traitsAndAbilities.Append($"{creeps[i].Abilities[j].Name} ");   
+                        break;     
                     }             
                 return traitsAndAbilities.ToString();
             }

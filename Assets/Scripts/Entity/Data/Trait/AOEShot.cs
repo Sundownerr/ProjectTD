@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Data
 {
-    [CreateAssetMenu(fileName = "AOE Shot", menuName = "Data/Tower/Trait/Multishot")]
+    [CreateAssetMenu(fileName = "AOE Shot", menuName = "Data/Tower/Trait/AOE Shot")]
 
     public class AOEShot : Trait, ITrait
     {
