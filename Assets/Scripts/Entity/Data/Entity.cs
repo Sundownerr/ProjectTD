@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Game.Systems;
+using System.Text;
 
 namespace Game
 {
@@ -41,7 +42,7 @@ namespace Game
 
         public virtual string GetId()
         {
-            var stringBuilder = new System.Text.StringBuilder();
+            var stringBuilder = new StringBuilder();
 
             for (int i = 0; i < id.Count; i++)            
                 stringBuilder.Append(id[i].ToString());

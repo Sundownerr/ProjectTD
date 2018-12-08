@@ -12,7 +12,6 @@ namespace Game.Systems
 
         private bool isGridBuilded;
         private Color blue, red, green;
-        private CellExpandSystem cellExpandSystem;
         private List<Cell> cells;
 
         public GridSystem()
@@ -30,13 +29,11 @@ namespace Game.Systems
 
             void CreateGrid()
             {
-                cellExpandSystem = new CellExpandSystem();
-
                 CreateMainCell();
 
                 for (int i = 0; i < cells.Count; i++)        
                     if (!cells[i].IsExpanded)
-                        cellExpandSystem.Expand(cells[i]);     
+                        CellExpandSystem.Expand(cells[i]);     
 
                 IsGridBuilded = true;            
             }   

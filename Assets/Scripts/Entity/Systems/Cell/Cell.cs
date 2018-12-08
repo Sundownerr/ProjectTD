@@ -3,10 +3,8 @@ using UnityEngine;
 
 namespace Game.Cells
 {
-
     public class Cell : ExtendedMonoBehaviour
-    {
-        
+    {       
         public bool IsBusy { get => isBusy; set => isBusy = value; }
         public bool IsChosen { get => isChosen; set => isChosen = value; }
         public Renderer CellRenderer { get => cellRenderer; set => cellRenderer = value; }

@@ -3,29 +3,19 @@ using Game.Systems;
 
 namespace Game.Cells
 {
-
-    public class CellExpandSystem
+    public static class CellExpandSystem
     {
-        private Vector3 forward, back, left, right, down;     
-        private int buildLayerMask;
-
-        public CellExpandSystem()
+        public static void Expand(Cell ownerCell)
         {
-            forward = new Vector3(0, 0, 1);
-            back    = new Vector3(0, 0, -1);
-            left    = new Vector3(1, 0, 0);
-            right   = new Vector3(-1, 0, 0);
-            down    = new Vector3(0, -1, 0);
-
-            var results = new RaycastHit[2];
-
+            var forward = new Vector3(0, 0, 1);
+            var back    = new Vector3(0, 0, -1);
+            var left    = new Vector3(1, 0, 0);
+            var right   = new Vector3(-1, 0, 0);
+            var down    = new Vector3(0, -1, 0);
             var buildingAreaLayer   = 1 << 8;
             var terrainLayer        = 1 << 9;
-            buildLayerMask          = ~terrainLayer | buildingAreaLayer;          
-        }
+            var buildLayerMask      = ~terrainLayer | buildingAreaLayer;     
 
-        public void Expand(Cell ownerCell)
-        {
             var spacing = ownerCell.gameObject.transform.localScale.x;
             var rayDistance = ownerCell.gameObject.transform.localScale.x;
 

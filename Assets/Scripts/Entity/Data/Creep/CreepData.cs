@@ -21,8 +21,6 @@ namespace Game.Creep
         public float HealthRegen { get => healthRegen; set => healthRegen = value; }
         public List<Trait> Traits { get => traits; set => traits = value; }
         public List<Ability> Abilities { get => abilities; set => abilities = value; }
-
-        
         
         [ShowAssetPreview(125, 125)]
         public GameObject Prefab;
@@ -40,7 +38,9 @@ namespace Game.Creep
         
         protected virtual void Awake() 
         {
-         //   AddToDataBase();                          
+         //   AddToDataBase();           
+            abilities = new List<Ability>();          
+            traits = new List<Trait>();     
         }
 
         public void SetData(CreepSystem ownerSystem)

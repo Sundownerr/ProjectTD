@@ -197,6 +197,7 @@
      <Compile Include="Assets\Scripts\Entity\Systems\Cell\CellExpandSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Creep\AbilityControlSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Creep\CreepSystem.cs" />
+     <Compile Include="Assets\Scripts\Entity\Systems\Creep\TraitControlSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\DamageSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Effects\AuraSystem.cs" />
      <Compile Include="Assets\Scripts\Entity\Systems\Effects\DoTSystem.cs" />
